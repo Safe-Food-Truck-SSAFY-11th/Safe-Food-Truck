@@ -7,26 +7,22 @@ build-job:
   stage: build
   script:
     - echo "Compiling the code..."
-    - powershell ./mvnw clean install
-    - echo "Compile complete."
+    - powershell -command "& { Start-Process -NoNewWindow -FilePath .\mvnw.cmd -ArgumentList 'clean install'; if ($?) { echo 'Compile complete.' } else { exit 1 } }"
 
 unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - powershell ./mvnw test
-    - echo "Unit tests completed."
+    - powershell -command "& { Start-Process -NoNewWindow -FilePath .\mvnw.cmd -ArgumentList 'test'; if ($?) { echo 'Unit tests completed.' } else { exit 1 } }"
 
 lint-test-job:
   stage: test
   script:
     - echo "Linting code..."
-    - powershell ./mvnw checkstyle:check
-    - echo "Linting completed."
+    - powershell -command "& { Start-Process -NoNewWindow -FilePath .\mvnw.cmd -ArgumentList 'checkstyle:check'; if ($?) { echo 'Linting completed.' } else { exit 1 } }"
 
 deploy-job:
   stage: deploy
   script:
     - echo "Deploying application..."
-    - powershell start /b java -jar target/*.jar
-    - echo "Application successfully deployed."
+    - powershell -command "& { Start-Process -NoNewWindow -FilePath java -ArgumentList '-jar target/*.jar'; if ($?) { echo 'Application successfully deployed.' } else { exit 1 } }"
