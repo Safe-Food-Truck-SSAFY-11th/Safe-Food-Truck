@@ -6,15 +6,11 @@ stages:
 
 Stop:
   stage: Stop tomcat
-  only:
-    - dev
   script:
     - sudo /usr/local/lib/apache-tomcat-8.5.57/bin/shutdown.sh -force
 
 Build:
   stage: Build
-  only:
-    - dev
   cache:
     paths:
       - build/*
@@ -23,8 +19,6 @@ Build:
 
 Copy:
   stage: Copy
-  only:
-    - dev
   cache:
     paths:
       - build/*
@@ -34,8 +28,6 @@ Copy:
 
 Start:
   stage: Start tomcat
-  only:
-    - dev
   cache:
     paths:
       - build/*
