@@ -7,26 +7,26 @@ build-job:
   stage: build
   script:
     - echo "Compiling the code..."
-    - ./mvnw clean install
+    - .\mvnw clean install
     - echo "Compile complete."
 
 unit-test-job:
   stage: test
   script:
     - echo "Running unit tests..."
-    - ./mvnw test
+    - .\mvnw test
     - echo "Unit tests completed."
 
 lint-test-job:
   stage: test
   script:
     - echo "Linting code..."
-    - ./mvnw checkstyle:check
+    - .\mvnw checkstyle:check
     - echo "Linting completed."
 
 deploy-job:
   stage: deploy
   script:
     - echo "Deploying application..."
-    - nohup java -jar target/*.jar &
+    - start /b java -jar target/*.jar
     - echo "Application successfully deployed."
