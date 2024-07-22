@@ -1,0 +1,104 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+}
+
+.form {
+    display: flex;
+    width: 100%;
+}
+
+.imageSection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.uploadedImage {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.imageInput {
+    display: none;
+}
+
+.imageButton {
+    background-color: #2AC311;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.detailsSection {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputContainer {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.inputContainer label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.inputContainer input,
+.inputContainer textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.submitButton {
+    background-color: #AFF070;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background-color: #FB9256;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}

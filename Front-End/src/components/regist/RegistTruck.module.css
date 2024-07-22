@@ -1,0 +1,188 @@
+.form {
+    width: 80%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.imageUpload {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.uploadedImage {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.imageInput {
+    display: none;
+}
+
+.imageButton {
+    background-color: #2AC311;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.inputContainer {
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.inputContainer label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: green;
+}
+
+.inputContainer input,
+.inputContainer select,
+.inputContainer textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.menuContainer {
+    display: flex;
+    align-items: center;
+}
+
+.menuInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.menuButton {
+    background-color: #2AC311;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.daysContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dayButton {
+    background-color: #F8F8F8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    width: 40px;
+    text-align: center;
+}
+
+.activeDay {
+    background-color: #2AC311;
+    color: white;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.submitButton {
+    background-color: #AFF070;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.cancelButton {
+    background-color: #FB9256;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.menuContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menuImage {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.menuDetails {
+    flex: 1;
+}
+
+.menuButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.editButton {
+    background-color: #AFF070;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.deleteButton {
+    background-color: #FB9256;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.addMenuButton {
+    background-color: #fff;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
