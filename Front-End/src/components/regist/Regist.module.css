@@ -1,0 +1,132 @@
+.registContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #FEC674;
+    /* 손님 배경 색 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* 추가 */
+}
+
+.registContainer.ownerBackground {
+    background-color: #E0F7D4;
+    /* 사장님 배경 색 */
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    /* 추가 */
+    -webkit-overflow-scrolling: touch;
+    /* iOS에서 부드러운 스크롤 */
+    scrollbar-width: none;
+    /* Firefox에서 스크롤바 숨김 */
+}
+
+.contentContainer::-webkit-scrollbar {
+    display: none;
+    /* 크롬, 사파리, 엣지에서 스크롤바 숨김 */
+}
+
+.imageUpload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background-color: #F8F8F8;
+    border-radius: 50%;
+    margin: 20px 0;
+}
+
+.imageUpload img {
+    width: 50px;
+    height: 50px;
+}
+
+.imageUpload p {
+    margin: 0;
+    color: #707070;
+    font-size: 14px;
+}
+
+.uploadedImage {
+    width: 100%;
+    height: auto;
+}
+
+.optionContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.option {
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: black;
+    /* 기본 글자 색상 */
+}
+
+.inactive {
+    color: gray;
+    /* 비활성화된 글자 색상 */
+}
+
+.guestActive {
+    color: #FF5D00;
+    /* 손님 선택 시 글자 색상 */
+}
+
+.ownerActive {
+    color: #2AC311;
+    /* 사장님 선택 시 글자 색상 */
+}
+
+.divider {
+    font-size: 16px;
+    color: gray;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 400px;
+    margin-top: 20px;
+}
+
+.joinButton {
+    background-color: #D1FD8C;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.cancelButton {
+    background-color: #FFA285;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+}
