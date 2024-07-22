@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.member.service;
 
-public interface MemberService {
+import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 
+public interface MemberService {
+    public void signUp(MemberSignUpRequestDto signUpMemberDto);
 }

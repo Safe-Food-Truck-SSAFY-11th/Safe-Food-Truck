@@ -1,5 +1,8 @@
 package com.safefoodtruck.sft.member.repository;
 
-public interface MemberRepository {
+import com.safefoodtruck.sft.member.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface MemberRepository extends JpaRepository<Member, String> {
+    Member findMemberByEmail(String email);
 }
