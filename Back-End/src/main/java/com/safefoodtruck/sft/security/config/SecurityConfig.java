@@ -1,10 +1,10 @@
 package com.safefoodtruck.sft.security.config;
 
-import com.test.security.util.JwtUtil;
-import com.test.security.util.securityUtil.CustomAccessDeniedHandler;
-import com.test.security.util.securityUtil.CustomAuthenticationEntryPoint;
-import com.test.security.util.securityUtil.CustomUserDetailsService;
-import com.test.security.util.securityUtil.JwtAuthFilter;
+import com.safefoodtruck.sft.security.CustomUserDetailsService;
+import com.safefoodtruck.sft.security.filter.JwtAuthFilter;
+import com.safefoodtruck.sft.security.handler.CustomAccessDeniedHandler;
+import com.safefoodtruck.sft.security.handler.CustomAuthenticationEntryPoint;
+import com.safefoodtruck.sft.security.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private static final String[] AUTH_PERMIT_PATH_LIST = {
-        "/", "/auth/sign-up"
+        "/", "/api/members"
     };
 
     @Bean
