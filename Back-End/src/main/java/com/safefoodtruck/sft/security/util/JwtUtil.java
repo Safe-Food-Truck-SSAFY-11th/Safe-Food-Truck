@@ -1,6 +1,6 @@
 package com.safefoodtruck.sft.security.util;
 
-import com.test.security.dto.MemberInfoDto;
+import com.safefoodtruck.sft.member.dto.MemberDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -34,7 +34,7 @@ public class JwtUtil {
      * @param member
      * @return access token string
      */
-    public String createAccessToken(MemberInfoDto member) {
+    public String createAccessToken(MemberDto member) {
         return createToken(member, accessTokenExpirationTime);
     }
 
@@ -44,9 +44,10 @@ public class JwtUtil {
      * @param expirationTime
      * @return JWT string
      */
-    private String createToken(MemberInfoDto member, long expirationTime) {
+    private String createToken(MemberDto member, long expirationTime) {
         Claims claims = Jwts.claims();
-        claims.put("id", member.getId());
+        claims.put("user_id", member.getEmail());
+        claims.put("user_nickname", member.getNickname());
         claims.put("role", member.getRole());
 
         ZonedDateTime nowTime = ZonedDateTime.now();
@@ -66,7 +67,7 @@ public class JwtUtil {
      * @return ID string
      */
     public String getId(String token) {
-        return parseClaims(token).get("id", String.class);
+        return parseClaims(token).get("user_id", String.class);
     }
 
     /**
