@@ -1,9 +1,15 @@
+import { useNavigate } from 'react-router-dom';
 import styles from './OpenClose.module.css';
 import useStatusStore from '../../../store/trucks/statusStore';
 
 const OpenClose = () => {
 
     const { status, setStatus } = useStatusStore();
+    const navigate = useNavigate();
+
+    const handleOpenClick = () => {
+        navigate('/permitAreaCheck');
+    };
 
     // 푸드트럭 상태에 따른 버튼 변경
     const renderButtons = () => {
@@ -11,7 +17,7 @@ const OpenClose = () => {
             case 'beforeOpen':
                 return (
                     <>
-                        <button className={styles.openButton} onClick={() => setStatus('afterOpen')}>
+                        <button className={styles.openButton} onClick={handleOpenClick}>
                             <span role="img" aria-label="open" className={styles.icon}>🏢</span> 영업시작
                         </button>
                         <button className={styles.closeButton} disabled>
