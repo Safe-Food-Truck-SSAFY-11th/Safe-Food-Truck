@@ -1,0 +1,42 @@
+.waitingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #FB833E;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.waitingImage {
+  width: 200px;
+  height: auto;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.title {
+  font-size: 24px;
+  color: white;
+  margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: white;
+  position: absolute;
+  bottom: 0px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
