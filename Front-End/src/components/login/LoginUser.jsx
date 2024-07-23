@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './LoginUser.module.css';
 import logo from '../../assets/images/sft-logo.png';
 import kakaoLogo from '../../assets/images/icon_kakao.png';
@@ -7,17 +8,22 @@ import useUserStore from '../../store/users/userStore';
 
 const LoginUser = () => {
     const { isGuest, setGuest, setOwner } = useUserStore();
+    const navigate = useNavigate();
 
     // 컴포넌트가 마운트될 때 isGuest를 true로 설정
     useEffect(() => {
         setGuest();
     }, [setGuest]);
 
+    const handleRegisterClick = () => {
+        navigate('/regist');
+    };
+
     return (
         <div className={`${styles.loginContainer} ${isGuest === false ? styles.ownerBackground : ''}`}>
             <img src={logo} alt="세이푸트" className={styles.logoImage} />
             <h1 className={styles.title}>세이푸트</h1>
-            <p className={styles.subtitle}>세이푸트와 함께해요! <span className={`${styles.link} ${isGuest === false ? styles.ownerLink : ''}`}>회원가입</span></p>
+            <p className={styles.subtitle}>세이푸트와 함께해요! <span className={`${styles.link} ${isGuest === false ? styles.ownerLink : ''}`} onClick={handleRegisterClick}>회원가입</span></p>
             <div className={styles.optionContainer}>
                 <span
                     className={`${styles.option} ${isGuest === true ? styles.guestActive : styles.inactive}`}
