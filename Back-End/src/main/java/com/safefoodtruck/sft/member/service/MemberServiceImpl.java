@@ -24,7 +24,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
-    private static final int IS_RESIGN = 0;
 
     @Override
     public void signUp(MemberSignUpRequestDto signUpMemberDto) {
@@ -34,19 +33,11 @@ public class MemberServiceImpl implements MemberService {
         }
 
         String password = passwordEncoder.encode(signUpMemberDto.getPassword());
-        String role = signUpMemberDto.getBusinessNumber() == null ? "customer" : "ceo";
-        memberRepository.save(new Member(signUpMemberDto.getEmail(),
-                password,
-                signUpMemberDto.getName(),
-                signUpMemberDto.getNickname(),
-                signUpMemberDto.getGender(),
-                signUpMemberDto.getBirth(),
-                signUpMemberDto.getPhoneNumber(),
-                signUpMemberDto.getBusinessNumber(),
-                role,
-                LocalDateTime.now(),
-                IS_RESIGN
-                ));
+        signUpMemberDto.setPassword(password);
+        memberRepository.save(Member.signupBuilder()
+            .memberSignUpRequestDto(signUpMemberDto)
+            .build()
+        );
     }
 
     @Override
