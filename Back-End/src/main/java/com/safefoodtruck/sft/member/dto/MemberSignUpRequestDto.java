@@ -6,12 +6,12 @@ import java.time.LocalDate;
 @Data
 public class MemberSignUpRequestDto {
     private String email;
-    String password;
-    String name;
-    String nickname;
-    int gender;
-    LocalDate birth;
-    String phoneNumber;
-    String businessNumber;
-    String role;
+    private String password;
+    private String name;
+    private String nickname;
+    private int gender;
+    private LocalDate birth;
+    private String phoneNumber;
+    private String businessNumber;
+    private String role;
 }
