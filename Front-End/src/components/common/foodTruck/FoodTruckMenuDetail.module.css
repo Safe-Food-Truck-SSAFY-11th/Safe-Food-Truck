@@ -1,0 +1,74 @@
+.menuDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffcc80; /* 배경 색상 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px; /* 적절한 너비 설정 */
+    margin: 20px auto;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .quantityControl {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 5px;
+  }
+  
+  .quantity {
+    font-size: 20px;
+    margin: 0 10px;
+  }
+  
+  .descriptionTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .description {
+    font-size: 16px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .addToCartButton {
+    background-color: #ff7043; /* 버튼 배경 색상 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
