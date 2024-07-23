@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ErrorResponseDto {
 
-    private int codeNumber;
+    private int status;
     private String errorMessage;
-    private LocalDateTime time;
+    private LocalDateTime timestamp;
 }
