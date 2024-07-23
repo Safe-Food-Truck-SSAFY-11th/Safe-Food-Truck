@@ -1,7 +1,7 @@
 package com.safefoodtruck.sft.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safefoodtruck.sft.security.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

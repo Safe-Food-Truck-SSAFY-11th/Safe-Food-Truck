@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.security.dto;
+package com.safefoodtruck.sft.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

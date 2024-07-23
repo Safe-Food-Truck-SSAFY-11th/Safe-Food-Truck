@@ -4,6 +4,7 @@ import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.dto.MemberDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signUp(MemberSignUpRequestDto signUpMemberDto) {
+        Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail());
+        if (memTmp!= null) {
+            throw new MemberDuplicateException();
+        }
+
         String password = passwordEncoder.encode(signUpMemberDto.getPassword());
         String role = signUpMemberDto.getBusinessNumber() == null ? "customer" : "ceo";
         memberRepository.save(new Member(signUpMemberDto.getEmail(),
