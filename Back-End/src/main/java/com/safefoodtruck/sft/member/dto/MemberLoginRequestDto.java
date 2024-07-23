@@ -1,11 +1,9 @@
 package com.safefoodtruck.sft.member.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@AllArgsConstructor
-@Getter
+@Data
 public class MemberLoginRequestDto {
-    private String id;
+    private String email;
     private String password;
 }

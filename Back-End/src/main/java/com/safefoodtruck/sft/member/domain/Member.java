@@ -5,11 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@ToString
 public class Member {
 
     @Id
@@ -29,40 +31,40 @@ public class Member {
 
     @NotNull
     @Column(name = "password")
-    String password;
+    private String password;
 
     @NotNull
     @Column(name = "name", length = 50)
-    String name;
+    private String name;
 
     @NotNull
     @Column(name = "nickname", length = 50)
-    String nickname;
+    private String nickname;
 
     @NotNull
     @Column(name = "gender")
-    int gender;
+    private int gender;
 
     @NotNull
     @Column(name = "birth", columnDefinition = "DATE")
-    LocalDate birth;
+    private LocalDate birth;
 
     @NotNull
     @Column(name = "phone_number", length = 50)
-    String phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "business_number", length = 100)
     @ColumnDefault("'not ceo'")
-    String businessNumber;
+    private String businessNumber;
 
     @Column(name = "role", length = 20)
     @ColumnDefault("'customer'")
-    String role;
+    private String role;
 
     @Column(name = "reg_date", columnDefinition = "TIMESTAMP")
-    LocalDateTime regDate;
+    private LocalDateTime regDate;
 
     @Column(name = "is_resign")
     @ColumnDefault("0")
-    int isResign;
+    private int isResign;
 }

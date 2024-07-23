@@ -1,20 +1,20 @@
 package com.safefoodtruck.sft.member.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.Data;
 
-@AllArgsConstructor
-@Getter
+@Data
 public class MemberDto {
     private String email;
-    String password;
-    String name;
-    String nickname;
-    int gender;
-    String birth;
-    String phoneNumber;
-    String businessNumber;
-    String role;
-    String regDate;
-    int isResign;
+    private String password;
+    private String name;
+    private String nickname;
+    private int gender;
+    private LocalDate birth;
+    private String phoneNumber;
+    private String businessNumber;
+    private String role;
+    private LocalDateTime regDate;
+    private int isResign;
 }
