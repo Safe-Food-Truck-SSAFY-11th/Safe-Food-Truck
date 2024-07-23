@@ -1,0 +1,41 @@
+.openCloseContainer {
+    display: flex;
+    gap: 30px;
+}
+
+.openButton {
+    display: flex;
+    align-items: center;
+    background-color: #EAFFC9;
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1rem; 
+    color: #407223;
+    cursor: pointer;
+}
+
+.closeButton {
+    display: flex;
+    align-items: center;
+    background-color: #EAFFC9;
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1rem; 
+    color: #407223;
+    cursor: pointer;
+}
+
+.closeButton:disabled {
+    background-color: #D3D3D3;
+    color: #A0A0A0;
+    cursor: not-allowed;
+}
+
+.icon {
+    margin-right: 10px; 
+    font-size: 1.8rem; 
+}

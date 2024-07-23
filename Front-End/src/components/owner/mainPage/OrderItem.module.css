@@ -1,0 +1,89 @@
+.orderItem {
+    width: 300px;
+    background-color: #FFFFFF;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 10px 0;
+    font-size: 0.8rem;
+}
+
+.orderItem.new {
+    background-color: #FFEDD3;
+}
+
+.orderItem.completed {
+    background-color: #DDDDDD;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.statusText {
+    color: #FF5C5C;
+    font-weight: bold;
+}
+
+.orderItem.inProgress .statusText {
+    color: #FFA500;
+}
+
+.orderItem.cooked .statusText {
+    color: #FFA500;
+}
+
+.orderItem.completed .statusText {
+    color: #407223;
+}
+
+.orderTime, .orderNumber, .completeTime {
+    color: #707070;
+}
+
+.menus {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    color: #333333;
+    text-align: left;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.acceptButton, .completeButton, .pickupButton {
+    background-color: #EAFFC9;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.rejectButton {
+    background-color: #FFA285;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.rejectButton:disabled {
+    background-color: #D3D3D3;
+    color: #A0A0A0;
+    cursor: not-allowed;
+}
