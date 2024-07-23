@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const useOwnerStore = create((set, get) => ({
+const useCustomerStore = create((set, get) => ({
   form: {
     email: '',
     password: '',
@@ -10,10 +10,7 @@ const useOwnerStore = create((set, get) => ({
     gender: '',
     birthdate: '',
     phone: '',
-    businessNumber: '', // 사업자등록번호
-    licenseNumber: '', // 식약처인허가번호
   },
-  emailChecked: false,
   passwordMatch: null, // 비밀번호 일치 여부 상태
   emailTouched: false, // 이메일 입력 상태
   passwordTouched: false, // 비밀번호 확인 입력 상태
@@ -31,4 +28,4 @@ const useOwnerStore = create((set, get) => ({
   setNicknameTouched: () => set({ nicknameTouched: true }), // 닉네임 입력 함수 추가
 }));
 
-export default useOwnerStore;
+export default useCustomerStore;

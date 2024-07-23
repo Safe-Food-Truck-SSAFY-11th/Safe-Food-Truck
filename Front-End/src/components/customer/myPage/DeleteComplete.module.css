@@ -1,0 +1,40 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .iconWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .iconImage {
+    width: 60px;
+    height: 30px;
+  }
+  
+  .closeButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
