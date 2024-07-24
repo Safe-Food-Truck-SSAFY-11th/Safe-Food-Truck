@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import styles from './RegistTruck.module.css';
 import imageIcon from '../../assets/images/truck-img.png';
 import useTruckStore from '../../store/users/owner/truckStore';
@@ -8,15 +7,6 @@ import MenuCreate from './MenuCreate';
 const RegistTruck = () => {
     const { form, setForm, setImage, toggleWorkingDay } = useTruckStore();
     const { isOpen, openMenu, menus, removeMenu } = useMenuStore();
-    const [maxDate, setMaxDate] = useState('');
-
-    useEffect(() => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        setMaxDate(`${yyyy}-${mm}-${dd}`);
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
