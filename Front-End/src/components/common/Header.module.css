@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFCC66;
+    padding: 10px 20px;
+    padding-top: 50px;
+}
+
+.topSection {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon {
+    margin-right: 5px;
+}

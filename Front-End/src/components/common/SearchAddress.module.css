@@ -1,0 +1,19 @@
+.searchBar {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 5px 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.searchIcon {
+    margin-right: 5px;
+}
+
+.searchInput {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+}

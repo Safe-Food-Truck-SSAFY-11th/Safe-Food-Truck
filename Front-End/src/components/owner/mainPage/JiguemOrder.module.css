@@ -1,0 +1,26 @@
+.jiguemOrder {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #EAFFC9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 20px 10px;
+    text-align: center;
+}
+
+.orderComment {
+    color: #379700;
+    font-size: 1.2rem;
+}
+
+.icon {
+    font-size: 2rem;
+}
+
+.text {
+    font-size: 1rem;
+    color: #407223;
+}
