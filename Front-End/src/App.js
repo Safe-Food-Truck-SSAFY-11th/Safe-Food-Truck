@@ -7,6 +7,8 @@ import Regist from './components/regist/Regist';
 import RegistTruck from './components/regist/RegistTruck';
 import MainOwner from './components/owner/mainPage/MainOwner';
 import PermitAreaCheck from './components/owner/mainPage/PermitAreaCheck';
+import MyPageCustomer from './components/customer/myPage/MyPageCustomer';
+import CustomerUpdate from './components/customer/myPage/CustomerUpdate';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/registTruck" element={<RegistTruck />} />
         <Route path="/mainOwner" element={<MainOwner />} />
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
+        <Route path="/mypage" element={<MyPageCustomer />} />
+        <Route path="/customerUpdate" element={<CustomerUpdate />} />
       </Routes>
     </div>
   );

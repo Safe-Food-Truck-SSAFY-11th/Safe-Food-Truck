@@ -1,0 +1,42 @@
+.container {
+    height: 99px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #FFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .status {
+    font-size: 16px;
+    color: #FF7F50;
+    font-weight: bold;
+  }
+  
+  .orderTime {
+    font-size: 12px;
+    color: #888;
+    /* font-weight: bold; */ /* 뭐가 더 낫나 확인 */
+  }
+  
+  .orderDetails {
+    font-size: 15px;
+    text-align: center;
+    /* text-align: left; */
+    font-weight: bold;
+    line-height: 70px;
+  }
+  
+  .noOrder {
+    text-align: center;
+    justify-content: center;
+    color: black;
+    font-size: 1.2em;
+    line-height: 105px;
+  }
+  
