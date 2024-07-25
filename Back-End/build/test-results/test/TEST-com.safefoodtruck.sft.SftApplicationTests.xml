@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.safefoodtruck.sft.SftApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-07-24T12:24:06" hostname="DESKTOP-MMCQPV1" time="0.491">
+<testsuite name="com.safefoodtruck.sft.SftApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-07-25T13:48:15" hostname="DESKTOP-MMCQPV1" time="0.369">
   <properties/>
-  <testcase name="contextLoads()" classname="com.safefoodtruck.sft.SftApplicationTests" time="0.491"/>
-  <system-out><![CDATA[21:24:05.367 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.safefoodtruck.sft.SftApplicationTests]: SftApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-21:24:05.436 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.safefoodtruck.sft.SftApplication for test class com.safefoodtruck.sft.SftApplicationTests
+  <testcase name="contextLoads()" classname="com.safefoodtruck.sft.SftApplicationTests" time="0.369"/>
+  <system-out><![CDATA[22:48:11.419 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.safefoodtruck.sft.SftApplicationTests]: SftApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:48:11.484 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.safefoodtruck.sft.SftApplication for test class com.safefoodtruck.sft.SftApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -14,9 +14,21 @@
 
  :: Spring Boot ::                (v3.3.1)
 
-2024-07-24T21:24:05.718+09:00  INFO 9432 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : Starting SftApplicationTests using Java 17.0.11 with PID 9432 (started by SSAFY in C:\Users\SSAFY\Desktop\Safe-Food-Truck\Back-End)
-2024-07-24T21:24:05.718+09:00  INFO 9432 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : No active profile set, falling back to 1 default profile: "default"
-2024-07-24T21:24:06.523+09:00  INFO 9432 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : Started SftApplicationTests in 1.002 seconds (process running for 1.708)
+2024-07-25T22:48:11.780+09:00  INFO 12236 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : Starting SftApplicationTests using Java 17.0.11 with PID 12236 (started by SSAFY in C:\Users\SSAFY\Desktop\Safe-Food-Truck-test\Back-End)
+2024-07-25T22:48:11.780+09:00  INFO 12236 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-07-25T22:48:12.235+09:00  INFO 12236 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-25T22:48:12.251+09:00  INFO 12236 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 0 JPA repository interfaces.
+2024-07-25T22:48:12.552+09:00  INFO 12236 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-25T22:48:12.599+09:00  INFO 12236 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-07-25T22:48:12.621+09:00  INFO 12236 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-07-25T22:48:12.837+09:00  INFO 12236 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-25T22:48:12.853+09:00  INFO 12236 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-07-25T22:48:14.412+09:00  INFO 12236 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@11015ca0
+2024-07-25T22:48:14.412+09:00  INFO 12236 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-07-25T22:48:14.933+09:00  INFO 12236 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-25T22:48:14.939+09:00  INFO 12236 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-25T22:48:15.039+09:00  WARN 12236 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-07-25T22:48:15.541+09:00  INFO 12236 --- [    Test worker] c.safefoodtruck.sft.SftApplicationTests  : Started SftApplicationTests in 3.934 seconds (process running for 4.67)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
