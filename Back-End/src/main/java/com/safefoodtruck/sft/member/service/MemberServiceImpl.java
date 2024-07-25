@@ -26,18 +26,29 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper mapper;
 
     @Override
-    public void signUp(MemberSignUpRequestDto signUpMemberDto) {
-        Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail());
-        if (memTmp!= null) {
-            throw new MemberDuplicateException();
+    public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
+        if (signUpMethod.equals("common")) {
+            Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail());
+            if (memTmp!= null) {
+                throw new MemberDuplicateException();
+            }
         }
 
-        String password = passwordEncoder.encode(signUpMemberDto.getPassword());
+        String password = "EMPTY PASSWORD";
+        if (signUpMethod.equals("common")) {
+            password = passwordEncoder.encode(signUpMemberDto.getPassword());
+        } else if (signUpMethod.equals("kakao") || signUpMethod.equals("google")) {
+            password = signUpMethod;
+        }
+
         signUpMemberDto.setPassword(password);
-        memberRepository.save(Member.signupBuilder()
+        Member member = memberRepository.save(Member.signupBuilder()
             .memberSignUpRequestDto(signUpMemberDto)
             .build()
         );
+
+        MemberDto memberDto = mapper.map(member, MemberDto.class);
+        return jwtUtil.createAccessToken(memberDto);
     }
 
     @Override
