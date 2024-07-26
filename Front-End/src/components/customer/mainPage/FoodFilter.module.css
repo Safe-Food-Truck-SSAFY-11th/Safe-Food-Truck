@@ -1,0 +1,34 @@
+.foodFilter {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background-color: #ffd27f;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.filterButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: none;
+  background-color: #ffa500;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Galmuri', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; /* 폰트 지정 */
+}
+
+.filterButton.selected {
+  background-color: white;
+  color: #ffa500;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+  font-size: 24px;
+}

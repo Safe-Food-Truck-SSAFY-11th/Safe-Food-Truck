@@ -1,0 +1,66 @@
+.container {
+  background-color: #FEC87F;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+h3 {
+  margin-bottom: 20px;
+}
+
+.reviewCard {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.reviewContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.noReview {
+  text-align: center;
+  font-weight: bold;
+}
+
+.foodImage {
+  /* justify-content: ; */
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.reviewText {
+  margin-top: 10px;
+}
+
+.reviewText h4 {
+  font-size: 18px;
+}
+
+.reviewText p {
+  font-size: 12px;
+}
+
+.hrLine {
+  border-color: #FF4500;
+  border-radius: 20px;
+}
+
+
+.deleteButton {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #FF6347;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  color: #FF4500;
+}

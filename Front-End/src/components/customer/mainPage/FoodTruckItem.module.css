@@ -1,0 +1,41 @@
+.foodTruckItem {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 400px; /* 고정된 너비 설정 */
+  height: 100px; /* 고정된 높이 설정 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 크기를 설정 */
+}
+
+.icon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column; 
+  overflow: hidden; /* 내용이 넘칠 때 숨기기 */
+  
+}
+/* 
+.details h3 {
+  padding-left: 10px;
+} */
+
+
+.rating {
+  color: black;
+}
+
+.category, .address {
+  margin: 0;
+  white-space: nowrap; /* 텍스트가 한 줄로 나오도록 설정 */
+  overflow: hidden; /* 내용이 넘칠 때 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
+}

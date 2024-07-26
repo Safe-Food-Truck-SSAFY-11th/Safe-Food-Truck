@@ -1,0 +1,84 @@
+.form {
+    width: 80%;
+    max-width: 400px;
+}
+
+.inputContainer {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.inputContainer label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #FF9639;
+}
+
+.inputContainer input,
+.inputContainer select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.emailContainer,
+.nicknameContainer {
+    display: flex;
+    align-items: center;
+}
+
+.emailInput,
+.nicknameInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.duplicateButton {
+    background-color: #FB9256;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.hintText {
+    font-size: 12px;
+    color: green;
+    margin-top: 5px;
+}
+
+.errorText {
+    font-size: 12px;
+    color: red;
+    margin-top: 5px;
+}
+
+.inputRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputRow .inputContainer {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.inputRow .inputContainer:last-child {
+    margin-right: 0;
+}
+
+.selectInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: white;
+}

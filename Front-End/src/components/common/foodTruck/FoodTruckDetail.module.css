@@ -1,0 +1,36 @@
+@import './sharedStyles.module.css'; /* 공유 스타일 임포트 */
+
+.foodTruckDetail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffcc80; /* 배경 색상 */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  margin: 20px auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0 10px;
+}
+
+.nav button.selected {
+  border-bottom: 2px solid #000;
+}
+
+.content {
+  width: 100%;
+}

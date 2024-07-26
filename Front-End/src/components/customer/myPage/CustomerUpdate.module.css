@@ -1,0 +1,165 @@
+.form {
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #FEC87F;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.inputContainer {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.inputContainer label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #008716;
+}
+
+.inputContainer input,
+.inputContainer select {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #CDE7B0;
+  box-sizing: border-box;
+}
+
+.readOnlyInput {
+  background-color: #f0f0f0;
+}
+
+.emailContainer,
+.nicknameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.emailInput,
+.nicknameInput {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #CDE7B0;
+  box-sizing: border-box;
+}
+
+.duplicateButton {
+  background-color: #66B13B;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.hintText {
+  font-size: 11px;
+  color: green;
+  margin-top: 5px;
+}
+
+.errorText {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+}
+
+.inputRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputRow .inputContainer {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.inputRow .inputContainer:last-child {
+  margin-right: 0;
+}
+
+.selectInput {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #CDE7B0;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.updateButton {
+  background-color: #8BC34A;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.updateButton:hover {
+  background-color: #7CB342;
+}
+
+.cancelButton {
+  background-color: #FF7F50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #FF6347;
+}
+
+.imageContainer {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.imagePlaceholder {
+  background-color: #EAF8D1;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 18px;
+  color: #4F8A10;
+  position: relative;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.imagePlaceholder img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.uploadButton {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: transparent;
+  color: #4F8A10;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}

@@ -1,0 +1,19 @@
+/* sharedStyles.module.css */
+.textCenter {
+    text-align: center;
+  }
+  
+  .marginBottom20 {
+    margin-bottom: 20px;
+  }
+  
+  .fontSize24 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .margin5 {
+    margin: 5px 0;
+  }
+  
