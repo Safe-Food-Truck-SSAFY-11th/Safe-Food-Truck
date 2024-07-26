@@ -1,11 +1,14 @@
 package com.safefoodtruck.sft.member.domain;
 
+import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -18,10 +21,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "member")
 @DynamicInsert
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public class Member {
 
     @Id
@@ -43,7 +44,7 @@ public class Member {
 
     @NotNull
     @Column(name = "gender")
-    private int gender;
+    private Integer gender;
 
     @NotNull
     @Column(name = "birth", columnDefinition = "DATE")
@@ -66,5 +67,20 @@ public class Member {
 
     @Column(name = "is_resign")
     @ColumnDefault("0")
-    private int isResign;
+    private Integer isResign;
+
+    @Builder(builderMethodName = "signupBuilder")
+    public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
+        this.email = memberSignUpRequestDto.getEmail();
+        this.password = memberSignUpRequestDto.getPassword();
+        this.name = memberSignUpRequestDto.getName();
+        this.nickname = memberSignUpRequestDto.getNickname();
+        this.gender = memberSignUpRequestDto.getGender();
+        this.birth = memberSignUpRequestDto.getBirth();
+        this.phoneNumber = memberSignUpRequestDto.getPhoneNumber();
+        this.businessNumber = memberSignUpRequestDto.getBusinessNumber();
+        this.role = memberSignUpRequestDto.getBusinessNumber() == null ? "customer" : "ceo";
+        this.regDate = LocalDateTime.now();
+        this.isResign = 0;
+    }
 }

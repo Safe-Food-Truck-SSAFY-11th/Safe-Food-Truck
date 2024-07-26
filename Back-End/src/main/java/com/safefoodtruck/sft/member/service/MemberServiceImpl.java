@@ -24,29 +24,31 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
-    private static final int IS_RESIGN = 0;
 
     @Override
-    public void signUp(MemberSignUpRequestDto signUpMemberDto) {
-        Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail());
-        if (memTmp!= null) {
-            throw new MemberDuplicateException();
+    public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
+        if (signUpMethod.equals("common")) {
+            Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail());
+            if (memTmp!= null) {
+                throw new MemberDuplicateException();
+            }
         }
 
-        String password = passwordEncoder.encode(signUpMemberDto.getPassword());
-        String role = signUpMemberDto.getBusinessNumber() == null ? "customer" : "ceo";
-        memberRepository.save(new Member(signUpMemberDto.getEmail(),
-                password,
-                signUpMemberDto.getName(),
-                signUpMemberDto.getNickname(),
-                signUpMemberDto.getGender(),
-                signUpMemberDto.getBirth(),
-                signUpMemberDto.getPhoneNumber(),
-                signUpMemberDto.getBusinessNumber(),
-                role,
-                LocalDateTime.now(),
-                IS_RESIGN
-                ));
+        String password = "EMPTY PASSWORD";
+        if (signUpMethod.equals("common")) {
+            password = passwordEncoder.encode(signUpMemberDto.getPassword());
+        } else if (signUpMethod.equals("kakao") || signUpMethod.equals("google")) {
+            password = signUpMethod;
+        }
+
+        signUpMemberDto.setPassword(password);
+        Member member = memberRepository.save(Member.signupBuilder()
+            .memberSignUpRequestDto(signUpMemberDto)
+            .build()
+        );
+
+        MemberDto memberDto = mapper.map(member, MemberDto.class);
+        return jwtUtil.createAccessToken(memberDto);
     }
 
     @Override

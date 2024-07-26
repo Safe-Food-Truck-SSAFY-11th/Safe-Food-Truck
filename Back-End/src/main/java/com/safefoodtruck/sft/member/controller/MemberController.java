@@ -16,9 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,7 @@ public class MemberController {
     private final ObjectMapper objectMapper;
     private final MemberService memberService;
 
-    @PostMapping
+    @PostMapping("/{method}")
     @Operation(summary = "회원가입", description = "회원가입 할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -44,11 +43,30 @@ public class MemberController {
             responseCode = "500",
             description = "Error Message 로 전달함",
             content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "PathVariable이 잘못됨. (common, kakao, google) 중 하나여야함",
+            content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> signUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
-        memberService.signUp(memberSignUpRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입에 성공하였습니다!");
+    public ResponseEntity<?> signUp(
+        @RequestBody MemberSignUpRequestDto memberSignUpRequestDto,
+        @PathVariable("method") String signUpMethod
+    ) {
+        if (!(signUpMethod.equals("common")
+            || signUpMethod.equals("kakao")
+            || signUpMethod.equals("google"))) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponseDto(
+                    HttpStatus.NOT_FOUND.value(),
+                    "잘못된 URI 입니다.",
+                    LocalDateTime.now()
+                )
+            );
+        }
+
+        String accessToken = memberService.signUp(memberSignUpRequestDto, signUpMethod);
+        return ResponseEntity.status(HttpStatus.OK).body(accessToken);
     }
 
     @PostMapping("/login")
@@ -67,15 +85,14 @@ public class MemberController {
     }
 
     @ExceptionHandler({MemberDuplicateException.class})
-    public ResponseEntity<String> handleException(Exception e) throws JsonProcessingException {
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            e.getMessage(),
-            LocalDateTime.now()
-        );
-        String responseBody = objectMapper.writeValueAsString(errorResponseDto);
+    public ResponseEntity<?> handleException(Exception e) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(responseBody);
+            .body(new ErrorResponseDto(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    e.getMessage(),
+                    LocalDateTime.now()
+                )
+            );
     }
 }
