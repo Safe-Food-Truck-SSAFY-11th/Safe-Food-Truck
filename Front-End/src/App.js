@@ -11,6 +11,8 @@ import PermitAreaCheck from './components/owner/mainPage/PermitAreaCheck';
 import MyPageCustomer from './components/customer/myPage/MyPageCustomer';
 import CustomerUpdate from './components/customer/myPage/CustomerUpdate';
 import MyPageOwner from './components/owner/myPage/MyPageOwner';
+import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
+import ManageTruck from './components/owner/myPage/ManageTruck';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/mypage" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
         <Route path="/mypageOwner" element={<MyPageOwner />} />
+        <Route path="/ownerUpdate" element={<OwnerUpdate />} />
+        <Route path="/manageTruck" element={<ManageTruck />} />
       </Routes>
     </div>
   );
