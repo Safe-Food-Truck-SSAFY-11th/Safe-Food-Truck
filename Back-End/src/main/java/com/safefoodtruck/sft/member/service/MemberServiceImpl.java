@@ -88,6 +88,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public String checkDuplicateNickname(String nickname) {
-        return "";
+        Member member = memberRepository.findByNickname(nickname);
+        if (member == null) {
+            return "Possible";
+        }
+        return "Duplicate";
     }
 }

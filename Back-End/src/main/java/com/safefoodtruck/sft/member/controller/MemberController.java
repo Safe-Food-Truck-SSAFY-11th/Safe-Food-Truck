@@ -50,17 +50,31 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberSelectResponseDto);
     }
 
-    @GetMapping("/duplication/{email}")
+    @GetMapping("/duplication-email/{email}")
     @Operation(summary = "이메일 중복확인", description = "회원가입시 이메일 중복체크에 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "Duplicate: 중복\nPossible: 해당 이메일 사용가능",
+            description = "Duplicate: 중복 | Possible: 해당 이메일 사용가능",
             content = @Content(mediaType = "application/json")
         )
     })
     public ResponseEntity<?> isDuplicateEmail(@PathVariable("email") String email) {
         String responseMessage = memberService.checkDuplicateEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
+    }
+
+    @GetMapping("/duplication-nickname/{nickname}")
+    @Operation(summary = "닉네임 중복확인", description = "회원가입시 닉네임 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 닉네임 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> isDuplicateNickname(@PathVariable("nickname") String nickname) {
+        String responseMessage = memberService.checkDuplicateNickname(nickname);
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
