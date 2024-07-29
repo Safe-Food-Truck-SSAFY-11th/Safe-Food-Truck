@@ -1,12 +1,17 @@
 import styles from './RegistTruck.module.css';
+import { useNavigate } from 'react-router-dom';
 import imageIcon from '../../assets/images/truck-img.png';
 import useTruckStore from '../../store/users/owner/truckStore';
-import useMenuStore from '../../store/users/owner/menuStore';
-import MenuCreate from './MenuCreate';
 
 const RegistTruck = () => {
-    const { form, setForm, setImage, toggleWorkingDay } = useTruckStore();
-    const { isOpen, openMenu, menus, removeMenu } = useMenuStore();
+    const navigate = useNavigate();
+
+    const handleRegisterClick = () => {
+        // 점포등록 axios POST
+        navigate('/login');
+    };
+
+    const { registForm, setForm, setImage, toggleWorkingDay, categories } = useTruckStore();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,48 +27,51 @@ const RegistTruck = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Submit form logic
+    };
+
+    const handleImageButtonClick = () => {
+        document.getElementById('fileInput').click();
     };
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
             <h1 className={styles.title}>푸드트럭 등록</h1>
             <div className={styles.imageUpload}>
-                <img src={form.image || imageIcon} alt="이미지 업로드" className={styles.uploadedImage} />
-                <input type="file" accept="image/*" onChange={handleImageChange} className={styles.imageInput} />
-                <button type="button" className={styles.imageButton} onClick={() => document.querySelector('.imageInput').click()}>사진 바꾸기</button>
+                <img src={registForm.image || imageIcon} alt="이미지 업로드" className={styles.uploadedImage} />
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={styles.imageInput}
+                    id="fileInput" // 파일 입력 요소에 id 설정
+                    style={{ display: 'none' }} // 입력 요소 숨기기
+                />
+                <button
+                    type="button"
+                    className={styles.imageButton}
+                    onClick={handleImageButtonClick} // 버튼 클릭 시 파일 입력 요소 클릭
+                >
+                    사진 바꾸기
+                </button>
             </div>
             <div className={styles.inputContainer}>
                 <label>상호명</label>
-                <input type="text" name="storeName" value={form.storeName} onChange={handleChange} />
+                <input type="text" name="storeName" value={registForm.storeName} onChange={handleChange} />
+            </div>
+            <div className={styles.inputContainer}>
+                <label>식약처인허가번호</label>
+                <input type="text" name="licenseNumber" value={registForm.licenseNumber} onChange={handleChange} />
             </div>
             <div className={styles.inputContainer}>
                 <label>카테고리</label>
-                <select name="category" value={form.category} onChange={handleChange}>
+                <select name="category" value={registForm.category} onChange={handleChange}>
                     <option value="">선택하세요</option>
-                    <option value="꼬치">꼬치</option>
-                    <option value="음료">음료</option>
-                    <option value="디저트">디저트</option>
-                </select>
-            </div>
-            <div className={styles.inputContainer}>
-                <label>메뉴</label>
-                <div className={styles.menuContainer}>
-                    {menus.map((menu, index) => (
-                        <div key={index} className={styles.menuItem}>
-                            <img src={menu.image || imageIcon} alt="메뉴 이미지" className={styles.menuImage} />
-                            <div className={styles.menuDetails}>
-                                <p>{menu.menuName}</p>
-                                <p>{menu.price}원</p>
-                            </div>
-                            <div className={styles.menuButtons}>
-                                <button type="button" className={styles.editButton}>수정</button>
-                                <button type="button" className={styles.deleteButton} onClick={() => removeMenu(index)}>삭제</button>
-                            </div>
-                        </div>
+                    {categories.map((category) => (
+                        <option key={category} value={category}>
+                            {category}
+                        </option>
                     ))}
-                    <button type="button" className={styles.addMenuButton} onClick={openMenu}>+</button>
-                </div>
+                </select>
             </div>
             <div className={styles.inputContainer}>
                 <label>출근 요일</label>
@@ -72,7 +80,7 @@ const RegistTruck = () => {
                         <button
                             key={day}
                             type="button"
-                            className={`${styles.dayButton} ${form.workingDays.includes(day) ? styles.activeDay : ''}`}
+                            className={`${styles.dayButton} ${registForm.workingDays.includes(day) ? styles.activeDay : ''}`}
                             onClick={() => toggleWorkingDay(day)}
                         >
                             {day}
@@ -82,13 +90,12 @@ const RegistTruck = () => {
             </div>
             <div className={styles.inputContainer}>
                 <label>가게 설명</label>
-                <textarea name="description" value={form.description} onChange={handleChange} />
+                <textarea name="description" value={registForm.description} onChange={handleChange} />
             </div>
             <div className={styles.buttonContainer}>
-                <button type="submit" className={styles.submitButton}>등록하기</button>
+                <button type="submit" className={styles.submitButton} onClick={handleRegisterClick}>등록하기</button>
                 <button type="button" className={styles.cancelButton}>취소하기</button>
             </div>
-            {isOpen && <MenuCreate />}
         </form>
     );
 };
