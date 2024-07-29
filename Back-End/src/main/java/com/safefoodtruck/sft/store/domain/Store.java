@@ -3,9 +3,11 @@ package com.safefoodtruck.sft.store.domain;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Builder;
 import org.hibernate.annotations.DynamicInsert;
 
 import com.safefoodtruck.sft.member.domain.Member;
@@ -27,56 +29,77 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@Getter
 @Table(name = "store")
+@Builder
+@ToString
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@ToString
 public class Store {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "store_id")
-	private int id;
+    public Store(Member owner, String name, String storeType, String offDay, String description,
+        String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
+        this.owner = owner;
+        this.name = name;
+        this.storeType = storeType;
+        this.offDay = offDay;
+        this.description = description;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.safetyLicenseNumber = safetyLicenseNumber;
+        this.isOpen = isOpen;
+    }
 
-	@Column(name = "store_name")
-	private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "store_id")
+    private int id;
 
-	@Column(name = "store_type")
-	private String storeType;
+    @Column(name = "store_name")
+    private String name;
 
-	@Column(name = "off_day")
-	private String offDay;
+    @Column(name = "store_type")
+    private String storeType;
 
-	@Column(name = "description")
-	private String description;
+    @Column(name = "off_day")
+    private String offDay;
 
-	@Column(name = "latitude")
-	private String latitude;
+    @Column(name = "description")
+    private String description;
 
-	@Column(name = "longitude")
-	private String longitude;
+    @Column(name = "latitude")
+    private String latitude;
 
-	@Column(name = "isClean")
-	private boolean isClean;
+    @Column(name = "longitude")
+    private String longitude;
 
-	@Column(name = "isOpen")
-	private boolean isOpen;
+    @Column(name = "safety_license_number")
+    private String safetyLicenseNumber;
 
-	@OneToOne
-	@JoinColumn(name = "email", referencedColumnName = "email")
-	private Member owner;
+    @Column(name = "is_open")
+    private boolean isOpen;
 
-	@OneToOne(fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "store_id")
-	private StoreImage storeImage;
+    @OneToOne
+    @JoinColumn(name = "email", referencedColumnName = "email")
+    private Member owner;
 
-	@OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
-	private List<Menu> menuList = new ArrayList<>();
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "store_id")
+    private StoreImage storeImage;
 
-	public void addMenu(Menu menu) {
-		menuList.add(menu);
-		menu.addStore(this);
-	}
+    @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
+
+    public void addMenu(Menu menu) {
+        menuList.add(menu);
+        menu.addStore(this);
+    }
+
+    public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
+        return new Store(owner, storeRegistRequestDto.name(), storeRegistRequestDto.storeType(),
+            storeRegistRequestDto.offDay(), storeRegistRequestDto.description(),
+            storeRegistRequestDto.latitude(), storeRegistRequestDto.longitude(),
+            storeRegistRequestDto.safetyLicenseNumber(), storeRegistRequestDto.isOpen());
+    }
 }
