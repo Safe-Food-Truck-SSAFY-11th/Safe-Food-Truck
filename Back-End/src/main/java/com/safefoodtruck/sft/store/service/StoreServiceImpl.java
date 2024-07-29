@@ -2,7 +2,6 @@ package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import java.util.Optional;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.safefoodtruck.sft.member.domain.Member;
@@ -43,6 +42,15 @@ public class StoreServiceImpl implements StoreService {
 		return store;
 	}
 
+	@Override
+	public Store findStore() {
+		String email = MemberInfo.getEmail();
+		Member member = memberRepository.findByEmail(email);
+		Optional<Store> store = storeRepository.findByOwner(member);
+		if(store.isEmpty()) {
+			throw new StoreNotFoundException();
+		}
 
-
+		return store.get();
+	}
 }

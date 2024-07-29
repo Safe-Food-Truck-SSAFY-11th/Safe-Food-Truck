@@ -7,5 +7,8 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoDto;
 public interface StoreService {
 
 	StoreInfoDto getStoreInfo(int storeId);
+
 	Store registStore(StoreRegistRequestDto storeRegistRequestDto);
+
+	Store findStore();
 }

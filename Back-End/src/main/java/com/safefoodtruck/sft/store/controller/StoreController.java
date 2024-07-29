@@ -45,4 +45,22 @@ public class StoreController {
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
+    @GetMapping
+    @Operation(summary = "내 점포 조회", description = "점포를 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "점포조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> findStore() {
+        Store store = storeService.findStore();
+        return new ResponseEntity<>(store, HttpStatus.OK);
+    }
 }
