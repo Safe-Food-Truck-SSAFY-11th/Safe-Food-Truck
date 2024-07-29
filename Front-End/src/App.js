@@ -13,6 +13,7 @@ import CustomerUpdate from './components/customer/myPage/CustomerUpdate';
 import MyPageOwner from './components/owner/myPage/MyPageOwner';
 import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
 import ManageTruck from './components/owner/myPage/ManageTruck';
+import Chating from './components/common/Chating';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/mypageOwner" element={<MyPageOwner />} />
         <Route path="/ownerUpdate" element={<OwnerUpdate />} />
         <Route path="/manageTruck" element={<ManageTruck />} />
+        <Route path="/chating" element={<Chating />} />
       </Routes>
     </div>
   );
