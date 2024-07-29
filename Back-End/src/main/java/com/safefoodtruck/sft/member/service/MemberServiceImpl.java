@@ -103,4 +103,9 @@ public class MemberServiceImpl implements MemberService {
         member.setMember(memberUpdateRequestDto);
         memberRepository.save(member);
     }
+
+    @Override
+    public void updateIsResign(String email) {
+
+    }
 }

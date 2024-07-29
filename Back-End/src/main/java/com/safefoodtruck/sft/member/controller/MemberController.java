@@ -148,6 +148,19 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 수정완료!!");
     }
 
+    @PatchMapping("/deactivate")
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "is_Resign이 1로 바뀜",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> deactivateMember(@RequestHeader(value = "Authorization") String tokenHeader) {
+        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+        memberService.updateIsResign(userEmail);
+        return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료!!");
+    }
+
     @ExceptionHandler({MemberDuplicateException.class})
     public ResponseEntity<?> memberDuplicateException(Exception e) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
