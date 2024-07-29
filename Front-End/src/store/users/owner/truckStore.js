@@ -1,31 +1,38 @@
 import { create } from "zustand";
 
 const useTruckStore = create((set) => ({
-  form: {
+  registForm: {
     storeName: "",
     category: "",
-    menu: "",
-    workingDays: [],
+    workingDays: "",
     description: "",
+    image: null,
+  },
+  updateForm: {
+    storeName: "울퉁불퉁",
+    category: "꼬치",
+    menus: [{
+      menuName: "마늘꼬치",
+      price: 1000,
+      description: "진짜 맛있는 꼬치",
+    }],
+    workingDays: "0101010",
+    description: "맛있는 푸드트럭",
     image: null,
   },
   setForm: (name, value) =>
     set((state) => ({
-      form: { ...state.form, [name]: value },
+      registForm: { ...state.registForm, [name]: value },
     })),
   setImage: (image) =>
     set((state) => ({
-      form: { ...state.form, image },
+      registForm: { ...state.registForm, image },
     })),
-  toggleWorkingDay: (day) =>
-    set((state) => ({
-      form: {
-        ...state.form,
-        workingDays: state.form.workingDays.includes(day)
-          ? state.form.workingDays.filter((d) => d !== day)
-          : [...state.form.workingDays, day],
-      },
-    })),
+  toggleWorkingDay: (dayIndex) => set((state) => {
+    const workingDaysArray = state.updateForm.workingDays.split('');
+    workingDaysArray[dayIndex] = workingDaysArray[dayIndex] === '1' ? '0' : '1';
+    return { updateForm: { ...state.updateForm, workingDays: workingDaysArray.join('') } };
+  }),
   activeTab: "today",
   setActiveTab: (tab) => set({ activeTab: tab }),
   categories: [

@@ -52,7 +52,7 @@ const OwnerInfo = () => {
       </div>
 
       <div className={styles.buttons}>
-        <button className={styles.button}>내 트럭 보기</button>
+        <button className={styles.button}>트럭 리뷰 보기</button>
         <button className={styles.button} onClick={handleTruckUpdateClick}>트럭 정보 수정</button>
       </div>
     </div>

@@ -1,13 +1,14 @@
-import styles from "./ManageTruck.module.css";
-import imageIcon from "../../../assets/images/truck-img.png";
-import useTruckStore from "../../../store/users/owner/truckStore";
-import useMenuStore from "../../../store/users/owner/menuStore";
-import MenuCreate from "../../regist/MenuCreate";
+import React from 'react';
+import styles from './ManageTruck.module.css';
+import imageIcon from '../../../assets/images/truck-img.png';
+import useTruckStore from '../../../store/users/owner/truckStore';
+import useMenuStore from '../../../store/users/owner/menuStore';
+import MenuUpdate from './MenuUpdate';
+import MenuItem from './MenuItem';
 
 const ManageTruck = () => {
-  const { form, setForm, setImage, toggleWorkingDay, categories } =
-    useTruckStore();
-  const { isOpen, openMenu, menus, removeMenu } = useMenuStore();
+  const { updateForm, setForm, setImage, toggleWorkingDay, categories } = useTruckStore();
+  const { menus, removeMenu, isOpen, openMenu } = useMenuStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,12 +27,16 @@ const ManageTruck = () => {
     // Submit form logic
   };
 
+  const handleImageButtonClick = () => {
+    document.getElementById('fileInput').click();
+  };
+
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <h1 className={styles.title}>푸드트럭 정보 수정</h1>
       <div className={styles.imageUpload}>
         <img
-          src={form.image || imageIcon}
+          src={updateForm.image || imageIcon}
           alt="이미지 업로드"
           className={styles.uploadedImage}
         />
@@ -40,11 +45,13 @@ const ManageTruck = () => {
           accept="image/*"
           onChange={handleImageChange}
           className={styles.imageInput}
+          id="fileInput" // 파일 입력 요소에 id 설정
+          style={{ display: 'none' }} // 입력 요소 숨기기
         />
         <button
           type="button"
           className={styles.imageButton}
-          onClick={() => document.querySelector(".imageInput").click()}
+          onClick={handleImageButtonClick} // 버튼 클릭 시 파일 입력 요소 클릭
         >
           사진 바꾸기
         </button>
@@ -54,13 +61,17 @@ const ManageTruck = () => {
         <input
           type="text"
           name="storeName"
-          value={form.storeName}
+          value={updateForm.storeName}
           onChange={handleChange}
         />
       </div>
       <div className={styles.inputContainer}>
+        <label>식약처인허가번호</label>
+        <input type="text" name="licenseNumber" value={updateForm.licenseNumber} disabled onChange={handleChange} />
+      </div>
+      <div className={styles.inputContainer}>
         <label>카테고리</label>
-        <select name="category" value={form.category} onChange={handleChange}>
+        <select name="category" value={updateForm.category} onChange={handleChange}>
           <option value="">선택하세요</option>
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -73,29 +84,12 @@ const ManageTruck = () => {
         <label>메뉴</label>
         <div className={styles.menuContainer}>
           {menus.map((menu, index) => (
-            <div key={index} className={styles.menuItem}>
-              <img
-                src={menu.image || imageIcon}
-                alt="메뉴 이미지"
-                className={styles.menuImage}
-              />
-              <div className={styles.menuDetails}>
-                <p>{menu.menuName}</p>
-                <p>{menu.price}원</p>
-              </div>
-              <div className={styles.menuButtons}>
-                <button type="button" className={styles.editButton}>
-                  수정
-                </button>
-                <button
-                  type="button"
-                  className={styles.deleteButton}
-                  onClick={() => removeMenu(index)}
-                >
-                  삭제
-                </button>
-              </div>
-            </div>
+            <MenuItem
+              key={index}
+              menu={menu}
+              onEdit={() => openMenu(menu)}
+              onDelete={() => removeMenu(index)}
+            />
           ))}
           <button
             type="button"
@@ -109,14 +103,12 @@ const ManageTruck = () => {
       <div className={styles.inputContainer}>
         <label>출근 요일</label>
         <div className={styles.daysContainer}>
-          {["월", "화", "수", "목", "금", "토", "일"].map((day) => (
+          {["월", "화", "수", "목", "금", "토", "일"].map((day, index) => (
             <button
               key={day}
               type="button"
-              className={`${styles.dayButton} ${
-                form.workingDays.includes(day) ? styles.activeDay : ""
-              }`}
-              onClick={() => toggleWorkingDay(day)}
+              className={`${styles.dayButton} ${updateForm.workingDays[index] === '1' ? styles.activeDay : ""}`}
+              onClick={() => toggleWorkingDay(index)}
             >
               {day}
             </button>
@@ -127,7 +119,7 @@ const ManageTruck = () => {
         <label>가게 설명</label>
         <textarea
           name="description"
-          value={form.description}
+          value={updateForm.description}
           onChange={handleChange}
         />
       </div>
@@ -139,7 +131,7 @@ const ManageTruck = () => {
           취소하기
         </button>
       </div>
-      {isOpen && <MenuCreate />}
+      {isOpen && <MenuUpdate />}
     </form>
   );
 };

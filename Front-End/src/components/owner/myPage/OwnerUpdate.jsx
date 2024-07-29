@@ -76,7 +76,7 @@ const OwnerUpdate = () => {
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
             <label>이름</label>
-            <input type="text" name="name" value={form.name} onChange={handleChange} />
+            <input type="text" name="name" value={form.name} disabled onChange={handleChange} />
           </div>
           <div className={styles.inputContainer}>
             <label>닉네임</label>
@@ -90,7 +90,7 @@ const OwnerUpdate = () => {
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
             <label>성별</label>
-            <select name="gender" value={form.gender} onChange={handleChange} className={styles.selectInput}>
+            <select name="gender" value={form.gender} disabled onChange={handleChange} className={styles.selectInput}>
               <option value="">선택하세요</option>
               <option value="남">남</option>
               <option value="여">여</option>
@@ -98,7 +98,7 @@ const OwnerUpdate = () => {
           </div>
           <div className={styles.inputContainer}>
             <label>생일</label>
-            <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} max={maxDate} />
+            <input type="date" name="birthdate" value={form.birthdate} disabled onChange={handleChange} max={maxDate} />
           </div>
         </div>
         <div className={styles.inputContainer}>
@@ -107,11 +107,7 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>사업자등록번호</label>
-          <input type="text" name="businessNumber" value={form.businessNumber} onChange={handleChange} />
-        </div>
-        <div className={styles.inputContainer}>
-          <label>식약처인허가번호</label>
-          <input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} />
+          <input type="text" name="businessNumber" value={form.businessNumber} disabled onChange={handleChange} />
         </div>
         <div className={styles.buttons}>
           <button type="submit" className={styles.submitButton}>수정하기</button>
