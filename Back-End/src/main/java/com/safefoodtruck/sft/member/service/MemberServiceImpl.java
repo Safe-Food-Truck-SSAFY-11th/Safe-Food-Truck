@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.member.service;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.dto.MemberDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -13,8 +14,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +68,12 @@ public class MemberServiceImpl implements MemberService {
         MemberDto memberDto = mapper.map(member, MemberDto.class);
         String accessToken = jwtUtil.createAccessToken(memberDto);
         return accessToken;
+    }
+
+    @Override
+    public MemberSelectResponseDto selectMember(String email) {
+        Member member = memberRepository.findByEmail(email);
+        MemberSelectResponseDto memberSelectResponseDto = mapper.map(member, MemberSelectResponseDto.class);
+        return memberSelectResponseDto;
     }
 }

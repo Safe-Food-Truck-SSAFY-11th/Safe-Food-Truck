@@ -2,10 +2,11 @@ package com.safefoodtruck.sft.oauth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.oauth.dto.AlreadySignUpResponseDto;
+import com.safefoodtruck.sft.oauth.dto.GoogleMemberResponseDto;
 import com.safefoodtruck.sft.oauth.dto.KakaoMemberResponseDto;
 import com.safefoodtruck.sft.oauth.exception.AlreadySignUpException;
+import com.safefoodtruck.sft.oauth.service.GoogleService;
 import com.safefoodtruck.sft.oauth.service.KakaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,18 +18,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/oauth/kakao")
+@RequestMapping("/oauth")
 @RestController
 @RequiredArgsConstructor
-public class KakaoController {
+public class OAuthController {
 
     private final KakaoService kakaoService;
+    private final GoogleService googleService;
     private final ObjectMapper objectMapper;
 
     @Operation(
@@ -46,10 +47,31 @@ public class KakaoController {
             content = @Content(mediaType = "application/json")
         )
     })
-    @PostMapping("/code")
-    public ResponseEntity<?> checkCode(@RequestParam("code") String code) {
+    @PostMapping("/kakao/code")
+    public ResponseEntity<?> kakaoSignUp(@RequestParam("code") String code) {
         KakaoMemberResponseDto kakaoMemberResponseDto = kakaoService.getKakaoUser(code);
         return ResponseEntity.status(HttpStatus.OK).body(kakaoMemberResponseDto);
+    }
+
+    @Operation(
+            summary = "구글 회원가입 요청",
+            description = "구글 회원가입 할 때 사용하는 API, 인가 코드를 넘겨줘야함")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "email이 담긴 객체를 넘겨줌, 프론트는 이제 기존 서비스 회원가입을 진행해야함",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "303",
+                    description = "이미 가입되어 있는 회원임. Access Token을 넘겨주니 이를 저장하고 메인페이지로 이동해야함",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @PostMapping("/google/access-token")
+    public ResponseEntity<?> googleSignUp(@RequestParam("access_token") String accessToken) {
+        GoogleMemberResponseDto googleMemberResponseDto = googleService.getGoogleUser(accessToken);
+        return ResponseEntity.status(HttpStatus.OK).body(googleMemberResponseDto);
     }
 
     @ExceptionHandler(AlreadySignUpException.class)
