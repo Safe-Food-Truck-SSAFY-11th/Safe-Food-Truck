@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Waiting.module.css';
-import logo from '../../assets/images/sft-logo.png';  // 이미지 파일 import
+import logo from '../../assets/images/truck-logo.png';  // 이미지 파일 import
 
 const Waiting = () => {
     const navigate = useNavigate();
@@ -17,9 +17,21 @@ const Waiting = () => {
 
     return (
         <div className={styles.waitingContainer}>
-            <img src={logo} alt="세이푸트" className={styles.waitingImage} />
-            <h1 className={styles.title}>세이푸트</h1>
-            <p className={styles.subtitle}>safe-food-truck</p>
+            <div className={styles.back}>
+                <div className={styles.background}>
+                    <h1 className={styles.title1}>
+                        SAFE
+                    </h1>
+                    <h1 className={styles.title2}>
+                        FOOD
+                    </h1>
+                    <h1 className={styles.title3}>
+                        TRUCK
+                    </h1>
+                </div>
+            </div>
+            <img src={logo} className={styles.busLogo} />
+            <p className={styles.footerText}>safe-food-truck</p>
         </div>
     );
 };
