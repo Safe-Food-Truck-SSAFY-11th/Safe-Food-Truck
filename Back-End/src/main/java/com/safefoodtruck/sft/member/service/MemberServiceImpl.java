@@ -76,4 +76,18 @@ public class MemberServiceImpl implements MemberService {
         MemberSelectResponseDto memberSelectResponseDto = mapper.map(member, MemberSelectResponseDto.class);
         return memberSelectResponseDto;
     }
+
+    @Override
+    public String checkDuplicateEmail(String email) {
+        Member member = memberRepository.findByEmail(email);
+        if (member == null) {
+            return "Possible";
+        }
+        return "Duplicate";
+    }
+
+    @Override
+    public String checkDuplicateNickname(String nickname) {
+        return "";
+    }
 }

@@ -9,4 +9,6 @@ public interface MemberService {
     String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod);
     String login(MemberLoginRequestDto memberLoginRequestDto);
     MemberSelectResponseDto selectMember(String email);
+    String checkDuplicateEmail(String email);
+    String checkDuplicateNickname(String nickname);
 }

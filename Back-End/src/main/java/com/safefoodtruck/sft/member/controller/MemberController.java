@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,22 @@ public class MemberController {
         System.out.println(tokenHeader.substring(7));
         String userEmail = jwtUtil.getId(tokenHeader.substring(7));
         MemberSelectResponseDto memberSelectResponseDto = memberService.selectMember(userEmail);
+
         return ResponseEntity.status(HttpStatus.OK).body(memberSelectResponseDto);
+    }
+
+    @GetMapping("/duplication/{email}")
+    @Operation(summary = "이메일 중복확인", description = "회원가입시 이메일 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복\nPossible: 해당 이메일 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> isDuplicateEmail(@PathVariable("email") String email) {
+        String responseMessage = memberService.checkDuplicateEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
     @PostMapping("/{method}")
