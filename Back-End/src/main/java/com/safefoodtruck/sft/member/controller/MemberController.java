@@ -23,7 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/members")
+@RequestMapping("/members")
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
