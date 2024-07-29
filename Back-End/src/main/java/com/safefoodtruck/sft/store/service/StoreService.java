@@ -7,6 +7,5 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoDto;
 public interface StoreService {
 
 	StoreInfoDto getStoreInfo(int storeId);
-	void registStore(StoreRegistRequestDto storeRegistRequestDto);
-	Store findStore(String email);
+	Store registStore(StoreRegistRequestDto storeRegistRequestDto);
 }
