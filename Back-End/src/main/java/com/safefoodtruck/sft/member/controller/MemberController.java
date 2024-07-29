@@ -5,6 +5,7 @@ import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.service.MemberService;
 import com.safefoodtruck.sft.security.util.JwtUtil;
@@ -43,7 +44,6 @@ public class MemberController {
             )
     })
     public ResponseEntity<?> selectMember(@RequestHeader(value = "Authorization") String tokenHeader) {
-        System.out.println(tokenHeader.substring(7));
         String userEmail = jwtUtil.getId(tokenHeader.substring(7));
         MemberSelectResponseDto memberSelectResponseDto = memberService.selectMember(userEmail);
 
@@ -129,6 +129,23 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
         String accessToken = memberService.login(memberLoginRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(accessToken);
+    }
+
+    @PatchMapping("/modify")
+    @Operation(summary = "회원정보 수정", description = "회원정보 수정 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "손님, 사장님: 프로필 사진, 비밀번호, 닉네임, 전화번호 변경가능",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> updateMember(
+        @RequestBody MemberUpdateRequestDto memberUpdateRequestDto,
+        @RequestHeader(value = "Authorization") String tokenHeader)
+    {
+        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+        memberUpdateRequestDto.setEmail(userEmail);
+        memberService.updateMember(memberUpdateRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body("회원정보 수정완료!!");
     }
 
     @ExceptionHandler({MemberDuplicateException.class})

@@ -5,6 +5,7 @@ import com.safefoodtruck.sft.member.dto.MemberDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
@@ -93,5 +94,13 @@ public class MemberServiceImpl implements MemberService {
             return "Possible";
         }
         return "Duplicate";
+    }
+
+    @Override
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
+        memberUpdateRequestDto.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
+        member.setMember(memberUpdateRequestDto);
+        memberRepository.save(member);
     }
 }

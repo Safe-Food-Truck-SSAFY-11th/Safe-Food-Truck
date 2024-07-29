@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.member.domain;
 
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class Member {
 
     @Id
@@ -68,6 +70,12 @@ public class Member {
     @Column(name = "is_resign")
     @ColumnDefault("0")
     private Integer isResign;
+
+    public void setMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+        this.nickname = memberUpdateRequestDto.getNickname();
+        this.phoneNumber = memberUpdateRequestDto.getPhoneNumber();
+        this.password = memberUpdateRequestDto.getPassword();
+    }
 
     @Builder(builderMethodName = "signupBuilder")
     public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
