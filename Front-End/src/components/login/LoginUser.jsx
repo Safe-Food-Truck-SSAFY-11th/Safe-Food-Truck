@@ -10,10 +10,10 @@ const LoginUser = () => {
     const { isGuest, setGuest, setOwner } = useUserStore();
     const navigate = useNavigate();
 
-    // 컴포넌트가 마운트될 때 isGuest를 true로 설정
+    // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
     useEffect(() => {
-        setGuest();
-    }, [setGuest]);
+        setOwner();
+    }, [setOwner]);
 
     const handleRegisterClick = () => {
         navigate('/regist');

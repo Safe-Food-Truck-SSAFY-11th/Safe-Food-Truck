@@ -54,15 +54,15 @@
 }
 
 .inactive {
-    color: gray;
+    color: #929292;
 }
 
 .guestActive {
-    color: orange;
+    color: #FF5D00;
 }
 
 .ownerActive {
-    color: green;
+    color: #2AC311;
 }
 
 .divider {
@@ -170,12 +170,3 @@
     }
 }
 
-@keyframes backgroundChange {
-    0% {
-        background-color: #FB833E;
-    }
-
-    100% {
-        background-color: #FEC674;
-    }
-}
