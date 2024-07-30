@@ -1,0 +1,99 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FEC87F;
+  padding: 20px;
+  /* border-radius: 10px; */
+  margin: auto;
+  height: 100vh; 
+  max-width: 393px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.imageUpload{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d8eab7;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}
+
+.imagePlaceholder {
+  text-align: center;
+  color: #8bc34a;
+  font-weight: bold;
+}
+
+p {
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.rating {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.star {
+  font-size: 2rem;
+  color: #ddd;
+  transition: color 0.2s;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.input, .textarea {
+  display: block;
+  width: calc(100% - 40px);
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f7f7f7;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.textarea {
+  height: 80px;
+  resize: none;
+}
+
+.checkboxContainer {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.submitButton, .backButton {
+  background-color: #d8eab7;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.backButton {
+  background-color: #ff6b6b;
+}
+
+.submitButton:hover, .backButton:hover {
+  opacity: 0.8;
+}

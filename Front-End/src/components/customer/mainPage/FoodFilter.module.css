@@ -4,7 +4,8 @@
   gap: 10px;
   background-color: #ffd27f;
   padding: 10px;
-  border-radius: 10px;
+  border-top: 2px solid #FB9256;
+  border-bottom: 2px solid #FB9256;
 }
 
 .filterButton {
@@ -27,6 +28,7 @@
   background-color: white;
   color: #ffa500;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: solid #FB9256;
 }
 
 .icon {

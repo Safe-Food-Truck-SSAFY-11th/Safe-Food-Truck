@@ -36,6 +36,7 @@ const MyPageCustomer = () => {
   return (
     <div>
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} />
+      <p>- - - - - - - - 현재 주문 내역 - - - - - - - -</p>
       <OrderNow />
       {renderSelectedComponent()}
     </div>

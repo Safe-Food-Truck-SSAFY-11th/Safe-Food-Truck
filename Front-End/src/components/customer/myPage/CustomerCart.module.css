@@ -1,0 +1,108 @@
+.cart {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh; /* 화면 전체 높이 */
+  padding: 20px;
+  background-color: #FEC87F;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.cart h2 {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.cart p {
+  text-align: center;
+}
+
+.cartItems {
+  flex-grow: 1; 
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.cartItem {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.cartItemImage {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.cartItemDetails {
+  flex-grow: 1;
+}
+
+.cartItemDetails p {
+  font-size: 13px;
+  text-align: left;
+  padding-bottom: 10px;
+}
+
+.cartItemDetails h3 {
+  padding-top: 7px;
+  font-size: 13px;
+}
+
+.cartItemControls {
+  display: flex;
+  align-items: center;
+  background-color: #FEC87F;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+}
+
+.cartItemControls button {
+  background-color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.cartItemControls input {
+  width: 40px;
+  text-align: center;
+  margin: 0 5px;
+}
+
+.totalAmount {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.clearButton {
+  background-color: #ff6b6b;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  display: block;
+  margin: 20px auto;
+}
+
+.removeButton {
+  font-size: 10px;
+  text-align: center;
+  background-color: #E2EED0;
+}
