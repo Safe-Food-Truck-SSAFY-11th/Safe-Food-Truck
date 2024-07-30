@@ -1,9 +1,22 @@
 import styles from './Regist.module.css';
+import { useNavigate } from 'react-router-dom';
 import RegistUser from './RegistUser';
 import RegistOwner from './RegistOwner';
 import useUserStore from '../../store/users/userStore';
 
 const Regist = () => {
+    const navigate = useNavigate();
+
+    const handleRegisterClick = () => {
+        if (!isGuest) {
+            // 회원가입 axios POST
+            navigate('/registTruck');
+        } else {
+            // 회원가입 axios POST
+            navigate('/login');
+        }
+    };
+
     const { isGuest, setGuest, setOwner } = useUserStore();
 
     return (
@@ -30,7 +43,7 @@ const Regist = () => {
                 </div>
                 {isGuest ? <RegistUser /> : <RegistOwner />}
                 <div className={styles.buttonContainer}>
-                    <button type="button" className={styles.joinButton}>함께하기</button>
+                    <button type="button" className={styles.joinButton} onClick={handleRegisterClick}>함께하기</button>
                     <button type="button" className={styles.cancelButton}>돌아가기</button>
                 </div>
             </div>

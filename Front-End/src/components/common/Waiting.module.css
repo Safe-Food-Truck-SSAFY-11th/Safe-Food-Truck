@@ -3,37 +3,95 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100vw;
   height: 100vh;
-  background-color: #FB833E;
+  background-color: #E2EED0;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.waitingImage {
-  width: 200px;
-  height: auto;
-  animation: fadeIn 1s ease-in-out;
-}
-
-.title {
-  font-size: 24px;
-  color: white;
-  margin-bottom: 20px;
-  animation: fadeIn 1s ease-in-out;
-}
-
-.subtitle {
-  font-size: 12px;
-  color: white;
+.background {
   position: absolute;
-  bottom: 0px;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  min-width: 90vw;
+  min-height: 60vh; 
+  background-image: url('../../../src/assets/images/mapKorea.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-@keyframes fadeIn {
+.back {
+  animation: fadeUp 1s ease-in-out;
+}
+
+.title1 {
+  margin: 0;
+  padding: 0;
+  font-size: 4rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #008716;
+  animation: fadeDown 1s ease-in-out;
+}
+.title2 {
+  margin: 0;
+  padding: 0;
+  font-size: 4rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #FD792D;
+  animation: fadeDown 1s ease-in-out;
+}
+.title3 {
+  margin: 0;
+  padding: 0;
+  font-size: 4rem;
+  text-align: center;
+  margin-bottom: 100px;
+  color: #1900B6;
+  animation: fadeDown 1s ease-in-out;
+}
+
+.busLogo {
+  position: absolute;
+  bottom: 10vh;
+  right: 10vw; 
+  width: 25vw; 
+  height: auto; 
+  animation: fadeDown 1s ease-in-out;
+}
+
+.footerText {
+  font-size: 12px;
+  color: #878787;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 20px;
+  /* 화면 하단에서의 위치 */
+}
+
+@keyframes fadeDown {
   0% {
     opacity: 0;
     transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
   }
   100% {
     opacity: 1;

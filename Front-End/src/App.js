@@ -10,6 +10,10 @@ import MainCustomer from './components/customer/mainPage/MainCustomer';
 import PermitAreaCheck from './components/owner/mainPage/PermitAreaCheck';
 import MyPageCustomer from './components/customer/myPage/MyPageCustomer';
 import CustomerUpdate from './components/customer/myPage/CustomerUpdate';
+import MyPageOwner from './components/owner/myPage/MyPageOwner';
+import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
+import ManageTruck from './components/owner/myPage/ManageTruck';
+import Chating from './components/common/Chating';
 
 function App() {
   return (
@@ -24,6 +28,10 @@ function App() {
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
         <Route path="/mypage" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
+        <Route path="/mypageOwner" element={<MyPageOwner />} />
+        <Route path="/ownerUpdate" element={<OwnerUpdate />} />
+        <Route path="/manageTruck" element={<ManageTruck />} />
+        <Route path="/chating" element={<Chating />} />
       </Routes>
     </div>
   );

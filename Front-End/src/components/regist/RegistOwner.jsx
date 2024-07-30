@@ -105,10 +105,6 @@ const RegistOwner = () => {
         <label>사업자등록번호</label>
         <input type="text" name="businessNumber" value={form.businessNumber} onChange={handleChange} />
       </div>
-      <div className={styles.inputContainer}>
-        <label>식약처인허가번호</label>
-        <input type="text" name="licenseNumber" value={form.licenseNumber} onChange={handleChange} />
-      </div>
     </form>
   );
 };
