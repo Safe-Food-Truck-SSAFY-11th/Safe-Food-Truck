@@ -10,6 +10,10 @@ import MainCustomer from './components/customer/mainPage/MainCustomer';
 import PermitAreaCheck from './components/owner/mainPage/PermitAreaCheck';
 import MyPageCustomer from './components/customer/myPage/MyPageCustomer';
 import CustomerUpdate from './components/customer/myPage/CustomerUpdate';
+import CreateReview from './components/customer/myPage/CreateReveiw';
+import FoodTruckDetail from './components/common/foodTruck/FoodTruckDetail';
+import CustomerCart from './components/customer/myPage/CustomerCart';
+import FoodTruckMenuDetail from './components/common/foodTruck/FoodTruckMenuDetail';
 import MyPageOwner from './components/owner/myPage/MyPageOwner';
 import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
 import ManageTruck from './components/owner/myPage/ManageTruck';
@@ -28,6 +32,10 @@ function App() {
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
         <Route path="/mypage" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
+        <Route path="/review" element={<CreateReview />} />
+        <Route path="/foodTruckDetail" element={<FoodTruckDetail />} />
+        <Route path="/cart" element={<CustomerCart />} />
+        <Route path="/menuDetail" element={<FoodTruckMenuDetail />} />
         <Route path="/mypageOwner" element={<MyPageOwner />} />
         <Route path="/ownerUpdate" element={<OwnerUpdate />} />
         <Route path="/manageTruck" element={<ManageTruck />} />
