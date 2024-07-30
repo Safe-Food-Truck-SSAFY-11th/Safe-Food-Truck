@@ -96,6 +96,10 @@ public class Member {
         this.vipExpiredDate = null;
     }
 
+    public void extendVip() {
+        this.vipExpiredDate = this.vipExpiredDate.plusDays(30);
+    }
+
     @Builder(builderMethodName = "signupBuilder")
     public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
         this.email = memberSignUpRequestDto.getEmail();

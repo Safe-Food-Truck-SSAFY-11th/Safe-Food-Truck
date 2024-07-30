@@ -16,4 +16,5 @@ public interface MemberService {
     void updateIsResign(String email);
     void joinVip(String email);
     void deactivateVip(String email);
+    void extendVip(String email);
 }

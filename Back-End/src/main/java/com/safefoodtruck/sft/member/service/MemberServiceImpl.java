@@ -134,4 +134,11 @@ public class MemberServiceImpl implements MemberService {
         }
         memberRepository.save(member);
     }
+
+    @Override
+    public void extendVip(String email) {
+        Member member = memberRepository.findByEmail(email);
+        member.extendVip();
+        memberRepository.save(member);
+    }
 }
