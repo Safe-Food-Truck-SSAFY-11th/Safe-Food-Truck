@@ -53,7 +53,17 @@ const CustomerUpdate = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Submit form logic
+
+    // 수정 데이터 확인하는 배열입니당
+    const updatedData = {
+      password: form.password,
+      nickname: form.nickname,
+      gender: form.gender,
+      birthdate: form.birthdate,
+      phone: form.phone,
+      profileImage,
+    };
+    console.log(updatedData);
   };
 
   return (

@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './OrderPast.module.css';
 
 const OrderPast = () => {
+  const navigate = useNavigate();
+
   const pastOrders = [
     {
       id: 1,
@@ -29,6 +32,10 @@ const OrderPast = () => {
     },
   ];
 
+  const handleReviewButtonClick = () => {
+    navigate(`/review`);
+  };
+
   return (
     <div className={styles.container}>
       <h3>용훈🖐 님이 구매했던 내역이에요!</h3>
@@ -42,7 +49,12 @@ const OrderPast = () => {
               <p>{order.price.toLocaleString()}원</p>
               <p>{order.quantity} 개</p>
             </div>
-            <button className={styles.reviewButton}>리뷰 쓰기</button>
+            <button
+              className={styles.reviewButton}
+              onClick={() => handleReviewButtonClick(order.id)}
+            >
+              리뷰 쓰기
+            </button>
           </div>
         </div>
       ))}
