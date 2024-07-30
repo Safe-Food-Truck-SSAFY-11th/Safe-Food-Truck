@@ -66,6 +66,9 @@ public class Member {
     @ColumnDefault("'customer'")
     private String role;
 
+    @Column(name = "vip_expired_date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime vipExpiredDate;
+
     @Column(name = "reg_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime regDate;
 
@@ -81,6 +84,11 @@ public class Member {
 
     public void resign() {
         this.isResign = 1;
+    }
+
+    public void joinVip(String vipName) {
+        this.role = vipName;
+        this.vipExpiredDate = LocalDateTime.now().plusDays(30);
     }
 
     @Builder(builderMethodName = "signupBuilder")

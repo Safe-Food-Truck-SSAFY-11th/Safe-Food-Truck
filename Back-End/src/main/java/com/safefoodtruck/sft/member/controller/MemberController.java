@@ -161,6 +161,20 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료!!");
     }
 
+    @PostMapping("/vip")
+    @Operation(summary = "멤버십 가입", description = "멤버십 가입 시 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "손님이면 vip_customer, 사장님이면 vip_ceo",
+            content = @Content(mediaType = "application/json"))
+    })
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_ceo')")
+    public ResponseEntity<?> joinVip(@RequestHeader("Authorization") String tokenHeader) {
+        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+        memberService.joinVip(userEmail);
+        return ResponseEntity.status(HttpStatus.OK).body("멤버십 가입완료");
+    }
+
     @ExceptionHandler({MemberDuplicateException.class})
     public ResponseEntity<?> memberDuplicateException(Exception e) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

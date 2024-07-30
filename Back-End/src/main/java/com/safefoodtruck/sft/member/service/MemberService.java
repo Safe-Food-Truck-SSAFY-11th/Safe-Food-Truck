@@ -14,4 +14,5 @@ public interface MemberService {
     String checkDuplicateNickname(String nickname);
     void updateMember(MemberUpdateRequestDto memberUpdateRequestDto);
     void updateIsResign(String email);
+    void joinVip(String email);
 }

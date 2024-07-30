@@ -110,4 +110,16 @@ public class MemberServiceImpl implements MemberService {
         member.resign();
         memberRepository.save(member);
     }
+
+    @Override
+    public void joinVip(String email) {
+        Member member = memberRepository.findByEmail(email);
+
+        if (member.getRole().equals("customer")) {
+            member.joinVip("vip_customer");
+        } else if (member.getRole().equals("ceo")) {
+            member.joinVip("vip_ceo");
+        }
+        memberRepository.save(member);
+    }
 }
