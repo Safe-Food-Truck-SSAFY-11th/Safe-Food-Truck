@@ -15,4 +15,5 @@ public interface MemberService {
     void updateMember(MemberUpdateRequestDto memberUpdateRequestDto);
     void updateIsResign(String email);
     void joinVip(String email);
+    void deactivateVip(String email);
 }

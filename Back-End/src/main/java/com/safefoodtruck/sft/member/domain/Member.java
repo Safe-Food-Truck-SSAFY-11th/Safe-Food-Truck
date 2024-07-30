@@ -91,6 +91,11 @@ public class Member {
         this.vipExpiredDate = LocalDateTime.now().plusDays(30);
     }
 
+    public void deactivateVip(String role) {
+        this.role = role;
+        this.vipExpiredDate = null;
+    }
+
     @Builder(builderMethodName = "signupBuilder")
     public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
         this.email = memberSignUpRequestDto.getEmail();
