@@ -76,6 +76,12 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	public boolean getStoreStatus() {
+		Store store = findStore();
+		return store.isOpen();
+	}
+
+	@Override
 	public boolean updateStoreStatus() {
 		Store store = findStore();
 		store.updateStatus();

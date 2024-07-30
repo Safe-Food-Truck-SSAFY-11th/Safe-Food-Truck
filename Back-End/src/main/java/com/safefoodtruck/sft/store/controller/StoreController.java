@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RequestMapping("/store")
+@RequestMapping("/stores")
 @RestController
 @RequiredArgsConstructor
 public class StoreController {
@@ -123,6 +123,25 @@ public class StoreController {
     public ResponseEntity<?> deleteStore() {
         storeService.deleteStore();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/open")
+    @Operation(summary = "점포 영업 상태 조회", description = "점포의 영업 상태를 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "점포 영업 상태 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> getStoreStatus() {
+        boolean storeStatus = storeService.getStoreStatus();
+        return new ResponseEntity<>(storeStatus, HttpStatus.OK);
     }
 
     @PatchMapping("/open")

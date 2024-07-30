@@ -16,5 +16,7 @@ public interface StoreService {
 
 	void deleteStore();
 
+	boolean getStoreStatus();
+
 	boolean updateStoreStatus();
 }
