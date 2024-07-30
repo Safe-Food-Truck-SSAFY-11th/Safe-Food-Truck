@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -43,14 +44,23 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	public Store updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+		Store store = findStore();
+		store.update(storeUpdateRequestDto);
+		return store;
+	}
+
+
+	@Override
 	public Store findStore() {
 		String email = MemberInfo.getEmail();
-		Member member = memberRepository.findByEmail(email);
-		Optional<Store> store = storeRepository.findByOwner(member);
+		Member owner = memberRepository.findByEmail(email);
+		Optional<Store> store = storeRepository.findByOwner(owner);
 		if(store.isEmpty()) {
 			throw new StoreNotFoundException();
 		}
 
 		return store.get();
 	}
+
 }

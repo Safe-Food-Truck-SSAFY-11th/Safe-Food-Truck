@@ -1,6 +1,5 @@
 package com.safefoodtruck.sft.store.dto.request;
 
-import com.safefoodtruck.sft.store.domain.StoreImage;
-
-public record StoreUpdateRequestDto(String name, String storeType, String offDay, StoreImage storeImage, String description) {
+public record StoreUpdateRequestDto(String name, String storeType, String offDay, String description) {
+    //StoreIamge 추후 추가 예정
 }

@@ -1,19 +1,11 @@
 package com.safefoodtruck.sft.store.domain;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
-
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Builder;
-import org.hibernate.annotations.DynamicInsert;
+import static jakarta.persistence.CascadeType.ALL;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
-
-import jakarta.persistence.CascadeType;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,10 +15,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
@@ -38,17 +34,16 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Store {
 
-    public Store(Member owner, String name, String storeType, String offDay, String description,
-        String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
+    public Store(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
         this.owner = owner;
-        this.name = name;
-        this.storeType = storeType;
-        this.offDay = offDay;
-        this.description = description;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.safetyLicenseNumber = safetyLicenseNumber;
-        this.isOpen = isOpen;
+        this.name = storeRegistRequestDto.name();
+        this.storeType = storeRegistRequestDto.storeType();
+        this.offDay = storeRegistRequestDto.offDay();
+        this.description = storeRegistRequestDto.description();
+        this.latitude = storeRegistRequestDto.latitude();
+        this.longitude = storeRegistRequestDto.longitude();
+        this.safetyLicenseNumber = storeRegistRequestDto.safetyLicenseNumber();
+        this.isOpen = storeRegistRequestDto.isOpen();
     }
 
     @Id
@@ -84,22 +79,28 @@ public class Store {
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "store_id")
-    private StoreImage storeImage;
+//    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "store_id")
+//    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
+
+    public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
+        return new Store(owner, storeRegistRequestDto);
+    }
+
+    public void update(StoreUpdateRequestDto storeUpdateRequestDto) {
+        this.name = storeUpdateRequestDto.name();
+        this.storeType = storeUpdateRequestDto.storeType();
+        this.offDay = storeUpdateRequestDto.offDay();
+        this.description = storeUpdateRequestDto.description();
+//        this.storeImage = storeUpdateRequestDto.storeImage();
+    }
+
     public void addMenu(Menu menu) {
         menuList.add(menu);
         menu.addStore(this);
-    }
-
-    public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
-        return new Store(owner, storeRegistRequestDto.name(), storeRegistRequestDto.storeType(),
-            storeRegistRequestDto.offDay(), storeRegistRequestDto.description(),
-            storeRegistRequestDto.latitude(), storeRegistRequestDto.longitude(),
-            storeRegistRequestDto.safetyLicenseNumber(), storeRegistRequestDto.isOpen());
     }
 }
