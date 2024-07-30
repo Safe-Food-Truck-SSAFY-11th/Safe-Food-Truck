@@ -6,6 +6,7 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
@@ -24,13 +25,13 @@ public class StoreServiceImpl implements StoreService {
 	private final MemberRepository memberRepository;
 
 	@Override
-	public Store registStore(StoreRegistRequestDto storeRegistRequestDto) {
+	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member owner = memberRepository.findByEmail(email);
 		Store store = Store.of(owner, storeRegistRequestDto);
 		storeRepository.save(store);
 
-		return store;
+		return StoreRegistResponseDto.fromEntity(email, store);
 	}
 
 	@Override

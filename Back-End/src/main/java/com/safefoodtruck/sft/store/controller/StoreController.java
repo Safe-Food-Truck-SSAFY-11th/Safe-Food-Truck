@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.store.controller;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +45,7 @@ public class StoreController {
         )
     })
     public ResponseEntity<?> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
-        Store store = storeService.registStore(storeRegistRequestDto);
+        StoreRegistResponseDto store = storeService.registStore(storeRegistRequestDto);
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
