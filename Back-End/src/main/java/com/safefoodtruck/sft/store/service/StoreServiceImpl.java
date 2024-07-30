@@ -75,4 +75,11 @@ public class StoreServiceImpl implements StoreService {
 		storeRepository.deleteById(storeId);
 	}
 
+	@Override
+	public boolean updateStoreStatus() {
+		Store store = findStore();
+		store.updateStatus();
+		return store.isOpen();
+	}
+
 }

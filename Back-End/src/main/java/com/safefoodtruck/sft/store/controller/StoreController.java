@@ -125,4 +125,23 @@ public class StoreController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PatchMapping("/open")
+    @Operation(summary = "점포 영업 상태 변경", description = "점포의 영업 상태를 변경할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "점포 영업 상태 변경에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> updateStoreStatus() {
+        boolean isOpen = storeService.updateStoreStatus();
+        return new ResponseEntity<>(isOpen, HttpStatus.OK);
+    }
+
 }

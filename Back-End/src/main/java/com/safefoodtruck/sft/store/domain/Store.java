@@ -99,6 +99,14 @@ public class Store {
 //        this.storeImage = storeUpdateRequestDto.storeImage();
     }
 
+    public void updateStatus() {
+        if(isOpen) {
+            isOpen = false;
+            return;
+        }
+        isOpen = true;
+    }
+
     public void addMenu(Menu menu) {
         menuList.add(menu);
         menu.addStore(this);

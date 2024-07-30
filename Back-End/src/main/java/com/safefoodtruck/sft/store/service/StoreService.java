@@ -15,4 +15,6 @@ public interface StoreService {
 	Store findStore(int storeId);
 
 	void deleteStore();
+
+	boolean updateStoreStatus();
 }
