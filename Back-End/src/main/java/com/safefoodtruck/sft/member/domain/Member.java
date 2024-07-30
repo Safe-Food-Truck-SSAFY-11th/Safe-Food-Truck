@@ -100,6 +100,10 @@ public class Member {
         this.vipExpiredDate = this.vipExpiredDate.plusDays(30);
     }
 
+    public void updatePassword(String randomPassword) {
+        this.password = randomPassword;
+    }
+
     @Builder(builderMethodName = "signupBuilder")
     public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
         this.email = memberSignUpRequestDto.getEmail();

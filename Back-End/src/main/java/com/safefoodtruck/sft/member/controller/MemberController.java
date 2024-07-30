@@ -210,6 +210,9 @@ public class MemberController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
             description = "(이름, 생일, 전화번호)로 요청하여 모두 일치할 시 이메일을 알려줍니다.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500",
+            description = "(이름, 생일, 전화번호)가 모두 일치하는 회원이 존재하지 않습니다.",
             content = @Content(mediaType = "application/json"))
     })
     public ResponseEntity<?> searchEmail(
@@ -219,6 +222,26 @@ public class MemberController {
     ) {
         String searchedEmail = memberService.searchEmail(name, birth, phoneNumber);
         return ResponseEntity.status(HttpStatus.OK).body(searchedEmail);
+    }
+
+    @GetMapping("/password")
+    @Operation(summary = "password 찾기", description = "이메일 찾기 시 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "(이메일, 이름, 생일, 전화번호)로 요청하여 모두 일치할 시 임시 비밀번호를 이메일로 전송합니다.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500",
+            description = "(이메일, 이름, 생일, 전화번호)가 모두 일치하는 회원이 존재하지 않습니다.",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> searchPassword(
+        @RequestParam String email,
+        @RequestParam String name,
+        @RequestParam LocalDate birth,
+        @RequestParam String phoneNumber
+    ) {
+        memberService.searchPassword(email, name, birth, phoneNumber);
+        return ResponseEntity.status(HttpStatus.OK).body("임시 비밀번호를 이메일로 전송하였습니다.");
     }
 
     @ExceptionHandler({MemberDuplicateException.class, NotFoundMemberException.class})

@@ -19,4 +19,6 @@ public interface MemberService {
     void deactivateVip(String email);
     void extendVip(String email);
     String searchEmail(String name, LocalDate birth, String phoneNumber);
+    void searchPassword(String email, String name, LocalDate birth, String phoneNumber);
+
 }

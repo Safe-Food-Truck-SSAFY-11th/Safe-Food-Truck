@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.member.service;
 
+import com.safefoodtruck.sft.common.service.EmailService;
+import com.safefoodtruck.sft.common.service.RandomPasswordService;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.dto.MemberDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
@@ -26,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final EmailService emailService;
+    private final RandomPasswordService randomPasswordService;
 
     @Override
     public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
@@ -152,5 +156,19 @@ public class MemberServiceImpl implements MemberService {
             throw new NotFoundMemberException();
         }
         return member.getEmail();
+    }
+
+    @Override
+    public void searchPassword(String email, String name, LocalDate birth, String phoneNumber) {
+        Member member = memberRepository.findByEmailAndNameAndBirthAndPhoneNumber(email, name, birth, phoneNumber);
+
+        if (member == null) {
+            throw new NotFoundMemberException();
+        }
+        String randomPassword = randomPasswordService.generateRandomPassword();
+        member.updatePassword(passwordEncoder.encode(randomPassword));
+        memberRepository.save(member);
+
+        emailService.sendEmailPassword(email, name, randomPassword);
     }
 }
