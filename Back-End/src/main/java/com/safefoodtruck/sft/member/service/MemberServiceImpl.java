@@ -7,8 +7,10 @@ import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -140,5 +142,15 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(email);
         member.extendVip();
         memberRepository.save(member);
+    }
+
+    @Override
+    public String searchEmail(String name, LocalDate birth, String phoneNumber) {
+        Member member = memberRepository.findByNameAndBirthAndPhoneNumber(name, birth, phoneNumber);
+
+        if (member == null) {
+            throw new NotFoundMemberException();
+        }
+        return member.getEmail();
     }
 }

@@ -7,6 +7,7 @@ import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.service.MemberService;
 import com.safefoodtruck.sft.security.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
@@ -203,7 +205,23 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body("멤버십 연장완료");
     }
 
-    @ExceptionHandler({MemberDuplicateException.class})
+    @GetMapping("/email")
+    @Operation(summary = "이메일 찾기", description = "이메일 찾기 시 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "(이름, 생일, 전화번호)로 요청하여 모두 일치할 시 이메일을 알려줍니다.",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> searchEmail(
+        @RequestParam String name,
+        @RequestParam LocalDate birth,
+        @RequestParam String phoneNumber
+    ) {
+        String searchedEmail = memberService.searchEmail(name, birth, phoneNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(searchedEmail);
+    }
+
+    @ExceptionHandler({MemberDuplicateException.class, NotFoundMemberException.class})
     public ResponseEntity<?> memberDuplicateException(Exception e) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
