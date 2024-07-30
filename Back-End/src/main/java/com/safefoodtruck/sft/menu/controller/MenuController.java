@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequestMapping("/api/menu")
+@RequestMapping("/menu")
 @RestController
 @RequiredArgsConstructor
 public class MenuController {
@@ -51,7 +51,7 @@ public class MenuController {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
 		log.info("email : {}", email);
 
-		Store store = storeService.findStore(email);
+		Store store = storeService.findStore();
 		log.info("store : {}", store.toString());
 
 		try {
