@@ -1,0 +1,14 @@
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #EAFFC9;
+  border-radius: 10px;
+}

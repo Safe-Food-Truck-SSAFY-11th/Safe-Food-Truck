@@ -14,6 +14,7 @@ import MyPageOwner from './components/owner/myPage/MyPageOwner';
 import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
 import ManageTruck from './components/owner/myPage/ManageTruck';
 import Chating from './components/common/Chating';
+import OwnerReview from './components/owner/myPage/OwnerReview';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/ownerUpdate" element={<OwnerUpdate />} />
         <Route path="/manageTruck" element={<ManageTruck />} />
         <Route path="/chating" element={<Chating />} />
+        <Route path="/ownerReview" element={<OwnerReview />} />
       </Routes>
     </div>
   );
