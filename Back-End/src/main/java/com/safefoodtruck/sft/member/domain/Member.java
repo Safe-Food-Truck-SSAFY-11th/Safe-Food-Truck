@@ -73,10 +73,14 @@ public class Member {
     @ColumnDefault("0")
     private Integer isResign;
 
-    public void setMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();
         this.phoneNumber = memberUpdateRequestDto.getPhoneNumber();
         this.password = memberUpdateRequestDto.getPassword();
+    }
+
+    public void resign() {
+        this.isResign = 1;
     }
 
     @Builder(builderMethodName = "signupBuilder")

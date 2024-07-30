@@ -100,12 +100,14 @@ public class MemberServiceImpl implements MemberService {
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
         memberUpdateRequestDto.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
-        member.setMember(memberUpdateRequestDto);
+        member.updateMember(memberUpdateRequestDto);
         memberRepository.save(member);
     }
 
     @Override
     public void updateIsResign(String email) {
-
+        Member member = memberRepository.findByEmail(email);
+        member.resign();
+        memberRepository.save(member);
     }
 }
