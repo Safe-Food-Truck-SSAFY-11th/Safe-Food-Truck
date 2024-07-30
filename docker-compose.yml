@@ -8,7 +8,7 @@ services:
     container_name: nginx-react
     image: nginx:alpine
     volumes:
-      - ~/templates-react:/etc/nginx/templates
+      - /home/ubuntu/templates-react:/etc/nginx/templates
       - /home/ubuntu/nginx-react/logs:/var/log/nginx
     networks:
       - app-network
