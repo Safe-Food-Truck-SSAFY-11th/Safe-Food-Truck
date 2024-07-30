@@ -1,0 +1,58 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 75%;
+    font-size: 13px;
+    border: 3px solid rgb(251, 146, 86);
+  }
+  
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .modalBody {
+    padding: 10px 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .notification {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .notification.important {
+    background-color: rgb(255, 204, 102); /* 중요 알림을 위한 빨간 배경색 */
+  }
+  
+  .notification.general {
+    background-color: #fff; /* 일반 알림을 위한 흰 배경색 */
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  
