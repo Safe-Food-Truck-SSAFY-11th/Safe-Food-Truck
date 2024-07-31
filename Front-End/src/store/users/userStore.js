@@ -31,9 +31,11 @@ const userStore = create((set, get) => ({
       });
       sessionStorage.setItem('email', response.data.email);
       set({ user: response.data });
+      return response.data;
     } catch (error) {
       console.error('사용자 정보 가져오기 오류:', error);
       set({ user: null, isAuthenticated: false });
+      throw error;
     }
   },
 }));

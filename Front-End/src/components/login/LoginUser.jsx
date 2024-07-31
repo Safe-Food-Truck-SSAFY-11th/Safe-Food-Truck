@@ -7,15 +7,28 @@ import googleLogo from 'assets/images/icon_google.png';
 import useUserStore from 'store/users/userStore';
 
 const LoginUser = () => {
-    const { isGuest, setGuest, setOwner, loginUser } = useUserStore();
+    const { isGuest, setGuest, setOwner, loginUser, fetchUser } = useUserStore();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
     useEffect(() => {
+        // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
         setOwner();
-    }, [setOwner]);
+        const token = sessionStorage.getItem('token');
+        // 토큰 보유 여부에 따른 리디렉션
+        if (token) {
+            fetchUser().then((user) => {
+                if (user.role === 'customer') {
+                    navigate('/mainCustomer');
+                } else {
+                    navigate('/mainOwner');
+                }
+            }).catch((error) => {
+                console.error('유저 정보 가져오기 오류:', error);
+            });
+        }
+    }, [setOwner, navigate, fetchUser]);
 
     const handleRegisterClick = () => {
         navigate('/regist');
