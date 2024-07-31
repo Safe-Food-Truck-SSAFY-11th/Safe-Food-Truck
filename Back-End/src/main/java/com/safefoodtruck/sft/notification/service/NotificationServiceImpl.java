@@ -5,6 +5,8 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.notification.domain.Notification;
 import com.safefoodtruck.sft.notification.dto.SelectNotificationResponseDto;
 import com.safefoodtruck.sft.notification.dto.SendNotificationRequestDto;
+import com.safefoodtruck.sft.notification.exception.NotFoundNotificationException;
+import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.notification.repository.NotificationRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,5 +43,16 @@ public class NotificationServiceImpl implements NotificationService {
                 return dto;
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteNotification(Integer id, String userEmail) {
+        Notification notification = notificationRepository.findById(id)
+            .orElseThrow(NotFoundNotificationException::new);
+
+        if (!notification.getMember().getEmail().equals(userEmail)) {
+            throw new NotSameUserException();
+        }
+        notificationRepository.delete(notification);
     }
 }
