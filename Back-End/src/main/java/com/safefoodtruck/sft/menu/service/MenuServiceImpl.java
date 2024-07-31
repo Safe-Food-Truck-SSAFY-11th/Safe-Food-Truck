@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.menu.service;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
+import com.safefoodtruck.sft.menu.dto.response.MenuListRegistResponseDto;
 import java.util.List;
 
 import java.util.Optional;
@@ -31,10 +32,10 @@ public class MenuServiceImpl implements MenuService {
 	private final MemberRepository memberRepository;
 
 	@Override
-	public List<MenuRegistResponseDto> registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
+	public MenuListRegistResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
 		Store store = findStore();
 
-		return menuListRegistRequestDto.menuRegistRequestDtos().stream()
+		List<MenuRegistResponseDto> menuRegistResponseDtos = menuListRegistRequestDto.menuRegistRequestDtos().stream()
 			.map(dto -> {
 				Menu menu = Menu.of(dto.name(), dto.price(), dto.description());
 				menu.addStore(store);
@@ -42,6 +43,8 @@ public class MenuServiceImpl implements MenuService {
 				return MenuRegistResponseDto.fromEntity(savedMenu);
 			})
 			.toList();
+
+		return new MenuListRegistResponseDto(menuRegistResponseDtos);
 	}
 
 	@Override

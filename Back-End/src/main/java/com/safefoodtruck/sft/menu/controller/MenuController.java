@@ -1,14 +1,13 @@
 package com.safefoodtruck.sft.menu.controller;
 
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuRegistResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListRegistResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,8 +41,8 @@ public class MenuController {
 		)
 	})
 	public ResponseEntity<?> registMenu(@RequestBody MenuListRegistRequestDto menuListRegistRequestDto) {
-		List<MenuRegistResponseDto> menuRegistResponseDtos = menuService.registMenu(
+		MenuListRegistResponseDto menuListRegistResponseDto = menuService.registMenu(
 			menuListRegistRequestDto);
-		return new ResponseEntity<>(menuRegistResponseDtos, HttpStatus.CREATED);
+		return new ResponseEntity<>(menuListRegistResponseDto, HttpStatus.CREATED);
 	}
 }
