@@ -1,7 +1,11 @@
 package com.safefoodtruck.sft.menu.service;
 
+import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.repository.MemberRepository;
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -24,19 +28,31 @@ public class MenuServiceImpl implements MenuService {
 
 	private final MenuRepository menuRepository;
 	private final StoreRepository storeRepository;
+	private final MemberRepository memberRepository;
 
 	@Override
-	public List<MenuRegistResponseDto> registMenu(int storeId, MenuListRegistRequestDto menuListRegistRequestDto) {
-		Store store = storeRepository.findById(storeId)
-			.orElseThrow(StoreNotFoundException::new);
+	public List<MenuRegistResponseDto> registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
+		Store store = findStore();
 
 		return menuListRegistRequestDto.menuRegistRequestDtos().stream()
 			.map(dto -> {
 				Menu menu = Menu.of(dto.name(), dto.price(), dto.description());
 				menu.addStore(store);
 				Menu savedMenu = menuRepository.save(menu);
-				return new MenuRegistResponseDto(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), savedMenu.getDescription());
+				return MenuRegistResponseDto.fromEntity(savedMenu);
 			})
 			.toList();
+	}
+
+	@Override
+	public Store findStore() {
+		String email = MemberInfo.getEmail();
+		Member owner = memberRepository.findByEmail(email);
+		Optional<Store> store = storeRepository.findByOwner(owner);
+		if(store.isEmpty()) {
+			throw new StoreNotFoundException();
+		}
+
+		return store.get();
 	}
 }

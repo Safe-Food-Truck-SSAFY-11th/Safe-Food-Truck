@@ -1,10 +1,8 @@
 package com.safefoodtruck.sft.menu.controller;
 
-import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuRegistResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
-import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.webjars.NotFoundException;
 
 @Slf4j
 @RequestMapping("/menu")
@@ -34,7 +31,7 @@ public class MenuController {
 	@Operation(summary = "메뉴 등록", description = "메뉴를 등록할 때 사용하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "200",
+			responseCode = "201",
 			description = "메뉴등록에 성공하였습니다!",
 			content = @Content(mediaType = "application/json")
 		),
@@ -45,21 +42,8 @@ public class MenuController {
 		)
 	})
 	public ResponseEntity<?> registMenu(@RequestBody MenuListRegistRequestDto menuListRegistRequestDto) {
-		String email = MemberInfo.getEmail();
-		log.info("email : {}", email);
-
-		Store store = storeService.findStore();
-		log.info("store : {}", store.toString());
-
-		try {
-			List<MenuRegistResponseDto> menuRegistResponseDtos = menuService.registMenu(
-				store.getId(), menuListRegistRequestDto);
-			return new ResponseEntity<>(menuRegistResponseDtos, HttpStatus.CREATED);
-		} catch (NotFoundException nfe) {
-			return new ResponseEntity<>("스토어 발견 x",HttpStatus.NOT_FOUND);
-	 	} catch (Exception e) {
-			return new ResponseEntity<>("Error : " + e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-
+		List<MenuRegistResponseDto> menuRegistResponseDtos = menuService.registMenu(
+			menuListRegistRequestDto);
+		return new ResponseEntity<>(menuRegistResponseDtos, HttpStatus.CREATED);
 	}
 }
