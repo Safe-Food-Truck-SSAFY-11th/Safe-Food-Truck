@@ -4,6 +4,7 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -103,7 +104,7 @@ public class StoreController {
         )
     })
     public ResponseEntity<?> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
-        Store store = storeService.updateStore(storeUpdateRequestDto);
+        StoreUpdateResponseDto store = storeService.updateStore(storeUpdateRequestDto);
         return new ResponseEntity<>(store, HttpStatus.OK);
     }
 

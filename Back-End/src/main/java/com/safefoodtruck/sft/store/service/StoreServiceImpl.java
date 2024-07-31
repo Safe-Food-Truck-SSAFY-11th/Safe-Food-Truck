@@ -7,6 +7,7 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
@@ -35,10 +36,10 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public Store updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
 		Store store = findStore();
 		store.update(storeUpdateRequestDto);
-		return store;
+		return StoreUpdateResponseDto.fromEntity(store);
 	}
 
 
