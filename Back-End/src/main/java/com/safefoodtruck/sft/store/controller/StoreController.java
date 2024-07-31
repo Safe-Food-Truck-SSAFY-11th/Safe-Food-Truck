@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +37,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 등록", description = "점포를 등록할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -55,6 +57,7 @@ public class StoreController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "내 점포 조회", description = "점포를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -75,6 +78,7 @@ public class StoreController {
     }
 
     @GetMapping("{storeId}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "특정 점포 조회", description = "점포를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -96,6 +100,7 @@ public class StoreController {
 
 
     @PatchMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 수정", description = "점포를 수정할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -115,6 +120,7 @@ public class StoreController {
     }
 
     @DeleteMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 삭제", description = "점포를 삭제할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -134,6 +140,7 @@ public class StoreController {
     }
 
     @GetMapping("/open")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 영업 상태 조회", description = "점포의 영업 상태를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -153,6 +160,7 @@ public class StoreController {
     }
 
     @PatchMapping("/open")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 영업 상태 변경", description = "점포의 영업 상태를 변경할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -172,6 +180,7 @@ public class StoreController {
     }
 
     @GetMapping("/open/all")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "영업 중인 모든 점포 조회", description = "영업 중인 모든 점포를 조회하는데 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -191,6 +200,7 @@ public class StoreController {
     }
 
     @PatchMapping("/location")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "점포 영업 위치 변경", description = "점포의 영업 위치를 변경할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
