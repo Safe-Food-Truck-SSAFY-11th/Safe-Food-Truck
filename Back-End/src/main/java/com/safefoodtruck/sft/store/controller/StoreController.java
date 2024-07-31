@@ -1,8 +1,10 @@
 package com.safefoodtruck.sft.store.controller;
 
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.service.StoreService;
@@ -163,6 +165,26 @@ public class StoreController {
     public ResponseEntity<?> updateStoreStatus() {
         boolean isOpen = storeService.updateStoreStatus();
         return new ResponseEntity<>(isOpen, HttpStatus.OK);
+    }
+
+    @PatchMapping("/location")
+    @Operation(summary = "점포 영업 위치 변경", description = "점포의 영업 위치를 변경할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "점포 영업 위치 변경에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
+        StoreLocationResponseDto storeLocation = storeService.updateStoreLocation(
+            storeLocationRequestDto);
+        return new ResponseEntity<>(storeLocation, HttpStatus.OK);
     }
 
 }

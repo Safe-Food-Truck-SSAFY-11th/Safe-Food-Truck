@@ -4,6 +4,7 @@ import static jakarta.persistence.CascadeType.ALL;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import jakarta.persistence.Column;
@@ -105,6 +106,11 @@ public class Store {
             return;
         }
         isOpen = true;
+    }
+
+    public void updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto) {
+        this.latitude = storeLocationRequestDto.latitude();
+        this.longitude = storeLocationRequestDto.longitude();
     }
 
     public void addMenu(Menu menu) {

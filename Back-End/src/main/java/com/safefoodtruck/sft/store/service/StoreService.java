@@ -1,8 +1,10 @@
 package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 
@@ -21,4 +23,6 @@ public interface StoreService {
 	boolean getStoreStatus();
 
 	boolean updateStoreStatus();
+
+	StoreLocationResponseDto updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
 }

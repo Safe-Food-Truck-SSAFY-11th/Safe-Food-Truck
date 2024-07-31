@@ -4,8 +4,10 @@ import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
@@ -39,6 +41,7 @@ public class StoreServiceImpl implements StoreService {
 	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
 		Store store = findStore();
 		store.update(storeUpdateRequestDto);
+
 		return StoreUpdateResponseDto.fromEntity(store);
 	}
 
@@ -80,6 +83,7 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public boolean getStoreStatus() {
 		Store store = findStore();
+
 		return store.isOpen();
 	}
 
@@ -87,7 +91,17 @@ public class StoreServiceImpl implements StoreService {
 	public boolean updateStoreStatus() {
 		Store store = findStore();
 		store.updateStatus();
+
 		return store.isOpen();
+	}
+
+	@Override
+	public StoreLocationResponseDto updateStoreLocation(
+		StoreLocationRequestDto storeLocationRequestDto) {
+		Store store = findStore();
+		store.updateStoreLocation(storeLocationRequestDto);
+
+		return StoreLocationResponseDto.fromEntity(store);
 	}
 
 }
