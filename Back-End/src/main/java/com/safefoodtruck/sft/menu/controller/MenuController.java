@@ -1,28 +1,25 @@
 package com.safefoodtruck.sft.menu.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.webjars.NotFoundException;
-
+import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuRegistResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.service.StoreService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.webjars.NotFoundException;
 
 @Slf4j
 @RequestMapping("/menu")
@@ -48,7 +45,7 @@ public class MenuController {
 		)
 	})
 	public ResponseEntity<?> registMenu(@RequestBody MenuListRegistRequestDto menuListRegistRequestDto) {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		String email = MemberInfo.getEmail();
 		log.info("email : {}", email);
 
 		Store store = storeService.findStore();
