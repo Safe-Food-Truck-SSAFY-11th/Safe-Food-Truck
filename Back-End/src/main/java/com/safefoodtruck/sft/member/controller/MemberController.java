@@ -167,10 +167,10 @@ public class MemberController {
     @Operation(summary = "멤버십 가입", description = "멤버십 가입 시 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
-            description = "손님이면 vip_customer, 사장님이면 vip_ceo",
+            description = "손님이면 vip_customer, 사장님이면 vip_owner",
             content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_ceo')")
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_owner')")
     public ResponseEntity<?> joinVip(@RequestHeader("Authorization") String tokenHeader) {
         String userEmail = jwtUtil.getId(tokenHeader.substring(7));
         memberService.joinVip(userEmail);
@@ -184,7 +184,7 @@ public class MemberController {
             description = "현재 멤버십이 만료됩니다.",
             content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_ceo')")
+    @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_owner')")
     public ResponseEntity<?> deactivateVip(@RequestHeader("Authorization") String tokenHeader) {
         String userEmail = jwtUtil.getId(tokenHeader.substring(7));
         memberService.deactivateVip(userEmail);
@@ -198,7 +198,7 @@ public class MemberController {
             description = "현재 멤버십이 30일 연장됩니다.",
             content = @Content(mediaType = "application/json"))
     })
-    @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_ceo')")
+    @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_owner')")
     public ResponseEntity<?> extendVip(@RequestHeader("Authorization") String tokenHeader) {
         String userEmail = jwtUtil.getId(tokenHeader.substring(7));
         memberService.extendVip(userEmail);

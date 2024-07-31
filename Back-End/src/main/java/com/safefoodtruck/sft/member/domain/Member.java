@@ -65,7 +65,7 @@ public class Member {
     private String phoneNumber;
 
     @Column(name = "business_number", length = 100)
-    @ColumnDefault("'not ceo'")
+    @ColumnDefault("'not owner'")
     private String businessNumber;
 
     @Column(name = "role", length = 20)
@@ -123,7 +123,7 @@ public class Member {
         this.birth = memberSignUpRequestDto.getBirth();
         this.phoneNumber = memberSignUpRequestDto.getPhoneNumber();
         this.businessNumber = memberSignUpRequestDto.getBusinessNumber();
-        this.role = memberSignUpRequestDto.getBusinessNumber() == null ? "customer" : "ceo";
+        this.role = memberSignUpRequestDto.getBusinessNumber() == null ? "customer" : "owner";
         this.regDate = LocalDateTime.now();
         this.isResign = 0;
     }
