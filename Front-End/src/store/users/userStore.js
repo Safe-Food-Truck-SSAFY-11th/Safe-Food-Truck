@@ -38,6 +38,49 @@ const userStore = create((set, get) => ({
       throw error;
     }
   },
+
+  registerUser: async (userData) => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/members/common', userData);
+      return response.data;
+    } catch (error) {
+      console.log(userData);
+      console.error('회원가입 오류:', error);
+      throw error;
+    }
+  },
+
+  emailChecked: null, // 이메일 확인 상태 (null, Possible, Duplicate)
+  nicknameChecked: null, // 닉네임 확인 상태 (null, Possible, Duplicate)
+  passwordMatch: null, // 비밀번호 일치 여부 (null, true, false)
+  emailTouched: false, // 이메일 입력 상태
+  nicknameTouched: false, // 닉네임 입력 상태
+  passwordTouched: false, // 비밀번호확인 입력 상태
+
+  checkEmail: async (email) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/members/duplication-email/${email}`);
+      set({ emailChecked: response.data });
+    } catch (error) {
+      console.error('이메일 중복 확인 오류:', error);
+      set({ emailChecked: false });
+    }
+  },
+
+  checkNickname: async (nickname) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/members/duplication-nickname/${nickname}`);
+      set({ nicknameChecked: response.data });
+    } catch (error) {
+      console.error('닉네임 중복 확인 오류:', error);
+      set({ nicknameChecked: false });
+    }
+  },
+
+  setEmailTouched: () => set({ emailTouched: true }),
+  setNicknameTouched: () => set({ nicknameTouched: true }),
+  setPasswordTouched: () => set({ passwordTouched: true }),
+  setPasswordMatch: (match) => set({ passwordMatch: match }),
 }));
 
 export default userStore;
