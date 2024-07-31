@@ -9,6 +9,16 @@ spring:
     username: root
     password: ${mysqlpassword}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${google-email}
+    password: ${google-app-password}
+    properties:
+      mail.smtp.debug: true
+      mail.smtp.connectiontimeout: 1000 #1초
+      mail.starttls.enable: true
+      mail.smtp.auth: true
 
   jpa:
     hibernate:

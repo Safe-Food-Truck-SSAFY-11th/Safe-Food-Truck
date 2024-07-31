@@ -1,13 +1,18 @@
 package com.safefoodtruck.sft.member.service;
 
+import com.safefoodtruck.sft.common.service.EmailService;
+import com.safefoodtruck.sft.common.service.RandomPasswordService;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.dto.MemberDto;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final EmailService emailService;
+    private final RandomPasswordService randomPasswordService;
 
     @Override
     public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
@@ -75,5 +82,93 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(email);
         MemberSelectResponseDto memberSelectResponseDto = mapper.map(member, MemberSelectResponseDto.class);
         return memberSelectResponseDto;
+    }
+
+    @Override
+    public String checkDuplicateEmail(String email) {
+        Member member = memberRepository.findByEmail(email);
+        if (member == null) {
+            return "Possible";
+        }
+        return "Duplicate";
+    }
+
+    @Override
+    public String checkDuplicateNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        if (member == null) {
+            return "Possible";
+        }
+        return "Duplicate";
+    }
+
+    @Override
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+        Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
+        memberUpdateRequestDto.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
+        member.updateMember(memberUpdateRequestDto);
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void updateIsResign(String email) {
+        Member member = memberRepository.findByEmail(email);
+        member.resign();
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void joinVip(String email) {
+        Member member = memberRepository.findByEmail(email);
+
+        if (member.getRole().equals("customer")) {
+            member.joinVip("vip_customer");
+        } else if (member.getRole().equals("ceo")) {
+            member.joinVip("vip_ceo");
+        }
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void deactivateVip(String email) {
+        Member member = memberRepository.findByEmail(email);
+
+        if (member.getRole().equals("vip_customer")) {
+            member.deactivateVip("customer");
+        } else if (member.getRole().equals("vip_ceo")) {
+            member.deactivateVip("ceo");
+        }
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void extendVip(String email) {
+        Member member = memberRepository.findByEmail(email);
+        member.extendVip();
+        memberRepository.save(member);
+    }
+
+    @Override
+    public String searchEmail(String name, LocalDate birth, String phoneNumber) {
+        Member member = memberRepository.findByNameAndBirthAndPhoneNumber(name, birth, phoneNumber);
+
+        if (member == null) {
+            throw new NotFoundMemberException();
+        }
+        return member.getEmail();
+    }
+
+    @Override
+    public void searchPassword(String email, String name, LocalDate birth, String phoneNumber) {
+        Member member = memberRepository.findByEmailAndNameAndBirthAndPhoneNumber(email, name, birth, phoneNumber);
+
+        if (member == null) {
+            throw new NotFoundMemberException();
+        }
+        String randomPassword = randomPasswordService.generateRandomPassword();
+        member.updatePassword(passwordEncoder.encode(randomPassword));
+        memberRepository.save(member);
+
+        emailService.sendEmailPassword(email, name, randomPassword);
     }
 }
