@@ -39,7 +39,7 @@ public class Menu {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
 	private int id;
 

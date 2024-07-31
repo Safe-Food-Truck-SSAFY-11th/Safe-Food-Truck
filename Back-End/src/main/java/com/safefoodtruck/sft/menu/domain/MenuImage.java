@@ -24,7 +24,7 @@ import lombok.ToString;
 public class MenuImage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_image_id")
 	private long id;
 

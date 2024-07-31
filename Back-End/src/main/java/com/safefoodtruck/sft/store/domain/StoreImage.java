@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class StoreImage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "store_image_id")
 	private long id;
 
