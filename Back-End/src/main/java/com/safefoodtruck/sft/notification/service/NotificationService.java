@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.notification.service;
 
-public interface NotificationService {
+import com.safefoodtruck.sft.notification.dto.SendNotificationRequestDto;
 
+public interface NotificationService {
+    void sendNotification(SendNotificationRequestDto sendNotificationRequestDto);
 }
