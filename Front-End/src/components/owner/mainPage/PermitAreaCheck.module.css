@@ -1,51 +1,110 @@
 .compSize {
-    height: 852px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.compSize h3 {
+  padding: 0;
 }
 
 .permitAreaCheck {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #EAFFC9;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin: 20px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #eaffc9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 20px;
 }
 
 .map {
-    width: 100%;
-    height: 500px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+  width: 100%;
+  height: 500px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }
 
 .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px;
+  width: 100%; /* 전체 화면에 맞추기 */
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  /* margin: 20px; */
 }
 
 .allowButton {
-    background-color: #EAFFC9;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+  background-color: #eaffc9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .denyButton {
-    background-color: #FFA285;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+  background-color: #ffa285;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.zoomControls {
+  position: absolute;
+  top: 25%;
+  right: 12%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.zoomIn,
+.zoomOut {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 5px 0;
+  cursor: pointer;
+  /* -webkit-tap-highlight-color: transparent; */
+}
+
+.zoomIn:hover,
+.zoomOut:hover {
+  background-color: #f0f0f0;
+}
+
+.resetControl {
+  position: absolute;
+  bottom: 23%;
+  right: 12%;
+  z-index: 1;
+}
+
+.resetBtn {
+  width: 35px;
+  height: 35px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  /* -webkit-tap-highlight-color: transparent; */
+}
+.resetBtn:active {
+  background-color: #f0f0f0;
 }
