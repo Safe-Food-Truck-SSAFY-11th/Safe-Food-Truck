@@ -5,6 +5,7 @@ import com.safefoodtruck.sft.security.filter.JwtAuthFilter;
 import com.safefoodtruck.sft.security.handler.CustomAccessDeniedHandler;
 import com.safefoodtruck.sft.security.handler.CustomAuthenticationEntryPoint;
 import com.safefoodtruck.sft.security.util.JwtUtil;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +35,18 @@ public class SecurityConfig {
     private static final String[] AUTH_PERMIT_PATH_LIST = {
         "/", "/api/members"
     };
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*")); // 모든 출처 허용
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드 설정
+        configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 헤더 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
