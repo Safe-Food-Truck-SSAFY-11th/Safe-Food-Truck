@@ -56,17 +56,16 @@ public class Menu {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "menu_id")
+	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
 	private MenuImage menuImage;
 
 	public void addStore(Store store) {
 		this.store = store;
+		store.addMenu(this);
 	}
 
-	private void addMenuImage(MenuImage menuImage) {
+	public void addMenuImage(MenuImage menuImage) {
 		this.menuImage = menuImage;
-		menuImage.addMenu(this);
 	}
 
 	public static Menu of(String name, int price, String description) {
