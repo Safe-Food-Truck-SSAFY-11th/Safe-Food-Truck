@@ -72,7 +72,7 @@ public class StoreController {
     }
 
     @GetMapping("{storeId}")
-    @Operation(summary = "내 점포 조회", description = "점포를 조회할 때 사용하는 API")
+    @Operation(summary = "특정 점포 조회", description = "점포를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
