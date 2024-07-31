@@ -1,14 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginUser.module.css';
-import logo from '../../assets/images/sft-logo.png';
-import kakaoLogo from '../../assets/images/icon_kakao.png';
-import googleLogo from '../../assets/images/icon_google.png';
-import useUserStore from '../../store/users/userStore';
+import logo from 'assets/images/sft-logo.png';
+import kakaoLogo from 'assets/images/icon_kakao.png';
+import googleLogo from 'assets/images/icon_google.png';
+import useUserStore from 'store/users/userStore';
 
 const LoginUser = () => {
-    const { isGuest, setGuest, setOwner } = useUserStore();
+    const { isGuest, setGuest, setOwner, loginUser } = useUserStore();
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
     useEffect(() => {
@@ -17,6 +19,20 @@ const LoginUser = () => {
 
     const handleRegisterClick = () => {
         navigate('/regist');
+    };
+
+    const handleLoginClick = async () => {
+        try {
+            const user = await loginUser(email, password);
+            if (user.role === 'customer') {
+                navigate('/mainCustomer');
+            } else {
+                navigate('/mainOwner');
+            }
+        } catch (error) {
+            console.error('로그인 실패:', error);
+            alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
+        }
     };
 
     return (
@@ -40,12 +56,12 @@ const LoginUser = () => {
                 </span>
             </div>
             <div className={styles.inputContainer}>
-                <input type="text" placeholder="이메일" className={styles.input} />
+                <input type="text" placeholder="이메일" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className={styles.inputContainer}>
-                <input type="password" placeholder="비밀번호" className={styles.input} />
+                <input type="password" placeholder="비밀번호" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-            <button className={`${styles.loginButton} ${isGuest === false ? styles.ownerLoginButton : ''}`}>로그인</button>
+            <button className={`${styles.loginButton} ${isGuest === false ? styles.ownerLoginButton : ''}`} onClick={handleLoginClick}>로그인</button>
             <div className={styles.socialLoginContainer}>
                 <p className={`${styles.socialLoginText} ${isGuest === false ? styles.ownerSocialLoginText : ''}`}>소셜 로그인</p>
                 <div className={styles.socialIcons}>
