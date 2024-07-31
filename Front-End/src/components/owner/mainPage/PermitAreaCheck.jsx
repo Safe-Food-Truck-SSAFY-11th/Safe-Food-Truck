@@ -116,8 +116,19 @@ const PermitAreaCheck = () => {
     }
   };
 
-  // 지도 위치 이동 함수
+  // 현재 위치 이동 함수
   const resetLocation = () => {
+    // 현재위치 확인
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrLat(position.coords.latitude);
+        setCurrLon(position.coords.longitude);
+      },
+      (error) => {
+        console.error("Error occurred while retrieving location:", error);
+      }
+    );
+
     if (mapRef.current) {
       const moveLatLon = new window.kakao.maps.LatLng(currLat, currLon);
       mapRef.current.panTo(moveLatLon);

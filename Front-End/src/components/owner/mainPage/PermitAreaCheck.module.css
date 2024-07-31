@@ -80,6 +80,7 @@
   font-weight: bold;
   margin: 5px 0;
   cursor: pointer;
+  /* -webkit-tap-highlight-color: transparent; */
 }
 
 .zoomIn:hover,
@@ -100,7 +101,9 @@
   background-color: white;
   padding: 5px;
   border-radius: 5px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  /* -webkit-tap-highlight-color: transparent; */
 }
 .resetBtn:active {
   background-color: #f0f0f0;
