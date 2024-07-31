@@ -7,12 +7,15 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +84,14 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	public boolean updateStoreStatus() {
+		Store store = findStore();
+		store.updateStatus();
+
+		return store.isOpen();
+	}
+
+	@Override
 	public boolean getStoreStatus() {
 		Store store = findStore();
 
@@ -88,11 +99,11 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public boolean updateStoreStatus() {
-		Store store = findStore();
-		store.updateStatus();
+	public StoreInfoListResponseDto findOpenStores() {
+		List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
+		log.info("openStores : {}",openStores.toArray());
 
-		return store.isOpen();
+		return new StoreInfoListResponseDto(openStores);
 	}
 
 	@Override

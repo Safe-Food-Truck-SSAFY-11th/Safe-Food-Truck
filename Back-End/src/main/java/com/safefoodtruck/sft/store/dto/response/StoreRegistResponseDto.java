@@ -4,7 +4,7 @@ import com.safefoodtruck.sft.store.domain.Store;
 import lombok.Builder;
 
 @Builder
-public record StoreRegistResponseDto(String storeId, String email, String name, String storeType,
+public record StoreRegistResponseDto(String email, String name, String storeType,
                                      String offDay, String description, String latitude,
                                      String longitude, String safetyLicenseNumber, boolean isOpen) {
 

@@ -87,7 +87,6 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
-
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
         return new Store(owner, storeRegistRequestDto);
     }

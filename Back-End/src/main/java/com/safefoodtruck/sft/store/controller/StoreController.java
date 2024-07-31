@@ -4,6 +4,8 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.FindStoreResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
@@ -68,7 +70,8 @@ public class StoreController {
     })
     public ResponseEntity<?> findStore() {
         Store store = storeService.findStore();
-        return new ResponseEntity<>(store, HttpStatus.OK);
+        FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
+        return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("{storeId}")
@@ -87,7 +90,8 @@ public class StoreController {
     })
     public ResponseEntity<?> findStore(@PathVariable int storeId) {
         Store store = storeService.findStore(storeId);
-        return new ResponseEntity<>(store, HttpStatus.OK);
+        FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
+        return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
     }
 
 
@@ -165,6 +169,25 @@ public class StoreController {
     public ResponseEntity<?> updateStoreStatus() {
         boolean isOpen = storeService.updateStoreStatus();
         return new ResponseEntity<>(isOpen, HttpStatus.OK);
+    }
+
+    @GetMapping("/open/all")
+    @Operation(summary = "영업 중인 모든 점포 조회", description = "영업 중인 모든 점포를 조회하는데 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "영업 중인 모든 점포 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> findOpenStores() {
+        StoreInfoListResponseDto openStores = storeService.findOpenStores();
+        return new ResponseEntity<>(openStores, HttpStatus.OK);
     }
 
     @PatchMapping("/location")
