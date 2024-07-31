@@ -15,6 +15,7 @@ public class MemberDto {
     private String phoneNumber;
     private String businessNumber;
     private String role;
+    private LocalDateTime vipExpiredDate;
     private LocalDateTime regDate;
     private int isResign;
 }

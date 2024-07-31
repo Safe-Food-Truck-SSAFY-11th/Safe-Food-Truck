@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.member.domain;
 
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,12 +18,15 @@ import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "member")
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class Member {
 
     @Id
@@ -62,12 +66,43 @@ public class Member {
     @ColumnDefault("'customer'")
     private String role;
 
+    @Column(name = "vip_expired_date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime vipExpiredDate;
+
     @Column(name = "reg_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime regDate;
 
     @Column(name = "is_resign")
     @ColumnDefault("0")
     private Integer isResign;
+
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+        this.nickname = memberUpdateRequestDto.getNickname();
+        this.phoneNumber = memberUpdateRequestDto.getPhoneNumber();
+        this.password = memberUpdateRequestDto.getPassword();
+    }
+
+    public void resign() {
+        this.isResign = 1;
+    }
+
+    public void joinVip(String vipName) {
+        this.role = vipName;
+        this.vipExpiredDate = LocalDateTime.now().plusDays(30);
+    }
+
+    public void deactivateVip(String role) {
+        this.role = role;
+        this.vipExpiredDate = null;
+    }
+
+    public void extendVip() {
+        this.vipExpiredDate = this.vipExpiredDate.plusDays(30);
+    }
+
+    public void updatePassword(String randomPassword) {
+        this.password = randomPassword;
+    }
 
     @Builder(builderMethodName = "signupBuilder")
     public Member(MemberSignUpRequestDto memberSignUpRequestDto) {
