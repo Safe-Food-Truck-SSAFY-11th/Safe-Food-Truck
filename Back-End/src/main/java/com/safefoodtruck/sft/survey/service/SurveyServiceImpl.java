@@ -50,8 +50,8 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public List<SelectSurveysResponseDto> selectSurveys(String sigungu, String gugun) {
-
-        return List.of();
+    public List<SelectSurveysResponseDto> selectSurveys(String sido, String sigungu, String dong) {
+        List<SelectSurveysResponseDto> selectSurveysResponseDtoList = surveyRepository.findSurveysResponse(sido, sigungu, dong);
+        return selectSurveysResponseDtoList;
     }
 }

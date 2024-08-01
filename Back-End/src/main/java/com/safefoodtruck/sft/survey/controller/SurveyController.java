@@ -2,7 +2,9 @@ package com.safefoodtruck.sft.survey.controller;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.common.util.StoreType;
 import com.safefoodtruck.sft.survey.dto.InsertSurveysRequestDto;
+import com.safefoodtruck.sft.survey.dto.SelectSurveysResponseDto;
 import com.safefoodtruck.sft.survey.exception.AlreadyRegisteredEmailException;
 import com.safefoodtruck.sft.survey.exception.UnSatisfyLengthException;
 import com.safefoodtruck.sft.survey.service.SurveyService;
@@ -17,10 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/surveys")
@@ -31,8 +36,28 @@ public class SurveyController {
 
     private final SurveyService surveyService;
 
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "수요조사 조회", description = "수요조사 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "수요조사 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> selectSurveys(
+        @RequestParam String sido,
+        @RequestParam String sigungu,
+        @RequestParam String dong
+    ) {
+        List<SelectSurveysResponseDto> selectSurveysList = surveyService.selectSurveys(sido, sigungu, dong);
+        return ResponseEntity.status(HttpStatus.OK).body(selectSurveysList);
+    }
+
     @PostMapping
-    @Operation(summary = "수요조사 등록", description = "수요주조사 등록할 때 사용하는 API")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "수요조사 등록", description = "수요조사 등록할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
