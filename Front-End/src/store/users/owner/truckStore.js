@@ -1,12 +1,13 @@
 import { create } from "zustand";
+import axios from 'axios';
 
 const useTruckStore = create((set) => ({
   registForm: {
-    storeName: "",
-    category: "",
-    workingDays: "",
+    name: "",
+    storeType: "",
+    offDay: "0000000",
     description: "",
-    image: null,
+    safetyLicenseNumber: "",
   },
   updateForm: {
     storeName: "울퉁불퉁",
@@ -22,17 +23,31 @@ const useTruckStore = create((set) => ({
   },
   setForm: (name, value) =>
     set((state) => ({
-      registForm: { ...state.registForm, [name]: value },
+      registForm: {
+        ...state.registForm,
+        [name]: value,
+      },
     })),
-  setImage: (image) =>
+  setImage: (imageURL) =>
     set((state) => ({
-      registForm: { ...state.registForm, image },
+      registForm: {
+        ...state.registForm,
+        image: imageURL,
+      },
     })),
-  toggleWorkingDay: (dayIndex) => set((state) => {
-    const workingDaysArray = state.updateForm.workingDays.split('');
-    workingDaysArray[dayIndex] = workingDaysArray[dayIndex] === '1' ? '0' : '1';
-    return { updateForm: { ...state.updateForm, workingDays: workingDaysArray.join('') } };
-  }),
+  toggleWorkingDay: (dayIndex) =>
+    set((state) => {
+      const { offDay } = state.registForm;
+      const newOffDay = offDay.split('').map((day, index) =>
+        index === dayIndex ? (day === "0" ? "1" : "0") : day
+      ).join('');
+      return {
+        registForm: {
+          ...state.registForm,
+          offDay: newOffDay,
+        },
+      };
+    }),
   activeTab: "today",
   setActiveTab: (tab) => set({ activeTab: tab }),
   categories: [
@@ -49,6 +64,23 @@ const useTruckStore = create((set) => ({
     "스테이크",
     "피자",
   ],
+
+  registTruck: async (truckData) => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/stores', truckData,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          }
+        });
+      return response.data;
+    } catch (error) {
+      console.log(truckData);
+      console.error('점포등록 오류:', error);
+      throw error;
+    }
+  },
+
 }));
 
 export default useTruckStore;
