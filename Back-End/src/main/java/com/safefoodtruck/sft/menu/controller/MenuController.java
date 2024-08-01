@@ -1,7 +1,9 @@
 package com.safefoodtruck.sft.menu.controller;
 
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,5 +68,25 @@ public class MenuController {
 	public ResponseEntity<?> findMenusByStoreId(@PathVariable Integer storeId) {
 		MenuListResponseDto allMenu = menuService.findAllMenu(storeId);
 		return new ResponseEntity<>(allMenu, HttpStatus.OK);
+	}
+
+	@PatchMapping("{menuId}")
+	@Operation(summary = "메뉴 수정", description = "메뉴를 수정할 때 사용하는 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "메뉴 수정에 성공하였습니다!",
+			content = @Content(mediaType = "application/json")
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error Message 로 전달함",
+			content = @Content(mediaType = "application/json")
+		)
+	})
+	public ResponseEntity<?> updateMenu(@PathVariable Integer menuId, @RequestBody MenuUpdateRequestDto menuUpdateRequestDto) {
+		MenuResponseDto menuResponseDto = menuService.updateMenu(menuId, menuUpdateRequestDto);
+
+		return new ResponseEntity<>(menuResponseDto, HttpStatus.OK);
 	}
 }

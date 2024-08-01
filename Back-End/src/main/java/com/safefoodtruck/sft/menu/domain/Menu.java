@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.menu.domain;
 
 import static jakarta.persistence.FetchType.*;
 
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import org.hibernate.annotations.DynamicInsert;
 
 import com.safefoodtruck.sft.store.domain.Store;
@@ -70,5 +71,11 @@ public class Menu {
 
 	public static Menu of(String name, int price, String description) {
 		return new Menu(name, price, description);
+	}
+
+	public void update(MenuUpdateRequestDto menuUpdateRequestDto) {
+		this.name = menuUpdateRequestDto.name();
+		this.price = menuUpdateRequestDto.price();
+		this.description = menuUpdateRequestDto.description();
 	}
 }

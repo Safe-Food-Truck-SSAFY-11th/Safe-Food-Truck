@@ -27,92 +27,82 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
-	private final StoreRepository storeRepository;
-	private final MemberRepository memberRepository;
+    private final StoreRepository storeRepository;
+    private final MemberRepository memberRepository;
 
-	@Override
-	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
-		String email = MemberInfo.getEmail();
-		Member owner = memberRepository.findByEmail(email);
-		Store store = Store.of(owner, storeRegistRequestDto);
-		storeRepository.save(store);
+    @Override
+    public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
+        String email = MemberInfo.getEmail();
+        Member owner = memberRepository.findByEmail(email);
+        Store store = Store.of(owner, storeRegistRequestDto);
+        storeRepository.save(store);
 
-		return StoreRegistResponseDto.fromEntity(email, store);
-	}
+        return StoreRegistResponseDto.fromEntity(email, store);
+    }
 
-	@Override
-	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
-		Store store = findStore();
-		store.update(storeUpdateRequestDto);
+    @Override
+    public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+        Store store = findStore();
+        store.update(storeUpdateRequestDto);
 
-		return StoreUpdateResponseDto.fromEntity(store);
-	}
+        return StoreUpdateResponseDto.fromEntity(store);
+    }
 
 
-	@Override
-	public Store findStore() {
-		String email = MemberInfo.getEmail();
-		Member owner = memberRepository.findByEmail(email);
-		Optional<Store> store = storeRepository.findByOwner(owner);
-		if(store.isEmpty()) {
-			throw new StoreNotFoundException();
-		}
+    @Override
+    public Store findStore() {
+        String email = MemberInfo.getEmail();
+        return storeRepository.findByOwnerEmail(email)
+            .orElseThrow(StoreNotFoundException::new);
+    }
 
-		return store.get();
-	}
+    @Override
+    public Store findStore(int storeId) {
+        return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+    }
 
-	@Override
-	public Store findStore(int storeId) {
-		Optional<Store> store = storeRepository.findById(storeId);
-		if(store.isEmpty()) {
-			throw new StoreNotFoundException();
-		}
+    @Override
+    public void deleteStore() {
+        String email = MemberInfo.getEmail();
+        Optional<Integer> storeIdByOwnerEmail = storeRepository.findStoreIdByOwnerEmail(email);
+        if (storeIdByOwnerEmail.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
 
-		return store.get();
-	}
+        int storeId = storeIdByOwnerEmail.get();
+        storeRepository.deleteById(storeId);
+    }
 
-	@Override
-	public void deleteStore() {
-		String email = MemberInfo.getEmail();
-		Optional<Integer> storeIdByOwnerEmail = storeRepository.findStoreIdByOwnerEmail(email);
-		if(storeIdByOwnerEmail.isEmpty()) {
-			throw new StoreNotFoundException();
-		}
+    @Override
+    public boolean updateStoreStatus() {
+        Store store = findStore();
+        store.updateStatus();
 
-		int storeId = storeIdByOwnerEmail.get();
-		storeRepository.deleteById(storeId);
-	}
+        return store.isOpen();
+    }
 
-	@Override
-	public boolean updateStoreStatus() {
-		Store store = findStore();
-		store.updateStatus();
+    @Override
+    public boolean getStoreStatus() {
+        Store store = findStore();
 
-		return store.isOpen();
-	}
+        return store.isOpen();
+    }
 
-	@Override
-	public boolean getStoreStatus() {
-		Store store = findStore();
+    @Override
+    public StoreInfoListResponseDto findOpenStores() {
+        List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
+        log.info("openStores : {}", openStores.toArray());
 
-		return store.isOpen();
-	}
+        return new StoreInfoListResponseDto(openStores);
+    }
 
-	@Override
-	public StoreInfoListResponseDto findOpenStores() {
-		List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
-		log.info("openStores : {}",openStores.toArray());
+    @Override
+    public StoreLocationResponseDto updateStoreLocation(
+        StoreLocationRequestDto storeLocationRequestDto) {
+        Store store = findStore();
+        store.updateStoreLocation(storeLocationRequestDto);
 
-		return new StoreInfoListResponseDto(openStores);
-	}
-
-	@Override
-	public StoreLocationResponseDto updateStoreLocation(
-		StoreLocationRequestDto storeLocationRequestDto) {
-		Store store = findStore();
-		store.updateStoreLocation(storeLocationRequestDto);
-
-		return StoreLocationResponseDto.fromEntity(store);
-	}
+        return StoreLocationResponseDto.fromEntity(store);
+    }
 
 }

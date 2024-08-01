@@ -3,8 +3,10 @@ package com.safefoodtruck.sft.menu.service;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
+import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
@@ -51,5 +53,13 @@ public class MenuServiceImpl implements MenuService {
 			.toList();
 
 		return new MenuListResponseDto(menuResponseDtos);
+	}
+
+	@Override
+	public MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto) {
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+		menu.update(menuUpdateRequestDto);
+
+		return MenuResponseDto.fromEntity(menu);
 	}
 }
