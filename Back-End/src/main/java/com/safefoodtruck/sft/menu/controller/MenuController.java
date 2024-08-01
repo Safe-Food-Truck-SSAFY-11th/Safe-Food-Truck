@@ -5,7 +5,6 @@ import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
-import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MenuController {
 
 	private final MenuService menuService;
-	private final StoreService storeService;
 
 	@PostMapping
 	@Operation(summary = "메뉴 등록", description = "메뉴를 등록할 때 사용하는 API")
@@ -51,12 +49,12 @@ public class MenuController {
 		return new ResponseEntity<>(menuListResponseDto, HttpStatus.CREATED);
 	}
 
-	@GetMapping("{storeId}")
-	@Operation(summary = "해당 가게 메뉴 전체 조회", description = "해당 가게의 메뉴 전체를 조회할 때 사용하는 API")
+	@GetMapping("{menuId}")
+	@Operation(summary = "메뉴 상세 조회", description = "메뉴 상세 조회할 때 사용하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "해당 가게 메뉴 전체 조회에 성공하였습니다!",
+			description = "메뉴 상세 조회에 성공하였습니다!",
 			content = @Content(mediaType = "application/json")
 		),
 		@ApiResponse(
@@ -65,9 +63,9 @@ public class MenuController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<?> findMenusByStoreId(@PathVariable Integer storeId) {
-		MenuListResponseDto allMenu = menuService.findAllMenu(storeId);
-		return new ResponseEntity<>(allMenu, HttpStatus.OK);
+	public ResponseEntity<?> findMenu(@PathVariable Integer menuId) {
+		MenuResponseDto menu = menuService.findMenu(menuId);
+		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
 
 	@PatchMapping("{menuId}")

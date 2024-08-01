@@ -44,15 +44,9 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public MenuListResponseDto findAllMenu(int storeId) {
-		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
-		List<Menu> menuList = store.getMenuList();
-
-		List<MenuResponseDto> menuResponseDtos = menuList.stream()
-			.map(MenuResponseDto::fromEntity)
-			.toList();
-
-		return new MenuListResponseDto(menuResponseDtos);
+	public MenuResponseDto findMenu(Integer menuId) {
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+		return MenuResponseDto.fromEntity(menu);
 	}
 
 	@Override

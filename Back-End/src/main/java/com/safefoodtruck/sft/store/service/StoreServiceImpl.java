@@ -3,6 +3,9 @@ package com.safefoodtruck.sft.store.service;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
+import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
@@ -59,6 +62,18 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public Store findStore(int storeId) {
         return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+    }
+
+    @Override
+    public MenuListResponseDto findStoreMenus(int storeId) {
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+        List<Menu> menuList = store.getMenuList();
+
+        List<MenuResponseDto> menuResponseDtos = menuList.stream()
+            .map(MenuResponseDto::fromEntity)
+            .toList();
+
+        return new MenuListResponseDto(menuResponseDtos);
     }
 
     @Override

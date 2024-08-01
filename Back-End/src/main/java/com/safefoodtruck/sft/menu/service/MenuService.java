@@ -7,6 +7,6 @@ import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 
 public interface MenuService {
 	MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto);
-	MenuListResponseDto findAllMenu(int storeId);
+	MenuResponseDto findMenu(Integer menuId);
 	MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto);
 }
