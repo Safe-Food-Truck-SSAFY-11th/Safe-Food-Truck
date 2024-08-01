@@ -14,19 +14,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Table(name = "menu")
 @Entity
+@Table(name = "menu")
 @Getter
-@Builder
 @DynamicInsert
-@NoArgsConstructor
+@DynamicUpdate
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
 
 	public Menu(String name, int price, String description) {
@@ -36,19 +38,24 @@ public class Menu {
 	}
 
 	@Id
+	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
 	private Integer id;
 
+	@NotNull
 	@Column(name = "menu_name")
 	private String name;
 
+	@NotNull
 	@Column(name = "price")
 	private int price;
 
+	@NotNull
 	@Column(name = "description")
 	private String description;
 
+	@NotNull
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
