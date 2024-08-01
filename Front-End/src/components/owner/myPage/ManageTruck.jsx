@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./ManageTruck.module.css";
-import imageIcon from "../../../assets/images/truck-img.png";
-import useTruckStore from "../../../store/users/owner/truckStore";
-import useMenuStore from "../../../store/users/owner/menuStore";
+import imageIcon from "assets/images/truck-img.png";
+import useTruckStore from "store/users/owner/truckStore";
+import useMenuStore from "store/users/owner/menuStore";
 import MenuUpdate from "./MenuUpdate";
 import MenuItem from "./MenuItem";
 
@@ -91,26 +91,6 @@ const ManageTruck = () => {
               </option>
             ))}
           </select>
-        </div>
-        <div className={styles.inputContainer}>
-          <label>메뉴</label>
-          <div className={styles.menuContainer}>
-            {menus.map((menu, index) => (
-              <MenuItem
-                key={index}
-                menu={menu}
-                onEdit={() => openMenu(menu)}
-                onDelete={() => removeMenu(index)}
-              />
-            ))}
-            <button
-              type="button"
-              className={styles.addMenuButton}
-              onClick={openMenu}
-            >
-              +
-            </button>
-          </div>
         </div>
         <div className={styles.inputContainer}>
           <label>출근 요일</label>
