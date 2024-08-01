@@ -4,7 +4,6 @@ import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.store.domain.Store;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -38,7 +36,6 @@ public class Menu {
 	}
 
 	@Id
-	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
 	private Integer id;
@@ -60,17 +57,17 @@ public class Menu {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-	private MenuImage menuImage;
+//	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+//	private MenuImage menuImage;
 
 	public void addStore(Store store) {
 		this.store = store;
 		store.addMenu(this);
 	}
 
-	public void addMenuImage(MenuImage menuImage) {
-		this.menuImage = menuImage;
-	}
+//	public void addMenuImage(MenuImage menuImage) {
+//		this.menuImage = menuImage;
+//	}
 
 	public static Menu of(String name, Integer price, String description) {
 		return new Menu(name, price, description);

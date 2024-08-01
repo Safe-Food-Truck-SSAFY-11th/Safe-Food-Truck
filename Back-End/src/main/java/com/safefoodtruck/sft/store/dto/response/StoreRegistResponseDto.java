@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record StoreRegistResponseDto(String email, String name, String storeType,
                                      String offDay, String description, String latitude,
-                                     String longitude, String safetyLicenseNumber, boolean isOpen) {
+                                     String longitude, String safetyLicenseNumber, Boolean isOpen) {
 
     public static StoreRegistResponseDto fromEntity(String email, Store store) {
         return StoreRegistResponseDto.builder()

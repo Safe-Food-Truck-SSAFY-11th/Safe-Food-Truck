@@ -1,7 +1,6 @@
 package com.safefoodtruck.sft.store.domain;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -24,12 +23,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "store")
 @Getter
+@ToString
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
@@ -49,7 +50,6 @@ public class Store {
     }
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
     private Integer id;
@@ -91,8 +91,8 @@ public class Store {
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
-    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
-    private StoreImage storeImage;
+//    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+//    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
