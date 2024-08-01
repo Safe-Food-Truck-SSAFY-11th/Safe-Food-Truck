@@ -18,7 +18,7 @@ public record StoreRegistResponseDto(String email, String name, String storeType
             .latitude(store.getLatitude())
             .longitude(store.getLongitude())
             .safetyLicenseNumber(store.getSafetyLicenseNumber())
-            .isOpen(store.isOpen())
+            .isOpen(store.getIsOpen())
             .build();
     }
 }
