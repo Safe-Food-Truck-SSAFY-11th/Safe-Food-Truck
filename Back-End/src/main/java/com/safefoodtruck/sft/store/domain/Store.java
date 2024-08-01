@@ -71,7 +71,7 @@ public class Store {
     @Column(name = "longitude")
     private String longitude;
 
-    @Column(name = "safety_license_number")
+    @Column(name = "safety_license_number", unique = true)
     private String safetyLicenseNumber;
 
     @Column(name = "is_open")
