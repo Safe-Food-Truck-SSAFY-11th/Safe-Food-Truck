@@ -67,7 +67,7 @@ const useTruckStore = create((set) => ({
 
   registTruck: async (truckData) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/stores', truckData,
+      const response = await axios.post('https://i11b102.p.ssafy.io/api/stores', truckData,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem('token')}`,
