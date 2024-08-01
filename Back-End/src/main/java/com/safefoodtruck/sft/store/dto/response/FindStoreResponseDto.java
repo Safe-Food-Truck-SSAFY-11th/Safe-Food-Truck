@@ -8,7 +8,7 @@ import com.safefoodtruck.sft.store.domain.Store;
 import lombok.Builder;
 
 @Builder
-public record FindStoreResponseDto(int storeId, String name, String storeType, List<Menu> menus, String offDay, String description, String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
+public record FindStoreResponseDto(Integer storeId, String name, String storeType, List<Menu> menus, String offDay, String description, String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
     public static FindStoreResponseDto fromEntity(Store store) {
         return FindStoreResponseDto.builder()
             .storeId(store.getId())
@@ -20,7 +20,7 @@ public record FindStoreResponseDto(int storeId, String name, String storeType, L
             .latitude(store.getLatitude())
             .longitude(store.getLongitude())
             .safetyLicenseNumber(store.getSafetyLicenseNumber())
-            .isOpen(store.isOpen())
+            .isOpen(store.getIsOpen())
             .build();
     }
 }

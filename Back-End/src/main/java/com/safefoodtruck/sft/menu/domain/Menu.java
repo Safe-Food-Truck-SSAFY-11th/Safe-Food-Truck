@@ -31,7 +31,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
 
-	public Menu(String name, int price, String description) {
+	public Menu(String name, Integer price, String description) {
 		this.name = name;
 		this.price = price;
 		this.description = description;
@@ -49,7 +49,7 @@ public class Menu {
 
 	@NotNull
 	@Column(name = "price")
-	private int price;
+	private Integer price;
 
 	@NotNull
 	@Column(name = "description")
@@ -72,7 +72,7 @@ public class Menu {
 		this.menuImage = menuImage;
 	}
 
-	public static Menu of(String name, int price, String description) {
+	public static Menu of(String name, Integer price, String description) {
 		return new Menu(name, price, description);
 	}
 

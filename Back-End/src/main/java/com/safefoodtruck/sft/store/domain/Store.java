@@ -84,7 +84,7 @@ public class Store {
 
     @NotNull
     @Column(name = "is_open")
-    private boolean isOpen;
+    private Boolean isOpen;
 
     @NotNull
     @OneToOne
