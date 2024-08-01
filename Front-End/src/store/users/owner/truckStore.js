@@ -32,12 +32,9 @@ const useTruckStore = create((set) => ({
   toggleWorkingDay: (dayIndex) =>
     set((state) => {
       const { offDay } = state.registForm;
-      const newOffDay = offDay
-        .split("")
-        .map((day, index) =>
-          index === dayIndex ? (day === "0" ? "1" : "0") : day
-        )
-        .join("");
+      const newOffDay = offDay.split('').map((day, index) =>
+        index === dayIndex ? (day === "0" ? "1" : "0") : day
+      ).join('');
       return {
         registForm: {
           ...state.registForm,
@@ -64,19 +61,16 @@ const useTruckStore = create((set) => ({
 
   registTruck: async (truckData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/stores",
-        truckData,
+      const response = await axios.post('https://i11b102.p.ssafy.io/api/stores', truckData,
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        }
-      );
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          }
+        });
       return response.data;
     } catch (error) {
       console.log(truckData);
-      console.error("점포등록 오류:", error);
+      console.error('점포등록 오류:', error);
       throw error;
     }
   },
