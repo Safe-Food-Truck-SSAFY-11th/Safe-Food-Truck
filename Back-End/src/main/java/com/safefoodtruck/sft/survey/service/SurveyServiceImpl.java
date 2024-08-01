@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.survey.service;
 
+import com.safefoodtruck.sft.common.util.StoreType;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.survey.domain.Survey;
@@ -52,6 +53,10 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SelectSurveysResponseDto> selectSurveys(String sido, String sigungu, String dong) {
         List<SelectSurveysResponseDto> selectSurveysResponseDtoList = surveyRepository.findSurveysResponse(sido, sigungu, dong);
+        for (SelectSurveysResponseDto selectSurveysResponseDto : selectSurveysResponseDtoList) {
+            String englishTypeName = selectSurveysResponseDto.getStoreType();
+            selectSurveysResponseDto.setStoreType(StoreType.parseKorean(englishTypeName));
+        }
         return selectSurveysResponseDtoList;
     }
 }
