@@ -30,6 +30,8 @@ const userStore = create((set, get) => ({
         },
       });
       sessionStorage.setItem('email', response.data.email);
+      sessionStorage.setItem('role', response.data.role);
+      sessionStorage.setItem('nickname', response.data.nickname);
       set({ user: response.data });
       return response.data;
     } catch (error) {
