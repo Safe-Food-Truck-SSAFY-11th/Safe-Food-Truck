@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.favorites.service;
 
-public interface FavoritesService {
+import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponseDto;
 
+public interface FavoritesService {
+    SelectMemberFavoriteResponseDto selectMemberFavorite(String userEmail);
 }
