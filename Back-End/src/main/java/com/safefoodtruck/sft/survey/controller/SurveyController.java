@@ -71,7 +71,7 @@ public class SurveyController {
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "요청을 보낸 사용자는 이미 일일 수요조사 등록 횟수(1회)를 초과하였습니다.",
+            description = "요청을 보낸 사용자는 이미 수요조사 등록 횟수(일주일에 1회)를 초과하였습니다.",
             content = @Content(mediaType = "application/json")
         )
     })
