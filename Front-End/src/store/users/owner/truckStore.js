@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from 'axios';
+import axios from "axios";
 
 const useTruckStore = create((set) => ({
   registForm: {
@@ -10,16 +10,10 @@ const useTruckStore = create((set) => ({
     safetyLicenseNumber: "",
   },
   updateForm: {
-    storeName: "울퉁불퉁",
-    category: "꼬치",
-    menus: [{
-      menuName: "마늘꼬치",
-      price: 1000,
-      description: "진짜 맛있는 꼬치",
-    }],
-    workingDays: "0101010",
-    description: "맛있는 푸드트럭",
-    image: null,
+    name: "",
+    storeType: "",
+    offDay: "0000000",
+    description: "",
   },
   setForm: (name, value) =>
     set((state) => ({
@@ -81,6 +75,24 @@ const useTruckStore = create((set) => ({
     }
   },
 
+  updateTruck: async (truckData, menus) => {
+    try {
+      const response = await axios.patch(
+        "http://localhost:8080/api/stores",
+        truckData,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(truckData);
+      console.error("점포수정 오류:", error);
+      throw error;
+    }
+  },
 }));
 
 export default useTruckStore;

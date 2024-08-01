@@ -21,10 +21,16 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 public class StoreImage {
 
+	public StoreImage(String originalName, String savedName, String savedPath) {
+		this.originalName = originalName;
+		this.savedName = savedName;
+		this.savedPath = savedPath;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "store_image_id")
-	private long id;
+	private Integer id;
 
 	@Column(name = "original_name")
 	private String originalName;
@@ -35,8 +41,13 @@ public class StoreImage {
 	@Column(name = "saved_path")
 	private String savedPath;
 
-//	@OneToOne(mappedBy = "storeImage")
+//	@OneToOne(fetch = LAZY)
+//	@JoinColumn(name = "store_id")
 //	private Store store;
+
+	public static StoreImage of(String originalName, String savedName, String savedPath) {
+		return new StoreImage(originalName, savedName, savedPath);
+	}
 
 //	public void addStore(Store store) {
 //		this.store = store;

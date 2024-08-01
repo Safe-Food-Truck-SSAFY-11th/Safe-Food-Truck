@@ -22,7 +22,7 @@ class MemberRepositoryTest {
     private static final String PHONE_NUMBER = "010-1234-5678";
     private static final String BUSINESS_NUMBER = "123-456789-1450";
     private static final String CUSTOMER_ROLE = "customer";
-    private static final String CEO_ROLE = "ceo";
+    private static final String owner_ROLE = "owner";
     private static final Integer IS_RESIGN = 0; //탈퇴안함
 
     @Autowired
@@ -67,7 +67,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("사장님으로 회원가입을 한다.")
-    void findByEmailCEO() {
+    void findByEmailowner() {
         //given
         MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto.builder()
             .email(EMAIL)
@@ -97,7 +97,7 @@ class MemberRepositoryTest {
         Assertions.assertEquals(savedMember.getGender(), findMember.getGender());
         Assertions.assertEquals(savedMember.getPhoneNumber(), findMember.getPhoneNumber());
         Assertions.assertEquals(savedMember.getRole(), findMember.getRole());
-        Assertions.assertEquals(CEO_ROLE, findMember.getRole());
+        Assertions.assertEquals(owner_ROLE, findMember.getRole());
         Assertions.assertEquals(savedMember.getRegDate(), findMember.getRegDate());
         Assertions.assertEquals(savedMember.getIsResign(), findMember.getIsResign());
         Assertions.assertEquals(IS_RESIGN, findMember.getIsResign());

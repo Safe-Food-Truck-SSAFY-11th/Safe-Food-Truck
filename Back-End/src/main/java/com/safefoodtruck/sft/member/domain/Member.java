@@ -2,11 +2,18 @@ package com.safefoodtruck.sft.member.domain;
 
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.notification.domain.Notification;
+import com.safefoodtruck.sft.survey.domain.Survey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,7 +66,7 @@ public class Member {
     private String phoneNumber;
 
     @Column(name = "business_number", length = 100)
-    @ColumnDefault("'not ceo'")
+    @ColumnDefault("'not owner'")
     private String businessNumber;
 
     @Column(name = "role", length = 20)
@@ -75,6 +82,12 @@ public class Member {
     @Column(name = "is_resign")
     @ColumnDefault("0")
     private Integer isResign;
+
+    @OneToMany(mappedBy = "member")
+    private List<Notification> notificationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Survey> surveyList = new ArrayList<>();
 
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();
@@ -114,7 +127,7 @@ public class Member {
         this.birth = memberSignUpRequestDto.getBirth();
         this.phoneNumber = memberSignUpRequestDto.getPhoneNumber();
         this.businessNumber = memberSignUpRequestDto.getBusinessNumber();
-        this.role = memberSignUpRequestDto.getBusinessNumber() == null ? "customer" : "ceo";
+        this.role = memberSignUpRequestDto.getBusinessNumber() == null ? "customer" : "owner";
         this.regDate = LocalDateTime.now();
         this.isResign = 0;
     }

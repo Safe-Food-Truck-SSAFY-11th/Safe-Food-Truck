@@ -16,23 +16,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Getter
 @Table(name = "store")
-@Builder
+@Getter
 @ToString
 @DynamicInsert
+@DynamicUpdate
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
     public Store(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
@@ -50,43 +52,50 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
-    private int id;
+    private Integer id;
 
+    @NotNull
     @Column(name = "store_name")
     private String name;
 
+    @NotNull
     @Column(name = "store_type")
     private String storeType;
 
+    @NotNull
     @Column(name = "off_day")
     private String offDay;
 
+    @NotNull
     @Column(name = "description")
     private String description;
 
+    @NotNull
     @Column(name = "latitude")
     private String latitude;
 
+    @NotNull
     @Column(name = "longitude")
     private String longitude;
 
-    @Column(name = "safety_license_number")
+    @NotNull
+    @Column(name = "safety_license_number", unique = true)
     private String safetyLicenseNumber;
 
+    @NotNull
     @Column(name = "is_open")
-    private boolean isOpen;
+    private Boolean isOpen;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
-//    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "store_id")
+//    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
 //    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
-
 
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
         return new Store(owner, storeRegistRequestDto);
@@ -115,6 +124,5 @@ public class Store {
 
     public void addMenu(Menu menu) {
         menuList.add(menu);
-        menu.addStore(this);
     }
 }

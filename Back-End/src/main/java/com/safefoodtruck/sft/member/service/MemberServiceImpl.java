@@ -123,8 +123,8 @@ public class MemberServiceImpl implements MemberService {
 
         if (member.getRole().equals("customer")) {
             member.joinVip("vip_customer");
-        } else if (member.getRole().equals("ceo")) {
-            member.joinVip("vip_ceo");
+        } else if (member.getRole().equals("owner")) {
+            member.joinVip("vip_owner");
         }
         memberRepository.save(member);
     }
@@ -135,8 +135,8 @@ public class MemberServiceImpl implements MemberService {
 
         if (member.getRole().equals("vip_customer")) {
             member.deactivateVip("customer");
-        } else if (member.getRole().equals("vip_ceo")) {
-            member.deactivateVip("ceo");
+        } else if (member.getRole().equals("vip_owner")) {
+            member.deactivateVip("owner");
         }
         memberRepository.save(member);
     }

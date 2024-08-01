@@ -1,12 +1,9 @@
 package com.safefoodtruck.sft.menu.domain;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
-import org.hibernate.annotations.DynamicInsert;
-
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.store.domain.Store;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,25 +11,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Table(name = "menu")
 @Entity
+@Table(name = "menu")
 @Getter
-@Builder
-@ToString
 @DynamicInsert
-@NoArgsConstructor
+@DynamicUpdate
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
 
-	public Menu(String name, int price, String description) {
+	public Menu(String name, Integer price, String description) {
 		this.name = name;
 		this.price = price;
 		this.description = description;
@@ -41,35 +38,44 @@ public class Menu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
-	private int id;
+	private Integer id;
 
+	@NotNull
 	@Column(name = "menu_name")
 	private String name;
 
+	@NotNull
 	@Column(name = "price")
-	private int price;
+	private Integer price;
 
+	@NotNull
 	@Column(name = "description")
 	private String description;
 
+	@NotNull
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "menu_id")
-	private MenuImage menuImage;
+//	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+//	private MenuImage menuImage;
 
 	public void addStore(Store store) {
 		this.store = store;
+		store.addMenu(this);
 	}
 
-	private void addMenuImage(MenuImage menuImage) {
-		this.menuImage = menuImage;
-		menuImage.addMenu(this);
-	}
+//	public void addMenuImage(MenuImage menuImage) {
+//		this.menuImage = menuImage;
+//	}
 
-	public static Menu of(String name, int price, String description) {
+	public static Menu of(String name, Integer price, String description) {
 		return new Menu(name, price, description);
+	}
+
+	public void update(MenuUpdateRequestDto menuUpdateRequestDto) {
+		this.name = menuUpdateRequestDto.name();
+		this.price = menuUpdateRequestDto.price();
+		this.description = menuUpdateRequestDto.description();
 	}
 }

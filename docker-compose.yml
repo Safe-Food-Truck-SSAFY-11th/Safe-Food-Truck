@@ -3,11 +3,13 @@ services:
     container_name: spring
     image: spring-app
     networks:
-      -  app-network
-
-  react:
-    container_name: react
-    image: react-app
+      - app-network
+  nginx-react:
+    container_name: nginx-react
+    image: nginx:alpine
+    volumes:
+      - /home/ubuntu/templates-react:/etc/nginx/templates
+      - /home/ubuntu/nginx-react/logs:/var/log/nginx
     networks:
       - app-network
 
