@@ -38,7 +38,9 @@ public class StoreServiceImpl implements StoreService {
         String email = MemberInfo.getEmail();
         Member owner = memberRepository.findByEmail(email);
         Store store = Store.of(owner, storeRegistRequestDto);
+        log.info("before save store info {}", store);
         storeRepository.save(store);
+        log.info("after save store info {}", store);
 
         return StoreRegistResponseDto.fromEntity(email, store);
     }
@@ -60,12 +62,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public Store findStore(int storeId) {
+    public Store findStore(Integer storeId) {
         return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
     }
 
     @Override
-    public MenuListResponseDto findStoreMenus(int storeId) {
+    public MenuListResponseDto findStoreMenus(Integer storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
         List<Menu> menuList = store.getMenuList();
 
@@ -93,14 +95,14 @@ public class StoreServiceImpl implements StoreService {
         Store store = findStore();
         store.updateStatus();
 
-        return store.isOpen();
+        return store.getIsOpen();
     }
 
     @Override
     public boolean getStoreStatus() {
         Store store = findStore();
 
-        return store.isOpen();
+        return store.getIsOpen();
     }
 
     @Override

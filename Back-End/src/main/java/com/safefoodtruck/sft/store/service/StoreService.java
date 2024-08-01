@@ -18,9 +18,9 @@ public interface StoreService {
 
 	Store findStore();
 
-	Store findStore(int storeId);
+	Store findStore(Integer storeId);
 
-	MenuListResponseDto findStoreMenus(int storeId);
+	MenuListResponseDto findStoreMenus(Integer storeId);
 
 	void deleteStore();
 
