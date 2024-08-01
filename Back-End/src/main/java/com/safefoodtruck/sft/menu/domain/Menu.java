@@ -1,12 +1,9 @@
 package com.safefoodtruck.sft.menu.domain;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
-import org.hibernate.annotations.DynamicInsert;
-
 import com.safefoodtruck.sft.store.domain.Store;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,13 +18,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
 
 @Table(name = "menu")
 @Entity
 @Getter
 @Builder
-@ToString
 @DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
