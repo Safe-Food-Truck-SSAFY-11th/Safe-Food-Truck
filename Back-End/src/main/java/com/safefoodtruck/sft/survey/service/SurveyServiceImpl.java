@@ -4,6 +4,7 @@ import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.survey.domain.Survey;
 import com.safefoodtruck.sft.survey.dto.InsertSurveysRequestDto;
+import com.safefoodtruck.sft.survey.dto.SelectSurveysResponseDto;
 import com.safefoodtruck.sft.survey.exception.AlreadyRegisteredEmailException;
 import com.safefoodtruck.sft.survey.exception.UnSatisfyLengthException;
 import com.safefoodtruck.sft.survey.repository.SurveyRepository;
@@ -39,11 +40,18 @@ public class SurveyServiceImpl implements SurveyService {
             surveyRepository.save(Survey.builder()
                 .member(member)
                 .storeType(insertSurveyRequestDto.getStoreType())
+                .sido(insertSurveyRequestDto.getSido())
                 .sigungu(insertSurveyRequestDto.getSigungu())
                 .dong(insertSurveyRequestDto.getDong())
                 .latitude(insertSurveyRequestDto.getLatitude())
                 .longitude(insertSurveyRequestDto.getLongitude())
                 .build());
         }
+    }
+
+    @Override
+    public List<SelectSurveysResponseDto> selectSurveys(String sigungu, String gugun) {
+
+        return List.of();
     }
 }

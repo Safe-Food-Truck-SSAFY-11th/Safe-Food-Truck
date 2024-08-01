@@ -39,24 +39,28 @@ public class Survey {
     @Column(name = "store_type")
     private String storeType;
 
-    @Column(name = "dong")
-    private String dong;
+    @Column(name = "sido", length = 50)
+    private String sido;
 
-    @Column(name = "sigungu")
+    @Column(name = "sigungu", length = 50)
     private String sigungu;
 
-    @Column(name = "latitue")
+    @Column(name = "dong", length = 50)
+    private String dong;
+
+    @Column(name = "latitue", length = 30)
     private String latitude;
 
-    @Column(name = "longitude")
+    @Column(name = "longitude", length = 30)
     private String longitude;
 
     @Builder
-    public Survey(Member member, String storeType, String dong, String sigungu, String latitude, String longitude) {
+    public Survey(Member member, String storeType, String sido, String sigungu, String dong, String latitude, String longitude) {
         this.member = member;
         this.storeType = storeType;
-        this.dong = dong;
+        this.sido = sido;
         this.sigungu = sigungu;
+        this.dong = dong;
         this.latitude = latitude;
         this.longitude = longitude;
     }

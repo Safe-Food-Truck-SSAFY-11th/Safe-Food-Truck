@@ -6,8 +6,9 @@ import lombok.Data;
 public class InsertSurveysRequestDto {
     private String email;
     private String storeType;
-    private String dong;
+    private String sido;
     private String sigungu;
+    private String dong;
     private String latitude;
     private String longitude;
 }
