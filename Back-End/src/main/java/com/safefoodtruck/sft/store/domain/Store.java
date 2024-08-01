@@ -20,13 +20,13 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "store")
-@ToString
+@Getter
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
