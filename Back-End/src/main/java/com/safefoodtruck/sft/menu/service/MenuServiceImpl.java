@@ -1,20 +1,21 @@
 package com.safefoodtruck.sft.menu.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuRegistResponseDto;
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
+import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -22,21 +23,42 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
 
-	private final MenuRepository menuRepository;
 	private final StoreRepository storeRepository;
+	private final MenuRepository menuRepository;
 
 	@Override
-	public List<MenuRegistResponseDto> registMenu(int storeId, MenuListRegistRequestDto menuListRegistRequestDto) {
-		Store store = storeRepository.findById(storeId)
-			.orElseThrow(StoreNotFoundException::new);
+	public MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
+		String email = MemberInfo.getEmail();
+		Store store = storeRepository.findByOwnerEmail(email).orElseThrow(StoreNotFoundException::new);
 
-		return menuListRegistRequestDto.menuRegistRequestDtos().stream()
+		List<MenuResponseDto> menuResponseDtos = menuListRegistRequestDto.menuRegistRequestDtos().stream()
 			.map(dto -> {
 				Menu menu = Menu.of(dto.name(), dto.price(), dto.description());
 				menu.addStore(store);
 				Menu savedMenu = menuRepository.save(menu);
-				return new MenuRegistResponseDto(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), savedMenu.getDescription());
+				return MenuResponseDto.fromEntity(savedMenu);
 			})
 			.toList();
+
+		return new MenuListResponseDto(menuResponseDtos);
+	}
+
+	@Override
+	public MenuResponseDto findMenu(Integer menuId) {
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+		return MenuResponseDto.fromEntity(menu);
+	}
+
+	@Override
+	public MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto) {
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+		menu.update(menuUpdateRequestDto);
+
+		return MenuResponseDto.fromEntity(menu);
+	}
+
+	@Override
+	public void deleteMenu(Integer menuId) {
+		menuRepository.deleteById(menuId);
 	}
 }

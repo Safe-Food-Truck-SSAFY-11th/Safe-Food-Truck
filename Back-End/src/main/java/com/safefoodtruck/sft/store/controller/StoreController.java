@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.store.controller;
 
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
@@ -96,6 +97,26 @@ public class StoreController {
         Store store = storeService.findStore(storeId);
         FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
         return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
+    }
+
+
+    @GetMapping("{storeId}/menus")
+    @Operation(summary = "해당 가게 메뉴 전체 조회", description = "해당 가게의 메뉴 전체를 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "해당 가게 메뉴 전체 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<?> findStoreMenus(@PathVariable Integer storeId) {
+        MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
+        return new ResponseEntity<>(allMenu, HttpStatus.OK);
     }
 
 
