@@ -1,7 +1,7 @@
 package com.safefoodtruck.sft.menu.controller;
 
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuListRegistResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.service.MenuService;
 import com.safefoodtruck.sft.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,13 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RequestMapping("/menu")
+@RequestMapping("/menus")
 @RestController
 @RequiredArgsConstructor
 public class MenuController {
@@ -41,8 +43,27 @@ public class MenuController {
 		)
 	})
 	public ResponseEntity<?> registMenu(@RequestBody MenuListRegistRequestDto menuListRegistRequestDto) {
-		MenuListRegistResponseDto menuListRegistResponseDto = menuService.registMenu(
+		MenuListResponseDto menuListResponseDto = menuService.registMenu(
 			menuListRegistRequestDto);
-		return new ResponseEntity<>(menuListRegistResponseDto, HttpStatus.CREATED);
+		return new ResponseEntity<>(menuListResponseDto, HttpStatus.CREATED);
+	}
+
+	@GetMapping("{storeId}")
+	@Operation(summary = "해당 가게 메뉴 전체 조회", description = "해당 가게의 메뉴 전체를 조회할 때 사용하는 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "해당 가게 메뉴 전체 조회에 성공하였습니다!",
+			content = @Content(mediaType = "application/json")
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error Message 로 전달함",
+			content = @Content(mediaType = "application/json")
+		)
+	})
+	public ResponseEntity<?> findMenusByStoreId(@PathVariable Integer storeId) {
+		MenuListResponseDto allMenu = menuService.findAllMenu(storeId);
+		return new ResponseEntity<>(allMenu, HttpStatus.OK);
 	}
 }

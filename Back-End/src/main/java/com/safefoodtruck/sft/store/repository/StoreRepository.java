@@ -19,4 +19,6 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
 	@Query("SELECT new com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto(s.id, s.name, s.latitude, s.longitude) FROM Store s WHERE s.isOpen = true")
 	List<StoreInfoResponseDto> findOpenStores();
+
+    Optional<Store> findByOwnerEmail(String email);
 }

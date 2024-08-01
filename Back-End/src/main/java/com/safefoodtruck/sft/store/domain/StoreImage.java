@@ -34,7 +34,7 @@ public class StoreImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "store_image_id")
-	private long id;
+	private Integer id;
 
 	@Column(name = "original_name")
 	private String originalName;
