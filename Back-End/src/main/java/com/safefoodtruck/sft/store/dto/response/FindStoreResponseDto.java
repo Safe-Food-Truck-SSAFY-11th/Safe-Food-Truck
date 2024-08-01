@@ -8,9 +8,10 @@ import com.safefoodtruck.sft.store.domain.Store;
 import lombok.Builder;
 
 @Builder
-public record StoreInfoDto(String name, String storeType, List<Menu> menus, String offDay, String description, String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
-    public static StoreInfoDto fromEntity(Store store) {
-        return StoreInfoDto.builder()
+public record FindStoreResponseDto(int storeId, String name, String storeType, List<Menu> menus, String offDay, String description, String latitude, String longitude, String safetyLicenseNumber, boolean isOpen) {
+    public static FindStoreResponseDto fromEntity(Store store) {
+        return FindStoreResponseDto.builder()
+            .storeId(store.getId())
             .name(store.getName())
             .storeType(store.getStoreType())
             .menus(store.getMenuList())

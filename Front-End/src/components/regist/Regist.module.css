@@ -121,6 +121,12 @@
     margin-right: 10px;
 }
 
+.joinButton:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 .cancelButton {
     background-color: #FFA285;
     color: black;
