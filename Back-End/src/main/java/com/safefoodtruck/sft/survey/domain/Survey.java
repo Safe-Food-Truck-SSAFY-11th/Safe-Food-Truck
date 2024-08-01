@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -49,4 +50,14 @@ public class Survey {
 
     @Column(name = "longitude")
     private String longitude;
+
+    @Builder
+    public Survey(Member member, String storeType, String dong, String sigungu, String latitude, String longitude) {
+        this.member = member;
+        this.storeType = storeType;
+        this.dong = dong;
+        this.sigungu = sigungu;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

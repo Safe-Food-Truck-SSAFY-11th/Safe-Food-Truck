@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.survey.repository;
 
-public interface SurveyRepository {
+import com.safefoodtruck.sft.survey.domain.Survey;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface SurveyRepository extends JpaRepository<Survey, Integer> {
 }

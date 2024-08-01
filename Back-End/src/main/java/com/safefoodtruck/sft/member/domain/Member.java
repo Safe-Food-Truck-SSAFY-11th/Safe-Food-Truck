@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.member.domain;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.notification.domain.Notification;
+import com.safefoodtruck.sft.survey.domain.Survey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -84,6 +85,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Notification> notificationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Survey> surveyList = new ArrayList<>();
 
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();
