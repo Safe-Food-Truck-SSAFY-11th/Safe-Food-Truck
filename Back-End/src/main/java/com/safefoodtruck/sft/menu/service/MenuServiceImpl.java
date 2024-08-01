@@ -56,4 +56,9 @@ public class MenuServiceImpl implements MenuService {
 
 		return MenuResponseDto.fromEntity(menu);
 	}
+
+	@Override
+	public void deleteMenu(Integer menuId) {
+		menuRepository.deleteById(menuId);
+	}
 }

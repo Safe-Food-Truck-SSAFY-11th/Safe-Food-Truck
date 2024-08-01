@@ -9,4 +9,5 @@ public interface MenuService {
 	MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto);
 	MenuResponseDto findMenu(Integer menuId);
 	MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto);
+	void deleteMenu(Integer menuId);
 }
