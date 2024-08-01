@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.menu.domain;
 
 import static jakarta.persistence.FetchType.*;
 
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import org.hibernate.annotations.DynamicInsert;
 
 import com.safefoodtruck.sft.store.domain.Store;
@@ -41,7 +42,7 @@ public class Menu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_id")
-	private int id;
+	private Integer id;
 
 	@Column(name = "menu_name")
 	private String name;
@@ -56,20 +57,25 @@ public class Menu {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@OneToOne(fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "menu_id")
+	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
 	private MenuImage menuImage;
 
 	public void addStore(Store store) {
 		this.store = store;
+		store.addMenu(this);
 	}
 
-	private void addMenuImage(MenuImage menuImage) {
+	public void addMenuImage(MenuImage menuImage) {
 		this.menuImage = menuImage;
-		menuImage.addMenu(this);
 	}
 
 	public static Menu of(String name, int price, String description) {
 		return new Menu(name, price, description);
+	}
+
+	public void update(MenuUpdateRequestDto menuUpdateRequestDto) {
+		this.name = menuUpdateRequestDto.name();
+		this.price = menuUpdateRequestDto.price();
+		this.description = menuUpdateRequestDto.description();
 	}
 }

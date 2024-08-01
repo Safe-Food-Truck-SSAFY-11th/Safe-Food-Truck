@@ -1,10 +1,13 @@
 package com.safefoodtruck.sft.menu.service;
 
-import java.util.List;
-
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuRegistResponseDto;
+import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 
 public interface MenuService {
-	List<MenuRegistResponseDto> registMenu(int storeId, MenuListRegistRequestDto menuListRegistRequestDto);
+	MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto);
+	MenuResponseDto findMenu(Integer menuId);
+	MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto);
+	void deleteMenu(Integer menuId);
 }

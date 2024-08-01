@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.store.domain;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -19,17 +20,13 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
-@Getter
 @Table(name = "store")
-@Builder
-@ToString
+@Getter
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,7 +47,7 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
-    private int id;
+    private Integer id;
 
     @Column(name = "store_name")
     private String name;
@@ -70,7 +67,7 @@ public class Store {
     @Column(name = "longitude")
     private String longitude;
 
-    @Column(name = "safety_license_number")
+    @Column(name = "safety_license_number", unique = true)
     private String safetyLicenseNumber;
 
     @Column(name = "is_open")
@@ -80,9 +77,8 @@ public class Store {
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
-//    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "store_id")
-//    private StoreImage storeImage;
+    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
@@ -114,6 +110,5 @@ public class Store {
 
     public void addMenu(Menu menu) {
         menuList.add(menu);
-        menu.addStore(this);
     }
 }
