@@ -15,7 +15,7 @@ const RegistTruck = () => {
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         const role = sessionStorage.getItem('role'); 
-        if (!token || role !== 'ceo') {
+        if (!token || role !== 'owner') {
             navigate('/login');
         }
     }, [navigate]);
