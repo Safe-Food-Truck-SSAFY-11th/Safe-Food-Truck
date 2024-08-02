@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.order.service;
 
-public interface OrderService {
+import com.safefoodtruck.sft.order.dto.response.OrderRequestDto;
 
+public interface OrderService {
+    Integer order(OrderRequestDto orderRequestDto);
 }

@@ -1,5 +1,8 @@
 package com.safefoodtruck.sft.order.repository;
 
-public interface OrderRepository {
+import com.safefoodtruck.sft.order.domain.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 }

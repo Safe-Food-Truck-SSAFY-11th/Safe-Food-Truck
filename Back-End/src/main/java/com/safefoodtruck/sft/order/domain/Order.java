@@ -4,6 +4,8 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.order.dto.request.OrderCreateRequestDto;
+import com.safefoodtruck.sft.order.dto.response.OrderRequestDto;
 import com.safefoodtruck.sft.store.domain.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +52,9 @@ public class Order {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    private List<OrderMenu> orderMenus = new ArrayList<>();
+
     @NotNull
     @Column(name = "is_accepted")
     private Boolean isAccepted;
@@ -60,7 +65,7 @@ public class Order {
 
     @NotNull
     @Column(name = "order_time", columnDefinition = "TIMESTAMP")
-    LocalDateTime ordersTime;
+    LocalDateTime orderTime;
 
     @NotNull
     @Column(name = "order_request")
@@ -71,11 +76,24 @@ public class Order {
     @ColumnDefault("0")
     private Boolean isDone;
 
-    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
-    private List<OrderMenu> orderMenus = new ArrayList<>();
-
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenus.add(orderMenu);
         orderMenu.setOrder(this);
+    }
+
+    public static Order createOrder(OrderCreateRequestDto orderCreateRequestDto) {
+        Order order = new Order();
+
+        order.customer = orderCreateRequestDto.customer();
+        order.store = orderCreateRequestDto.store();
+        order.isAccepted = false;
+        order.orderTime = LocalDateTime.now();
+        order.request = orderCreateRequestDto.request();
+        order.isDone = false;
+
+        OrderRequestDto orderRequestDto = orderCreateRequestDto.orderRequestDto();
+        order.orderMenus = orderRequestDto.orderMenus();
+
+        return order;
     }
 }
