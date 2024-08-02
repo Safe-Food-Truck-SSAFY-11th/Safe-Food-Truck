@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./MenuRegist.module.css";
-import useMenuStore from "../../../store/users/owner/menuStore";
-import imageIcon from "../../../assets/images/sft-logo.png";
+import useMenuStore from "store/users/owner/menuStore";
+import imageIcon from "assets/images/sft-logo.png";
 
 const MenuRegist = () => {
-  const { menuForm, setMenuForm, setMenuImage, closeMenu, addMenu } =
+  const { menuForm, setMenuForm, setMenuImage, closeRegist, addMenu } =
     useMenuStore();
 
   const handleChange = (e) => {
@@ -22,7 +22,8 @@ const MenuRegist = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     addMenu();
-    closeMenu();
+    closeRegist();
+    window.location.reload();
   };
 
   return (
@@ -57,8 +58,8 @@ const MenuRegist = () => {
               <label>메뉴</label>
               <input
                 type="text"
-                name="menuName"
-                value={menuForm.menuName}
+                name="name"
+                value={menuForm.name}
                 onChange={handleChange}
               />
             </div>
@@ -86,7 +87,7 @@ const MenuRegist = () => {
               <button
                 type="button"
                 className={styles.cancelButton}
-                onClick={closeMenu}
+                onClick={closeRegist}
               >
                 취소
               </button>
