@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.order.domain;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
@@ -11,9 +12,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,4 +70,12 @@ public class Order {
     @Column(name = "is_done")
     @ColumnDefault("0")
     private Boolean isDone;
+
+    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    private List<OrderMenu> orderMenus = new ArrayList<>();
+
+    public void addOrderMenu(OrderMenu orderMenu) {
+        orderMenus.add(orderMenu);
+        orderMenu.setOrder(this);
+    }
 }
