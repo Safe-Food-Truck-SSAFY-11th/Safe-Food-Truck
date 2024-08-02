@@ -13,7 +13,7 @@ function MapCustomer({ selectedType }) {
   }, [openFoodTruck]);
 
   useEffect(() => {
-    const apiKey = 'bb662920ed50821a974fe0e873815b8b';
+    const apiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;

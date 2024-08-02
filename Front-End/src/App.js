@@ -31,7 +31,7 @@ function App() {
         <Route path="/mainOwner" element={<MainOwner />} />
         <Route path="/mainCustomer" element={<MainCustomer />} />
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
-        <Route path="/mypage" element={<MyPageCustomer />} />
+        <Route path="/mypageCustomer" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
         <Route path="/review" element={<CreateReview />} />
         <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
