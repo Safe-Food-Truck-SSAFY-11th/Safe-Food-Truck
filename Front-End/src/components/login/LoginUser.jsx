@@ -48,6 +48,14 @@ const LoginUser = () => {
         }
     };
 
+    // 카카오 로그인
+    const kakaoKey = process.env.REACT_APP_KAKAO_REST_API_KEY;
+    const redirect_uri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+
+    const handleKakaoLogin = () => {
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoKey}&redirect_uri=${redirect_uri}&response_type=code`
+    }
+
     return (
         <div className={`${styles.loginContainer} ${isGuest === false ? styles.ownerBackground : ''}`}>
             <img src={logo} alt="세이푸트" className={styles.logoImage} />
@@ -78,7 +86,7 @@ const LoginUser = () => {
             <div className={styles.socialLoginContainer}>
                 <p className={`${styles.socialLoginText} ${isGuest === false ? styles.ownerSocialLoginText : ''}`}>소셜 로그인</p>
                 <div className={styles.socialIcons}>
-                    <img src={kakaoLogo} alt="카카오톡" className={styles.socialIcon} />
+                    <img src={kakaoLogo} alt="카카오톡" className={styles.socialIcon} onClick={handleKakaoLogin} />
                     <img src={googleLogo} alt="구글" className={styles.socialIcon} />
                 </div>
             </div>

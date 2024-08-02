@@ -41,9 +41,9 @@ const userStore = create((set, get) => ({
     }
   },
 
-  registerUser: async (userData) => {
+  registerUser: async (method, userData) => {
     try {
-      const response = await axios.post('https://i11b102.p.ssafy.io/api/members/common', userData);
+      const response = await axios.post(`https://i11b102.p.ssafy.io/api/members/${method}`, userData);
       return response.data;
     } catch (error) {
       console.log(userData);

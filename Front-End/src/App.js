@@ -19,6 +19,8 @@ import OwnerUpdate from './components/owner/myPage/OwnerUpdate';
 import ManageTruck from './components/owner/myPage/ManageTruck';
 import Chating from './components/common/Chating';
 import OwnerReview from './components/owner/myPage/OwnerReview';
+import SocialRedirection from 'components/login/SocialRedirection';
+import SocialRegist from 'components/regist/socialRegist/SocialRegist';
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="/" element={<Waiting />} />
         <Route path="/login" element={<LoginUser />} />
         <Route path="/regist" element={<Regist />} />
+        <Route path="/socialRegist" element={<SocialRegist />} />
         <Route path="/registTruck" element={<RegistTruck />} />
         <Route path="/mainOwner" element={<MainOwner />} />
         <Route path="/mainCustomer" element={<MainCustomer />} />
@@ -42,6 +45,7 @@ function App() {
         <Route path="/manageTruck" element={<ManageTruck />} />
         <Route path="/chating" element={<Chating />} />
         <Route path="/ownerReview" element={<OwnerReview />} />
+        <Route path="/social-redirection" element={<SocialRedirection />} />
       </Routes>
     </div>
   );
