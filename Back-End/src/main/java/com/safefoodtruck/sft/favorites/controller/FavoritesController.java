@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.favorites.controller;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.exception.ImpossibleRetryException;
 import com.safefoodtruck.sft.favorites.exception.NotInsertedFavoriteException;
@@ -49,6 +50,19 @@ public class FavoritesController {
         return ResponseEntity.status(HttpStatus.OK).body(selectMemberFavoriteResponseDto);
     }
 
+    @GetMapping("/{storeId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "가게 찜 개수 조회", description = "가게 찜 개수를 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "가게 찜 개수 조회 성공",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> selectFavoriteCount(@PathVariable("storeId") Integer storeId) {
+        SelectFavoriteResponseDto selectFavoriteResponseDto = favoritesService.selectFavoriteCount(storeId);
+        return ResponseEntity.status(HttpStatus.OK).body(selectFavoriteResponseDto);
+    }
+
     @PostMapping("/{storeId}")
     @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
     @Operation(summary = "가게 찜하기", description = "(손님 전용!!) 가게를 찜할 때 사용하는 API")
@@ -86,7 +100,7 @@ public class FavoritesController {
     @ExceptionHandler({ImpossibleRetryException.class, NotInsertedFavoriteException.class,
         NotWritablePropertyException.class})
     public ResponseEntity<?> ImpossibleExceptionHandler(RuntimeException e) {
-        log.error("Notification 에러: {}", e.getMessage());
+        log.error("Favorites 에러: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponseDto(

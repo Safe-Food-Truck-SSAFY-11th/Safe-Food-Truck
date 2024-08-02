@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.favorites.service;
 
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto;
+import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.exception.ImpossibleRetryException;
 import com.safefoodtruck.sft.favorites.exception.NotInsertedFavoriteException;
@@ -57,5 +58,10 @@ public class FavoritesServiceImpl implements FavoritesService {
             throw new NotWriterFavoriteException();
         }
         favoritesRepository.delete(favorites);
+    }
+
+    @Override
+    public SelectFavoriteResponseDto selectFavoriteCount(Integer storeId) {
+        return favoritesRepository.findFavoritesCount(storeId);
     }
 }
