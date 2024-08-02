@@ -4,6 +4,7 @@ import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.store.domain.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -29,4 +30,10 @@ public class Favorites {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @Builder
+    public Favorites(Member member, Store store) {
+        this.member = member;
+        this.store = store;
+    }
 }

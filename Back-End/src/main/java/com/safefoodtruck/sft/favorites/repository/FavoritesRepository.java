@@ -10,9 +10,19 @@ import java.util.List;
 
 public interface FavoritesRepository extends JpaRepository<Favorites, Integer> {
 
-    @Query(value = "SELECT new com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto(f.favoriteId, f.store.id) " +
+    @Query(value =
+        "SELECT new com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto(f.favoriteId, f.store.id) "
+            +
             "FROM Favorites f " +
             "WHERE f.member.email = :email " +
             "ORDER BY f.favoriteId desc")
     List<MemberFavoritesDto> findByMember(@Param("email") String email);
+
+    @Query(value =
+        "SELECT new com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto(f.favoriteId, f.store.id) "
+            +
+            "FROM Favorites f " +
+            "WHERE f.member.email = :email " +
+            "AND f.store.id = :storeId")
+    MemberFavoritesDto findByMemberAndStore(@Param("email") String email, @Param("storeId") Integer storeId);
 }
