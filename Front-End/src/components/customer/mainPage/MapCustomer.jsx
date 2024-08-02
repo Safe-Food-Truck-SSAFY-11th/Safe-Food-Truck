@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MapCustomer.module.css';
-import markerImage from '../../../assets/images/ft_marker.png'; // 이미지 경로 import
+import markerImage from 'assets/images/ft_marker.png'; // 이미지 경로 import
+import useFoodTruckStore from 'store/trucks/useFoodTruckStore'; // store.js의 경로에 맞게 수정
 
 function MapCustomer({ selectedType }) {
   const navigate = useNavigate();
+  const { foodTrucks, openFoodTruck, getFoodTruck } = useFoodTruckStore();
+
+  useEffect(() => {
+    openFoodTruck();
+  }, [openFoodTruck]);
 
   useEffect(() => {
     const apiKey = 'bb662920ed50821a974fe0e873815b8b';
@@ -22,17 +28,11 @@ function MapCustomer({ selectedType }) {
       window.kakao.maps.load(() => {
         const container = document.getElementById('map'); // 지도를 표시할 div
         const options = {
-          center: new window.kakao.maps.LatLng(37.5665, 126.9780), // 지도의 중심 좌표 (서울 시청)
+          center: new window.kakao.maps.LatLng(36.3559, 127.3319), // 대전광역시 유성구의 중심 좌표
           level: 3, // 지도의 확대 레벨
         };
 
         const map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
-
-        const foodTruckLocations = [
-          { id: 1, name: "Food Truck 1", lat: 37.5665, lng: 126.9780 },
-          { id: 2, name: "Food Truck 2", lat: 37.5651, lng: 126.9895 },
-          { id: 3, name: "Food Truck 3", lat: 37.5641, lng: 126.9750 }
-        ];
 
         const markerImageSize = new window.kakao.maps.Size(45, 45); // 아이콘 이미지 크기
         const markerImageOptions = {
@@ -45,8 +45,18 @@ function MapCustomer({ selectedType }) {
           markerImageOptions
         );
 
-        foodTruckLocations.forEach(location => {
-          const markerPosition = new window.kakao.maps.LatLng(location.lat, location.lng); 
+        console.log(foodTrucks);
+
+        const addMarker = (location) => {
+          console.log(location);
+          const latitude = parseFloat(location.latitude);
+          const longitude = parseFloat(location.longitude);
+          if (isNaN(latitude) || isNaN(longitude)) {
+            console.error('Invalid latitude or longitude for location:', location);
+            return;
+          }
+
+          const markerPosition = new window.kakao.maps.LatLng(latitude, longitude);
           const marker = new window.kakao.maps.Marker({
             position: markerPosition,
             image: markerImageObj // 커스텀 아이콘 설정
@@ -57,17 +67,20 @@ function MapCustomer({ selectedType }) {
             content: `<div style="padding:5px;">${location.name}</div>`
           });
 
-          window.kakao.maps.event.addListener(marker, 'mouseover', function() {
-            infowindow.open(map, marker);
-          });
+          // InfoWindow를 마커 위에 강제로 표시
+          infowindow.open(map, marker);
 
-          window.kakao.maps.event.addListener(marker, 'mouseout', function() {
-            infowindow.close();
+          window.kakao.maps.event.addListener(marker, 'click', async function() {
+            await getFoodTruck(location.storeId);
+            navigate(`/foodtruckDetail/${location.storeId}`);
           });
+        };
 
-          window.kakao.maps.event.addListener(marker, 'click', function() {
-            navigate(`/foodtruck/${location.id}`);
-          });
+        // Ensure foodTrucks is processed as an array of storeInfoResponseDtos
+        const locations = foodTrucks.storeInfoResponseDtos || [];
+
+        locations.forEach(location => {
+          addMarker(location);
         });
       });
     };
@@ -76,7 +89,7 @@ function MapCustomer({ selectedType }) {
       console.error('카카오맵 불러오기에 실패하였습니다.');
     };
 
-  }, [navigate]);
+  }, [navigate, foodTrucks, getFoodTruck]);
 
   return (
     <div className={styles.mapContainer}>
