@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
 import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
 import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
@@ -45,8 +46,8 @@ public class MemberController {
                     content = @Content(mediaType = "application/json")
             )
     })
-    public ResponseEntity<?> selectMember(@RequestHeader(value = "Authorization") String tokenHeader) {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+    public ResponseEntity<?> selectMember() {
+        String userEmail = MemberInfo.getEmail();
         MemberSelectResponseDto memberSelectResponseDto = memberService.selectMember(userEmail);
 
         return ResponseEntity.status(HttpStatus.OK).body(memberSelectResponseDto);
@@ -141,10 +142,9 @@ public class MemberController {
             content = @Content(mediaType = "application/json"))
     })
     public ResponseEntity<?> updateMember(
-        @RequestBody MemberUpdateRequestDto memberUpdateRequestDto,
-        @RequestHeader(value = "Authorization") String tokenHeader)
+        @RequestBody MemberUpdateRequestDto memberUpdateRequestDto)
     {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+        String userEmail = MemberInfo.getEmail();
         memberUpdateRequestDto.setEmail(userEmail);
         memberService.updateMember(memberUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 수정완료!!");
@@ -157,8 +157,8 @@ public class MemberController {
             description = "is_Resign이 1로 바뀜",
             content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<?> deactivateMember(@RequestHeader(value = "Authorization") String tokenHeader) {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+    public ResponseEntity<?> deactivateMember() {
+        String userEmail = MemberInfo.getEmail();
         memberService.updateIsResign(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료!!");
     }
@@ -171,8 +171,8 @@ public class MemberController {
             content = @Content(mediaType = "application/json"))
     })
     @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_owner')")
-    public ResponseEntity<?> joinVip(@RequestHeader("Authorization") String tokenHeader) {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+    public ResponseEntity<?> joinVip() {
+        String userEmail = MemberInfo.getEmail();
         memberService.joinVip(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body("멤버십 가입완료");
     }
@@ -185,8 +185,8 @@ public class MemberController {
             content = @Content(mediaType = "application/json"))
     })
     @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_owner')")
-    public ResponseEntity<?> deactivateVip(@RequestHeader("Authorization") String tokenHeader) {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+    public ResponseEntity<?> deactivateVip() {
+        String userEmail = MemberInfo.getEmail();
         memberService.deactivateVip(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body("멤버십 탈퇴완료");
     }
@@ -199,8 +199,8 @@ public class MemberController {
             content = @Content(mediaType = "application/json"))
     })
     @PreAuthorize("hasAnyRole('ROLE_vip_customer', 'ROLE_vip_owner')")
-    public ResponseEntity<?> extendVip(@RequestHeader("Authorization") String tokenHeader) {
-        String userEmail = jwtUtil.getId(tokenHeader.substring(7));
+    public ResponseEntity<?> extendVip() {
+        String userEmail = MemberInfo.getEmail();
         memberService.extendVip(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body("멤버십 연장완료");
     }
@@ -225,7 +225,7 @@ public class MemberController {
     }
 
     @GetMapping("/password")
-    @Operation(summary = "password 찾기", description = "이메일 찾기 시 사용하는 API")
+    @Operation(summary = "비밀번호 찾기", description = "비밀번호 찾기 시 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
             description = "(이메일, 이름, 생일, 전화번호)로 요청하여 모두 일치할 시 임시 비밀번호를 이메일로 전송합니다.",
