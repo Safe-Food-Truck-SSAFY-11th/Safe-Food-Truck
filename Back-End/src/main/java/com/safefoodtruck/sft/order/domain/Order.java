@@ -13,10 +13,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -39,7 +41,6 @@ public class Order {
     @JoinColumn(name = "email")
     private Member customer;
 
-
     @NotNull
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
@@ -49,5 +50,20 @@ public class Order {
     @Column(name = "is_accepted")
     private Boolean isAccepted;
 
+    @NotNull
+    @Column(name = "amount")
+    private Integer amount;
 
+    @NotNull
+    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
+    LocalDateTime ordersTime;
+
+    @NotNull
+    @Column(name = "order_request")
+    private String request;
+
+    @NotNull
+    @Column(name = "is_done")
+    @ColumnDefault("0")
+    private Boolean isDone;
 }
