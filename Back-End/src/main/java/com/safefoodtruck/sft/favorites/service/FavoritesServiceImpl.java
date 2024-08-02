@@ -4,13 +4,14 @@ import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.exception.ImpossibleRetryException;
+import com.safefoodtruck.sft.favorites.exception.NotInsertedFavoriteException;
+import com.safefoodtruck.sft.favorites.exception.NotWriterFavoriteException;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 import groovy.util.logging.Slf4j;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,17 @@ public class FavoritesServiceImpl implements FavoritesService {
             .store(store)
             .build()
         );
+    }
+
+    @Override
+    public void deleteMemberFavorite(String userEmail, Integer favoriteId) {
+        Favorites favorites = favoritesRepository.findById(favoriteId).orElseThrow(
+            NotInsertedFavoriteException::new
+        );
+        String writer = favorites.getMember().getEmail();
+        if (!writer.equals(userEmail)) {
+            throw new NotWriterFavoriteException();
+        }
+        favoritesRepository.delete(favorites);
     }
 }

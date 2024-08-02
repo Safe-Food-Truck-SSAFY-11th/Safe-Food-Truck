@@ -5,4 +5,5 @@ import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponse
 public interface FavoritesService {
     SelectMemberFavoriteResponseDto selectMemberFavorite(String userEmail);
     void insertMemberFavorite(String userEmail, Integer storeId);
+    void deleteMemberFavorite(String userEmail, Integer storeId);
 }
