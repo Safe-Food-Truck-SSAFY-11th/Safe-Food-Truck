@@ -26,6 +26,10 @@ const Regist = () => {
         }));
     };
 
+    const handleGoBack = () => {
+        navigate('/login');
+    }
+
     const handleRegisterClick = async () => {
         try {
             const currentRole = formData.businessNumber ? 'owner' : 'customer';
@@ -34,10 +38,10 @@ const Regist = () => {
             // 회원가입 후 스토리지에 바로 토큰 담아주기
             if (token) {
                 sessionStorage.setItem('token', token);
-                fetchUser();
+                await fetchUser();
             }
 
-            navigate(currentRole === 'customer' ? '/login' : '/registTruck');
+            navigate(sessionStorage.getItem('role') === 'customer' ? '/login' : '/registTruck');
         } catch (error) {
             console.error('회원가입 실패:', error);
         }
@@ -76,7 +80,7 @@ const Regist = () => {
                     <button type="button" className={styles.joinButton} onClick={handleRegisterClick} disabled={!isFormValid}>
                         함께하기
                     </button>
-                    <button type="button" className={styles.cancelButton}>돌아가기</button>
+                    <button type="button" className={styles.cancelButton} onClick={handleGoBack}>돌아가기</button>
                 </div>
             </div>
         </div>

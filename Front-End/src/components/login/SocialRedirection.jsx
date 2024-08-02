@@ -1,28 +1,44 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'utils/axiosInstance';
+import useUserStore from 'store/users/userStore';
 
 const SocialRedirection = () => {
     const navigate = useNavigate();
-    const code = new URL(window.location.href).searchParams.get('code');
+    const provider = new URL(window.location.href).searchParams.get('provider');
+    const { fetchUser } = useUserStore();
 
     useEffect(() => {
-        const fetchKakaoCode = async () => {
+        const socialLogin = async () => {
             try {
-                console.log(code);
-                const response = await axios.post(`http://localhost:8080/api/oauth/kakao/code?code=${code}`);
-                if (response.status === 200) {
-                    console.log(response.data);
-                    sessionStorage.setItem('email', response.data.email);
-                    navigate('/socialRegist', { state: { method: 'kakao' }});
+                let response;
+                if (provider === 'kakao') {
+                    const code = new URL(window.location.href).searchParams.get('code');
+                    response = await axios.post(`oauth/kakao/code?code=${code}`);
+                } else if (provider === 'google') {
+                    const params = new URLSearchParams(window.location.hash.slice(1));
+                    const access_token = params.get('access_token');
+                    response = await axios.post(`oauth/google/access-token?access_token=${access_token}`);
                 }
+
+                if (response.status === 200) {
+                    sessionStorage.setItem('email', response.data.email);
+                    navigate('/socialRegist', { state: { method: provider } });
+                } 
             } catch (error) {
-                console.error('카카오 코드 요청 실패:', error);
+                if (error.response.status === 303) {
+                    // 이미 가입된 회원
+                    sessionStorage.setItem('token', error.response.data.token);
+                    fetchUser();
+                    navigate('/login');
+                } else {
+                    console.error('카카오 코드 요청 실패:', error);
+                }
             }
         };
 
-        fetchKakaoCode();
-    }, [code, navigate]);
+        socialLogin();
+    }, [navigate]);
 
     return (
         <div>
