@@ -2,26 +2,31 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './CustomerInfo.module.css';
 
-const CustomerInfo = ({ user = {}, onSelect, activeButton }) => {
-  const { name = '용훈', visitCount = 0 } = user;
+const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
   const navigate = useNavigate();
 
   const handleProfileEdit = () => {
-    navigate('/customerUpdate');
+    navigate('/customerUpdate', { state: { memberInfo } });
   };
+
+  if (!memberInfo) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.profileSection}>
-        <img alt="Profile" className={styles.profileImage} />
+        {/* 여기서 유저 프로필 이미지를 가져오는 로직 작성해야 합니당 ㅠ */}
+        <img alt="Profile" className={styles.profileImage} /> 
         <button className={styles.profileButton} onClick={handleProfileEdit}>
           내 정보 수정
         </button>
       </div>
       <div className={styles.infoSection}>
-        <h2>반갑습니다 {name}님! 👏</h2>
+        <h2>반갑습니다 {memberInfo.name}님! 👏</h2>
         <p>오늘 푸드트럭 어때요?</p>
-        <p>지금까지 푸드트럭 {visitCount}번 만났어요!</p>
+        {/* 여기 푸드트럭 몇 번 이용했는지 가져오는것도 필요함 ㅠㅠㅜㅠㅜ */}
+        <p>지금까지 푸드트럭 {0}번 만났어요!</p>
         <div className={styles.buttons}>
           <button
             className={`${styles.actionButton} ${activeButton === 'liked' ? styles.active : ''}`}

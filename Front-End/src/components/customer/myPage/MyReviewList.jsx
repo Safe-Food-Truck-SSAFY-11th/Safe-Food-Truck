@@ -4,7 +4,7 @@ import DeleteReview from './DeleteReview';
 import DeleteComplete from './DeleteComplete';
 import styles from './MyReview.module.css';
 
-const MyReviewList = () => {
+const MyReviewList = ({memberInfo}) => {
   const [reviews, setReviews] = useState([
     {
       id: 1,
@@ -58,7 +58,7 @@ const MyReviewList = () => {
         <p className={styles.noReview}>작성한 리뷰가 없습니다😥</p>
       ) : (
         <>
-          <h3>용훈👏 님이 작성한 리뷰에요!</h3>
+          <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
           {reviews.map(review => (
             <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id)} />
           ))}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './OrderPast.module.css';
 
-const OrderPast = () => {
+const OrderPast = ({memberInfo}) => {
   const navigate = useNavigate();
 
   const pastOrders = [
@@ -38,7 +38,7 @@ const OrderPast = () => {
 
   return (
     <div className={styles.container}>
-      <h3>용훈🖐 님이 구매했던 내역이에요!</h3>
+      <h3>{memberInfo.nickname} 🖐 님이 구매했던 내역이에요!</h3>
       {pastOrders.map(order => (
         <div key={order.id} className={styles.orderCard}>
           <div className={styles.orderContent}>
