@@ -7,29 +7,38 @@ import styles from "./PermitAreaCheck.module.css";
 import useStatusStore from "store/trucks/statusStore";
 import { MdMyLocation } from "react-icons/md";
 import usePermitAreaStore from "store/trucks/usePermitAreaStore";
+import AreaWarning from "./AreaWarning";
 
 const PermitAreaCheck = () => {
   const [currLat, setCurrLat] = useState(36.3553601); // 기본값 설정
   const [currLon, setCurrLon] = useState(127.2983893); // 기본값 설정
   const [currSido, setCurrSido] = useState("");
-  const [currSigungu, setCurrSigungu] = useState("");
+
   const {
-    permitAreaList,
     filteredAreaList,
     filterByRegion,
-    updateCoordinates,
     addCoord,
     coordList,
+    isOpen,
+    openWarning,
   } = usePermitAreaStore(); //허가구역
 
   const mapRef = useRef(null); // 지도 객체를 참조할 ref
+  const currLocationRef = useRef([currLat, currLon]); // 트럭 현재 위치를 참조할 ref
+
   const navigate = useNavigate();
 
   const { status, setStatus } = useStatusStore();
 
+  //여기서 할래요 버튼 클릭
   const handleSelectClick = () => {
-    setStatus("afterOpen");
-    navigate("/mainOwner");
+    if (!isPermitArea()) {
+      // 허가구역이 아닌 경우
+      openWarning();
+    } else {
+      setStatus("afterOpen");
+      navigate("/mainOwner");
+    }
   };
   const handleCancleClick = () => {
     navigate("/mainOwner");
@@ -77,6 +86,7 @@ const PermitAreaCheck = () => {
 
         // 현재 위치 표시
         const markerPosition = new window.kakao.maps.LatLng(currLat, currLon);
+        currLocationRef.current = markerPosition; //현재 위치 ref 저장
         const markerImage = new window.kakao.maps.MarkerImage(
           imageSrc,
           imageSize,
@@ -88,35 +98,32 @@ const PermitAreaCheck = () => {
         });
         marker.setMap(map);
 
-        // 현재 위치 시군구 저장하기
+        // 현재 위치 시도 저장하기
         const geocoder = new window.kakao.maps.services.Geocoder();
         // 좌표 -> 주소로 바꾸는 콜백함수
         const getAddress = (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             setCurrSido(result[0].address.region_1depth_name);
-            setCurrSigungu(result[0].address.region_2depth_name);
           }
         };
 
         //주소 -> 좌표로 바꾸는 콜백함수
         let coordX;
         let coordY;
-        const getCoords = (result, status, address) => {
+        const getCoords = (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             coordX = result[0].x; //경도
             coordY = result[0].y; //위도
-            console.log(coordX, coordY);
             addCoord(coordY, coordX); //좌표 리스트에 저장
             drawCircle(map, coordY, coordX); // 좌표가 준비된 후 원 그리기
           }
         };
 
-        //푸드트럭 허가구역 필터링 하기 (알단 하드코딩) -> currSido, currSigungu로 변경할 것
-        const sido = "대전";
-        const sigungu = "대덕구";
+        //푸드트럭 허가구역 필터링 하기 (알단 하드코딩) -> currSido로 변경할 것
+        // const sido = "대전";
         // 필터링된 리스트가 비어있을 때만 필터링
         if (filteredAreaList.length === 0) {
-          filterByRegion(sigungu, sido);
+          filterByRegion(currSido);
         }
 
         //현재 위치 좌표로 바꾸기
@@ -134,19 +141,11 @@ const PermitAreaCheck = () => {
           }
           // 위도와 경도가 없고 소재지도로명주소가 있는 경우
           else if (소재지도로명주소) {
-            console.log(소재지도로명주소);
-            console.log("도로명");
-            geocoder.addressSearch(소재지도로명주소, (result, status) =>
-              getCoords(result, status, 소재지도로명주소)
-            );
+            geocoder.addressSearch(소재지도로명주소, getCoords);
           }
           // 소재지도로명주소가 없고 소재지지번주소가 있는 경우
           else if (소재지지번주소) {
-            console.log(소재지지번주소);
-            console.log("지번");
-            geocoder.addressSearch(소재지지번주소, (result, status) =>
-              getCoords(result, status, 소재지지번주소)
-            );
+            geocoder.addressSearch(소재지지번주소, getCoords);
           }
         });
       });
@@ -159,9 +158,7 @@ const PermitAreaCheck = () => {
     currLat,
     currLon,
     currSido,
-    currSigungu,
     filterByRegion,
-    updateCoordinates,
     addCoord,
     // filteredAreaList,
     // filteredAreaList.length,
@@ -169,7 +166,6 @@ const PermitAreaCheck = () => {
 
   // 원을 지도에 그리는 함수
   const drawCircle = (map, lat, lon) => {
-    console.log("그렸어용");
     const circle = new window.kakao.maps.Circle({
       center: new window.kakao.maps.LatLng(lat, lon), // 원의 중심좌표
       radius: 500, // 미터 단위의 원의 반지름
@@ -201,13 +197,15 @@ const PermitAreaCheck = () => {
 
   // 현재 위치 이동 함수
   const resetLocation = () => {
-    console.log(coordList);
-
     // 현재위치 확인
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setCurrLat(position.coords.latitude);
         setCurrLon(position.coords.longitude);
+        currLocationRef.current = new window.kakao.maps.LatLng(
+          currLat,
+          currLon
+        ); //새로운 현재 위치 ref 저장
       },
       (error) => {
         console.error("Error occurred while retrieving location:", error);
@@ -221,6 +219,32 @@ const PermitAreaCheck = () => {
   };
 
   //현재 위치가 허가 구역 내에 있는지 검증하는 함수
+  const isPermitArea = () => {
+    const line = new window.kakao.maps.Polyline();
+
+    let isInside = false; // 구역 내에 있는지 여부
+
+    coordList.forEach((coord) => {
+      // 허가구역 좌표도 LatLng 형식으로 변환
+      const permitAreaCoord = new window.kakao.maps.LatLng(coord[0], coord[1]);
+
+      // 현재 위치와 허가구역 중심을 경로로 하는 폴리라인 설정
+      const path = [currLocationRef.current, permitAreaCoord];
+      // console.log(path, typeof path);
+      line.setPath(path);
+
+      // 현재 위치와 허가구역 중심 사이의 거리
+      const dist = line.getLength();
+
+      // 허가구역 반경 500m 이내라면 구역 내에 위치함
+      if (dist <= 500) {
+        isInside = true; // 구역 내에 있음
+        return; // forEach 루프 종료
+      }
+    });
+
+    return isInside;
+  };
 
   return (
     <>
@@ -237,9 +261,6 @@ const PermitAreaCheck = () => {
             </button>
           </div>
           <div className={styles.resetControl}>
-            {/* <button className={styles.resetBtn} onClick={resetLocation}>
-              리셋
-            </button> */}
             <MdMyLocation className={styles.resetBtn} onClick={resetLocation} />
           </div>
         </div>
@@ -251,6 +272,7 @@ const PermitAreaCheck = () => {
             안할래요
           </button>
         </div>
+        {isOpen && <AreaWarning />}
       </div>
     </>
   );

@@ -43,7 +43,7 @@ const Regist = () => {
         }
     };
 
-    const isFormValid = emailChecked === 'Possible' && nicknameChecked === 'Possible' && passwordMatch;
+    const isFormValid = emailChecked === 'Possible' && nicknameChecked === 'Possible' && passwordMatch && (isGuest || formData.bsNumValid);
 
     return (
         <div className={`${styles.registContainer} ${!isGuest ? styles.ownerBackground : ''}`}>

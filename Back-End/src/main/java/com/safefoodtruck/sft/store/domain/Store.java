@@ -1,7 +1,6 @@
 package com.safefoodtruck.sft.store.domain;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -17,19 +16,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "store")
 @Getter
+@ToString
 @DynamicInsert
+@DynamicUpdate
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
 
     public Store(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
@@ -49,36 +54,45 @@ public class Store {
     @Column(name = "store_id")
     private Integer id;
 
+    @NotNull
     @Column(name = "store_name")
     private String name;
 
+    @NotNull
     @Column(name = "store_type")
     private String storeType;
 
+    @NotNull
     @Column(name = "off_day")
     private String offDay;
 
+    @NotNull
     @Column(name = "description")
     private String description;
 
+    @NotNull
     @Column(name = "latitude")
     private String latitude;
 
+    @NotNull
     @Column(name = "longitude")
     private String longitude;
 
+    @NotNull
     @Column(name = "safety_license_number", unique = true)
     private String safetyLicenseNumber;
 
+    @NotNull
     @Column(name = "is_open")
-    private boolean isOpen;
+    private Boolean isOpen;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
-    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
-    private StoreImage storeImage;
+//    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+//    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();

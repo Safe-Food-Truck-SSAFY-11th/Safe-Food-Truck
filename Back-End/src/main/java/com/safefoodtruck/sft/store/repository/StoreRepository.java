@@ -1,6 +1,5 @@
 package com.safefoodtruck.sft.store.repository;
 
-import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Integer> {
-	Optional<Store> findByOwner(Member member);
 
 	@Query("SELECT s.id FROM Store s WHERE s.owner.email = :email")
 	Optional<Integer> findStoreIdByOwnerEmail(@Param("email") String email);
