@@ -43,8 +43,6 @@ public class Store {
         this.storeType = storeRegistRequestDto.storeType();
         this.offDay = storeRegistRequestDto.offDay();
         this.description = storeRegistRequestDto.description();
-        this.latitude = storeRegistRequestDto.latitude();
-        this.longitude = storeRegistRequestDto.longitude();
         this.safetyLicenseNumber = storeRegistRequestDto.safetyLicenseNumber();
         this.isOpen = storeRegistRequestDto.isOpen();
     }
@@ -70,11 +68,9 @@ public class Store {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "latitude")
     private String latitude;
 
-    @NotNull
     @Column(name = "longitude")
     private String longitude;
 

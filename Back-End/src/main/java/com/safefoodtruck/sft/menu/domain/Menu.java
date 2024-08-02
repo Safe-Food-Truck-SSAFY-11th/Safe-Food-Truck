@@ -2,6 +2,8 @@ package com.safefoodtruck.sft.menu.domain;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.store.domain.Store;
 import jakarta.persistence.Column;
@@ -52,6 +54,7 @@ public class Menu {
 	@Column(name = "description")
 	private String description;
 
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id")
@@ -77,5 +80,10 @@ public class Menu {
 		this.name = menuUpdateRequestDto.name();
 		this.price = menuUpdateRequestDto.price();
 		this.description = menuUpdateRequestDto.description();
+	}
+
+	@JsonProperty("storeId")
+	public Integer getStoreId() {
+		return store.getId();
 	}
 }

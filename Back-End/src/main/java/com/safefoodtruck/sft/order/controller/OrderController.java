@@ -2,7 +2,7 @@ package com.safefoodtruck.sft.order.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import com.safefoodtruck.sft.order.dto.response.OrderRequestDto;
+import com.safefoodtruck.sft.order.dto.request.OrderListRequestDto;
 import com.safefoodtruck.sft.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +26,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "주문 생성", description = "주문을 생성할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -40,8 +40,8 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
-        Integer orderId = orderService.order(orderRequestDto);
+    public ResponseEntity<?> createOrder(@RequestBody OrderListRequestDto orderListRequestDto) {
+        Integer orderId = orderService.order(orderListRequestDto);
         return new ResponseEntity<>(orderId, CREATED);
     }
 }

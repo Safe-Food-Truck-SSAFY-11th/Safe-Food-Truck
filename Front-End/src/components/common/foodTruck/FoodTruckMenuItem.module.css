@@ -17,21 +17,5 @@
     flex: 1;
   }
   
-  .quantity {
-    display: flex;
-    align-items: center;
-  }
-  
-  .quantity button {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-color: #ffa500;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .quantity span {
-    margin: 0 10px;
-  }
+
   

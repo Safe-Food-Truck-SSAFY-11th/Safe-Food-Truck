@@ -38,9 +38,7 @@ public class StoreServiceImpl implements StoreService {
         String email = MemberInfo.getEmail();
         Member owner = memberRepository.findByEmail(email);
         Store store = Store.of(owner, storeRegistRequestDto);
-        log.info("before save store info {}", store);
         storeRepository.save(store);
-        log.info("after save store info {}", store);
 
         return StoreRegistResponseDto.fromEntity(email, store);
     }

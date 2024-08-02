@@ -8,7 +8,7 @@ const userStore = create((set, get) => ({
 
   loginUser: async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/members/login', { email, password });
+      const response = await axios.post('https://i11b102.p.ssafy.io/api/members/login', { email, password });
       const token = response.data;
       sessionStorage.setItem('token', token); // 토큰을 세션 스토리지에 저장
       set({ isAuthenticated: true });
@@ -24,7 +24,7 @@ const userStore = create((set, get) => ({
   fetchUser: async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get('http://localhost:8080/api/members', {
+      const response = await axios.get('https://i11b102.p.ssafy.io/api/members', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,7 @@ const userStore = create((set, get) => ({
 
   registerUser: async (userData) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/members/common', userData);
+      const response = await axios.post('https://i11b102.p.ssafy.io/api/members/common', userData);
       return response.data;
     } catch (error) {
       console.log(userData);
@@ -61,7 +61,7 @@ const userStore = create((set, get) => ({
 
   checkEmail: async (email) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/members/duplication-email/${email}`);
+      const response = await axios.get(`https://i11b102.p.ssafy.io/api/members/duplication-email/${email}`);
       set({ emailChecked: response.data });
     } catch (error) {
       console.error('이메일 중복 확인 오류:', error);
@@ -71,7 +71,7 @@ const userStore = create((set, get) => ({
 
   checkNickname: async (nickname) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/members/duplication-nickname/${nickname}`);
+      const response = await axios.get(`https://i11b102.p.ssafy.io/api/members/duplication-nickname/${nickname}`);
       set({ nicknameChecked: response.data });
     } catch (error) {
       console.error('닉네임 중복 확인 오류:', error);

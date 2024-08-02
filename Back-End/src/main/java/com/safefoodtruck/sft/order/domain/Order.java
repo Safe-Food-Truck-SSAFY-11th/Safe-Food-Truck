@@ -4,8 +4,6 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
-import com.safefoodtruck.sft.order.dto.request.OrderCreateRequestDto;
-import com.safefoodtruck.sft.order.dto.response.OrderRequestDto;
 import com.safefoodtruck.sft.store.domain.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,15 +51,11 @@ public class Order {
     private Store store;
 
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
-    private List<OrderMenu> orderMenus = new ArrayList<>();
+    private List<OrderMenu> orderMenuList = new ArrayList<>();
 
     @NotNull
     @Column(name = "is_accepted")
     private Boolean isAccepted;
-
-    @NotNull
-    @Column(name = "amount")
-    private Integer amount;
 
     @NotNull
     @Column(name = "order_time", columnDefinition = "TIMESTAMP")
@@ -77,23 +71,30 @@ public class Order {
     private Boolean isDone;
 
     public void addOrderMenu(OrderMenu orderMenu) {
-        orderMenus.add(orderMenu);
+        orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);
     }
 
-    public static Order createOrder(OrderCreateRequestDto orderCreateRequestDto) {
+    public static Order createOrder(Member customer, Store store, String request, List<OrderMenu> orderMenuList) {
         Order order = new Order();
 
-        order.customer = orderCreateRequestDto.customer();
-        order.store = orderCreateRequestDto.store();
+        order.customer = customer;
+        order.store = store;
+        order.orderMenuList = orderMenuList;
         order.isAccepted = false;
         order.orderTime = LocalDateTime.now();
-        order.request = orderCreateRequestDto.request();
+        order.request = request;
         order.isDone = false;
 
-        OrderRequestDto orderRequestDto = orderCreateRequestDto.orderRequestDto();
-        order.orderMenus = orderRequestDto.orderMenus();
-
         return order;
+    }
+
+    public Integer getAmount() {
+        Integer totalPrice = 0;
+        for (OrderMenu orderMenu : orderMenuList) {
+            totalPrice += orderMenu.getTotalPrice();
+        }
+
+        return totalPrice;
     }
 }
