@@ -1,72 +1,73 @@
 .container {
-    background-color: #e2f2d9;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 85vw;
-    min-height: 150px;
-    margin: 0 auto;
-    margin-top: 10px;
-    position: relative;
+  background-color: #e2f2d9;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 85vw;
+  min-height: 150px;
+  margin: 0 auto;
+  margin-top: 10px;
+  position: relative;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-right: 20px;
-    flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
 }
 
 .info {
-    text-align: left;
-    font-size: 13px;
+  text-align: left;
+  font-size: 13px;
 }
 
 .highlight {
-    color: #00a71c;
-    font-weight: bold;
+  color: #00a71c;
+  font-weight: bold;
 }
 
 .profileButton {
-    background-color: #A9DF55;
-    border: none;
-    padding: 5px 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    display: block;
-    width: 80px;
-    font-size: 10px;
+  background-color: #a9df55;
+  border: none;
+  padding: 10px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  display: block;
+  width: 80px;
+  font-size: 12px;
 }
 
 .profileButton:hover {
-    background-color: rgb(160, 196, 138);
+  background-color: rgb(160, 196, 138);
 }
 
 .buttons {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .button {
-    background-color: #D1E1B8;
-    border: none;
-    padding: 10px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
+  background-color: #d1e1b8;
+  border: none;
+  padding: 10px 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .button:hover {
-    background-color: rgb(173, 206, 153);
+  background-color: rgb(173, 206, 153);
+}
+
+.infoText {
+  font-size: 16px;
 }
