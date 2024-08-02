@@ -27,22 +27,54 @@ const Header = () => {
         navigate('/mypageCustomer');
     };
 
+    const handleLogout = () => {
+        sessionStorage.clear();
+        navigate('/login');
+    };
+
+    // 로그인 유저 role에 따른 렌더링 변경
+    const renderHeader = () => {
+        if (sessionStorage.getItem('token') === 'customer') {
+            return (
+                <header className={styles.headerCustomer}>
+                    <div className={styles.topSection}>
+                        <div className={styles.leftSection}>
+                            <span role="img" aria-label="location" className={styles.icon}>📍</span> 대전광역시 유성구 봉명동 655-3
+                        </div>
+                        <div className={styles.rightSection}>
+                            <span role="img" aria-label="cart" className={styles.icon} onClick={handleCartClick}>🛒</span>
+                            <span role="img" aria-label="myPage" className={styles.icon} onClick={handleMyPageClick}>👤</span>
+                            <span role="img" aria-label="notification" className={styles.icon} onClick={handleNotificationClick}>🔔</span>
+                            <span role="img" aria-label="logout" className={styles.icon} onClick={handleLogout}>🔲</span>
+                        </div>
+                    </div>
+                    <SearchAddress />
+                    <Notification show={showNotification} onClose={() => setNotification(false)} notifications={notifications} />
+                </header>
+            );
+        } else { // 사장님 헤더
+            return (
+                <header className={styles.headerOwner}>
+                    <div className={styles.topSection}>
+                        <div className={styles.leftSection}>
+                            <span role="img" aria-label="location" className={styles.icon}>📍</span> 대전광역시 유성구 봉명동 655-3
+                        </div>
+                        <div className={styles.rightSection}>
+                            <span role="img" aria-label="myPage" className={styles.icon} onClick={handleMyPageClick}>👤</span>
+                            <span role="img" aria-label="logout" className={styles.icon} onClick={handleLogout}>🔲</span>
+                        </div>
+                    </div>
+                    <SearchAddress />
+                    <Notification show={showNotification} onClose={() => setNotification(false)} notifications={notifications} />
+                </header>
+            )
+        }
+    }
+
     return (
-        <header className={styles.header}>
-            <div className={styles.topSection}>
-                <div className={styles.leftSection}>
-                    <span role="img" aria-label="location" className={styles.icon}>📍</span> 대전광역시 유성구 봉명동 655-3
-                </div>
-                <div className={styles.rightSection}>
-                    <span role="img" aria-label="cart" className={styles.icon} onClick={handleCartClick}>🛒</span>
-                    <span role="img" aria-label="myPage" className={styles.icon} onClick={handleMyPageClick}>👤</span>
-                    <span role="img" aria-label="notification" className={styles.icon} onClick={handleNotificationClick}>🔔</span>
-                    <span role="img" aria-label="logout" className={styles.icon}>🔲</span>
-                </div>
-            </div>
-            <SearchAddress />
-            <Notification show={showNotification} onClose={() => setNotification(false)} notifications={notifications} />
-        </header>
+        <>
+            {renderHeader()}
+        </>
     );
 };
 

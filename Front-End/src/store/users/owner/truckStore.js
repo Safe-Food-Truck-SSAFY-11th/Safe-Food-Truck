@@ -113,7 +113,7 @@ const useTruckStore = create((set) => ({
     try {
       const response = await axiosInstance.patch("stores/open");
       console.log("점포 상태 전환 성공", response.data);
-      set((state) => ({
+      await set((state) => ({
         truckInfo: { ...state.truckInfo, isOpen: response.data },
       }));
     } catch (error) {
