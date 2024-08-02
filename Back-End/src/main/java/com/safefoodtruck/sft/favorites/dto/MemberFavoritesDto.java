@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class MemberFavoritesDto {
     private Integer favoriteId;
-    private Integer StoreId;
+    private Integer storeId;
 }
