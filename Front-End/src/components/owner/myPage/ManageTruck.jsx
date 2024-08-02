@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./ManageTruck.module.css";
-import imageIcon from "../../../assets/images/truck-img.png";
-import useTruckStore from "../../../store/users/owner/truckStore";
-import useMenuStore from "../../../store/users/owner/menuStore";
-import MenuUpdate from "./MenuUpdate";
-import MenuItem from "./MenuItem";
+import imageIcon from "assets/images/truck-img.png";
+import useTruckStore from "store/users/owner/truckStore";
+import useMenuStore from "store/users/owner/menuStore";
 
 const ManageTruck = () => {
-  const { updateForm, setForm, setImage, toggleWorkingDay, categories } =
-    useTruckStore();
-  const { menus, removeMenu, isOpen, openMenu } = useMenuStore();
+  const {
+    updateForm,
+    setForm,
+    setImage,
+    toggleWorkingDay,
+    categories,
+    fetchTruckInfo,
+    truckInfo,
+    updateTruck,
+  } = useTruckStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,12 +30,19 @@ const ManageTruck = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    updateTruck();
+    alert("수정이 완료되었습니다.");
+    window.location.reload();
     // Submit form logic
   };
 
   const handleImageButtonClick = () => {
     document.getElementById("fileInput").click();
   };
+
+  useEffect(() => {
+    fetchTruckInfo();
+  }, []);
 
   return (
     <>
@@ -62,8 +74,8 @@ const ManageTruck = () => {
           <label>상호명</label>
           <input
             type="text"
-            name="storeName"
-            value={updateForm.storeName}
+            name="name"
+            value={updateForm.name}
             onChange={handleChange}
           />
         </div>
@@ -72,7 +84,7 @@ const ManageTruck = () => {
           <input
             type="text"
             name="licenseNumber"
-            value={updateForm.licenseNumber}
+            value={truckInfo.safetyLicenseNumber}
             disabled
             onChange={handleChange}
           />
@@ -80,8 +92,8 @@ const ManageTruck = () => {
         <div className={styles.inputContainer}>
           <label>카테고리</label>
           <select
-            name="category"
-            value={updateForm.category}
+            name="storeType"
+            value={updateForm.storeType}
             onChange={handleChange}
           >
             <option value="">선택하세요</option>
@@ -91,26 +103,6 @@ const ManageTruck = () => {
               </option>
             ))}
           </select>
-        </div>
-        <div className={styles.inputContainer}>
-          <label>메뉴</label>
-          <div className={styles.menuContainer}>
-            {menus.map((menu, index) => (
-              <MenuItem
-                key={index}
-                menu={menu}
-                onEdit={() => openMenu(menu)}
-                onDelete={() => removeMenu(index)}
-              />
-            ))}
-            <button
-              type="button"
-              className={styles.addMenuButton}
-              onClick={openMenu}
-            >
-              +
-            </button>
-          </div>
         </div>
         <div className={styles.inputContainer}>
           <label>출근 요일</label>
@@ -146,7 +138,6 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
-      {isOpen && <MenuUpdate />}
     </>
   );
 };

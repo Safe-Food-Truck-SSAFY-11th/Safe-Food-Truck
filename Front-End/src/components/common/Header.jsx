@@ -24,7 +24,7 @@ const Header = () => {
     };
 
     const handleMyPageClick = () => {
-        navigate('/mypage');
+        navigate('/mypageCustomer');
     };
 
     return (

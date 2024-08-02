@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import styles from "./MenuUpdate.module.css";
+import React from "react";
+import styles from "./MenuRegist.module.css";
 import useMenuStore from "store/users/owner/menuStore";
 import imageIcon from "assets/images/sft-logo.png";
 
-const MenuUpdate = () => {
-  const { menuForm, setMenuForm, setMenuImage, closeUpdate, updateMenu } =
+const MenuRegist = () => {
+  const { menuForm, setMenuForm, setMenuImage, closeRegist, addMenu } =
     useMenuStore();
 
   const handleChange = (e) => {
@@ -21,9 +21,8 @@ const MenuUpdate = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(menuForm);
-    updateMenu(menuForm.menuId);
-    closeUpdate();
+    addMenu();
+    closeRegist();
     window.location.reload();
   };
 
@@ -33,8 +32,7 @@ const MenuUpdate = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.imageSection}>
             <img
-              //   src={menuForm.image || imageIcon}
-              src={imageIcon}
+              src={menuForm.image || imageIcon}
               alt="이미지 업로드"
               className={styles.uploadedImage}
             />
@@ -84,12 +82,12 @@ const MenuUpdate = () => {
             </div>
             <div className={styles.buttonContainer}>
               <button type="submit" className={styles.submitButton}>
-                수정
+                등록
               </button>
               <button
                 type="button"
                 className={styles.cancelButton}
-                onClick={closeUpdate}
+                onClick={closeRegist}
               >
                 취소
               </button>
@@ -101,4 +99,4 @@ const MenuUpdate = () => {
   );
 };
 
-export default MenuUpdate;
+export default MenuRegist;

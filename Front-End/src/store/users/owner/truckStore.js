@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
+import axiosInstance from "utils/axiosInstance"; // axiosInstance 파일의 경로에 맞게 수정
 
 const useTruckStore = create((set) => ({
   registForm: {
@@ -15,29 +15,34 @@ const useTruckStore = create((set) => ({
     offDay: "0000000",
     description: "",
   },
+  //업데이트폼 세팅
   setForm: (name, value) =>
     set((state) => ({
-      registForm: {
-        ...state.registForm,
+      updateForm: {
+        ...state.updateForm,
         [name]: value,
       },
     })),
   setImage: (imageURL) =>
     set((state) => ({
-      registForm: {
-        ...state.registForm,
+      updateForm: {
+        ...state.updateForm,
         image: imageURL,
       },
     })),
+  //업데이트폼 토글
   toggleWorkingDay: (dayIndex) =>
     set((state) => {
-      const { offDay } = state.registForm;
-      const newOffDay = offDay.split('').map((day, index) =>
-        index === dayIndex ? (day === "0" ? "1" : "0") : day
-      ).join('');
+      const { offDay } = state.updateForm;
+      const newOffDay = offDay
+        .split("")
+        .map((day, index) =>
+          index === dayIndex ? (day === "0" ? "1" : "0") : day
+        )
+        .join("");
       return {
-        registForm: {
-          ...state.registForm,
+        updateForm: {
+          ...state.updateForm,
           offDay: newOffDay,
         },
       };
@@ -61,36 +66,45 @@ const useTruckStore = create((set) => ({
 
   registTruck: async (truckData) => {
     try {
-      const response = await axios.post('https://i11b102.p.ssafy.io/api/stores', truckData,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-          }
-        });
+      const response = await axiosInstance.post("/stores", truckData, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(truckData);
-      console.error('점포등록 오류:', error);
+      console.error("점포등록 오류:", error);
       throw error;
     }
   },
 
-  updateTruck: async (truckData, menus) => {
+  updateTruck: async () => {
+    // 상태를 가져오기 위해 set을 사용
+    set(async (state) => {
+      try {
+        const response = await axiosInstance.patch("/stores", state.updateForm); // 상태에서 updateForm을 가져옴
+        return response.data; // 성공적으로 응답을 반환
+      } catch (error) {
+        console.log(state.updateForm); // 상태의 updateForm 출력
+        console.error("점포수정 오류:", error);
+        throw error; // 오류를 던짐
+      }
+    });
+  },
+  truckInfo: {}, // 초기 트럭 정보 상태
+  fetchTruckInfo: async () => {
     try {
-      const response = await axios.patch(
-        "http://localhost:8080/api/stores",
-        truckData,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        }
-      );
-      return response.data;
+      const response = await axiosInstance.get(`/stores`);
+      console.log("트럭 정보 가져오기 성공", response.data);
+
+      // 요청이 성공하면 truckInfo 상태를 업데이트
+      set({ truckInfo: response.data });
+      // 요청이 성공하면 updateForm 상태를 업데이트
+      const { name, storeType, offDay, description } = response.data;
+      set({ updateForm: { name, storeType, offDay, description } });
     } catch (error) {
-      console.log(truckData);
-      console.error("점포수정 오류:", error);
-      throw error;
+      console.error("트럭 정보 가져오기 실패", error);
     }
   },
 }));
