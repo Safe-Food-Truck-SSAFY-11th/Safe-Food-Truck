@@ -1,16 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './CustomerUpdate.module.css';
-import useCustomerStore from '../../../store/users/customer/customerStore';
+import customerStore from 'store/users/customer/customerStore';
 
 const CustomerUpdate = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { memberInfo } = location.state || {}; // 전달된 상태에서 memberInfo를 가져옴
+
+
   const {
-    form, setForm,
+    form, setForm, modifyMemberInfo,
     passwordMatch, passwordTouched, setPasswordTouched,
     nicknameChecked, nicknameTouched, setNicknameTouched, checkNickname
-  } = useCustomerStore();
+  } = customerStore();
 
   const [maxDate, setMaxDate] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+
+  useEffect(() => {
+    if (memberInfo) {
+      // memberInfo로 form 초기화
+      setForm('email', memberInfo.email);
+      setForm('name', memberInfo.name);
+      setForm('nickname', memberInfo.nickname);
+      setForm('gender', memberInfo.gender);
+      setForm('birthdate', memberInfo.birthdate);
+      setForm('phoneNumber', memberInfo.phoneNumber);
+    }
+  }, [memberInfo, setForm]);
 
   useEffect(() => {
     const today = new Date();
@@ -36,7 +54,6 @@ const CustomerUpdate = () => {
   };
 
   const handleNicknameCheck = () => {
-    // 중복 확인 로직 추가 (예: API 호출)
     checkNickname();
   };
 
@@ -51,19 +68,30 @@ const CustomerUpdate = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 수정 데이터 확인하는 배열입니당
+  
     const updatedData = {
+      email: form.email,
       password: form.password,
       nickname: form.nickname,
       gender: form.gender,
       birthdate: form.birthdate,
-      phone: form.phone,
+      phoneNumber: form.phoneNumber,
       profileImage,
     };
+  
     console.log(updatedData);
+  
+    // modifyMemberInfo 함수 호출
+    
+    await modifyMemberInfo(updatedData);
+  
+    // 수정 후 세션 스토리지에서 토큰 제거
+    // sessionStorage.removeItem('token');
+  
+    // 메인 페이지로 라우팅
+    // navigate('/');
   };
 
   return (
@@ -102,10 +130,6 @@ const CustomerUpdate = () => {
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
-          <label>이름</label>
-          <input type="text" name="name" value={form.name} readOnly className={styles.readOnlyInput} />
-        </div>
-        <div className={styles.inputContainer}>
           <label>닉네임</label>
           <div className={styles.nicknameContainer}>
             <input type="text" name="nickname" value={form.nickname} onChange={handleNicknameChange} className={styles.nicknameInput} />
@@ -115,26 +139,14 @@ const CustomerUpdate = () => {
         </div>
       </div>
       <div className={styles.inputRow}>
-        <div className={styles.inputContainer}>
-          <label>성별</label>
-          <select name="gender" value={form.gender} onChange={handleChange} className={styles.selectInput}>
-            <option value="">선택하세요</option>
-            <option value="남">남</option>
-            <option value="여">여</option>
-          </select>
-        </div>
-        <div className={styles.inputContainer}>
-          <label>생일</label>
-          <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} max={maxDate} />
-        </div>
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phone" value={form.phone} onChange={handleChange} />
+        <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} />
       </div>
       <div className={styles.buttonGroup}>
         <button type="submit" className={styles.updateButton}>수정하기</button>
-        <button type="button" className={styles.cancelButton}>돌아가기</button>
+        <button type="button" className={styles.cancelButton} onClick={() => navigate(-1)}>돌아가기</button>
       </div>
     </form>
   );

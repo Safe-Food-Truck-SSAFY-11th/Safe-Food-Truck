@@ -227,5 +227,3 @@ $RECYCLE.BIN/
 
 # Ignore all application-key.yml files in any subdirectory
 **/application-key.yml
-
-/Back-End/.gradle/

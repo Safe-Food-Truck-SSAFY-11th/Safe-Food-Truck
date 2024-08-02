@@ -11,6 +11,10 @@ const OwnerInfo = () => {
     navigate("/manageTruck");
   };
 
+  const handleMenuManageClick = () => {
+    navigate("/manageMenu");
+  };
+
   // 더미 데이터
   const ownerName = "푸바오";
   const truckName = "울퉁불퉁";
@@ -34,26 +38,33 @@ const OwnerInfo = () => {
       <div className={styles.header}>
         <div>
           <img src={logo} alt="Truck Owner" className={styles.image} />
-          <button className={styles.profileButton} onClick={handleUpdateClick}>내 정보 수정</button>
+          <button className={styles.profileButton} onClick={handleUpdateClick}>
+            내 정보 수정
+          </button>
         </div>
         <div className={styles.info}>
           <p>
             반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
             사장님!
           </p>
-          <p>
+          <p className={styles.infoText}>
             <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
             손님 : <span className={styles.highlight}>{likesCount}</span> 명
           </p>
-          <p>
+          <p className={styles.infoText}>
             <span className={styles.highlight}>{formattedIncome}</span>에 열어요
           </p>
-        </div>
-      </div>
 
-      <div className={styles.buttons}>
-        <button className={styles.button}>트럭 리뷰 보기</button>
-        <button className={styles.button} onClick={handleTruckUpdateClick}>트럭 정보 수정</button>
+          <div className={styles.buttons}>
+            <button className={styles.button}>트럭 리뷰 보기</button>
+            <button className={styles.button} onClick={handleTruckUpdateClick}>
+              트럭 정보 수정
+            </button>
+            <button className={styles.button} onClick={handleMenuManageClick}>
+              판매 메뉴 관리
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
