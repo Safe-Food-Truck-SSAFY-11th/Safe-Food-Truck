@@ -79,6 +79,14 @@ const RegistTruck = () => {
         }
     };
 
+    // 점포등록하지 않고 돌아가는 경우
+    // -> 경고문구 페이지로 이동
+    // *** 수정 예정 ***
+    const handleGoBack = () => {
+        sessionStorage.clear();
+        navigate('/login');
+    }
+
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
             <h1 className={styles.title}>푸드트럭 등록</h1>
@@ -143,7 +151,7 @@ const RegistTruck = () => {
             </div>
             <div className={styles.buttonContainer}>
                 <button type="submit" className={styles.submitButton} onClick={handleRegisterClick} disabled={!isFormValid}>등록하기</button>
-                <button type="button" className={styles.cancelButton}>취소하기</button>
+                <button type="button" className={styles.cancelButton} onClick={handleGoBack}>취소하기</button>
             </div>
         </form>
     );

@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api", // API 기본 URL
-
-  // https://i11b102.p.ssafy.io/api // 서버 URL
+  // baseURL: "http://localhost:8080/api", // 로컬 테스트용 URL
+  baseURL: "https://i11b102.p.ssafy.io/api", // 배포 URL
   timeout: 10000, // 요청 타임아웃
 });
 

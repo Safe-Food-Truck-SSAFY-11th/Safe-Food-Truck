@@ -1,16 +1,17 @@
 import styles from './Regist.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import RegistUser from './RegistUser';
 import RegistOwner from './RegistOwner';
 import useUserStore from 'store/users/userStore';
 import { useState } from 'react';
 
-const Regist = () => {
+const SocialRegist = () => {
     const navigate = useNavigate();
-    const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailChecked, nicknameChecked, passwordMatch } = useUserStore();
+    const location = useLocation();
+    const { method } = location.state || {};
+    const { isGuest, setGuest, setOwner, fetchUser, registerUser, nicknameChecked } = useUserStore();
     const [formData, setFormData] = useState({
-        email: '',
-        password: '',
+        email: sessionStorage.getItem('email'),
         name: '',
         nickname: '',
         gender: null,
@@ -34,7 +35,7 @@ const Regist = () => {
         try {
             const currentRole = formData.businessNumber ? 'owner' : 'customer';
             const roleSpecificData = currentRole === 'customer' ? {} : { businessNumber: formData.businessNumber };
-            const token = await registerUser('common', { ...formData, ...roleSpecificData });
+            const token = await registerUser(method, { ...formData, ...roleSpecificData });
             // 회원가입 후 스토리지에 바로 토큰 담아주기
             if (token) {
                 sessionStorage.setItem('token', token);
@@ -45,9 +46,10 @@ const Regist = () => {
         } catch (error) {
             console.error('회원가입 실패:', error);
         }
+        
     };
 
-    const isFormValid = emailChecked === 'Possible' && nicknameChecked === 'Possible' && passwordMatch && (isGuest || formData.bsNumValid);
+    const isFormValid = nicknameChecked === 'Possible' && (isGuest || formData.bsNumValid);
 
     return (
         <div className={`${styles.registContainer} ${!isGuest ? styles.ownerBackground : ''}`}>
@@ -87,4 +89,4 @@ const Regist = () => {
     );
 };
 
-export default Regist;
+export default SocialRegist;

@@ -48,6 +48,24 @@ const LoginUser = () => {
         }
     };
 
+    // 소셜 로그인
+    const redirect_uri = process.env.REACT_APP_REDIRECT_URI;
+    const kakao_uri = `${redirect_uri}?provider=kakao`;
+    const google_uri = `${redirect_uri}?provider=google`;
+
+    const handleKakaoLogin = () => {
+        window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${kakao_uri}&response_type=code`
+    }
+
+    // 구글 로그인
+    const handleGoogleLogin = () => {
+        window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?'+
+        `client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}`+
+        `&redirect_uri=${google_uri}`+
+        '&response_type=token&'+
+        'scope=https://www.googleapis.com/auth/userinfo.email';
+    };
+
     return (
         <div className={`${styles.loginContainer} ${isGuest === false ? styles.ownerBackground : ''}`}>
             <img src={logo} alt="세이푸트" className={styles.logoImage} />
@@ -78,8 +96,8 @@ const LoginUser = () => {
             <div className={styles.socialLoginContainer}>
                 <p className={`${styles.socialLoginText} ${isGuest === false ? styles.ownerSocialLoginText : ''}`}>소셜 로그인</p>
                 <div className={styles.socialIcons}>
-                    <img src={kakaoLogo} alt="카카오톡" className={styles.socialIcon} />
-                    <img src={googleLogo} alt="구글" className={styles.socialIcon} />
+                    <img src={kakaoLogo} alt="카카오톡" className={styles.socialIcon} onClick={handleKakaoLogin} />
+                    <img src={googleLogo} alt="구글" className={styles.socialIcon} onClick={handleGoogleLogin} />
                 </div>
             </div>
             <p className={styles.footerText}>safe-food-truck</p>
