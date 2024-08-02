@@ -95,16 +95,29 @@ const useTruckStore = create((set) => ({
   truckInfo: {}, // 초기 트럭 정보 상태
   fetchTruckInfo: async () => {
     try {
-      const response = await axiosInstance.get(`/stores`);
+      const response = await axiosInstance.get(`stores`);
       console.log("트럭 정보 가져오기 성공", response.data);
 
       // 요청이 성공하면 truckInfo 상태를 업데이트
       set({ truckInfo: response.data });
       // 요청이 성공하면 updateForm 상태를 업데이트
-      const { name, storeType, offDay, description } = response.data;
-      set({ updateForm: { name, storeType, offDay, description } });
+      const { name, storeType, offDay, description, isOpen } = response.data;
+      set({ updateForm: { name, storeType, offDay, description, isOpen } });
     } catch (error) {
       console.error("트럭 정보 가져오기 실패", error);
+    }
+  },
+
+  // 점포 영업 상태 변경
+  switchStatus: async () => {
+    try {
+      const response = await axiosInstance.patch("stores/open");
+      console.log("점포 상태 전환 성공", response.data);
+      set((state) => ({
+        truckInfo: { ...state.truckInfo, isOpen: response.data },
+      }));
+    } catch (error) {
+      console.log(error);
     }
   },
 }));

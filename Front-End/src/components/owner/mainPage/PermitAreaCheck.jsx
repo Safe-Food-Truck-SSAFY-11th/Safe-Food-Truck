@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import mapMarker from "assets/images/ft_marker.png";
 import styles from "./PermitAreaCheck.module.css";
 import useStatusStore from "store/trucks/statusStore";
+import useTruckStore from "store/users/owner/truckStore";
 import { MdMyLocation } from "react-icons/md";
 import usePermitAreaStore from "store/trucks/usePermitAreaStore";
 import AreaWarning from "./AreaWarning";
@@ -28,7 +29,7 @@ const PermitAreaCheck = () => {
 
   const navigate = useNavigate();
 
-  const { status, setStatus } = useStatusStore();
+  const { truckInfo, switchStatus } = useTruckStore();
 
   //여기서 할래요 버튼 클릭
   const handleSelectClick = () => {
@@ -36,7 +37,7 @@ const PermitAreaCheck = () => {
       // 허가구역이 아닌 경우
       openWarning();
     } else {
-      setStatus("afterOpen");
+      switchStatus();
       navigate("/mainOwner");
     }
   };
