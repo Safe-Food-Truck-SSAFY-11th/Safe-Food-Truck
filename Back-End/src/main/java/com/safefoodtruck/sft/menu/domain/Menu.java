@@ -1,9 +1,20 @@
 package com.safefoodtruck.sft.menu.domain;
 
-import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.FetchType.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
+import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.store.domain.Store;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,14 +22,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "menu")
@@ -52,10 +62,14 @@ public class Menu {
 	@Column(name = "description")
 	private String description;
 
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
+
+	@OneToMany(mappedBy = "menu", cascade = ALL, orphanRemoval = true)
+	private List<OrderMenu> orderMenuList = new ArrayList<>();
 
 //	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
 //	private MenuImage menuImage;
@@ -77,5 +91,10 @@ public class Menu {
 		this.name = menuUpdateRequestDto.name();
 		this.price = menuUpdateRequestDto.price();
 		this.description = menuUpdateRequestDto.description();
+	}
+
+	@JsonProperty("storeId")
+	public Integer getStoreId() {
+		return store.getId();
 	}
 }

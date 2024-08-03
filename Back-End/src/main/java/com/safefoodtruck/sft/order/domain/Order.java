@@ -1,9 +1,22 @@
 package com.safefoodtruck.sft.order.domain;
 
-import static jakarta.persistence.FetchType.LAZY;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.FetchType.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.store.domain.Store;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,18 +24,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.ToString;
 
 @Entity
 @Table(name = "Orders")
 @Getter
+@Builder
+@ToString
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
@@ -34,20 +49,66 @@ public class Order {
     @Column(name = "order_id")
     private Integer id;
 
-    @NotNull
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "email")
     private Member customer;
 
-
-    @NotNull
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @NotNull
-    @Column(name = "is_accepted")
-    private Boolean isAccepted;
+    @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderMenu> orderMenuList = new ArrayList<>();
 
+    @Column(name = "order_request")
+    private String request;
 
+    @Column(name = "order_status")
+    @ColumnDefault(value = "'pending'")
+    private String status;
+
+    @Column(name = "cooking_status")
+    @ColumnDefault("'preparing'")
+    private String cookingStatus;
+
+    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
+    LocalDateTime orderTime;
+
+    @JsonProperty("email")
+    public String getCustomerEmail() {
+        return customer != null ? customer.getEmail() : null;
+    }
+
+    @JsonProperty("store_id")
+    public Integer getStoreId() {
+        return store != null ? store.getId() : null;
+    }
+
+    public void addOrderMenu(OrderMenu orderMenu) {
+        orderMenuList.add(orderMenu);
+        orderMenu.setOrder(this);
+    }
+
+    public void acceptOrder() {
+        this.status = ACCEPTED.get();
+    }
+
+    public void rejectOrder() {
+        this.status = REJECTED.get();
+    }
+
+    public void completeOrder() {
+        this.cookingStatus = COMPLETED.get();
+    }
+
+    public boolean isInValidRequest() {
+		return !status.equals(PENDING.get());
+	}
+
+    public boolean isAlreadyCompletedOrder() {
+        return cookingStatus.equals(COMPLETED.get());
+    }
 }
