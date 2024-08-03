@@ -2,7 +2,7 @@ package com.safefoodtruck.sft.member.repository;
 
 
 import com.safefoodtruck.sft.member.domain.Member;
-import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

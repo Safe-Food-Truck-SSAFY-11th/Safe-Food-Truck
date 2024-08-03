@@ -3,13 +3,16 @@ package com.safefoodtruck.sft.member.service;
 import com.safefoodtruck.sft.common.service.EmailService;
 import com.safefoodtruck.sft.common.service.RandomPasswordService;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.domain.MemberImage;
 import com.safefoodtruck.sft.member.dto.MemberDto;
-import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
-import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.member.dto.MemberImageDto;
+import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
+import com.safefoodtruck.sft.member.dto.response.MemberSelectResponseDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
+import com.safefoodtruck.sft.member.repository.MemberImageRepository;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
 import java.time.LocalDate;
@@ -30,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper mapper;
     private final EmailService emailService;
     private final RandomPasswordService randomPasswordService;
+    private final MemberImageRepository memberImageRepository;
 
     @Override
     public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
@@ -50,6 +54,13 @@ public class MemberServiceImpl implements MemberService {
         signUpMemberDto.setPassword(password);
         Member member = memberRepository.save(Member.signupBuilder()
             .memberSignUpRequestDto(signUpMemberDto)
+            .build()
+        );
+
+        MemberImageDto memberImageDto = signUpMemberDto.getMemberImage();
+        memberImageDto.setEmail(signUpMemberDto.getEmail());
+        memberImageRepository.save(MemberImage.builder()
+            .memberImageDto(memberImageDto)
             .build()
         );
 

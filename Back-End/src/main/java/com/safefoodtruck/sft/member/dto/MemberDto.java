@@ -18,4 +18,5 @@ public class MemberDto {
     private LocalDateTime vipExpiredDate;
     private LocalDateTime regDate;
     private int isResign;
+    private MemberImageDto memberImageDto;
 }

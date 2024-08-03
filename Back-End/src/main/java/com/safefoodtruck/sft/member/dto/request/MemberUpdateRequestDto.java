@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.member.dto;
+package com.safefoodtruck.sft.member.dto.request;
 
 import lombok.Data;
 

@@ -3,10 +3,10 @@ package com.safefoodtruck.sft.member.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
-import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
-import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
+import com.safefoodtruck.sft.member.dto.response.MemberSelectResponseDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.service.MemberService;
@@ -105,6 +105,7 @@ public class MemberController {
         if (!(signUpMethod.equals("common")
                 || signUpMethod.equals("kakao")
                 || signUpMethod.equals("google"))) {
+            System.out.println(memberSignUpRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponseDto(
                             HttpStatus.NOT_FOUND.value(),
                             "잘못된 URI 입니다.",
