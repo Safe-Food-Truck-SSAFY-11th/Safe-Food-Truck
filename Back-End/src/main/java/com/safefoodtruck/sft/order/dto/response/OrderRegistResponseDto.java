@@ -1,5 +1,9 @@
 package com.safefoodtruck.sft.order.dto.response;
 
-public record OrderRegistResponseDto() {
+import com.safefoodtruck.sft.order.domain.Order;
 
+import lombok.Builder;
+
+@Builder
+public record OrderRegistResponseDto(Order order, String menuName, Integer totalQuantity, Integer totalAmount) {
 }

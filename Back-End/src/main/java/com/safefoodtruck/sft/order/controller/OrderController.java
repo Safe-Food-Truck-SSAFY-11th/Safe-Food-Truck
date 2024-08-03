@@ -1,21 +1,24 @@
 package com.safefoodtruck.sft.order.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
-import com.safefoodtruck.sft.order.dto.request.OrderListRequestDto;
-import com.safefoodtruck.sft.order.service.OrderService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.service.OrderService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/orders")
@@ -40,8 +43,8 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> createOrder(@RequestBody OrderListRequestDto orderListRequestDto) {
-        Integer orderId = orderService.order(orderListRequestDto);
-        return new ResponseEntity<>(orderId, CREATED);
+    public ResponseEntity<?> createOrder(@RequestBody OrderRegistRequestDto orderRegistRequestDto) {
+        OrderRegistResponseDto order = orderService.order(orderRegistRequestDto);
+        return new ResponseEntity<>(order, CREATED);
     }
 }
