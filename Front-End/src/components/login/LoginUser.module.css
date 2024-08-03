@@ -158,6 +158,21 @@
     margin-bottom: 10px;
 }
 
+.findLoginInfo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.findLoginInfo>p {
+    font-size: 3vw;
+    color: gray;
+}
+
+.findLoginInfo>* {
+    margin: 10px;
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;

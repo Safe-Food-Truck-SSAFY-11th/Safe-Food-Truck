@@ -69,7 +69,7 @@ const OwnerInfo = () => {
             손님 : <span className={styles.highlight}>{likesCount}</span> 명
           </p>
           <p className={styles.infoText}>
-            <span className={styles.highlight}>{formattedIncome}</span>에 열어요
+            <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
           </p>
 
           <div className={styles.buttons}>

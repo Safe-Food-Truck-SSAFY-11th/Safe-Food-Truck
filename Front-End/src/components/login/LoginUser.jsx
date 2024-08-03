@@ -66,6 +66,16 @@ const LoginUser = () => {
         'scope=https://www.googleapis.com/auth/userinfo.email';
     };
 
+    // 아이디 찾기
+    const handleFindId = () => {
+        navigate('/findId');
+    };
+
+    // 비밀번호 찾기
+    const handleFindPassword = () => {
+        navigate('/findPassword');
+    };
+
     return (
         <div className={`${styles.loginContainer} ${isGuest === false ? styles.ownerBackground : ''}`}>
             <img src={logo} alt="세이푸트" className={styles.logoImage} />
@@ -87,12 +97,17 @@ const LoginUser = () => {
                 </span>
             </div>
             <div className={styles.inputContainer}>
-                <input type="text" placeholder="이메일" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="text" placeholder="이메일" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
             </div>
             <div className={styles.inputContainer}>
-                <input type="password" placeholder="비밀번호" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type="password" placeholder="비밀번호" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
             </div>
             <button className={`${styles.loginButton} ${isGuest === false ? styles.ownerLoginButton : ''}`} onClick={handleLoginClick}>로그인</button>
+            <div className={styles.findLoginInfo}>
+                <p onClick={handleFindId}>아이디를 잊으셨나요?</p>
+                <div>|</div>
+                <p onClick={handleFindPassword}>비밀번호를 잊으셨나요?</p>
+            </div>
             <div className={styles.socialLoginContainer}>
                 <p className={`${styles.socialLoginText} ${isGuest === false ? styles.ownerSocialLoginText : ''}`}>소셜 로그인</p>
                 <div className={styles.socialIcons}>
