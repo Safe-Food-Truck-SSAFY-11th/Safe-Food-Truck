@@ -16,6 +16,7 @@ import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
@@ -103,4 +104,26 @@ public class OrderServiceImpl implements OrderService {
 			.totalAmount(totalAmount)
 			.build();
 	}
+
+	public OrderListResponseDto findCustomerOrderList() {
+		String email = MemberInfo.getEmail();
+		List<Order> orders = orderRepository.findByCustomerEmail(email);
+
+		return OrderListResponseDto.builder()
+			.count(orders.size())
+			.orders(orders)
+			.build();
+	}
+
+	@Override
+	public OrderListResponseDto findStoreOrderList() {
+		String email = MemberInfo.getEmail();
+		List<Order> orders = orderRepository.findByStoreOwnerEmail(email);
+
+		return OrderListResponseDto.builder()
+			.count(orders.size())
+			.orders(orders)
+			.build();
+	}
+
 }
