@@ -53,7 +53,19 @@ public class OrderServiceImpl implements OrderService {
 		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
-		Order order = Order.builder()
+		Order order = createOrder(orderRegistRequestDto, customer, store);
+		Order savedOrder = orderRepository.save(order);
+
+		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
+		List<OrderMenu> orderMenuList = createOrderMenus(savedOrder, menuList);
+
+		orderMenuRepository.saveAll(orderMenuList);
+
+		return createOrderRegistResponseDto(savedOrder, menuList);
+	}
+
+	private Order createOrder(OrderRegistRequestDto orderRegistRequestDto, Member customer, Store store) {
+		return Order.builder()
 			.customer(customer)
 			.store(store)
 			.request(orderRegistRequestDto.request())
@@ -61,20 +73,26 @@ public class OrderServiceImpl implements OrderService {
 			.cookingStatus(PREPARING.get())
 			.orderTime(LocalDateTime.now())
 			.build();
+	}
 
-		Order savedOrder = orderRepository.save(order);
+	private List<OrderMenu> createOrderMenus(Order savedOrder, List<OrderMenuRequestDto> menuList) {
+		return menuList.stream()
+			.map(menuRequestDto -> {
+				Menu menu = menuRepository.findById(menuRequestDto.menuId())
+					.orElseThrow(MenuNotFoundException::new);
 
-		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
+				OrderMenu orderMenu = OrderMenu.builder()
+					.menu(menu)
+					.count(menuRequestDto.count())
+					.build();
 
-		String orderTitle = menuList.stream()
-			.map(menuRequestDto -> menuRepository.findById(menuRequestDto.menuId())
-				.orElseThrow(MenuNotFoundException::new).getName())
-			.collect(Collectors.joining(", "));
+				savedOrder.addOrderMenu(orderMenu);
+				return orderMenu;
+			}).toList();
+	}
 
-		if (menuList.size() > 1) {
-			orderTitle = orderTitle.split(", ")[0] + " 외 " + (menuList.size() - 1) + "개";
-		}
-
+	private OrderRegistResponseDto createOrderRegistResponseDto(Order savedOrder, List<OrderMenuRequestDto> menuList) {
+		String orderTitle = createOrderTitle(menuList);
 		Integer totalQuantity = menuList.stream()
 			.mapToInt(OrderMenuRequestDto::count)
 			.sum();
@@ -84,25 +102,6 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(MenuNotFoundException::new).getPrice() * menuRequestDto.count())
 			.sum();
 
-		List<OrderMenu> orderMenuList = menuList.stream()
-			.map(menuRequestDto -> {
-					Menu menu = menuRepository.findById(menuRequestDto.menuId())
-						.orElseThrow(MenuNotFoundException::new);
-
-					OrderMenu orderMenu = OrderMenu.builder()
-						.menu(menu)
-						.count(menuRequestDto.count())
-						.build();
-
-					savedOrder.addOrderMenu(orderMenu);
-					return orderMenu;
-				}
-			).toList();
-
-		log.info("savedOrder {} ", savedOrder);
-
-		orderMenuRepository.saveAll(orderMenuList);
-
 		return OrderRegistResponseDto.builder()
 			.order(savedOrder)
 			.menuName(orderTitle)
@@ -111,52 +110,58 @@ public class OrderServiceImpl implements OrderService {
 			.build();
 	}
 
-	@Override
-	public String acceptOrder(Integer orderId) {
-		log.info("before repository orderId : {}", orderId);
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
-		log.info("after repository orderId : {}", orderId);
-		if(order.isInValidRequest()) {
-			throw new AlreadyProcessedOrderException();
+	private String createOrderTitle(List<OrderMenuRequestDto> menuList) {
+		String orderTitle = menuList.stream()
+			.map(menuRequestDto -> menuRepository.findById(menuRequestDto.menuId())
+				.orElseThrow(MenuNotFoundException::new).getName())
+			.collect(Collectors.joining(", "));
+
+		if (menuList.size() > 1) {
+			orderTitle = orderTitle.split(", ")[0] + " 외 " + (menuList.size() - 1) + "개";
 		}
 
-		order.acceptOrder();
+		return orderTitle;
+	}
 
+	@Override
+	public String acceptOrder(Integer orderId) {
+		Order order = getOrder(orderId);
+		if (order.isInValidRequest()) {
+			throw new AlreadyProcessedOrderException();
+		}
+		order.acceptOrder();
 		return order.getStatus();
 	}
 
 	@Override
 	public String rejectOrder(Integer orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		Order order = getOrder(orderId);
 		if (order.isInValidRequest()) {
 			throw new AlreadyProcessedOrderException();
 		}
-
 		order.rejectOrder();
-
 		return order.getStatus();
 	}
 
 	@Override
 	public String completeOrder(final Integer orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		Order order = getOrder(orderId);
 		if (order.isAlreadyCompletedOrder()) {
 			throw new AlreadyCompletedOrderException();
 		}
-
 		order.completeOrder();
-
 		return order.getCookingStatus();
+	}
+
+	private Order getOrder(Integer orderId) {
+		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 	}
 
 	public OrderListResponseDto findCustomerOrderList() {
 		String email = MemberInfo.getEmail();
 		List<Order> orders = orderRepository.findByCustomerEmail(email);
 
-		return OrderListResponseDto.builder()
-			.count(orders.size())
-			.orders(orders)
-			.build();
+		return createOrderListResponseDto(orders);
 	}
 
 	@Override
@@ -164,10 +169,7 @@ public class OrderServiceImpl implements OrderService {
 		String email = MemberInfo.getEmail();
 		List<Order> orders = orderRepository.findByStoreOwnerEmail(email);
 
-		return OrderListResponseDto.builder()
-			.count(orders.size())
-			.orders(orders)
-			.build();
+		return createOrderListResponseDto(orders);
 	}
 
 	@Override
@@ -186,4 +188,10 @@ public class OrderServiceImpl implements OrderService {
 			.build();
 	}
 
+	private OrderListResponseDto createOrderListResponseDto(List<Order> orders) {
+		return OrderListResponseDto.builder()
+			.count(orders.size())
+			.orders(orders)
+			.build();
+	}
 }

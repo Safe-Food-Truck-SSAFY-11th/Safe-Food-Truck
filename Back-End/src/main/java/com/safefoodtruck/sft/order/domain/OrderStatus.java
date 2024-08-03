@@ -7,13 +7,13 @@ public enum OrderStatus {
 	PREPARING("preparing"),
 	COMPLETED("completed");
 
-	private final String getName;
+	private final String status;
 
-	OrderStatus(final String getName) {
-		this.getName = getName;
+	OrderStatus(final String status) {
+		this.status = status;
 	}
 
 	public String get() {
-		return getName;
+		return status;
 	}
 }
