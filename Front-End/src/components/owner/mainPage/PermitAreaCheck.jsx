@@ -29,7 +29,7 @@ const PermitAreaCheck = () => {
 
   const navigate = useNavigate();
 
-  const { truckInfo, switchStatus } = useTruckStore();
+  const { truckInfo, switchStatus, changeLocation } = useTruckStore();
 
   //여기서 할래요 버튼 클릭
   const handleSelectClick = () => {
@@ -38,6 +38,7 @@ const PermitAreaCheck = () => {
       openWarning();
     } else {
       switchStatus();
+      changeLocation(currLat, currLon);
       navigate("/mainOwner");
     }
   };

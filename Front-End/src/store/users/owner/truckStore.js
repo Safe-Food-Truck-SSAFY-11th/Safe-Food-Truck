@@ -120,6 +120,22 @@ const useTruckStore = create((set) => ({
       console.log(error);
     }
   },
+
+  // 점포 위치 변경
+  changeLocation: async (latitude, longitude) => {
+    try {
+      const response = await axiosInstance.patch("stores/location", {
+        'latitude': latitude,
+        'longitude': longitude,
+      });
+      console.log("점포 위치 변경 성공", response.data);
+      await set((state) => ({
+        truckInfo: {...state.truckInfo, latitude, longitude },
+      }));
+    } catch (error) {
+      console.error("점포 위치 변경 실패", error);
+    }
+  },
 }));
 
 export default useTruckStore;
