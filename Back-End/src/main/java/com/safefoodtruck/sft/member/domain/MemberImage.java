@@ -41,10 +41,16 @@ public class MemberImage {
     @NotNull
     private String savedPath;
 
-    @Builder
-    public MemberImage(Member member, MemberImageDto memberImageDto) {
+    public void updateMemberImage(Member member, MemberImageDto memberImageDto) {
+        this.member = member;
         this.savedUrl = memberImageDto.getSavedUrl();
         this.savedPath = memberImageDto.getSavedPath();
+    }
+
+    @Builder
+    public MemberImage(Member member, MemberImageDto memberImageDto) {
         this.member = member;
+        this.savedUrl = memberImageDto.getSavedUrl();
+        this.savedPath = memberImageDto.getSavedPath();
     }
 }

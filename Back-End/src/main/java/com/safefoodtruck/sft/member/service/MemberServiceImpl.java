@@ -121,7 +121,11 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail());
         memberUpdateRequestDto.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
         member.updateMember(memberUpdateRequestDto);
+
+        MemberImage memberImage = memberImageRepository.findByMember(member);
+        memberImage.updateMemberImage(member, memberUpdateRequestDto.getMemberImage());
         memberRepository.save(member);
+        memberImageRepository.save(memberImage);
     }
 
     @Override
