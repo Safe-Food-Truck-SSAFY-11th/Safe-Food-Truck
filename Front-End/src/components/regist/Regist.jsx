@@ -4,10 +4,14 @@ import RegistUser from './RegistUser';
 import RegistOwner from './RegistOwner';
 import useUserStore from 'store/users/userStore';
 import { useState } from 'react';
+import AWS from 'aws-sdk';
+
+import img_upload from 'assets/images/img_upload.png';
 
 const Regist = () => {
     const navigate = useNavigate();
     const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailChecked, nicknameChecked, passwordMatch } = useUserStore();
+    const [profileImage, setProfileImage] = useState(img_upload);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -17,6 +21,10 @@ const Regist = () => {
         birth: '',
         phoneNumber: '',
         businessNumber: null,
+        memberImage : {
+            savedUrl: '',
+            savedPath: ''
+        }
     });
 
     const handleFormChange = (name, value) => {
@@ -32,6 +40,7 @@ const Regist = () => {
 
     const handleRegisterClick = async () => {
         try {
+            handleUpload();
             const currentRole = formData.businessNumber ? 'owner' : 'customer';
             const roleSpecificData = currentRole === 'customer' ? {} : { businessNumber: formData.businessNumber };
             const token = await registerUser('common', { ...formData, ...roleSpecificData });
@@ -49,12 +58,61 @@ const Regist = () => {
 
     const isFormValid = emailChecked === 'Possible' && nicknameChecked === 'Possible' && passwordMatch && (isGuest || formData.bsNumValid);
 
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            setProfileImage(event.target.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      };
+
+    const handleUpload = () => {
+        if (!selectedFile) {
+            alert('Please select a file');
+            return;
+        }
+
+        // AWS S3 설정
+        AWS.config.update({
+            accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`, // IAM 사용자 엑세스 키 변경
+            secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`, // IAM 엑세스 시크릿키 변경
+            region: `${process.env.REACT_APP_AWS_REGION}`, // 리전 변경
+        });
+
+        const s3 = new AWS.S3();
+
+        // 업로드할 파일 정보 설정
+        const uploadParams = {
+            Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,  // 버킷 이름 변경
+            Key: `members/${formData.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+            Body: selectedFile,
+        };
+
+        // S3에 파일 업로드
+        s3.upload(uploadParams, (err, data) => {
+            if (err) {
+            console.error('Error uploading file:', err);
+            } else {
+            console.log('File uploaded successfully. ETag:', data.ETag);
+            // 업로드 성공 후 필요한 작업 수행
+            }
+            formData.memberImage.savedUrl = data.Location;
+            formData.memberImage.savedPath = data.Key;
+
+            console.log('DATA = ', data);
+        });
+    };
+
     return (
         <div className={`${styles.registContainer} ${!isGuest ? styles.ownerBackground : ''}`}>
             <div className={styles.contentContainer}>
-                <div className={styles.imageUpload}>
-                    <img src="" alt="이미지 업로드" />
-                    <p>image</p>
+                <div className={styles.imageUpload} onClick={() => document.getElementById('profileImageInput').click()}>
+                    <img src={profileImage} alt="이미지 업로드" />
+                    <input type="file" name="" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                 </div>
                 <div className={styles.optionContainer}>
                     <span
