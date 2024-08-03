@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -24,8 +25,13 @@ import org.hibernate.annotations.DynamicUpdate;
 public class MemberImage {
 
     @Id
-    @JoinColumn(name = "email")
+    @Column(name = "email")
     private String email;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "email")
+    private Member member;
 
     @Column(name = "saved_url")
     @NotNull
@@ -36,9 +42,9 @@ public class MemberImage {
     private String savedPath;
 
     @Builder
-    public MemberImage(MemberImageDto memberImageDto) {
-        this.email = memberImageDto.getEmail();
+    public MemberImage(Member member, MemberImageDto memberImageDto) {
         this.savedUrl = memberImageDto.getSavedUrl();
         this.savedPath = memberImageDto.getSavedPath();
+        this.member = member;
     }
 }

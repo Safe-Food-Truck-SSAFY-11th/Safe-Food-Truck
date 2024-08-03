@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.member.dto.response;
 
+import com.safefoodtruck.sft.member.dto.MemberImageDto;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,4 +19,5 @@ public class MemberSelectResponseDto {
     private LocalDateTime vipExpiredDate;
     private LocalDateTime regDate;
     private int isResign;
+    private MemberImageDto memberImage;
 }

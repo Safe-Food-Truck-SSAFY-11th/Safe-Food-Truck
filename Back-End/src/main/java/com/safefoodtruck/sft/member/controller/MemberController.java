@@ -105,7 +105,6 @@ public class MemberController {
         if (!(signUpMethod.equals("common")
                 || signUpMethod.equals("kakao")
                 || signUpMethod.equals("google"))) {
-            System.out.println(memberSignUpRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponseDto(
                             HttpStatus.NOT_FOUND.value(),
                             "잘못된 URI 입니다.",

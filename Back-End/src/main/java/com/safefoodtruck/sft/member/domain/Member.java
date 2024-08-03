@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -84,9 +85,6 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Survey> surveyList = new ArrayList<>();
-
-    @OneToOne
-    private MemberImage memberImage;
 
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();

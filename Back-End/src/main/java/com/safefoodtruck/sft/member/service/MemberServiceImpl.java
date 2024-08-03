@@ -57,10 +57,9 @@ public class MemberServiceImpl implements MemberService {
             .build()
         );
 
-        MemberImageDto memberImageDto = signUpMemberDto.getMemberImage();
-        memberImageDto.setEmail(signUpMemberDto.getEmail());
         memberImageRepository.save(MemberImage.builder()
-            .memberImageDto(memberImageDto)
+            .member(member)
+            .memberImageDto(signUpMemberDto.getMemberImage())
             .build()
         );
 
@@ -91,7 +90,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberSelectResponseDto selectMember(String email) {
         Member member = memberRepository.findByEmail(email);
+        MemberImage memberImage = memberImageRepository.findByMember(member);
+        MemberImageDto memberImageDto = mapper.map(memberImage, MemberImageDto.class);
+
         MemberSelectResponseDto memberSelectResponseDto = mapper.map(member, MemberSelectResponseDto.class);
+        memberSelectResponseDto.setMemberImage(memberImageDto);
         return memberSelectResponseDto;
     }
 
