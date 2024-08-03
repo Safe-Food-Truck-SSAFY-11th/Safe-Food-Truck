@@ -3,7 +3,7 @@ import styles from './RegistUser.module.css';
 import useUserStore from 'store/users/userStore';
 
 const RegistUser = ({ formData, onFormChange }) => {
-  const { emailChecked, checkEmail, nicknameChecked, checkNickname, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched } = useUserStore();
+  const { nicknameChecked, checkNickname, setPasswordMatch, nicknameTouched, setNicknameTouched } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {

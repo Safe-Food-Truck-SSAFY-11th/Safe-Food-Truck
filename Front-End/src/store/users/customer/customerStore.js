@@ -26,8 +26,16 @@ const customerStore = create((set, get) => ({
   checkEmail: () => set({ emailChecked: true }),
   setEmailTouched: () => set({ emailTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
-  checkNickname: () => set({ nicknameChecked: true }), // 닉네임 확인 함수 추가
-  setNicknameTouched: () => set({ nicknameTouched: true }), // 닉네임 입력 함수 추가
+  checkNickname: async (nickname) => {
+    try {
+      const response = await axiosInstance.get(`members/duplication-nickname/${nickname}`);
+      set({ nicknameChecked: response.data });
+    } catch (error) {
+      console.error('닉네임 중복 확인 오류:', error);
+      set({ nicknameChecked: false });
+    }
+  },
+  setNicknameTouched: () => set({ nicknameTouched: true }),
 
 
   getMemberInfo: async () => { // 회원 정보 가져오는 함수
@@ -37,6 +45,7 @@ const customerStore = create((set, get) => ({
 
       set({ memberInfo: response.data });
 
+      return response.data;
     } catch (error) {
 
       console.error('회원 정보 가져오기 실패', error);  
@@ -48,7 +57,7 @@ const customerStore = create((set, get) => ({
     try {
 
       const response = await axiosInstance.patch('members/modify', updateData)
-
+      await sessionStorage.setItem('nickname', updateData.nickname);
       set({ memberInfo: response.data });
 
     } catch (error) {

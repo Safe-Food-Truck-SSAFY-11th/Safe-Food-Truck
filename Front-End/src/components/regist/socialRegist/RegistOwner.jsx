@@ -4,7 +4,7 @@ import useUserStore from 'store/users/userStore';
 import axios from 'axios';
 
 const RegistOwner = ({ formData, onFormChange }) => {
-  const { emailChecked, checkEmail, nicknameChecked, checkNickname, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched } = useUserStore();
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, setPasswordMatch } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [bsNumValid, setBsNumValid] = useState(null);
 
