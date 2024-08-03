@@ -30,11 +30,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "Orders")
 @Getter
 @Builder
+@ToString
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
@@ -57,6 +59,7 @@ public class Order {
     private Store store;
 
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderMenu> orderMenuList = new ArrayList<>();
 
     @Column(name = "is_accepted")
@@ -77,9 +80,13 @@ public class Order {
         return customer != null ? customer.getEmail() : null;
     }
 
-    // Store의 store_id를 JSON에 포함시키기 위한 getter 메서드
     @JsonProperty("store_id")
     public Integer getStoreId() {
         return store != null ? store.getId() : null;
+    }
+
+    public void addOrderMenu(OrderMenu orderMenu) {
+        orderMenuList.add(orderMenu);
+        orderMenu.setOrder(this);
     }
 }

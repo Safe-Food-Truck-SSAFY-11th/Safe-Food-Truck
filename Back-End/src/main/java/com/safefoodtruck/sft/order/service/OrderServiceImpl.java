@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.order.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -35,16 +36,15 @@ public class OrderServiceImpl implements OrderService {
 	private final MemberRepository memberRepository;
 	private final StoreRepository storeRepository;
 	private final OrderRepository orderRepository;
-    private final OrderMenuRepository orderMenuRepository;
+	private final OrderMenuRepository orderMenuRepository;
 	private final MenuRepository menuRepository;
 
 	@Override
 	public OrderRegistResponseDto order(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member customer = memberRepository.findByEmail(email);
-
-		Store store = storeRepository.findById(orderRegistRequestDto.storeId()).orElseThrow(
-			StoreNotFoundException::new);
+		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
+			.orElseThrow(StoreNotFoundException::new);
 
 		Order order = Order.builder()
 			.customer(customer)
@@ -59,34 +59,48 @@ public class OrderServiceImpl implements OrderService {
 
 		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
 
-		String orderTitle = "";
-		Integer totalQuantity = 0;
-		Integer totalAmount = 0;
+		String orderTitle = menuList.stream()
+			.map(menuRequestDto -> menuRepository.findById(menuRequestDto.menuId())
+				.orElseThrow(MenuNotFoundException::new).getName())
+			.collect(Collectors.joining(", "));
 
-		for (OrderMenuRequestDto menuRequestDto : menuList) {
-			Menu menu = menuRepository.findById(menuRequestDto.menuId())
-				.orElseThrow(MenuNotFoundException::new);
-
-			if(orderTitle.isEmpty()) {
-				orderTitle = menu.getName() + " 외 " + (menuList.size() - 1) + "개";
-			}
-			totalQuantity += menuRequestDto.count();
-			totalAmount += menu.getPrice() * menuRequestDto.count();
-
-			OrderMenu orderMenu = OrderMenu.builder()
-				.menu(menu)
-				.order(savedOrder)
-				.count(menuRequestDto.count())
-				.build();
-
-			orderMenuRepository.save(orderMenu);
+		if (menuList.size() > 1) {
+			orderTitle = orderTitle.split(", ")[0] + " 외 " + (menuList.size() - 1) + "개";
 		}
 
-        return OrderRegistResponseDto.builder()
-            .order(savedOrder)
-            .menuName(orderTitle)
-            .totalQuantity(totalQuantity)
-            .totalAmount(totalAmount)
-            .build();
+		Integer totalQuantity = menuList.stream()
+			.mapToInt(OrderMenuRequestDto::count)
+			.sum();
+
+		int totalAmount = menuList.stream()
+			.mapToInt(menuRequestDto -> menuRepository.findById(menuRequestDto.menuId())
+				.orElseThrow(MenuNotFoundException::new).getPrice() * menuRequestDto.count())
+			.sum();
+
+		List<OrderMenu> orderMenuList = menuList.stream()
+			.map(menuRequestDto -> {
+					Menu menu = menuRepository.findById(menuRequestDto.menuId())
+						.orElseThrow(MenuNotFoundException::new);
+
+					OrderMenu orderMenu = OrderMenu.builder()
+						.menu(menu)
+						.count(menuRequestDto.count())
+						.build();
+
+					savedOrder.addOrderMenu(orderMenu);
+					return orderMenu;
+				}
+			).toList();
+
+		log.info("savedOrder {} ", savedOrder);
+
+		orderMenuRepository.saveAll(orderMenuList);
+
+		return OrderRegistResponseDto.builder()
+			.order(savedOrder)
+			.menuName(orderTitle)
+			.totalQuantity(totalQuantity)
+			.totalAmount(totalAmount)
+			.build();
 	}
 }
