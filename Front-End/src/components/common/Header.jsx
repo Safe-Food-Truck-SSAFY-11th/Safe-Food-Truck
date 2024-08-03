@@ -8,6 +8,8 @@ const Header = () => {
     const navigate = useNavigate();
     const [showNotification, setNotification] = useState(false);
 
+    const role = sessionStorage.getItem('role');
+
     const notifications = [
         { message: '중요 알림: 서비스 점검 예정입니다.', important: true },
         { message: '일반 알림: 새로운 기능이 추가되었습니다.', important: false },
@@ -24,7 +26,11 @@ const Header = () => {
     };
 
     const handleMyPageClick = () => {
-        navigate('/mypageCustomer');
+        if (role === 'customer') {
+            navigate('/mypageCustomer');
+        } else if (role === 'owner') {
+            navigate('/mypageOwner');
+        }
     };
 
     const handleLogout = () => {
@@ -34,7 +40,7 @@ const Header = () => {
 
     // 로그인 유저 role에 따른 렌더링 변경
     const renderHeader = () => {
-        if (sessionStorage.getItem('token') === 'customer') {
+        if (role === 'customer') {
             return (
                 <header className={styles.headerCustomer}>
                     <div className={styles.topSection}>
