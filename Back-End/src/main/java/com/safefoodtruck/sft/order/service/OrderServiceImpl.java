@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.order.service;
 
+import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,8 @@ import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
+import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
@@ -52,10 +56,10 @@ public class OrderServiceImpl implements OrderService {
 		Order order = Order.builder()
 			.customer(customer)
 			.store(store)
-			.isAccepted(false)
-			.orderTime(LocalDateTime.now())
 			.request(orderRegistRequestDto.request())
-			.isDone(false)
+			.status(PENDING.get())
+			.cookingStatus(PREPARING.get())
+			.orderTime(LocalDateTime.now())
 			.build();
 
 		Order savedOrder = orderRepository.save(order);
@@ -107,6 +111,44 @@ public class OrderServiceImpl implements OrderService {
 			.build();
 	}
 
+	@Override
+	public String acceptOrder(Integer orderId) {
+		log.info("before repository orderId : {}", orderId);
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		log.info("after repository orderId : {}", orderId);
+		if(order.isInValidRequest()) {
+			throw new AlreadyProcessedOrderException();
+		}
+
+		order.acceptOrder();
+
+		return order.getStatus();
+	}
+
+	@Override
+	public String rejectOrder(Integer orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		if (order.isInValidRequest()) {
+			throw new AlreadyProcessedOrderException();
+		}
+
+		order.rejectOrder();
+
+		return order.getStatus();
+	}
+
+	@Override
+	public String completeOrder(final Integer orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		if (order.isAlreadyCompletedOrder()) {
+			throw new AlreadyCompletedOrderException();
+		}
+
+		order.completeOrder();
+
+		return order.getCookingStatus();
+	}
+
 	public OrderListResponseDto findCustomerOrderList() {
 		String email = MemberInfo.getEmail();
 		List<Order> orders = orderRepository.findByCustomerEmail(email);
@@ -137,10 +179,10 @@ public class OrderServiceImpl implements OrderService {
 			.customerEmail(order.getCustomerEmail())
 			.storeId(order.getStoreId())
 			.orderMenuList(order.getOrderMenuList())
-			.isAccepted(order.getIsAccepted())
-			.orderTime(order.getOrderTime())
 			.request(order.getRequest())
-			.isDone(order.getIsDone())
+			.status(order.getStatus())
+			.cookingStatus(order.getCookingStatus())
+			.orderTime(order.getOrderTime())
 			.build();
 	}
 

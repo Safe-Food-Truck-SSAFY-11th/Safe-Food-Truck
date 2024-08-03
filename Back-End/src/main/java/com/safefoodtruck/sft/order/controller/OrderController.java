@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,9 +48,51 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> createOrder(@RequestBody OrderRegistRequestDto orderRegistRequestDto) {
+    public ResponseEntity<OrderRegistResponseDto> createOrder(@RequestBody OrderRegistRequestDto orderRegistRequestDto) {
         OrderRegistResponseDto order = orderService.order(orderRegistRequestDto);
         return new ResponseEntity<>(order, CREATED);
+    }
+
+    @PatchMapping("{orderId}/accept")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "주문 수락", description = "주문을 수락할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주문을 수락하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> acceptOrder(@PathVariable Integer orderId) {
+        log.info("before service orderId : {}", orderId);
+        String status = orderService.acceptOrder(orderId);
+        log.info("after service orderId : {}", orderId);
+        return new ResponseEntity<>(status, OK);
+    }
+
+    @PatchMapping("{orderId}/reject")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "주문 거절", description = "주문을 거절할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주문을 거절하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> rejectOrder(@PathVariable Integer orderId) {
+        String status = orderService.rejectOrder(orderId);
+        return new ResponseEntity<>(status, OK);
     }
 
     @GetMapping("customers")
@@ -67,7 +110,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findCustomerOrderList() {
+    public ResponseEntity<OrderListResponseDto> findCustomerOrderList() {
         OrderListResponseDto customerOrderList = orderService.findCustomerOrderList();
         return new ResponseEntity<>(customerOrderList, OK);
     }
@@ -87,7 +130,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStoreOrderList() {
+    public ResponseEntity<OrderListResponseDto> findStoreOrderList() {
         OrderListResponseDto storeOrderList = orderService.findStoreOrderList();
         return new ResponseEntity<>(storeOrderList, OK);
     }
@@ -107,8 +150,28 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findOrderDetail(@PathVariable final Integer orderId) {
+    public ResponseEntity<OrderDetailResponseDto> findOrderDetail(@PathVariable final Integer orderId) {
         OrderDetailResponseDto orderDetail = orderService.findOrderDetail(orderId);
         return new ResponseEntity<>(orderDetail, OK);
+    }
+
+    @PatchMapping("{orderId}/complete")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "주문 완료", description = "주문을 완료할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주문을 완료하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> completeOrder(@PathVariable Integer orderId) {
+        String cookingStatus = orderService.completeOrder(orderId);
+        return new ResponseEntity<>(cookingStatus, OK);
     }
 }

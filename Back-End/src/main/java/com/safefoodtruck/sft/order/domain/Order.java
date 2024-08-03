@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.order.domain;
 
+import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
@@ -62,18 +63,19 @@ public class Order {
     @Builder.Default
     private List<OrderMenu> orderMenuList = new ArrayList<>();
 
-    @Column(name = "is_accepted")
-    private Boolean isAccepted;
-
-    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
-    LocalDateTime orderTime;
-
     @Column(name = "order_request")
     private String request;
 
-    @Column(name = "is_done")
-    @ColumnDefault("0")
-    private Boolean isDone;
+    @Column(name = "order_status")
+    @ColumnDefault(value = "'pending'")
+    private String status;
+
+    @Column(name = "cooking_status")
+    @ColumnDefault("'preparing'")
+    private String cookingStatus;
+
+    @Column(name = "order_time", columnDefinition = "TIMESTAMP")
+    LocalDateTime orderTime;
 
     @JsonProperty("email")
     public String getCustomerEmail() {
@@ -88,5 +90,25 @@ public class Order {
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);
+    }
+
+    public void acceptOrder() {
+        this.status = ACCEPTED.get();
+    }
+
+    public void rejectOrder() {
+        this.status = REJECTED.get();
+    }
+
+    public void completeOrder() {
+        this.cookingStatus = COMPLETED.get();
+    }
+
+    public boolean isInValidRequest() {
+		return !status.equals(PENDING.get());
+	}
+
+    public boolean isAlreadyCompletedOrder() {
+        return cookingStatus.equals(COMPLETED.get());
     }
 }

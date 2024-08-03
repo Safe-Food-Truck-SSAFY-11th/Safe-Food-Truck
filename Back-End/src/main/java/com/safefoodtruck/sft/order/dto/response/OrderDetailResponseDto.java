@@ -8,5 +8,5 @@ import com.safefoodtruck.sft.order.domain.OrderMenu;
 import lombok.Builder;
 
 @Builder
-public record OrderDetailResponseDto(Integer orderId, String customerEmail, Integer storeId, List<OrderMenu> orderMenuList, Boolean isAccepted, LocalDateTime orderTime, String request, Boolean isDone) {
+public record OrderDetailResponseDto(Integer orderId, String customerEmail, Integer storeId, List<OrderMenu> orderMenuList, LocalDateTime orderTime, String status, String cookingStatus, String request) {
 }
