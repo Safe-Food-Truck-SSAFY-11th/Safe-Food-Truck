@@ -16,8 +16,10 @@ import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
 import com.safefoodtruck.sft.store.domain.Store;
@@ -123,6 +125,22 @@ public class OrderServiceImpl implements OrderService {
 		return OrderListResponseDto.builder()
 			.count(orders.size())
 			.orders(orders)
+			.build();
+	}
+
+	@Override
+	public OrderDetailResponseDto findOrderDetail(Integer orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+
+		return OrderDetailResponseDto.builder()
+			.orderId(order.getId())
+			.customerEmail(order.getCustomerEmail())
+			.storeId(order.getStoreId())
+			.orderMenuList(order.getOrderMenuList())
+			.isAccepted(order.getIsAccepted())
+			.orderTime(order.getOrderTime())
+			.request(order.getRequest())
+			.isDone(order.getIsDone())
 			.build();
 	}
 
