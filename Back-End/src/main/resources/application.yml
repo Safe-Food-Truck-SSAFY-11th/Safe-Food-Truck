@@ -21,7 +21,6 @@ spring:
       mail.smtp.connectiontimeout: 1000 #1초
       mail.starttls.enable: true
       mail.smtp.auth: true
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,6 +30,10 @@ spring:
         show_sql: false  # sql 쿼리를 보여줍니다.
         format_sql: false  # sql query formatting
         use_sql_comments: false  # sql 쿼리의 추가정보를 보여줍니다.
+
+springdoc:
+  swagger-ui:
+    path: ${swagger-url}
 
 logging:
   level:
