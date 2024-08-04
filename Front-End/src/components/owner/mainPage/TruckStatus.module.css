@@ -6,6 +6,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     margin: 20px 10px;
+    width: 88vw;
 }
 
 .chatBtn {
@@ -18,16 +19,16 @@
     border-radius: 10px;
     margin-right: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    min-width: 50px; /* 가로 크기 감소 */
+    min-width: 10vw; 
 }
 
 .chatIcon {
-    font-size: 1.5rem; /* 아이콘 크기 감소 */
+    font-size: 1.5rem;
     margin-bottom: 5px;
 }
 
 .chatBtn p {
-    font-size: 0.8rem; /* 텍스트 크기 감소 */
+    font-size: 0.8rem;
     color: #407223;
 }
 

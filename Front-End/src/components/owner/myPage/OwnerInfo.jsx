@@ -1,9 +1,27 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./OwnerInfo.module.css";
-import logo from "../../../assets/images/sft-logo.png";
+import logo from "assets/images/sft-logo.png";
+import useTruckStore from "store/users/owner/truckStore";
+import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const { getFoodTruckLikes } = useFoodTruckStore();
+
+  const [likesCount, setLikesCount] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTruckInfo();
+      const likes = await getFoodTruckLikes(truckInfo.storeId);
+      setLikesCount(likes);
+    };
+
+    fetchData();
+  }, [fetchTruckInfo, getFoodTruckLikes, truckInfo.storeId]);
+
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
   };
@@ -15,11 +33,10 @@ const OwnerInfo = () => {
     navigate("/manageMenu");
   };
 
-  // 더미 데이터
-  const ownerName = "푸바오";
-  const truckName = "울퉁불퉁";
-  const likesCount = 1234;
-  const weeklyIncome = "1010100"; // 월 수 금
+  // 데이터
+  const ownerName = sessionStorage.getItem("nickname");
+  const truckName = truckInfo.name;
+  const weeklyIncome = truckInfo.offDay;
 
   // 근무 요일 변환
   const getDayString = (income) => {
@@ -52,7 +69,7 @@ const OwnerInfo = () => {
             손님 : <span className={styles.highlight}>{likesCount}</span> 명
           </p>
           <p className={styles.infoText}>
-            <span className={styles.highlight}>{formattedIncome}</span>에 열어요
+            <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
           </p>
 
           <div className={styles.buttons}>

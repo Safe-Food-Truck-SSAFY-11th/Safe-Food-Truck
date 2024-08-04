@@ -1,16 +1,24 @@
-.header {
+.headerCustomer, .headerOwner {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #FFCC66;
     padding: 10px 20px;
     padding-top: 50px;
+    width: 100vw;
+}
+
+.headerCustomer {
+    background-color: #FFCC66;
+}
+
+.headerOwner {
+    background-color: #E2EED0;
 }
 
 .topSection {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: 90vw;
     margin-bottom: 10px;
 }
 
