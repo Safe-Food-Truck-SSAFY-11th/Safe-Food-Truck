@@ -21,7 +21,6 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
@@ -45,15 +44,16 @@ public class StoreServiceImpl implements StoreService {
         String email = MemberInfo.getEmail();
         Member owner = memberRepository.findByEmail(email);
         Store store = Store.of(owner, storeRegistRequestDto);
-        StoreImage storeImage = storeImageRepository.findById(store.getId())
-            .orElseThrow(StoreImageNotFoundException::new);
 
-        store.setStoreImage(storeImage);
+        StoreImage savedStoreImage = storeImageRepository.save(
+            StoreImage.of(storeRegistRequestDto.storeImageDto()));
+
+        store.setStoreImage(savedStoreImage);
         store.setOwner(owner);
 
-        storeRepository.save(store);
+        Store savedStore = storeRepository.save(store);
 
-        return StoreRegistResponseDto.fromEntity(email, store);
+        return StoreRegistResponseDto.fromEntity(email, savedStore);
     }
 
     @Override
@@ -92,7 +92,10 @@ public class StoreServiceImpl implements StoreService {
             .map(MenuResponseDto::fromEntity)
             .toList();
 
-        return new MenuListResponseDto(menuResponseDtos);
+        return MenuListResponseDto.builder()
+            .count(menuResponseDtos.size())
+            .menuResponseDtos(menuResponseDtos)
+            .build();
     }
 
     @Override

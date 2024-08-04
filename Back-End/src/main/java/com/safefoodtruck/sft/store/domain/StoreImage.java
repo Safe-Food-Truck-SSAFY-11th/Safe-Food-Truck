@@ -26,8 +26,8 @@ import lombok.Setter;
 @Builder
 @DynamicInsert
 @DynamicUpdate
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StoreImage {
 
 	@Id
@@ -37,17 +37,25 @@ public class StoreImage {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@Column(name = "saved_url")
 	@NotNull
+	@Column(name = "saved_url")
 	private String savedUrl;
 
-	@Column(name = "saved_path")
 	@NotNull
+	@Column(name = "saved_path")
 	private String savedPath;
 
 	public void updateStoreImage(StoreImageDto storeImageDto) {
 		this.store = storeImageDto.store();
 		this.savedUrl = storeImageDto.savedUrl();
 		this.savedPath = storeImageDto.savedPath();
+	}
+
+	public static StoreImage of(StoreImageDto storeImageDto) {
+		return StoreImage.builder()
+			.store(storeImageDto.store())
+			.savedUrl(storeImageDto.savedUrl())
+			.savedPath(storeImageDto.savedPath())
+			.build();
 	}
 }
