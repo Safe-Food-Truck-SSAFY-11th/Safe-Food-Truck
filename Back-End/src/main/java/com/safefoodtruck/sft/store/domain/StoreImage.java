@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.store.domain;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.store.dto.StoreImageDto;
 
 import jakarta.persistence.Column;
@@ -47,6 +48,11 @@ public class StoreImage {
 	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
+
+	@JsonProperty("menu_id")
+	public Integer getStoreId() {
+		return store != null ? store.getId() : null;
+	}
 
 	public void updateStoreImage(StoreImageDto storeImageDto) {
 		this.store = storeImageDto.store();

@@ -7,10 +7,7 @@ import com.safefoodtruck.sft.store.domain.StoreImage;
 import lombok.Builder;
 
 @Builder
-public record StoreImageDto(
-	@JsonIgnore Store store,
-	String savedUrl,
-	String savedPath) {
+public record StoreImageDto(@JsonIgnore Store store, String savedUrl, String savedPath) {
 
 	public static StoreImageDto fromEntity(StoreImage storeImage) {
 		return StoreImageDto.builder()
