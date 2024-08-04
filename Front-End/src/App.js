@@ -22,6 +22,9 @@ import OwnerReview from "./components/owner/myPage/OwnerReview";
 import ManageMenu from "components/owner/myPage/ManageMenu";
 import SocialRedirection from 'components/login/SocialRedirection';
 import SocialRegist from 'components/regist/socialRegist/SocialRegist';
+import FindId from "components/login/FindId";
+import FindPassword from "components/login/FindPassword";
+import Survey from "components/survey/Survey";
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
         <Route path="/chating" element={<Chating />} />
         <Route path="/ownerReview" element={<OwnerReview />} />
         <Route path="/social-redirection" element={<SocialRedirection />} />
+        <Route path="/findId" element={<FindId />} />
+        <Route path="/findPassword" element={<FindPassword />} />
+        <Route path="/survey" element={<Survey />} />
       </Routes>
     </div>
   );
