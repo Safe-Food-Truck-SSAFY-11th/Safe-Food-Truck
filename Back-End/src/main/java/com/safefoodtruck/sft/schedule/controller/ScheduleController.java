@@ -2,9 +2,11 @@ package com.safefoodtruck.sft.schedule.controller;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.schedule.dto.request.ScheduleInsertRequestDto;
 import com.safefoodtruck.sft.schedule.dto.response.ScheduleSelectResponseDto;
 import com.safefoodtruck.sft.schedule.exception.InvalidRangeDayException;
+import com.safefoodtruck.sft.schedule.exception.NotInsertedScheduleException;
 import com.safefoodtruck.sft.schedule.exception.NotInsertedStoreException;
 import com.safefoodtruck.sft.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,10 +55,10 @@ public class ScheduleController {
 
     @PostMapping()
     @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
-    @Operation(summary = "스케줄 등록", description = "스케줄을 등록할 때 사용하는 API")
+    @Operation(summary = "스케줄 등록/수정", description = "스케줄을 등록/수정할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200",
-            description = "스케줄이 정상적으로 등록되었습니다.",
+            description = "스케줄이 정상적으로 등록/수정되었습니다.",
             content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500",
             description = "Error Message로 전달함",
@@ -69,7 +72,26 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body("스케줄 등록 성공");
     }
 
-    @ExceptionHandler({NotInsertedStoreException.class, InvalidRangeDayException.class})
+    @DeleteMapping("/{scheduleId}")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "스케줄 삭제", description = "스케줄을 삭제할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "스케줄이 정상적으로 삭제되었습니다.",
+            content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500",
+            description = "Error Message로 전달함",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId") Integer scheduleId) {
+        String ownerEmail = MemberInfo.getEmail();
+        scheduleService.deleteSchedule(ownerEmail, scheduleId);
+        return ResponseEntity.status(HttpStatus.OK).body("스케줄 삭제 성공");
+    }
+
+    @ExceptionHandler({NotInsertedStoreException.class, InvalidRangeDayException.class,
+        NotInsertedScheduleException.class,
+        NotSameUserException.class})
     public ResponseEntity<?> notificationExceptionHandler(Exception e) {
         log.error("Schedule 에러: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

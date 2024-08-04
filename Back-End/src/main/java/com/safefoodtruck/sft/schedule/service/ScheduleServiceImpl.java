@@ -1,11 +1,13 @@
 package com.safefoodtruck.sft.schedule.service;
 
+import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.schedule.domain.Schedule;
 import com.safefoodtruck.sft.schedule.dto.ScheduleDto;
 import com.safefoodtruck.sft.schedule.dto.request.ScheduleInsertRequestDto;
 import com.safefoodtruck.sft.schedule.dto.response.ScheduleSelectResponseDto;
 import com.safefoodtruck.sft.schedule.exception.InvalidRangeDayException;
 import com.safefoodtruck.sft.schedule.exception.NotInsertedStoreException;
+import com.safefoodtruck.sft.schedule.exception.NotOwnerException;
 import com.safefoodtruck.sft.schedule.repository.ScheduleRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
@@ -48,5 +50,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleSelectResponseDto selectSchedule(Integer storeId) {
         List<ScheduleDto> scheduleList = scheduleRepository.findSchedules(storeId);
         return new ScheduleSelectResponseDto(scheduleList);
+    }
+
+    @Override
+    public void deleteSchedule(String ownerEmail, Integer scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+            .orElseThrow(NotOwnerException::new);
+        Integer storeId = schedule.getStore().getId();
+        Integer loginStoreId = storeRepository.findByOwnerEmail(ownerEmail)
+            .orElseThrow(NotInsertedStoreException::new).getId();
+
+        if (storeId != loginStoreId) {
+            throw new NotSameUserException();
+        }
+        scheduleRepository.delete(schedule);
     }
 }
