@@ -98,6 +98,7 @@ public class Store {
    private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Menu> menuList = new ArrayList<>();
 
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {

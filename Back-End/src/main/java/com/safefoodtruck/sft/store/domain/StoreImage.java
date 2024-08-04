@@ -31,6 +31,9 @@ import lombok.Setter;
 public class StoreImage {
 
 	@Id
+	@Column(name = "store_id")
+	private Integer id;
+
 	@OneToOne
 	@MapsId
 	@Setter
