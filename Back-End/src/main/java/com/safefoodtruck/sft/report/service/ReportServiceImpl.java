@@ -5,6 +5,7 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.report.domain.Report;
 import com.safefoodtruck.sft.report.dto.request.ReportInsertRequestDto;
 import com.safefoodtruck.sft.report.dto.response.ReportInsertResponseDto;
+import com.safefoodtruck.sft.report.dto.response.ReportSelectResponseDto;
 import com.safefoodtruck.sft.report.exception.NotFoundReviewException;
 import com.safefoodtruck.sft.report.repository.ReportRepository;
 import com.safefoodtruck.sft.review.domain.Review;
@@ -36,5 +37,18 @@ public class ReportServiceImpl implements ReportService {
             .description(reportInsertRequestDto.getDescription())
             .build());
         return reportRepository.findReportCountById(reportInsertRequestDto.getReviewId());
+    }
+
+    @Override
+    public ReportSelectResponseDto selectReport(String userEmail, Integer reviewId) {
+        Member member = memberRepository.findByEmail(userEmail);
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(NotFoundReviewException::new);
+        Report report = reportRepository.findByReviewAndMember(review, member);
+
+        String result = "Init";
+        if (report == null) result = "false";
+        else result = "true";
+        return new ReportSelectResponseDto(result);
     }
 }
