@@ -1,55 +1,53 @@
 package com.safefoodtruck.sft.store.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.safefoodtruck.sft.store.dto.StoreImageDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.DynamicInsert;
+import lombok.Setter;
 
 @Table(name = "store_image")
 @Entity
 @Getter
-@ToString
+@Builder
 @DynamicInsert
-@NoArgsConstructor
+@DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class StoreImage {
 
-	public StoreImage(String originalName, String savedName, String savedPath) {
-		this.originalName = originalName;
-		this.savedName = savedName;
-		this.savedPath = savedPath;
-	}
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "store_image_id")
-	private Integer id;
+	@OneToOne
+	@MapsId
+	@Setter
+	@JoinColumn(name = "store_id")
+	private Store store;
 
-	@Column(name = "original_name")
-	private String originalName;
-
-	@Column(name = "saved_name")
-	private String savedName;
+	@Column(name = "saved_url")
+	@NotNull
+	private String savedUrl;
 
 	@Column(name = "saved_path")
+	@NotNull
 	private String savedPath;
 
-//	@OneToOne(fetch = LAZY)
-//	@JoinColumn(name = "store_id")
-//	private Store store;
-
-	public static StoreImage of(String originalName, String savedName, String savedPath) {
-		return new StoreImage(originalName, savedName, savedPath);
+	public void updateStoreImage(StoreImageDto storeImageDto) {
+		this.store = storeImageDto.store();
+		this.savedUrl = storeImageDto.savedUrl();
+		this.savedPath = storeImageDto.savedPath();
 	}
-
-//	public void addStore(Store store) {
-//		this.store = store;
-//	}
 }

@@ -12,6 +12,7 @@ import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.domain.StoreImage;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
@@ -20,7 +21,9 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
 import jakarta.transaction.Transactional;
@@ -35,13 +38,19 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
+    private final StoreImageRepository storeImageRepository;
 
     @Override
     public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
         String email = MemberInfo.getEmail();
         Member owner = memberRepository.findByEmail(email);
         Store store = Store.of(owner, storeRegistRequestDto);
+        StoreImage storeImage = storeImageRepository.findById(store.getId())
+            .orElseThrow(StoreImageNotFoundException::new);
+
+        store.setStoreImage(storeImage);
         store.setOwner(owner);
+
         storeRepository.save(store);
 
         return StoreRegistResponseDto.fromEntity(email, store);
@@ -51,6 +60,12 @@ public class StoreServiceImpl implements StoreService {
     public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
         Store store = findStore();
         store.update(storeUpdateRequestDto);
+
+        StoreImage storeImage = storeImageRepository.findByStore(store);
+        storeImage.updateStoreImage(storeUpdateRequestDto.storeImageDto());
+
+        storeRepository.save(store);
+        storeImageRepository.save(storeImage);
 
         return StoreUpdateResponseDto.fromEntity(store);
     }
