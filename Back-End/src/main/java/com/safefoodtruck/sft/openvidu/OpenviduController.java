@@ -24,7 +24,7 @@ import io.openvidu.java.client.SessionProperties;
 
 @Slf4j
 @RestController
-@RequestMapping("/openvidu/sessions")
+@RequestMapping("/sessions")
 @RequiredArgsConstructor
 public class OpenviduController {
 
