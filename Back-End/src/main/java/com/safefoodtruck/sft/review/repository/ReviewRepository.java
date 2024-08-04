@@ -14,5 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 	List<Review> findByCustomerEmail(@Param("email") String email);
 
 	@Query("SELECT r FROM Review r WHERE r.order.store.id = :storeId")
-	List<Review> findByStoreId(Integer storeId);
+	List<Review> findByStoreId(@Param("storeId") Integer storeId);
+
+	@Query("SELECT AVG(r.star) FROM Review r WHERE r.order.store.id = :storeId")
+	Double findAverageStarByStoreId(@Param("storeId") Integer storeId);
 }

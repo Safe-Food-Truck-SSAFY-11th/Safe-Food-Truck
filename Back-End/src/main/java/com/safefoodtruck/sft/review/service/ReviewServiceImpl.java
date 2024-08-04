@@ -44,7 +44,6 @@ public class ReviewServiceImpl implements ReviewService  {
 			.build();
 	}
 
-
 	@Override
 	public ReviewListResponseDto findStoreReviews(final Integer storeId) {
 		List<Review> storeReviews = reviewRepository.findByStoreId(storeId);
@@ -73,11 +72,12 @@ public class ReviewServiceImpl implements ReviewService  {
 
 	@Override
 	public Integer findStoreStars(final Integer storeId) {
-		return 0;
+		Double averageStar = reviewRepository.findAverageStarByStoreId(storeId);
+		return averageStar != null ? averageStar.intValue() : 0;
 	}
 
 	@Override
 	public void deleteReview(final Integer reviewId) {
-
+		reviewRepository.deleteById(reviewId);
 	}
 }
