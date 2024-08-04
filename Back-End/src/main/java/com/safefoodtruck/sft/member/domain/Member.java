@@ -11,10 +11,11 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.notification.domain.Notification;
+import com.safefoodtruck.sft.order.domain.Order;
+import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.survey.domain.Survey;
 
@@ -92,12 +93,15 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Survey> surveyList = new ArrayList<>();
 
-    @JsonIgnore
     @Setter
     @OneToOne(mappedBy = "owner", cascade = ALL, orphanRemoval = true)
     private Store store;
 
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orderList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "customer")
+    private List<Review> reviewList = new ArrayList<>();
 
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();
