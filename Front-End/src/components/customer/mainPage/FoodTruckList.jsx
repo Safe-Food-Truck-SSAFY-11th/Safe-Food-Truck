@@ -1,31 +1,99 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FoodTruckItem from './FoodTruckItem';
-import useFoodTruckStore from '../../../store/trucks/useFoodTruckStore';
 import styles from './FoodTruckList.module.css';
+import axios from 'axios';
 
-function FoodTruckList({ selectedType }) {
-  const foodTrucks = useFoodTruckStore((state) => state.foodTrucks);
-  const fetchFoodTrucks = useFoodTruckStore((state) => state.fetchFoodTrucks);
+function FoodTruckList({ foodTrucks, userLocation }) {
+  const trucks = foodTrucks.storeInfoResponseDtos || [];
+  const [addresses, setAddresses] = useState([]);
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   useEffect(() => {
-    fetchFoodTrucks();
-  }, [fetchFoodTrucks]);
+    const fetchAddresses = async () => {
+      const addressPromises = trucks.map(async (truck) => {
+        const { latitude, longitude } = truck;
 
-  const filteredTrucks = foodTrucks.filter(truck =>
-    (selectedType === 'all' || truck.menuCategory === selectedType) && truck.openStatus === 1
-  );
+        // 내 위치 확인
+        console.log(userLocation.latitude, userLocation.longitude);
+
+        const distance = calculateDistance(userLocation.latitude, userLocation.longitude, latitude, longitude);
+
+        // 푸드트럭이랑 떨어진 거리
+        console.log(distance);
+
+        // 거리 5km 미만인 경우만 배열에 추가
+        if (distance <= 5) {
+          const address = await getAddressFromCoordinates(latitude, longitude);
+          return { ...truck, address, distance };
+        }
+
+        return null;
+      });
+
+      const resolvedAddresses = (await Promise.all(addressPromises)).filter(truck => truck !== null);
+      setAddresses(resolvedAddresses);
+    };
+
+    fetchAddresses();
+  }, [trucks, userLocation]);
+
+  // 좌표 토대로 도로명 주소 변환하는 함수 입니당!!
+  const getAddressFromCoordinates = async (lat, lon) => {
+    const apiKey = process.env.REACT_APP_KAKAO_COORDINATE_KEY;
+    const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lon}&y=${lat}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `KakaoAK ${apiKey}`,
+        },
+      });
+      const addressInfo = response.data.documents[0];
+      if (addressInfo) {
+        return addressInfo.address.address_name;  // 도로명 주소 반환
+      }
+      return '주소 정보를 찾을 수 없습니다.';
+    } catch (error) {
+      console.error('지오코딩 에러 ㅜ', error);
+      return '주소 정보를 찾을 수 없습니다.';
+    }
+  };
+
+  // 거리 계산하는 함수
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const toRadian = (degree) => (degree * Math.PI) / 180;
+    const R = 6371;
+
+    const deltaLat = toRadian(lat2 - lat1);
+    const deltaLon = toRadian(lon2 - lon1);
+
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(toRadian(lat1)) * Math.cos(toRadian(lat2)) *
+      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    return distance;
+  };
 
   return (
     <div className={styles.foodTruckList}>
-      {filteredTrucks.map(truck => (
-        <FoodTruckItem
-          key={truck.id}
-          name={truck.name}
-          category={truck.menuCategory}
-          address={truck.longitude}
-          rating={5.0}
-        />
-      ))}
+      {Array.isArray(addresses) && addresses.length > 0 ? (
+        addresses.map(truck => (
+          <FoodTruckItem
+            key={truck.storeId}
+            name={truck.name}
+            category={truck.menuCategory}
+            address={truck.address}
+            distance={truck.distance}
+            onClick={() => navigate(`/foodtruckDetail/${truck.storeId}`)} // 클릭 시 디테일 페이지로 이동
+          />
+        ))
+      ) : (
+        <p>현재 근처에 영업중인 푸드트럭이 없어요😂</p>
+      )}
     </div>
   );
 }
