@@ -71,7 +71,8 @@ public class Review {
 	@Column(name = "content")
 	private String content;
 
-	@OneToMany(mappedBy = "review",cascade = ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "review", cascade = ALL, orphanRemoval = true)
+	@Builder.Default
 	List<ReviewImage> reviewImages = new ArrayList<>();
 
 	@JsonProperty("email")
@@ -94,7 +95,8 @@ public class Review {
 		reviewImage.setReview(this);
 	}
 
-	public static Review of(Member customer, Order order, ReviewRegistRequestDto reviewRegistRequestDto) {
+	public static Review of(Member customer, Order order,
+		ReviewRegistRequestDto reviewRegistRequestDto) {
 		return Review.builder()
 			.customer(customer)
 			.order(order)

@@ -1,7 +1,6 @@
 package com.safefoodtruck.sft.review.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -43,18 +42,15 @@ public class ReviewServiceImpl implements ReviewService {
 		Review review = Review.of(customer, order, reviewRegistRequestDto);
 		Review savedReview = reviewRepository.save(review);
 
-		saveReviewImages(reviewRegistRequestDto, savedReview);
+		reviewRegistRequestDto.reviewImageDtos().forEach(dto -> {
+			ReviewImage reviewImage = ReviewImage.of(dto);
+			savedReview.addReviewImage(reviewImage);
+			reviewImageRepository.save(reviewImage);
+		});
 
 		return ReviewResponseDto.fromEntity(savedReview);
 	}
 
-	private void saveReviewImages(ReviewRegistRequestDto reviewRegistRequestDto, Review review) {
-		reviewRegistRequestDto.reviewImageDtos().forEach(dto -> {
-			ReviewImage reviewImage = ReviewImage.of(dto);
-			reviewImage.setReview(review);
-			reviewImageRepository.save(reviewImage);
-		});
-	}
 
 	@Override
 	public ReviewListResponseDto findCustomerReviews() {
@@ -83,7 +79,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private ReviewListResponseDto createReviewListResponseDto(List<Review> reviews) {
 		List<ReviewResponseDto> reviewList = reviews.stream()
 			.map(ReviewResponseDto::fromEntity)
-			.collect(Collectors.toList());
+			.toList();
 
 		return ReviewListResponseDto.builder()
 			.count(reviews.size())

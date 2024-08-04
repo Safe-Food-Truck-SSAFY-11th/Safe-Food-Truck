@@ -5,14 +5,17 @@ import static jakarta.persistence.FetchType.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.review.dto.ReviewImageDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -33,8 +36,12 @@ import lombok.Setter;
 public class ReviewImage {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "review_image_id")
+	private Integer id;
+
+	@JsonIgnore
 	@ManyToOne(fetch = LAZY)
-	@MapsId
 	@Setter
 	@JoinColumn(name = "review_id")
 	private Review review;
@@ -46,6 +53,11 @@ public class ReviewImage {
 	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
+
+	@JsonProperty("review_id")
+	public Integer getReviewId() {
+		return review != null ? review.getId() : null;
+	}
 
 	public static ReviewImage of(ReviewImageDto reviewImageDto) {
 		return ReviewImage.builder()
