@@ -1,6 +1,10 @@
 package com.safefoodtruck.sft.review.domain;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -18,6 +22,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -66,6 +71,9 @@ public class Review {
 	@Column(name = "content")
 	private String content;
 
+	@OneToMany(mappedBy = "review",cascade = ALL, orphanRemoval = true)
+	List<ReviewImage> reviewImages = new ArrayList<>();
+
 	@JsonProperty("email")
 	public String getCustomerEmail() {
 		return customer != null ? customer.getEmail() : null;
@@ -79,6 +87,11 @@ public class Review {
 	public void setOrder(Order order) {
 		this.order = order;
 		order.setReview(this);
+	}
+
+	public void addReviewImage(ReviewImage reviewImage) {
+		this.reviewImages.add(reviewImage);
+		reviewImage.setReview(this);
 	}
 
 	public static Review of(Member customer, Order order, ReviewRegistRequestDto reviewRegistRequestDto) {
