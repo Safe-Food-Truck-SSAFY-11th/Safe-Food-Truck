@@ -12,6 +12,7 @@ import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
+import com.safefoodtruck.sft.member.exception.ResignedMemberException;
 import com.safefoodtruck.sft.member.repository.MemberImageRepository;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
@@ -72,9 +73,13 @@ public class MemberServiceImpl implements MemberService {
         String email = memberLoginRequestDto.getEmail();
         String password = memberLoginRequestDto.getPassword();
         Member member = memberRepository.findByEmail(email);
-        System.out.println(member);
+
         if (member == null) {
             throw new UsernameNotFoundException("아이디가 존재하지 않습니다.");
+        }
+
+        if (member.getIsResign() == 1) {
+            throw new ResignedMemberException();
         }
 
         //암호화된 password를 Decoding한 값과 입력한 password 값이 다르면 null 반환

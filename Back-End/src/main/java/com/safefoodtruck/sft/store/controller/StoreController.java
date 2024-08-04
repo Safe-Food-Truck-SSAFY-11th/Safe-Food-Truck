@@ -1,22 +1,5 @@
 package com.safefoodtruck.sft.store.controller;
 
-import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.domain.Store;
-import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-import com.safefoodtruck.sft.store.dto.response.FindStoreResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.service.StoreService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +11,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.FindStoreResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.service.StoreService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -43,7 +45,7 @@ public class StoreController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201",
-            description = "점포등록에 성공하였습니다!",
+            description = "점포 등록에 성공하였습니다!",
             content = @Content(mediaType = "application/json")
         ),
         @ApiResponse(
@@ -52,7 +54,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
+    public ResponseEntity<StoreRegistResponseDto> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
         StoreRegistResponseDto store = storeService.registStore(storeRegistRequestDto);
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
@@ -72,7 +74,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStore() {
+    public ResponseEntity<FindStoreResponseDto> findStore() {
         Store store = storeService.findStore();
         FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
         return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
@@ -93,7 +95,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStore(@PathVariable int storeId) {
+    public ResponseEntity<FindStoreResponseDto> findStore(@PathVariable int storeId) {
         Store store = storeService.findStore(storeId);
         FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
         return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
@@ -115,7 +117,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStoreMenus(@PathVariable Integer storeId) {
+    public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable Integer storeId) {
         MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
         return new ResponseEntity<>(allMenu, HttpStatus.OK);
     }
@@ -136,7 +138,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
+    public ResponseEntity<StoreUpdateResponseDto> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
         StoreUpdateResponseDto store = storeService.updateStore(storeUpdateRequestDto);
         return new ResponseEntity<>(store, HttpStatus.OK);
     }
@@ -156,7 +158,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> deleteStore() {
+    public ResponseEntity<Void> deleteStore() {
         storeService.deleteStore();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -176,8 +178,8 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> getStoreStatus() {
-        boolean storeStatus = storeService.getStoreStatus();
+    public ResponseEntity<Boolean> getStoreStatus() {
+        Boolean storeStatus = storeService.getStoreStatus();
         return new ResponseEntity<>(storeStatus, HttpStatus.OK);
     }
 
@@ -196,8 +198,8 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStoreStatus() {
-        boolean isOpen = storeService.updateStoreStatus();
+    public ResponseEntity<Boolean> updateStoreStatus() {
+        Boolean isOpen = storeService.updateStoreStatus();
         return new ResponseEntity<>(isOpen, HttpStatus.OK);
     }
 
@@ -216,7 +218,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findOpenStores() {
+    public ResponseEntity<StoreInfoListResponseDto> findOpenStores() {
         StoreInfoListResponseDto openStores = storeService.findOpenStores();
         return new ResponseEntity<>(openStores, HttpStatus.OK);
     }
@@ -236,7 +238,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
+    public ResponseEntity<StoreLocationResponseDto> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
         StoreLocationResponseDto storeLocation = storeService.updateStoreLocation(
             storeLocationRequestDto);
         return new ResponseEntity<>(storeLocation, HttpStatus.OK);
