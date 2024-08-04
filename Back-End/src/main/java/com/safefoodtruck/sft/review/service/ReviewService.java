@@ -5,7 +5,7 @@ import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
 
 public interface ReviewService {
-	ReviewListResponseDto findCustomerReviews(String email);
+	ReviewListResponseDto findCustomerReviews();
 	ReviewListResponseDto findStoreReviews(Integer orderId);
 	ReviewResponseDto registReview(ReviewRegistRequestDto reviewRegistRequestDto);
 	Integer findStoreStars(Integer storeId);

@@ -12,4 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
 	@Query("SELECT r FROM Review r WHERE r.customer.email = :email")
 	List<Review> findByCustomerEmail(@Param("email") String email);
+
+	@Query("SELECT r FROM Review r WHERE r.order.store.id = :storeId")
+	List<Review> findByStoreId(Integer storeId);
 }

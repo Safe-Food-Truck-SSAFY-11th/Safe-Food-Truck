@@ -31,7 +31,8 @@ public class ReviewServiceImpl implements ReviewService  {
 	private final OrderRepository orderRepository;
 
 	@Override
-	public ReviewListResponseDto findCustomerReviews(final String email) {
+	public ReviewListResponseDto findCustomerReviews() {
+		String email = MemberInfo.getEmail();
 		List<Review> customerReviews = reviewRepository.findByCustomerEmail(email);
 		List<ReviewResponseDto> reviewList = customerReviews.stream()
 			.map(ReviewResponseDto::fromEntity)
@@ -46,7 +47,15 @@ public class ReviewServiceImpl implements ReviewService  {
 
 	@Override
 	public ReviewListResponseDto findStoreReviews(final Integer storeId) {
-		return null;
+		List<Review> storeReviews = reviewRepository.findByStoreId(storeId);
+		List<ReviewResponseDto> reviewList = storeReviews.stream()
+			.map(ReviewResponseDto::fromEntity)
+			.toList();
+
+		return ReviewListResponseDto.builder()
+			.count(storeReviews.size())
+			.reviewList(reviewList)
+			.build();
 	}
 
 	@Override

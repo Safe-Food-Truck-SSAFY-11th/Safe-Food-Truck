@@ -1,22 +1,5 @@
 package com.safefoodtruck.sft.store.controller;
 
-import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.domain.Store;
-import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-import com.safefoodtruck.sft.store.dto.response.FindStoreResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.service.StoreService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +11,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.FindStoreResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.service.StoreService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -43,7 +45,7 @@ public class StoreController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201",
-            description = "점포등록에 성공하였습니다!",
+            description = "점포 등록에 성공하였습니다!",
             content = @Content(mediaType = "application/json")
         ),
         @ApiResponse(
