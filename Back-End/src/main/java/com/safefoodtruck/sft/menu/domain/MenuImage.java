@@ -1,46 +1,61 @@
 package com.safefoodtruck.sft.menu.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.safefoodtruck.sft.menu.dto.MenuImageDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.DynamicInsert;
+import lombok.Setter;
 
 @Table(name = "menu_image")
 @Entity
 @Getter
-@ToString
+@Builder
 @DynamicInsert
-@NoArgsConstructor
+@DynamicUpdate
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuImage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "menu_image_id")
-	private Integer id;
+	@OneToOne
+	@MapsId
+	@Setter
+	@JoinColumn(name = "menu_id")
+	private Menu menu;
 
-	@Column(name = "original_name")
-	private String originalName;
+	@NotNull
+	@Column(name = "saved_url")
+	private String savedUrl;
 
-	@Column(name = "saved_name")
-	private String savedName;
-
+	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
 
-//	@OneToOne(fetch = LAZY)
-//	@JoinColumn(name = "menu_id")
-//	private Menu menu;
-//
-//	public void addMenu(Menu menu) {
-//		this.menu = menu;
-//		menu.addMenuImage(this);
-//	}
+	public void updateMenuImage(MenuImageDto menuImageDto) {
+		this.menu = menuImageDto.menu();
+		this.savedUrl = menuImageDto.savedUrl();
+		this.savedPath = menuImageDto.savedPath();
+	}
+
+	public static MenuImage of(MenuImageDto menuImageDto) {
+		return MenuImage.builder()
+			.menu(menuImageDto.menu())
+			.savedUrl(menuImageDto.savedUrl())
+			.savedPath(menuImageDto.savedPath())
+			.build();
+	}
 }

@@ -23,27 +23,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "menu")
 @Getter
+@Builder
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
-
-	public Menu(String name, Integer price, String description) {
-		this.name = name;
-		this.price = price;
-		this.description = description;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,33 +65,38 @@ public class Menu {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
+	@OneToOne(mappedBy = "menu", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+	private MenuImage menuImage;
+
 	@OneToMany(mappedBy = "menu", cascade = ALL, orphanRemoval = true)
 	private List<OrderMenu> orderMenuList = new ArrayList<>();
 
-//	@OneToOne(mappedBy = "menu", fetch = LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
-//	private MenuImage menuImage;
+	@JsonProperty("storeId")
+	public Integer getStoreId() {
+		return store.getId();
+	}
 
-	public void addStore(Store store) {
+	public void setStore(Store store) {
 		this.store = store;
 		store.addMenu(this);
 	}
 
-//	public void addMenuImage(MenuImage menuImage) {
-//		this.menuImage = menuImage;
-//	}
+	public void setMenuImage(MenuImage menuImage) {
+		this.menuImage = menuImage;
+		menuImage.setMenu(this);
+	}
 
 	public static Menu of(String name, Integer price, String description) {
-		return new Menu(name, price, description);
+		return Menu.builder()
+			.name(name)
+			.price(price)
+			.description(description)
+			.build();
 	}
 
 	public void update(MenuUpdateRequestDto menuUpdateRequestDto) {
 		this.name = menuUpdateRequestDto.name();
 		this.price = menuUpdateRequestDto.price();
 		this.description = menuUpdateRequestDto.description();
-	}
-
-	@JsonProperty("storeId")
-	public Integer getStoreId() {
-		return store.getId();
 	}
 }

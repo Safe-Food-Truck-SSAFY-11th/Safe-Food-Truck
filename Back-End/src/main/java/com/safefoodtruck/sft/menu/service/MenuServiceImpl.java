@@ -1,21 +1,26 @@
 package com.safefoodtruck.sft.menu.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.menu.domain.MenuImage;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
+import com.safefoodtruck.sft.menu.repository.MenuImageRepository;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
+
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -25,6 +30,7 @@ public class MenuServiceImpl implements MenuService {
 
 	private final StoreRepository storeRepository;
 	private final MenuRepository menuRepository;
+	private final MenuImageRepository menuImageRepository;
 
 	@Override
 	public MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
@@ -34,13 +40,20 @@ public class MenuServiceImpl implements MenuService {
 		List<MenuResponseDto> menuResponseDtos = menuListRegistRequestDto.menuRegistRequestDtos().stream()
 			.map(dto -> {
 				Menu menu = Menu.of(dto.name(), dto.price(), dto.description());
-				menu.addStore(store);
+				menu.setStore(store);
+
+				MenuImage savedMenuImage = menuImageRepository.save(MenuImage.of(dto.menuImageDto()));
+				menu.setMenuImage(savedMenuImage);
+
 				Menu savedMenu = menuRepository.save(menu);
 				return MenuResponseDto.fromEntity(savedMenu);
 			})
 			.toList();
 
-		return new MenuListResponseDto(menuResponseDtos);
+		return MenuListResponseDto.builder()
+			.count(menuResponseDtos.size())
+			.menuResponseDtos(menuResponseDtos)
+			.build();
 	}
 
 	@Override
@@ -54,7 +67,13 @@ public class MenuServiceImpl implements MenuService {
 		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
 		menu.update(menuUpdateRequestDto);
 
-		return MenuResponseDto.fromEntity(menu);
+		MenuImage savedMenuImage = menuImageRepository.save(
+			MenuImage.of(menuUpdateRequestDto.menuImageDto()));
+		menu.setMenuImage(savedMenuImage);
+
+		Menu savedMenu = menuRepository.save(menu);
+
+		return MenuResponseDto.fromEntity(savedMenu);
 	}
 
 	@Override
