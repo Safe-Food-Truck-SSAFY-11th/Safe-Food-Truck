@@ -23,7 +23,6 @@ import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 
 @Slf4j
-@CrossOrigin(origins = "")
 @RestController
 @RequestMapping("/openvidu/sessions")
 @RequiredArgsConstructor
