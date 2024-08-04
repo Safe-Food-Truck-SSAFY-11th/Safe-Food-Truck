@@ -31,6 +31,19 @@ public class ReviewServiceImpl implements ReviewService  {
 	private final OrderRepository orderRepository;
 
 	@Override
+	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
+		String email = MemberInfo.getEmail();
+		Member customer = memberRepository.findByEmail(email);
+		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
+			OrderNotFoundException::new);
+		Review review = Review.of(customer, order, reviewRegistRequestDto);
+
+		reviewRepository.save(review);
+
+		return ReviewResponseDto.fromEntity(review);
+	}
+
+	@Override
 	public ReviewListResponseDto findCustomerReviews() {
 		String email = MemberInfo.getEmail();
 		List<Review> customerReviews = reviewRepository.findByCustomerEmail(email);
@@ -55,19 +68,6 @@ public class ReviewServiceImpl implements ReviewService  {
 			.count(storeReviews.size())
 			.reviewList(reviewList)
 			.build();
-	}
-
-	@Override
-	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
-		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email);
-		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
-			OrderNotFoundException::new);
-		Review review = Review.of(customer, order, reviewRegistRequestDto);
-
-		reviewRepository.save(review);
-
-		return ReviewResponseDto.fromEntity(review);
 	}
 
 	@Override

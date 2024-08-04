@@ -39,7 +39,7 @@ public class Review {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "reply_id")
+	@Column(name = "review_id")
 	private Integer id;
 
 	@NotNull
