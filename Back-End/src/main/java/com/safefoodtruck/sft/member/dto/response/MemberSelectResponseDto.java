@@ -1,13 +1,14 @@
-package com.safefoodtruck.sft.member.dto;
+package com.safefoodtruck.sft.member.dto.response;
+
+import com.safefoodtruck.sft.member.dto.MemberImageDto;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import lombok.Data;
 
 @Data
-public class MemberDto {
+public class MemberSelectResponseDto {
     private String email;
-    private String password;
     private String name;
     private String nickname;
     private int gender;
@@ -18,5 +19,5 @@ public class MemberDto {
     private LocalDateTime vipExpiredDate;
     private LocalDateTime regDate;
     private int isResign;
-    private MemberImageDto memberImageDto;
+    private MemberImageDto memberImage;
 }
