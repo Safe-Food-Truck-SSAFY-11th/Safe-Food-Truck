@@ -6,18 +6,6 @@ const useFoodTruckStore = create((set) => ({
   selectedTruck: null,
   selectedTruckMenus: [], // 추가: 선택된 트럭의 메뉴 저장
 
-  // 트럭 등록 요청
-  addFoodTruck: async (newTruck) => {
-    try {
-      const response = await axiosInstance.post('/foodtrucks', newTruck);
-      set((state) => ({
-        foodTrucks: [...state.foodTrucks, response.data],
-      }));
-    } catch (error) {
-      console.error('트럭 추가에 실패 ㅠㅜ', error);
-    }
-  },
-
   // 트럭 상세조회 요청
   getFoodTruck: async (storeId) => {
     try {
@@ -55,32 +43,6 @@ const useFoodTruckStore = create((set) => ({
     }
   },
 
-  // 트럭 정보 수정 요청
-  updateFoodTruck: async (updatedTruck) => {
-    try {
-      const response = await axiosInstance.put(`/foodtrucks/${updatedTruck.id}`, updatedTruck);
-      set((state) => ({
-        foodTrucks: state.foodTrucks.map(truck =>
-          truck.id === updatedTruck.id ? response.data : truck
-        ),
-      }));
-    } catch (error) {
-      console.error('Error updating food truck:', error);
-    }
-  },
-
-  // 트럭 삭제 요청
-  deleteFoodTruck: async (id) => {
-    try {
-      await axiosInstance.delete(`/foodtrucks/${id}`);
-      set((state) => ({
-        foodTrucks: state.foodTrucks.filter(truck => truck.id !== id),
-      }));
-    } catch (error) {
-      console.error('Error deleting food truck:', error);
-    }
-  },
-
   // 영업중인 푸드트럭 요청
   openFoodTruck: async () => {
     try {
@@ -92,6 +54,17 @@ const useFoodTruckStore = create((set) => ({
       }));
     } catch (error) {
       console.error('못 가져 왔어용', error);
+    }
+  },
+
+  // 트럭 찜 개수 요청
+  getFoodTruckLikes: async (storeId) => {
+    try {
+      const response = await axiosInstance.get(`favorites/${storeId}`);
+      return response.data.favoriteCount;
+    } catch (error) {
+      console.error('찜 개수 조회 실패', error);
+      return null;
     }
   }
 }));

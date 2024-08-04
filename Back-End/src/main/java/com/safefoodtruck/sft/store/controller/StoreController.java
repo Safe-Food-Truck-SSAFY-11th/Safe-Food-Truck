@@ -101,6 +101,7 @@ public class StoreController {
 
 
     @GetMapping("{storeId}/menus")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "해당 가게 메뉴 전체 조회", description = "해당 가게의 메뉴 전체를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(

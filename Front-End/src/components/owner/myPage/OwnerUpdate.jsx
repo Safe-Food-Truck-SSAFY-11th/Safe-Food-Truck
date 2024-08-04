@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './OwnerUpdate.module.css';
-import useOwnerStore from '../../../store/users/owner/ownerStore';
+import useUserStore from 'store/users/userStore';
 
 const OwnerUpdate = () => {
-  const { form, setForm, passwordMatch, passwordTouched, setPasswordTouched, nicknameChecked, nicknameTouched, setNicknameTouched, checkNickname } = useOwnerStore();
+  const navigate = useNavigate();
+
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
-  const [profileImage, setProfileImage] = useState('../../../assets/images/sft-logo.png'); // 기본 프로필 이미지 경로
+  const [form, setForm] = useState({});
+  const [profileImage, setProfileImage] = useState('assets/images/sft-logo.png'); // 기본 프로필 이미지 경로
+  const [initialNickname, setInitialNickname] = useState('');
 
   useEffect(() => {
     const today = new Date();
@@ -13,12 +18,32 @@ const OwnerUpdate = () => {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setMaxDate(`${yyyy}-${mm}-${dd}`);
+    
+    const fetchData = async () => {
+      try {
+        const user = await fetchUser();
+        setForm(user);
+        setInitialNickname(user.nickname);
+      } catch (error) {
+        console.error('회원 정보 가져오기 실패')
+      }
+    }
+
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    setPasswordMatch(form.password === form.confirmPassword);
+  }, [form.password, form.confirmPassword, setPasswordMatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(name, value);
-  };
+  
+    setForm({
+     ...form,
+      [name]: value,
+    });
+  }
 
   const handlePasswordChange = (e) => {
     handleChange(e);
@@ -31,14 +56,13 @@ const OwnerUpdate = () => {
   };
 
   const handleNicknameCheck = () => {
-    // 중복 확인 로직 추가 (예: API 호출)
-    checkNickname();
+    checkNickname(form.nickname);
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Submit form logic
+    updateUser(form);
     alert('정보가 성공적으로 업데이트되었습니다.');
+    navigate('/mypageOwner');
   };
 
   const handleImageChange = (e) => {
@@ -50,6 +74,8 @@ const OwnerUpdate = () => {
       reader.readAsDataURL(e.target.files[0]);
     }
   };
+
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
 
   return (
     <div className={styles.container}>
@@ -65,7 +91,7 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호</label>
-          <input type="password" name="password" value={form.password} onChange={handleChange} />
+          <input type="password" name="password" value={form.password} onChange={handleChange}/>
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호확인</label>
@@ -76,7 +102,7 @@ const OwnerUpdate = () => {
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
             <label>이름</label>
-            <input type="text" name="name" value={form.name} disabled onChange={handleChange} />
+            <input type="text" name="name" value={form.name} disabled />
           </div>
           <div className={styles.inputContainer}>
             <label>닉네임</label>
@@ -84,33 +110,34 @@ const OwnerUpdate = () => {
               <input type="text" name="nickname" value={form.nickname} onChange={handleNicknameChange} className={styles.nicknameInput} />
               <button type="button" className={styles.duplicateButton} onClick={handleNicknameCheck}>중복확인</button>
             </div>
-            {nicknameTouched && nicknameChecked && <p className={styles.hintText}>사용할 수 있는 닉네임이에요</p>}
+            {nicknameTouched && nicknameChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 닉네임이에요</p>}
+            {nicknameTouched && (nicknameChecked === 'Duplicate' && form.nickname !== initialNickname) && <p className={styles.errorText}>이미 사용 중인 닉네임입니다</p>}
           </div>
         </div>
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
             <label>성별</label>
-            <select name="gender" value={form.gender} disabled onChange={handleChange} className={styles.selectInput}>
+            <select name="gender" value={form.gender} disabled className={styles.selectInput}>
               <option value="">선택하세요</option>
-              <option value="남">남</option>
-              <option value="여">여</option>
+              <option value="0">남</option>
+              <option value="1">여</option>
             </select>
           </div>
           <div className={styles.inputContainer}>
             <label>생일</label>
-            <input type="date" name="birthdate" value={form.birthdate} disabled onChange={handleChange} max={maxDate} />
+            <input type="date" name="birth" value={form.birth} disabled max={maxDate} />
           </div>
         </div>
         <div className={styles.inputContainer}>
           <label>전화번호</label>
-          <input type="text" name="phone" value={form.phone} onChange={handleChange} />
+          <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange}/>
         </div>
         <div className={styles.inputContainer}>
           <label>사업자등록번호</label>
-          <input type="text" name="businessNumber" value={form.businessNumber} disabled onChange={handleChange} />
+          <input type="text" name="businessNumber" value={form.businessNumber} disabled />
         </div>
         <div className={styles.buttons}>
-          <button type="submit" className={styles.submitButton}>수정하기</button>
+          <button type="submit" className={styles.submitButton} disabled={!isFormValid}>수정하기</button>
           <button type="button" className={styles.cancelButton}>취소하기</button>
         </div>
       </form>

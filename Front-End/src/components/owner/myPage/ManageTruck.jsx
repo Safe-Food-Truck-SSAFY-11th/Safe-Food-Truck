@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import styles from "./ManageTruck.module.css";
 import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
 import useMenuStore from "store/users/owner/menuStore";
 
 const ManageTruck = () => {
+  const navigate = useNavigate();
+
   const {
     updateForm,
     setForm,
@@ -32,9 +35,13 @@ const ManageTruck = () => {
     e.preventDefault();
     updateTruck();
     alert("수정이 완료되었습니다.");
-    window.location.reload();
-    // Submit form logic
+    navigate('/mypageOwner');
   };
+
+  const handleCancle = (e) => {
+    e.preventDefault();
+    navigate('/mypageOwner');
+  }
 
   const handleImageButtonClick = () => {
     document.getElementById("fileInput").click();
@@ -130,10 +137,10 @@ const ManageTruck = () => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button type="submit" className={styles.submitButton}>
+          <button type="submit" className={styles.submitButton} >
             수정하기
           </button>
-          <button type="button" className={styles.cancelButton}>
+          <button type="button" className={styles.cancelButton} onClick={handleCancle}>
             취소하기
           </button>
         </div>

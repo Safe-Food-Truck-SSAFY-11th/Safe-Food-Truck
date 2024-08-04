@@ -42,22 +42,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 100px;
+    width: 23vw;
+    height: 12vh;
     background-color: #F8F8F8;
     border-radius: 50%;
     margin: 20px 0;
+    overflow: hidden;
 }
 
 .imageUpload img {
-    width: 50px;
-    height: 50px;
-}
-
-.imageUpload p {
-    margin: 0;
-    color: #707070;
-    font-size: 14px;
+    width: 100%;
+    height: 100%;
 }
 
 .uploadedImage {

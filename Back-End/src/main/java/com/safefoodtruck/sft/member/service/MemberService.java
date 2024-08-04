@@ -1,10 +1,9 @@
 package com.safefoodtruck.sft.member.service;
 
-import com.safefoodtruck.sft.member.dto.MemberDto;
-import com.safefoodtruck.sft.member.dto.MemberLoginRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberSelectResponseDto;
-import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
+import com.safefoodtruck.sft.member.dto.response.MemberSelectResponseDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import java.time.LocalDate;
 
 public interface MemberService {

@@ -1,25 +1,23 @@
 package com.safefoodtruck.sft.member.domain;
 
-import com.safefoodtruck.sft.member.dto.MemberSignUpRequestDto;
-import com.safefoodtruck.sft.member.dto.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.notification.domain.Notification;
 import com.safefoodtruck.sft.survey.domain.Survey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -33,7 +31,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString
 public class Member {
 
     @Id

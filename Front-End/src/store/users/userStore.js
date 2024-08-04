@@ -41,7 +41,6 @@ const userStore = create((set, get) => ({
       const response = await axios.post(`members/${method}`, userData);
       return response.data;
     } catch (error) {
-      console.log(userData);
       console.error('회원가입 오류:', error);
       throw error;
     }
@@ -78,6 +77,17 @@ const userStore = create((set, get) => ({
   setNicknameTouched: () => set({ nicknameTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
   setPasswordMatch: (match) => set({ passwordMatch: match }),
+
+  updateUser: async (form) => {
+    try {
+      const response = axios.patch('members/modify', form);
+      await sessionStorage.setItem('nickname', form.nickname);
+      return response.data;
+    } catch (error) {
+      console.error('회원 정보 수정 오류:', error);
+      throw error;
+    }
+  }
 }));
 
 export default userStore;

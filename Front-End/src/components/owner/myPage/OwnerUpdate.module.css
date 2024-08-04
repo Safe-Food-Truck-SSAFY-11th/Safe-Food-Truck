@@ -135,6 +135,12 @@ select {
     margin-right: 10px;
 }
 
+.submitButton:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 .cancelButton {
     background-color: #FFA285;
     color: black;

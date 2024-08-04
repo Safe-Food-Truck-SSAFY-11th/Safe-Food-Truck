@@ -10,13 +10,14 @@ const CustomerUpdate = () => {
 
 
   const {
-    form, setForm, modifyMemberInfo,
+    form, setForm, modifyMemberInfo, getMemberInfo,
     passwordMatch, passwordTouched, setPasswordTouched,
     nicknameChecked, nicknameTouched, setNicknameTouched, checkNickname
   } = customerStore();
 
   const [maxDate, setMaxDate] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+  const [initialNickname, setInitialNickname] = useState('');
 
   useEffect(() => {
     if (memberInfo) {
@@ -25,7 +26,7 @@ const CustomerUpdate = () => {
       setForm('name', memberInfo.name);
       setForm('nickname', memberInfo.nickname);
       setForm('gender', memberInfo.gender);
-      setForm('birthdate', memberInfo.birthdate);
+      setForm('birth', memberInfo.birth);
       setForm('phoneNumber', memberInfo.phoneNumber);
     }
   }, [memberInfo, setForm]);
@@ -36,6 +37,18 @@ const CustomerUpdate = () => {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setMaxDate(`${yyyy}-${mm}-${dd}`);
+
+    const fetchData = async () => {
+      try {
+        const user = await getMemberInfo();
+        setForm(user);
+        setInitialNickname(user.nickname);
+      } catch (error) {
+        console.error('회원 정보 가져오기 실패')
+      }
+    }
+
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
@@ -54,7 +67,7 @@ const CustomerUpdate = () => {
   };
 
   const handleNicknameCheck = () => {
-    checkNickname();
+    checkNickname(form.nickname);
   };
 
   const handleImageUpload = (e) => {
@@ -83,19 +96,15 @@ const CustomerUpdate = () => {
   
     console.log(updatedData);
   
-    // modifyMemberInfo 함수 호출
-    
     await modifyMemberInfo(updatedData);
   
-    // 수정 후 세션 스토리지에서 토큰 제거
-    // sessionStorage.removeItem('token');
-  
-    // 메인 페이지로 라우팅
-    // navigate('/');
+    // 마이 페이지로 라우팅
+    navigate('/mypageCustomer');
   };
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.container}>
       <div className={styles.imageContainer}>
         <div className={styles.imagePlaceholder}>
           {profileImage ? <img src={profileImage} alt="Profile" /> : (
@@ -130,22 +139,39 @@ const CustomerUpdate = () => {
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
+          <label>이름</label>
+          <input type="text" name="name" value={form.name} readOnly />
+        </div>
+        <div className={styles.inputContainer}>
           <label>닉네임</label>
           <div className={styles.nicknameContainer}>
             <input type="text" name="nickname" value={form.nickname} onChange={handleNicknameChange} className={styles.nicknameInput} />
             <button type="button" className={styles.duplicateButton} onClick={handleNicknameCheck}>중복확인</button>
           </div>
-          {nicknameTouched && nicknameChecked && <p className={styles.hintText}>사용할 수 있는 닉네임이에요</p>}
+          {nicknameTouched && nicknameChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 닉네임이에요</p>}
+          {nicknameTouched && (nicknameChecked === 'Duplicate' && form.nickname !== initialNickname) && <p className={styles.errorText}>이미 사용 중인 닉네임입니다</p>}
         </div>
       </div>
       <div className={styles.inputRow}>
+        <div className={styles.inputContainer}>
+          <label>성별</label>
+          <select name="gender" value={form.gender} disabled className={styles.selectInput}>
+            <option value="">선택하세요</option>
+            <option value="0">남</option>
+            <option value="1">여</option>
+          </select>
+        </div>
+        <div className={styles.inputContainer}>
+          <label>생일</label>
+          <input type="date" name="birth" value={form.birth} readOnly max={maxDate} />
+        </div>
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
         <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} />
       </div>
       <div className={styles.buttonGroup}>
-        <button type="submit" className={styles.updateButton}>수정하기</button>
+        <button type="submit" className={styles.updateButton} disabled={!isFormValid}>수정하기</button>
         <button type="button" className={styles.cancelButton} onClick={() => navigate(-1)}>돌아가기</button>
       </div>
     </form>
