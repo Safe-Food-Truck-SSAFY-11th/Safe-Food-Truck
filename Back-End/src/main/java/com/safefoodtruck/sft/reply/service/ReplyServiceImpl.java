@@ -1,7 +1,15 @@
 package com.safefoodtruck.sft.reply.service;
 
-import com.safefoodtruck.sft.review.service.ReviewService;
+import org.springframework.stereotype.Service;
 
-public class ReplyServiceImpl implements ReviewService {
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ReplyServiceImpl implements ReplyService {
 
 }
