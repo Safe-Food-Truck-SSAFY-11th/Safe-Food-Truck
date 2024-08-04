@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.review.domain.Review;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,12 +26,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -62,6 +65,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderMenu> orderMenuList = new ArrayList<>();
+
+    @Setter
+    @OneToOne(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    private Review review;
 
     @Column(name = "order_request")
     private String request;
@@ -105,8 +112,8 @@ public class Order {
     }
 
     public boolean isInValidRequest() {
-		return !status.equals(PENDING.get());
-	}
+        return !status.equals(PENDING.get());
+    }
 
     public boolean isAlreadyCompletedOrder() {
         return cookingStatus.equals(COMPLETED.get());
