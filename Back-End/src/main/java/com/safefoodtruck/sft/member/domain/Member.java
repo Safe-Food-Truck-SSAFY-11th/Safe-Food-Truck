@@ -1,29 +1,35 @@
 package com.safefoodtruck.sft.member.domain;
 
+import static jakarta.persistence.CascadeType.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
 import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
 import com.safefoodtruck.sft.notification.domain.Notification;
+import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.survey.domain.Survey;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.Setter;
 
 @Entity
 @Table(name = "member")
@@ -85,6 +91,13 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Survey> surveyList = new ArrayList<>();
+
+    @JsonIgnore
+    @Setter
+    @OneToOne(mappedBy = "owner", cascade = ALL, orphanRemoval = true)
+    private Store store;
+
+
 
     public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
         this.nickname = memberUpdateRequestDto.getNickname();

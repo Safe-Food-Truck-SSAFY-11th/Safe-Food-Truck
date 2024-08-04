@@ -1,5 +1,10 @@
 package com.safefoodtruck.sft.store.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -17,12 +22,10 @@ import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
+
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -38,6 +41,7 @@ public class StoreServiceImpl implements StoreService {
         String email = MemberInfo.getEmail();
         Member owner = memberRepository.findByEmail(email);
         Store store = Store.of(owner, storeRegistRequestDto);
+        store.setOwner(owner);
         storeRepository.save(store);
 
         return StoreRegistResponseDto.fromEntity(email, store);

@@ -1,12 +1,19 @@
 package com.safefoodtruck.sft.store.domain;
 
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,19 +24,17 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "store")
 @Getter
+@Builder
 @ToString
 @DynamicInsert
 @DynamicUpdate
@@ -51,6 +56,11 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
     private Integer id;
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "email", referencedColumnName = "email")
+    private Member owner;
 
     @NotNull
     @Column(name = "store_name")
@@ -82,10 +92,6 @@ public class Store {
     @Column(name = "is_open")
     private Boolean isOpen;
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "email", referencedColumnName = "email")
-    private Member owner;
 
 //    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
 //    private StoreImage storeImage;
@@ -94,7 +100,20 @@ public class Store {
     private List<Menu> menuList = new ArrayList<>();
 
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
-        return new Store(owner, storeRegistRequestDto);
+        return Store.builder()
+            .owner(owner)
+            .name(storeRegistRequestDto.name())
+            .storeType(storeRegistRequestDto.storeType())
+            .offDay(storeRegistRequestDto.offDay())
+            .description(storeRegistRequestDto.description())
+            .safetyLicenseNumber(storeRegistRequestDto.safetyLicenseNumber())
+            .isOpen(storeRegistRequestDto.isOpen())
+            .build();
+    }
+
+    public void setOwner(Member owner) {
+        this.owner = owner;
+        owner.setStore(this);
     }
 
     public void update(StoreUpdateRequestDto storeUpdateRequestDto) {
