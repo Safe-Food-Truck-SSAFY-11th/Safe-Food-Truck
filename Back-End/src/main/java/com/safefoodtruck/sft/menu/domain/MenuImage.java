@@ -3,6 +3,8 @@ package com.safefoodtruck.sft.menu.domain;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.menu.dto.MenuImageDto;
 
 import jakarta.persistence.Column;
@@ -31,6 +33,10 @@ import lombok.Setter;
 public class MenuImage {
 
 	@Id
+	@Column(name = "menu_id")
+	private Integer id;
+
+	@JsonIgnore
 	@OneToOne
 	@MapsId
 	@Setter
@@ -44,6 +50,12 @@ public class MenuImage {
 	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
+
+	@JsonProperty("menu_id")
+	public Integer getMenuId() {
+		return menu != null ? menu.getId() : null;
+	}
+
 
 	public static MenuImage of(MenuImageDto menuImageDto) {
 		return MenuImage.builder()

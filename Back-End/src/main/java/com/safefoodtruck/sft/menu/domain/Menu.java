@@ -69,6 +69,7 @@ public class Menu {
 	private MenuImage menuImage;
 
 	@OneToMany(mappedBy = "menu", cascade = ALL, orphanRemoval = true)
+	@Builder.Default
 	private List<OrderMenu> orderMenuList = new ArrayList<>();
 
 	@JsonProperty("storeId")
