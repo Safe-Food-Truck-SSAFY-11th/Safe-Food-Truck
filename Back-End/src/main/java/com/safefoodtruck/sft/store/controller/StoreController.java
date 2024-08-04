@@ -54,7 +54,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
+    public ResponseEntity<StoreRegistResponseDto> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
         StoreRegistResponseDto store = storeService.registStore(storeRegistRequestDto);
         return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
@@ -74,7 +74,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStore() {
+    public ResponseEntity<FindStoreResponseDto> findStore() {
         Store store = storeService.findStore();
         FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
         return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
@@ -95,7 +95,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStore(@PathVariable int storeId) {
+    public ResponseEntity<FindStoreResponseDto> findStore(@PathVariable int storeId) {
         Store store = storeService.findStore(storeId);
         FindStoreResponseDto findStoreResponseDto = FindStoreResponseDto.fromEntity(store);
         return new ResponseEntity<>(findStoreResponseDto, HttpStatus.OK);
@@ -117,7 +117,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findStoreMenus(@PathVariable Integer storeId) {
+    public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable Integer storeId) {
         MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
         return new ResponseEntity<>(allMenu, HttpStatus.OK);
     }
@@ -138,7 +138,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
+    public ResponseEntity<StoreUpdateResponseDto> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
         StoreUpdateResponseDto store = storeService.updateStore(storeUpdateRequestDto);
         return new ResponseEntity<>(store, HttpStatus.OK);
     }
@@ -158,7 +158,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> deleteStore() {
+    public ResponseEntity<Void> deleteStore() {
         storeService.deleteStore();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -178,8 +178,8 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> getStoreStatus() {
-        boolean storeStatus = storeService.getStoreStatus();
+    public ResponseEntity<Boolean> getStoreStatus() {
+        Boolean storeStatus = storeService.getStoreStatus();
         return new ResponseEntity<>(storeStatus, HttpStatus.OK);
     }
 
@@ -198,8 +198,8 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStoreStatus() {
-        boolean isOpen = storeService.updateStoreStatus();
+    public ResponseEntity<Boolean> updateStoreStatus() {
+        Boolean isOpen = storeService.updateStoreStatus();
         return new ResponseEntity<>(isOpen, HttpStatus.OK);
     }
 
@@ -218,7 +218,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> findOpenStores() {
+    public ResponseEntity<StoreInfoListResponseDto> findOpenStores() {
         StoreInfoListResponseDto openStores = storeService.findOpenStores();
         return new ResponseEntity<>(openStores, HttpStatus.OK);
     }
@@ -238,7 +238,7 @@ public class StoreController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
+    public ResponseEntity<StoreLocationResponseDto> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
         StoreLocationResponseDto storeLocation = storeService.updateStoreLocation(
             storeLocationRequestDto);
         return new ResponseEntity<>(storeLocation, HttpStatus.OK);
