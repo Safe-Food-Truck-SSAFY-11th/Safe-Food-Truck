@@ -45,12 +45,6 @@ public class MenuImage {
 	@Column(name = "saved_path")
 	private String savedPath;
 
-	public void updateMenuImage(MenuImageDto menuImageDto) {
-		this.menu = menuImageDto.menu();
-		this.savedUrl = menuImageDto.savedUrl();
-		this.savedPath = menuImageDto.savedPath();
-	}
-
 	public static MenuImage of(MenuImageDto menuImageDto) {
 		return MenuImage.builder()
 			.menu(menuImageDto.menu())
