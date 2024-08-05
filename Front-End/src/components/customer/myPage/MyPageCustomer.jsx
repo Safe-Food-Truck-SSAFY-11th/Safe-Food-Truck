@@ -8,18 +8,42 @@ import MyJjim from './MyJjim';
 import customerStore from 'store/users/customer/customerStore';
 import useUserStore from 'store/users/userStore';
 import useReviewStore from 'store/reviews/useReviewStore';
+import customerOrderStore from 'store/orders/customerOrderStore'
 
 const MyPageCustomer = () => {
-  const [selectedComponent, setSelectedComponent] = useState('pattern'); // 기본값 설정
+
+  // 마이 페이지 접속 했을때 기본 상태 설정과 상태별 다른 컴포넌트 구성하기
+  const [selectedComponent, setSelectedComponent] = useState('pattern'); 
+
+  // 어떤 버튼 눌려있는지 확인하고 상태 변경
   const [activeButton, setActiveButton] = useState(''); // 활성화된 버튼 상태
-  const { memberInfo, getMemberInfo, getJJimTruck, myJJimTruck } = customerStore(); // 내 정보 , 내가 찜한 트럭 가져오는 스토어
-  const { getAllReview, reviews } = useReviewStore(); // 내가 작성한 리뷰 가져오는 스토어
+
+  // 내 정보 , 내가 찜한 트럭 가져오는 스토어 , 함수 호출
+  const { memberInfo, getMemberInfo, getJJimTruck, myJJimTruck } = customerStore(); 
+
+  // 내 과거 주문 기록 불러오는 스토어 , 함수 호출
+  const { getMyOrders , pastOrders} = customerOrderStore();
+
+  // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
+  const { getAllMyReview, myReviews } = useReviewStore(); 
 
   useEffect(() => {
     getMemberInfo();
     getJJimTruck();
-    getAllReview();
-  }, [getMemberInfo, getJJimTruck, getAllReview]);
+    getAllMyReview();
+    getMyOrders();
+  },[]);
+
+  // 내가 찜한 트럭 가져옴
+  console.log(myJJimTruck)
+
+  // 내가 작성한 리뷰 가져옴
+  console.log(myReviews)
+
+  // 과거 주문내역 가져옴
+  console.log(pastOrders)
+
+
 
   const handleSelect = (component, button) => {
     if (activeButton === button) {
@@ -31,14 +55,15 @@ const MyPageCustomer = () => {
     }
   };
 
+  // 위에서 api 요청을 통해 받은 데이터들 props로 자식 컴포넌트에 전달 하는거 확인 "보라색"
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'liked':
         return <MyJjim jjimTrucks={myJJimTruck} memberInfo={memberInfo} />;
       case 'review':
-        return <MyReviewList memberInfo={memberInfo} myReviews={reviews} />;
+        return <MyReviewList memberInfo={memberInfo} myReviews={myReviews} />;
       case 'order':
-        return <OrderPast memberInfo={memberInfo} />;
+        return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} />;
       default:
         return <SobiPattern memberInfo={memberInfo} />;
     }

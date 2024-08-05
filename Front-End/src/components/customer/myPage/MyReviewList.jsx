@@ -3,35 +3,17 @@ import MyReviewItem from './MyReviewItem';
 import DeleteReview from './DeleteReview';
 import DeleteComplete from './DeleteComplete';
 import styles from './MyReview.module.css';
+import useReviewStore from 'store/reviews/useReviewStore';
 
-const MyReviewList = ({memberInfo}) => {
-  const [reviews, setReviews] = useState([
-    {
-      id: 1,
-      food: '버거와 감자튀김',
-      rating: 5.0,
-      comment: '저희 집 앞에 맨날 오셨으면 좋겠어요....',
-      date: '2024-07-18 오후 1:13',
-    },
-    {
-      id: 2,
-      food: '버거와 감자튀김',
-      rating: 5.0,
-      comment: '저희 집 앞에 맨날 오셨으면 좋겠어요....',
-      date: '2024-07-18 오후 1:13',
-    },
-    {
-      id: 3,
-      food: '버거와 감자튀김',
-      rating: 5.0,
-      comment: '저희 집 앞에 맨날 오셨으면 좋겠어요....',
-      date: '2024-07-18 오후 1:13',
-    },
-  ]);
-
+const MyReviewList = ({ memberInfo, myReviews }) => {
+  const { deleteReview } = useReviewStore();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+
+  const myReviewList = myReviews.reviewList || [];
+
+  console.log(myReviewList);
 
   const openDeleteModal = (reviewId) => {
     setSelectedReviewId(reviewId);
@@ -43,7 +25,7 @@ const MyReviewList = ({memberInfo}) => {
   };
 
   const handleDeleteConfirm = () => {
-    setReviews(reviews.filter(review => review.id !== selectedReviewId));
+    deleteReview(selectedReviewId);
     setIsDeleteModalOpen(false);
     setIsDeleteCompleteModalOpen(true);
   };
@@ -54,12 +36,12 @@ const MyReviewList = ({memberInfo}) => {
 
   return (
     <div className={styles.container}>
-      {reviews.length === 0 ? (
-        <p className={styles.noReview}>작성한 리뷰가 없습니다😥</p>
+      {myReviewList.length === 0 ? (
+        <p className={styles.noReview}> {memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</p>
       ) : (
         <>
           <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
-          {reviews.map(review => (
+          {myReviewList.map(review => (
             <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id)} />
           ))}
         </>

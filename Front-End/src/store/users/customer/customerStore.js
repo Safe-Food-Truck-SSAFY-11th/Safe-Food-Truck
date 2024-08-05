@@ -75,8 +75,6 @@ const customerStore = create((set, get) => ({
       const response = await axiosInstance.get('favorites')
 
       set({myJJimTruck : response.data})
-
-      return response.data
    
     } catch (error) {
 
