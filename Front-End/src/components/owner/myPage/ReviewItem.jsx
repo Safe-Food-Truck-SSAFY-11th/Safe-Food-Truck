@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
-import revImg from '../../../assets/images/truck-img.png'; // 임시 리뷰 이미지
+import React, { useState, useEffect } from 'react';
+import revImg from 'assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
 import onwerReplyAI from '../../../gemini/gemini.js'
+import useTruckStore from "store/users/owner/truckStore";
+import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
   const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
-  
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const { submitReply } = useOwnerReviewStore();
+
+useEffect(() => {
+    const fetchData = () => {
+      fetchTruckInfo();
+    };
+
+    fetchData();
+    console.log(truckInfo);
+  }, [fetchTruckInfo]);
+
   const owName = review.replies;
 
   function displayStars(rating) {
@@ -37,14 +50,20 @@ function ReviewItem({ review }) {
   };
 
   const handleReplySubmit = () => {
-    // 여기에 입력한 내용 처리하는 로직 추가
+    // 답글 등록 api 연결
+    const replyData = {
+      reviewId: review.id,
+      content: reply
+    }
+    submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
   };
 
   const handleAIBtnClick = async () => {
     console.log('AI 초안 작성 버튼 클릭했어여');
-    const aiText = await onwerReplyAI();
+    // name, offDay, storeType, description, menuListResponseDto. review.content
+    const aiText = await onwerReplyAI(truckInfo.name, truckInfo.offDay, truckInfo.storeType, truckInfo.description, truckInfo.menuListResponseDto, review.content);
     setAiReply(aiText); // AI 텍스트 상태 업데이트
     setReply(aiText); // AI 텍스트를 input 필드에 설정
   }

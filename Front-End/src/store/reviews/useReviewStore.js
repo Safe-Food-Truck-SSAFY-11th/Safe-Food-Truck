@@ -1,33 +1,42 @@
-// src/store/foodTruckStore.js
+import { create }from 'zustand';
+import axiosInstance from 'utils/axiosInstance';
 
-// 일반 코드
-
-import {create} from 'zustand';
-import axios from 'axios';
 
 const useReviewStore = create((set) => ({
-  Reviews: [],
+  myReviews: [],
+  
+  // 내가 작성한 리뷰 전체 조회
+  getAllMyReview: async () => {
+    try {
+      const response = await axiosInstance.get('/reviews');
+      set({ myReviews: response.data });
 
-  // 리뷰 작성 요청
-  CreateReview: async (newReview) => {
-    const response = await axios.post('/api/review', newReview);
-    set((state) => ({
-      Reviews: [...state.Reviews, response.data],
-    }));
+    } catch (error) {
+      console.error('리뷰 가져오기 실패 했습니다', error);
+    }
+  },
+  // 리뷰 작성하기
+  createReview: async (newReview) => {
+    try {
+      const response = await axiosInstance.post('/reviews', newReview);
+      set((state) => ({ reviews: [...state.reviews, response.data] }));
+    } catch (error) {
+      console.error('리뷰 작성에 실패 했습니다', error);
+      
+    }
   },
 
-  // 리뷰 목록 조회 요청
-  getAllReview: async () => {
-    const response = await axios.get('/api/review');
-    set({ Reviews: response.data });
-  },
-
-  // 트럭 삭제 요청
-  deleteReview: async (id) => {
-    await axios.delete(`/api/review/${id}`);
-    set((state) => ({
-      Reviews: state.Reviews.filter(review => review.id !== id),
-    }));
+  // 리뷰 삭제하기
+  deleteReview: async (reviewId) => {
+    try {
+      await axiosInstance.delete(`/reviews/${reviewId}`);
+      set((state) => ({
+        reviews: state.reviews.filter(review => review.id !== reviewId)
+      }));
+    } catch (error) {
+      console.error('리뷰 삭제에 실패했습니다', error);
+      
+    }
   },
 }));
 

@@ -1,20 +1,22 @@
 import styles from './RegistTruck.module.css';
 import { useNavigate } from 'react-router-dom';
-import imageIcon from 'assets/images/truck-img.png';
+import img_upload from 'assets/images/img_upload.png';
 import useTruckStore from 'store/users/owner/truckStore';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import AWS from 'aws-sdk';
 
 const RegistTruck = () => {
     const navigate = useNavigate();
     const [nameTouched, setNameTouched] = useState(null);
     const [isValNumOK, setIsValNumOK] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [profileImage, setProfileImage] = useState(img_upload);
 
     // 사용자 인증 상태 && role 확인
     useEffect(() => {
         const token = sessionStorage.getItem('token');
-        const role = sessionStorage.getItem('role'); 
+        const role = sessionStorage.getItem('role');
         if (!token || role !== 'owner') {
             navigate('/login');
         }
@@ -26,6 +28,7 @@ const RegistTruck = () => {
 
     const handleRegisterClick = async () => {
         try {
+            await handleUpload();
             const response = await registTruck(registForm);
             navigate('/login');
         } catch (error) {
@@ -33,11 +36,11 @@ const RegistTruck = () => {
         }
     };
 
-    const { registForm, setForm, setImage, toggleWorkingDay, categories, registTruck } = useTruckStore();
+    const { registForm, setRegistForm, setRegistImage, toggleRegistWorkingDay, categories, registTruck } = useTruckStore();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(name, value);
+        setRegistForm(name, value);
         if (name === 'name' && value.trim() !== '') {
             setNameTouched(true);
         }
@@ -46,7 +49,7 @@ const RegistTruck = () => {
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const imageURL = URL.createObjectURL(e.target.files[0]);
-            setImage(imageURL);
+            setRegistImage(imageURL);
         }
     };
 
@@ -60,7 +63,7 @@ const RegistTruck = () => {
 
     const fskApiKey = process.env.REACT_APP_FSK_FOODTRUCK_API_KEY;
     const valNum = registForm.safetyLicenseNumber;
-    
+
     const handleValNumCheck = async () => {
         try {
             const response = await axios.post(`http://openapi.foodsafetykorea.go.kr/api/${fskApiKey}/I2856/json/1/5/LCNS_NO=${valNum}`);
@@ -79,6 +82,60 @@ const RegistTruck = () => {
         }
     };
 
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            setProfileImage(event.target.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            return;
+        }
+
+        // AWS S3 설정
+        AWS.config.update({
+            accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+            secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+            region: `${process.env.REACT_APP_AWS_REGION}`,
+        });
+
+        const s3 = new AWS.S3();
+
+        // 업로드할 파일 정보 설정
+        const uploadParams = {
+            Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+            Key: `stores/${registForm.name}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+            Body: selectedFile,
+        };
+
+        // S3에 파일 업로드
+        return new Promise((resolve, reject) => {
+            s3.upload(uploadParams, (err, data) => {
+                if (err) {
+                    console.error('Error uploading file:', err);
+                    reject(err);
+                } else {
+                    console.log('File uploaded successfully. ETag:', data.ETag);
+                    registForm.storeImageDto.savedUrl = data.Location;
+                    registForm.storeImageDto.savedPath = data.Key;
+
+                    console.log('DATA = ', data);
+                    console.log('FORM = ', registForm);
+
+                    // 업로드 완료 후 resolve 호출
+                    resolve(data);
+                }
+            });
+        });
+    };
+
     // 점포등록하지 않고 돌아가는 경우
     // -> 경고문구 페이지로 이동
     // *** 수정 예정 ***
@@ -91,11 +148,11 @@ const RegistTruck = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
             <h1 className={styles.title}>푸드트럭 등록</h1>
             <div className={styles.imageUpload}>
-                <img src={registForm.image || imageIcon} alt="이미지 업로드" className={styles.uploadedImage} />
+                <img src={profileImage || img_upload} alt="이미지 업로드" className={styles.uploadedImage} />
                 <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={handleFileChange}
                     className={styles.imageInput}
                     id="fileInput" // 파일 입력 요소에 id 설정
                     style={{ display: 'none' }} // 입력 요소 숨기기
@@ -138,7 +195,7 @@ const RegistTruck = () => {
                             key={day}
                             type="button"
                             className={`${styles.dayButton} ${registForm.offDay[index] === '1' ? styles.activeDay : ''}`}
-                            onClick={() => toggleWorkingDay(index)}
+                            onClick={() => toggleRegistWorkingDay(index)}
                         >
                             {day}
                         </button>
