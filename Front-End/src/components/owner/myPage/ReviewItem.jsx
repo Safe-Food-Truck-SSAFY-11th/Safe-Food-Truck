@@ -6,7 +6,7 @@ function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
   
-  const owName = '푸바오';
+  const owName = review.replies;
 
   function displayStars(rating) {
     let stars = '';
@@ -24,7 +24,7 @@ function ReviewItem({ review }) {
     return stars;
   }
 
-  const reviewItemClass = `${styles.reviewItem} ${review.is_visible === 1 ? styles.reviewItemSecret : ''}`;
+  const reviewItemClass = `${styles.reviewItem} ${review.isVisible === false ? styles.reviewItemSecret : ''}`;
 
   const handleReplyButtonClick = () => {
     setShowReplyInput(!showReplyInput);
@@ -42,14 +42,14 @@ function ReviewItem({ review }) {
 
   return (
     <div className={reviewItemClass}>
-      {review.is_visible === 1 && (
+      {review.isVisible === false && (
         <div className={styles.secretLabel}>나한테만 보이는 리뷰입니다</div>
       )}
       <img src={revImg} alt="review" className={styles.reviewImage} />
       <hr className={styles.separator} />
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
-          <h4>{review.author} 님 {displayStars(review.star)}</h4>
+          <h4>{review.nickname} 님 {displayStars(review.star)}</h4>
         </div>
         <p>{review.content}</p>
         {review.replies && review.replies.content && (
@@ -72,6 +72,9 @@ function ReviewItem({ review }) {
             />
             <button onClick={handleReplySubmit} className={styles.submitButton}>
               등록
+            </button>
+            <button className={styles.AIBtn}>
+              AI 초안 작성
             </button>
           </div>
         )}

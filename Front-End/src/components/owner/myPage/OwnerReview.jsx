@@ -1,12 +1,15 @@
-import Header from "../../common/Header";
+import Header from "components/common/Header";
 import ReviewList from "./ReviewList";
+import styles from "./OwnerReview.module.css";
 
 function OwnerReview() {
 
     return (
         <>
-            <Header />
-            <ReviewList />
+            <div className={styles.container}>
+                <Header />
+                <ReviewList />
+            </div>
         </>
     );
 }
