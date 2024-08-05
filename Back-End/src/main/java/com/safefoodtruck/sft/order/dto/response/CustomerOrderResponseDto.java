@@ -11,12 +11,13 @@ import com.safefoodtruck.sft.review.dto.ReviewImageDto;
 import lombok.Builder;
 
 @Builder
-public record CustomerOrderResponseDto(Integer orderId, String storeName, List<MenuResponseDto> menuResponseDtos, List<ReviewImageDto> reviewImageDtos) {
+public record CustomerOrderResponseDto(Integer orderId, String storeName, Integer amount, List<MenuResponseDto> menuResponseDtos, List<ReviewImageDto> reviewImageDtos) {
 
 	public static CustomerOrderResponseDto fromEntity(Order order, List<Menu> menus) {
 		return CustomerOrderResponseDto.builder()
 			.orderId(order.getId())
 			.storeName(order.getStore().getName())
+			.amount(order.getAmount())
 			.menuResponseDtos(convertMenusToDto(menus))
 			.reviewImageDtos(convertReviewImagesToDto(order.getReview()))
 			.build();
@@ -30,7 +31,7 @@ public record CustomerOrderResponseDto(Integer orderId, String storeName, List<M
 
 	private static List<ReviewImageDto> convertReviewImagesToDto(Review review) {
 		if (review == null) {
-			return List.of();
+			return java.util.List.of();
 		}
 
 		return review.getReviewImages().stream()

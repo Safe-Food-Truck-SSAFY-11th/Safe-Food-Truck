@@ -2,8 +2,11 @@ package com.safefoodtruck.sft.order.service;
 
 import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ import com.safefoodtruck.sft.order.dto.response.CustomerOrderResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderSummaryDto;
+import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -62,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderMenu> orderMenuList = createOrderMenus(savedOrder, menuList);
 
 		orderMenuRepository.saveAll(orderMenuList);
+		savedOrder.calculateAmount();
 
 		return createOrderRegistResponseDto(savedOrder, menuList);
 	}
@@ -190,4 +196,46 @@ public class OrderServiceImpl implements OrderService {
 
 		return OrderDetailResponseDto.fromEntity(order);
 	}
+
+	@Override
+	public List<OrderSummaryResponseDto> getWeeklyOrderSummary() {
+		String email = MemberInfo.getEmail();
+		LocalDate today = LocalDate.now();
+		LocalDate weekAgo = today.minusDays(6);
+
+		List<Order> orders = orderRepository.findByStoreOwnerEmailAndOrderTimeBetween(email, weekAgo.atStartOfDay(), today.atTime(23, 59, 59));
+
+		// 날짜별로 주문을 그룹화
+		Map<LocalDate, List<Order>> ordersGroupedByDate = orders.stream()
+			.collect(Collectors.groupingBy(order -> order.getOrderTime().toLocalDate()));
+
+		return ordersGroupedByDate.entrySet().stream()
+			.map(entry -> {
+				LocalDate date = entry.getKey();
+				List<Order> dailyOrders = entry.getValue();
+
+				// 해당 날짜의 총 매출 계산
+				int totalAmount = dailyOrders.stream().mapToInt(Order::getAmount).sum();
+
+				// 메뉴별로 주문 내역 정리
+				Map<String, Integer> menuSalesMap = new HashMap<>();
+				for (Order order : dailyOrders) {
+					for (OrderMenu orderMenu : order.getOrderMenuList()) {
+						String menuName = orderMenu.getMenu().getName();
+						int menuCount = orderMenu.getCount();
+						menuSalesMap.put(menuName, menuSalesMap.getOrDefault(menuName, 0) + menuCount);
+					}
+				}
+
+				// 메뉴별 주문 내역 리스트 생성
+				List<OrderSummaryDto> menuOrderSummaries = menuSalesMap.entrySet().stream()
+					.map(e -> new OrderSummaryDto(e.getKey(), e.getValue()))
+					.toList();
+
+				return new OrderSummaryResponseDto(date, totalAmount, menuOrderSummaries);
+			})
+			.toList();
+	}
+
+
 }

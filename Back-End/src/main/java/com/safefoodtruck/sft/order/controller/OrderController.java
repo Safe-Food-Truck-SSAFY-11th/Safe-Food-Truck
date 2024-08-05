@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.order.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -143,6 +145,26 @@ public class OrderController {
     public ResponseEntity<OrderListResponseDto> findStoreOrderList() {
         OrderListResponseDto storeOrderList = orderService.findStoreOrderList();
         return new ResponseEntity<>(storeOrderList, OK);
+    }
+
+    @GetMapping("owners/sales")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "주간 매출 조회", description = "주간 매출을 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주간 매출 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<List<OrderSummaryResponseDto>> findWeeklySales() {
+        List<OrderSummaryResponseDto> weeklyOrderSummary = orderService.getWeeklyOrderSummary();
+        return new ResponseEntity<>(weeklyOrderSummary, OK);
     }
 
     @GetMapping("{orderId}")
