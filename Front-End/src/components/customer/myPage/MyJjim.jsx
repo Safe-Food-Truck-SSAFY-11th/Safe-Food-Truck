@@ -1,20 +1,25 @@
 import React from 'react';
 import styles from './MyJjim.module.css';
 
-const MyJjim = ( {memberInfo} ) => {
+const MyJjim = ({ memberInfo, jjimTrucks }) => {
+  const memberFavoriteList = jjimTrucks.memberFavoriteList || [];
 
-  // api 생성되면 찜한 푸드트럭 가져와서 여기다 담을거에여
-  const likedFoodTrucks = [];
+  console.log(memberFavoriteList);
 
   return (
     <div className={styles.container}>
-      <h3>{memberInfo.nickname} 님이 찜한 푸드트럭이에요!</h3>
-      <ul>
-        {/* 찜 푸드트럭 가져오면 반복문 돌면서 리스트업 시킬겁니당*/}
-        {likedFoodTrucks.map(truck => (
-          <li key={truck.id} className={styles.truckItem}>{truck.name}</li>
-        ))}
-      </ul>
+      {memberFavoriteList.length > 0 && (
+        <h3>{memberInfo.nickname} 님이 찜한 푸드트럭이에요!</h3>
+      )}
+      {memberFavoriteList.length === 0 ? (
+        <p>{memberInfo.nickname} 님이 찜한 푸드트럭이 없어요 😅</p>
+      ) : (
+        <ul>
+          {memberFavoriteList.map(truck => (
+            <li key={truck.id} className={styles.truckItem}>{truck.name}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

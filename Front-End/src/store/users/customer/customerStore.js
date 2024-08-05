@@ -18,6 +18,8 @@ const customerStore = create((set, get) => ({
   nicknameChecked: false, // 닉네임 확인 상태
   nicknameTouched: false, // 닉네임 입력 상태
   memberInfo: null, // 회원 정보 상태 추가
+  myJJimTruck: [],
+
   setForm: (name, value) => {
     const updatedForm = { ...get().form, [name]: value };
     const passwordMatch = updatedForm.password === updatedForm.confirmPassword;
@@ -66,6 +68,22 @@ const customerStore = create((set, get) => ({
       
     }
   },
+
+  getJJimTruck: async () => { // 내가 찜한 푸드트럭 가져오는 함수
+    try {
+
+      const response = await axiosInstance.get('favorites')
+
+      set({myJJimTruck : response.data})
+
+      return response.data
+   
+    } catch (error) {
+
+      console.error('찜 푸드트럭 가져오기 실패' , error)
+      
+    }
+  }
 
 
 }));
