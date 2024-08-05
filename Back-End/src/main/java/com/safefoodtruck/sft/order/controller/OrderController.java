@@ -3,7 +3,6 @@ package com.safefoodtruck.sft.order.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
@@ -42,7 +41,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
     @Operation(summary = "주문 생성", description = "주문을 생성할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(
@@ -184,7 +183,7 @@ public class OrderController {
     }
 
     @ExceptionHandler({AlreadyCompletedOrderException.class, AlreadyProcessedOrderException.class, OrderNotFoundException.class})
-    public ResponseEntity<ErrorResponseDto> orderException(Exception e) throws JsonProcessingException {
+    public ResponseEntity<ErrorResponseDto> orderException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             e.getMessage(),

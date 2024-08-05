@@ -4,7 +4,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.review.dto.request.ReviewRegistRequestDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
@@ -143,7 +142,7 @@ public class ReviewController {
 	}
 
 	@ExceptionHandler({ReviewNotFoundException.class})
-	public ResponseEntity<ErrorResponseDto> reviewException(Exception e) throws JsonProcessingException {
+	public ResponseEntity<ErrorResponseDto> reviewException(Exception e) {
 		ErrorResponseDto errorResponse = new ErrorResponseDto(
 			HttpStatus.INTERNAL_SERVER_ERROR.value(),
 			e.getMessage(),
