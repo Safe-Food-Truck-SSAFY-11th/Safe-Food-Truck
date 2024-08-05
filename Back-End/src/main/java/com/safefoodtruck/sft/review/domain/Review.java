@@ -75,6 +75,11 @@ public class Review {
 	@Builder.Default
 	List<ReviewImage> reviewImages = new ArrayList<>();
 
+	@JsonProperty("nickname")
+	public String getCustomerNickname() {
+		return customer != null ? customer.getNickname() : null;
+	}
+
 	@JsonProperty("email")
 	public String getCustomerEmail() {
 		return customer != null ? customer.getEmail() : null;

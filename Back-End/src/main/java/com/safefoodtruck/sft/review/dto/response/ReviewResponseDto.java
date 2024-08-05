@@ -8,11 +8,12 @@ import com.safefoodtruck.sft.review.domain.ReviewImage;
 import lombok.Builder;
 
 @Builder
-public record ReviewResponseDto(Integer id, String email, Integer storeId, Boolean isVisible, Integer star, String content, List<ReviewImage> reviewImages) {
+public record ReviewResponseDto(Integer id, String email, String nickname, Integer storeId, Boolean isVisible, Integer star, String content, List<ReviewImage> reviewImages) {
 	public static ReviewResponseDto fromEntity(Review review) {
 		return ReviewResponseDto.builder()
 			.id(review.getId())
 			.email(review.getCustomer().getEmail())
+			.nickname(review.getCustomerNickname())
 			.storeId(review.getOrder().getStoreId())
 			.isVisible(review.getIsVisible())
 			.star(review.getStar())

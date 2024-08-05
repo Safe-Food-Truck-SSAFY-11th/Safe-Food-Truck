@@ -1,10 +1,10 @@
 package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
@@ -16,9 +16,9 @@ public interface StoreService {
 
 	StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto);
 
-	Store findStore();
+	StoreFindResponseDto findMyStore();
 
-	Store findStore(Integer storeId);
+	StoreFindResponseDto findStoreById(Integer storeId);
 
 	MenuListResponseDto findStoreMenus(Integer storeId);
 
@@ -32,5 +32,5 @@ public interface StoreService {
 
 	StoreLocationResponseDto updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
 
-
+	Double findStoreAverageStar(Integer storeId);
 }
