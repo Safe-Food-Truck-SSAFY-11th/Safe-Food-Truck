@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.common;
+package com.safefoodtruck.sft.common.config;
 
 import java.util.Properties;
 import lombok.RequiredArgsConstructor;
