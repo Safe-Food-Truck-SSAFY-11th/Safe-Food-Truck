@@ -32,7 +32,7 @@ public class ReplyController {
 
 
 	@PostMapping
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
 	@Operation(summary = "답글 등록", description = "답글을 등록할 때 사용하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(
@@ -55,11 +55,11 @@ public class ReplyController {
 
 	@GetMapping("{reviewId}")
 	@PreAuthorize("isAuthenticated()")
-	@Operation(summary = "내가 쓴 리뷰 조회", description = "내가 쓴 리뷰를 조회할 때 사용하는 API")
+	@Operation(summary = "답글 조회", description = "답글을 조회할 때 사용하는 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "리뷰 조회에 성공하였습니다!",
+			description = "답글 조회에 성공하였습니다!",
 			content = @Content(mediaType = "application/json")
 		),
 		@ApiResponse(
@@ -73,4 +73,6 @@ public class ReplyController {
 
 		return new ResponseEntity<>(replyResponseDto, OK);
 	}
+
+
 }
