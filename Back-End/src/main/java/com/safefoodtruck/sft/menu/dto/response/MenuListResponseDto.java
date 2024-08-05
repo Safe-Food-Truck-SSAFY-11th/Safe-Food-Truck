@@ -2,6 +2,8 @@ package com.safefoodtruck.sft.menu.dto.response;
 
 import java.util.List;
 
-public record MenuListResponseDto(List<MenuResponseDto> menuResponseDtos) {
+import lombok.Builder;
 
+@Builder
+public record MenuListResponseDto(Integer count, List<MenuResponseDto> menuResponseDtos) {
 }

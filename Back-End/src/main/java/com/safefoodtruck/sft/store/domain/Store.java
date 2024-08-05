@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.store.domain;
 
 import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.FetchType.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,10 +94,11 @@ public class Store {
     private Boolean isOpen;
 
 
-//    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
-//    private StoreImage storeImage;
+   @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+   private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Menu> menuList = new ArrayList<>();
 
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
@@ -121,15 +123,10 @@ public class Store {
         this.storeType = storeUpdateRequestDto.storeType();
         this.offDay = storeUpdateRequestDto.offDay();
         this.description = storeUpdateRequestDto.description();
-//        this.storeImage = storeUpdateRequestDto.storeImage();
     }
 
     public void updateStatus() {
-        if(isOpen) {
-            isOpen = false;
-            return;
-        }
-        isOpen = true;
+        this.isOpen = !this.isOpen;
     }
 
     public void updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto) {
@@ -139,5 +136,10 @@ public class Store {
 
     public void addMenu(Menu menu) {
         menuList.add(menu);
+    }
+
+    public void setStoreImage(StoreImage storeImage) {
+        this.storeImage = storeImage;
+        storeImage.setStore(this);
     }
 }
