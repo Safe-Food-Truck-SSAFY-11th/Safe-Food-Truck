@@ -40,7 +40,7 @@ const Regist = () => {
 
     const handleRegisterClick = async () => {
         try {
-            handleUpload();
+            await handleUpload();
             const currentRole = formData.businessNumber ? 'owner' : 'customer';
             const roleSpecificData = currentRole === 'customer' ? {} : { businessNumber: formData.businessNumber };
             const token = await registerUser('common', { ...formData, ...roleSpecificData });
@@ -70,7 +70,7 @@ const Regist = () => {
         reader.readAsDataURL(e.target.files[0]);
       };
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         if (!selectedFile) {
             alert('Please select a file');
             return;
@@ -78,32 +78,38 @@ const Regist = () => {
 
         // AWS S3 설정
         AWS.config.update({
-            accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`, // IAM 사용자 엑세스 키 변경
-            secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`, // IAM 엑세스 시크릿키 변경
-            region: `${process.env.REACT_APP_AWS_REGION}`, // 리전 변경
+            accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+            secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+            region: `${process.env.REACT_APP_AWS_REGION}`,
         });
 
         const s3 = new AWS.S3();
 
         // 업로드할 파일 정보 설정
         const uploadParams = {
-            Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,  // 버킷 이름 변경
+            Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
             Key: `members/${formData.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
             Body: selectedFile,
         };
 
         // S3에 파일 업로드
-        s3.upload(uploadParams, (err, data) => {
-            if (err) {
-            console.error('Error uploading file:', err);
-            } else {
-            console.log('File uploaded successfully. ETag:', data.ETag);
-            // 업로드 성공 후 필요한 작업 수행
-            }
-            formData.memberImage.savedUrl = data.Location;
-            formData.memberImage.savedPath = data.Key;
-
-            console.log('DATA = ', data);
+        return new Promise((resolve, reject) => {
+            s3.upload(uploadParams, (err, data) => {
+                if (err) {
+                    console.error('Error uploading file:', err);
+                    reject(err);
+                } else {
+                    console.log('File uploaded successfully. ETag:', data.ETag);
+                    formData.memberImage.savedUrl = data.Location;
+                    formData.memberImage.savedPath = data.Key;
+    
+                    console.log('DATA = ', data);
+                    console.log('FORM = ', formData);
+    
+                    // 업로드 완료 후 resolve 호출
+                    resolve(data);
+                }
+            });
         });
     };
 

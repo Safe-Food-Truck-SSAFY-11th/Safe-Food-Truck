@@ -87,7 +87,20 @@ const userStore = create((set, get) => ({
       console.error('회원 정보 수정 오류:', error);
       throw error;
     }
-  }
+  },
+
+  deleteUser: async () => {
+    try {
+      const response = await axios.patch('members/deactivate');
+      sessionStorage.clear();
+      set({ isAuthenticated: false, user: null });
+      return response.data;
+    } catch (error) {
+      console.error('회원 탈퇴 오류:', error);
+      throw error;
+    }
+  },
+
 }));
 
 export default userStore;
