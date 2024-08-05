@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import revImg from '../../../assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
+import onwerReplyAI from '../../../gemini/gemini.js'
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
+  const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
   
   const owName = review.replies;
 
@@ -40,6 +42,13 @@ function ReviewItem({ review }) {
     setShowReplyInput(false); // 입력 필드 숨기기
   };
 
+  const handleAIBtnClick = async () => {
+    console.log('AI 초안 작성 버튼 클릭했어여');
+    const aiText = await onwerReplyAI();
+    setAiReply(aiText); // AI 텍스트 상태 업데이트
+    setReply(aiText); // AI 텍스트를 input 필드에 설정
+  }
+
   return (
     <div className={reviewItemClass}>
       {review.isVisible === false && (
@@ -73,7 +82,7 @@ function ReviewItem({ review }) {
             <button onClick={handleReplySubmit} className={styles.submitButton}>
               등록
             </button>
-            <button className={styles.AIBtn}>
+            <button className={styles.AIBtn} onClick={handleAIBtnClick}>
               AI 초안 작성
             </button>
           </div>
