@@ -139,7 +139,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public StoreInfoListResponseDto findOpenStores() {
-		List<Store> openStores = storeRepository.findOpenStores();
+		List<Store> openStores = storeRepository.findByIsOpen(true);
 		log.info("Open stores count: {}", openStores.size());
 		List<StoreInfoResponseDto> storeInfoResponseDtos = new ArrayList<>();
 
