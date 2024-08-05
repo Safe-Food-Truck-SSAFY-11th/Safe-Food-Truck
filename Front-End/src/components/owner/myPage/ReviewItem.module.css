@@ -81,3 +81,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.AIBtn {
+  background-color: violet;
+  margin: 3vw;
+}

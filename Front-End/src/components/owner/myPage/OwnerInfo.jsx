@@ -25,6 +25,11 @@ const OwnerInfo = () => {
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
   };
+
+  const handleTruckReviewClick = () => {
+    navigate("/ownerReview");
+  }
+
   const handleTruckUpdateClick = () => {
     navigate("/manageTruck");
   };
@@ -73,7 +78,7 @@ const OwnerInfo = () => {
           </p>
 
           <div className={styles.buttons}>
-            <button className={styles.button}>트럭 리뷰 보기</button>
+            <button className={styles.button} onClick={handleTruckReviewClick}>트럭 리뷰 보기</button>
             <button className={styles.button} onClick={handleTruckUpdateClick}>
               트럭 정보 수정
             </button>
