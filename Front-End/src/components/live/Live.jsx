@@ -1,16 +1,21 @@
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import styles from "./Live.module.css";
 import UserVideoComponent from "./UserVideoComponent";
 import truckImg from "assets/images/storeImg.png";
 import Modal from "./Modal";
+import OpenClose from "components/owner/mainPage/OpenClose";
+import JiguemOrder from "components/owner/mainPage/JiguemOrder";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 // const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
-const App = () => {
-  const [mySessionId, setMySessionId] = useState("SessionA");
+const Live = () => {
+  const role = sessionStorage.getItem("role");
+  const { storeId } = useParams();
+  const [mySessionId, setMySessionId] = useState(storeId); //세션 아이디를 스토어아이디로 설정 -> 나중에 보안을 위해 수정해야될지도
   const [myUserName, setMyUserName] = useState(
     sessionStorage.getItem("nickname")
   );
@@ -32,14 +37,20 @@ const App = () => {
   const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
-    // 초기 더미 데이터 설정 (사장님 역할)
-    sessionStorage.setItem("role", "owner");
-    sessionStorage.setItem("nickname", "푸바오");
+    // // 초기 더미 데이터 설정 (사장님 역할)
+    // sessionStorage.setItem("role", "owner");
+    // sessionStorage.setItem("nickname", "푸바오");
 
     window.addEventListener("beforeunload", onbeforeunload);
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
     };
+  }, []);
+
+  useEffect(() => {
+    if (role === "owner") {
+      createSessionAndJoin(true); // 퍼블리셔로 참여
+    }
   }, []);
 
   const onbeforeunload = (event) => {
@@ -254,55 +265,12 @@ const App = () => {
     setModalMessage("");
   };
 
+  //공지사항 작성 버튼
+  const noticeRegistClick = () => {};
+
   return (
     <div className={styles.container}>
       {modalMessage && <Modal message={modalMessage} onClose={closeModal} />}
-
-      {session === undefined ? (
-        <div className={styles.join}>
-          <div className={styles.imgDiv}>
-            <img
-              src="resources/images/openvidu_grey_bg_transp_cropped.png"
-              alt="OpenVidu logo"
-            />
-          </div>
-          <div className={styles.joinDialog}>
-            <h1>Join a video session</h1>
-            <form className={styles.formGroup} onSubmit={joinSession}>
-              <p>
-                <label>Participant: </label>
-                <input
-                  className={styles.formControl}
-                  type="text"
-                  id="userName"
-                  value={myUserName}
-                  onChange={handleChangeUserName}
-                  required
-                />
-              </p>
-              <p>
-                <label>Session: </label>
-                <input
-                  className={styles.formControl}
-                  type="text"
-                  id="sessionId"
-                  value={mySessionId}
-                  onChange={handleChangeSessionId}
-                  required
-                />
-              </p>
-              <p className={styles.textCenter}>
-                <input
-                  className={`${styles.btn} ${styles.btnSuccess}`}
-                  name="commit"
-                  type="submit"
-                  value="JOIN"
-                />
-              </p>
-            </form>
-          </div>
-        </div>
-      ) : null}
 
       {session !== undefined ? (
         <div className={styles.session}>
@@ -328,6 +296,13 @@ const App = () => {
               onClick={toggleChat}
             >
               {isChat ? "Close Chat" : "Open Chat"}
+            </button>
+            <button
+              className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+              id="noticeRegist"
+              onClick={noticeRegistClick}
+            >
+              공지사항 작성
             </button>
           </div>
 
@@ -413,10 +388,17 @@ const App = () => {
               </div>
             </div>
           ) : null}
+
+          {role === "owner" ? (
+            <>
+              <OpenClose />
+              <JiguemOrder />
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>
   );
 };
 
-export default App;
+export default Live;

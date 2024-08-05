@@ -157,7 +157,8 @@
   border-bottom: 1px solid #ccc;
   display: flex;
   flex-direction: column;
-  max-height: 300px;
+  min-width: 300px; /* 최소 너비 */
+  min-height: 200px; /* 최소 높이 */
 }
 
 .message {

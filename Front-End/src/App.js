@@ -55,7 +55,7 @@ function App() {
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPassword" element={<FindPassword />} />
         <Route path="/survey" element={<Survey />} />
-        <Route path="/live" element={<Live />} />
+        <Route path="/live/:storeId" element={<Live />} />
       </Routes>
     </div>
   );
