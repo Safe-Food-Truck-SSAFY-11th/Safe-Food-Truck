@@ -1,6 +1,5 @@
 package com.safefoodtruck.sft.menu.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.request.MenuListRegistRequestDto;
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
@@ -120,7 +119,7 @@ public class MenuController {
 	}
 
 	@ExceptionHandler({MenuNotFoundException.class})
-	public ResponseEntity<ErrorResponseDto> menuException(Exception e) throws JsonProcessingException {
+	public ResponseEntity<ErrorResponseDto> menuException(Exception e) {
 		ErrorResponseDto errorResponse = new ErrorResponseDto(
 			HttpStatus.INTERNAL_SERVER_ERROR.value(),
 			e.getMessage(),
