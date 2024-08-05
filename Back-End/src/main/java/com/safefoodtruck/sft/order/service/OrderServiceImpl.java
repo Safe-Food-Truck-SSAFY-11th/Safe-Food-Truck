@@ -18,6 +18,8 @@ import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.CustomerOrderResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
@@ -157,11 +159,21 @@ public class OrderServiceImpl implements OrderService {
 		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 	}
 
-	public OrderListResponseDto findCustomerOrderList() {
+	@Override
+	public CustomerOrderListResponseDto findCustomerOrderList() {
 		String email = MemberInfo.getEmail();
 		List<Order> orders = orderRepository.findByCustomerEmail(email);
 
-		return createOrderListResponseDto(orders);
+		List<CustomerOrderResponseDto> customerOrderResponseDtos = orders.stream()
+			.map(order -> {
+				List<Menu> menus = order.getOrderMenuList().stream()
+					.map(OrderMenu::getMenu)
+					.toList();
+				return CustomerOrderResponseDto.fromEntity(order, menus);
+			})
+			.toList();
+
+		return CustomerOrderListResponseDto.fromEntity(customerOrderResponseDtos);
 	}
 
 	@Override
@@ -169,29 +181,13 @@ public class OrderServiceImpl implements OrderService {
 		String email = MemberInfo.getEmail();
 		List<Order> orders = orderRepository.findByStoreOwnerEmail(email);
 
-		return createOrderListResponseDto(orders);
+		return OrderListResponseDto.fromEntity(orders);
 	}
 
 	@Override
 	public OrderDetailResponseDto findOrderDetail(Integer orderId) {
 		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 
-		return OrderDetailResponseDto.builder()
-			.orderId(order.getId())
-			.customerEmail(order.getCustomerEmail())
-			.storeId(order.getStoreId())
-			.orderMenuList(order.getOrderMenuList())
-			.request(order.getRequest())
-			.status(order.getStatus())
-			.cookingStatus(order.getCookingStatus())
-			.orderTime(order.getOrderTime())
-			.build();
-	}
-
-	private OrderListResponseDto createOrderListResponseDto(List<Order> orders) {
-		return OrderListResponseDto.builder()
-			.count(orders.size())
-			.orders(orders)
-			.build();
+		return OrderDetailResponseDto.fromEntity(order);
 	}
 }

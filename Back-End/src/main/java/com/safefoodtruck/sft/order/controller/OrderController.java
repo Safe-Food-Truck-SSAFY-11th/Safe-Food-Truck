@@ -1,24 +1,9 @@
 package com.safefoodtruck.sft.order.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
-import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
-import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
-import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
-import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
-import com.safefoodtruck.sft.order.service.OrderService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +16,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
+import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
+import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
+import com.safefoodtruck.sft.order.service.OrderService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/orders")
@@ -117,8 +120,8 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<OrderListResponseDto> findCustomerOrderList() {
-        OrderListResponseDto customerOrderList = orderService.findCustomerOrderList();
+    public ResponseEntity<CustomerOrderListResponseDto> findCustomerOrderList() {
+        CustomerOrderListResponseDto customerOrderList = orderService.findCustomerOrderList();
         return new ResponseEntity<>(customerOrderList, OK);
     }
 
