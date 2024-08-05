@@ -1,48 +1,32 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import ReviewItem from './ReviewItem';
 import styles from './ReviewList.module.css';
-
-const reviews = [
-  {
-    id: 1,
-    author: '조용훈',
-    store_id: 10,
-    is_visible: 0, // 전체공개
-    star: 7, // 1: 0.5개 ~ 10: 5개
-    content: '자주 와주세요',
-    image: '',
-    replies: {
-    }
-  },
-  {
-    id: 2,
-    author: '장준석',
-    store_id: 10,
-    is_visible: 0,
-    star: 8,
-    content: '맛있어요',
-    image: '',
-    replies: {
-      id: 1, 
-      content: '감사합니다~',
-    }
-  },
-  {
-    id: 3,
-    author: '김준혁',
-    store_id: 10,
-    is_visible: 1, // 사장님만 공개
-    star: 9,
-    content: '트럭 저한테 파실 생각 없으신가요',
-    image: '',
-    replies: {
-      id: 2, 
-      content: '싫어요~~',
-    }
-  },
-];
+import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
+import useTruckStore from "store/users/owner/truckStore";
 
 function ReviewList() {
+  const { getReviewList } = useOwnerReviewStore();
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const [reviews, setReviews] = useState([]);
+  
+  useEffect(() => {
+    const fetchTruckAndReviews = async () => {
+      await fetchTruckInfo();
+    };
+    fetchTruckAndReviews();
+  }, [fetchTruckInfo]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (truckInfo && truckInfo.storeId) {
+        const reviewList = await getReviewList(truckInfo.storeId);
+        setReviews(reviewList);
+      }
+    };
+
+    fetchReviews();
+  }, [truckInfo, getReviewList]);
+
   return (
     <>
       <div className={styles.titleContainer}>

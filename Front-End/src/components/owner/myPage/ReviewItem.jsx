@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import revImg from '../../../assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
+import onwerReplyAI from '../../../gemini/gemini.js'
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
+  const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
   
-  const owName = '푸바오';
+  const owName = review.replies;
 
   function displayStars(rating) {
     let stars = '';
@@ -24,7 +26,7 @@ function ReviewItem({ review }) {
     return stars;
   }
 
-  const reviewItemClass = `${styles.reviewItem} ${review.is_visible === 1 ? styles.reviewItemSecret : ''}`;
+  const reviewItemClass = `${styles.reviewItem} ${review.isVisible === false ? styles.reviewItemSecret : ''}`;
 
   const handleReplyButtonClick = () => {
     setShowReplyInput(!showReplyInput);
@@ -40,16 +42,23 @@ function ReviewItem({ review }) {
     setShowReplyInput(false); // 입력 필드 숨기기
   };
 
+  const handleAIBtnClick = async () => {
+    console.log('AI 초안 작성 버튼 클릭했어여');
+    const aiText = await onwerReplyAI();
+    setAiReply(aiText); // AI 텍스트 상태 업데이트
+    setReply(aiText); // AI 텍스트를 input 필드에 설정
+  }
+
   return (
     <div className={reviewItemClass}>
-      {review.is_visible === 1 && (
+      {review.isVisible === false && (
         <div className={styles.secretLabel}>나한테만 보이는 리뷰입니다</div>
       )}
       <img src={revImg} alt="review" className={styles.reviewImage} />
       <hr className={styles.separator} />
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
-          <h4>{review.author} 님 {displayStars(review.star)}</h4>
+          <h4>{review.nickname} 님 {displayStars(review.star)}</h4>
         </div>
         <p>{review.content}</p>
         {review.replies && review.replies.content && (
@@ -72,6 +81,9 @@ function ReviewItem({ review }) {
             />
             <button onClick={handleReplySubmit} className={styles.submitButton}>
               등록
+            </button>
+            <button className={styles.AIBtn} onClick={handleAIBtnClick}>
+              AI 초안 작성
             </button>
           </div>
         )}
