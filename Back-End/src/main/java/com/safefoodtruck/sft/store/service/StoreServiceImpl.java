@@ -12,6 +12,7 @@ import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.domain.StoreImage;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
@@ -21,6 +22,7 @@ import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
 import jakarta.transaction.Transactional;
@@ -33,95 +35,116 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
-    private final StoreRepository storeRepository;
-    private final MemberRepository memberRepository;
+	private final StoreRepository storeRepository;
+	private final MemberRepository memberRepository;
+	private final StoreImageRepository storeImageRepository;
 
-    @Override
-    public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
-        String email = MemberInfo.getEmail();
-        Member owner = memberRepository.findByEmail(email);
-        Store store = Store.of(owner, storeRegistRequestDto);
-        store.setOwner(owner);
-        storeRepository.save(store);
+	@Override
+	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
+		String email = MemberInfo.getEmail();
+		Member owner = memberRepository.findByEmail(email);
+		Store store = Store.of(owner, storeRegistRequestDto);
 
-        return StoreRegistResponseDto.fromEntity(email, store);
-    }
+		store.setOwner(owner);
+		Store savedStore = storeRepository.save(store);
 
-    @Override
-    public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
-        Store store = findStore();
-        store.update(storeUpdateRequestDto);
+		if(storeRegistRequestDto.storeImageDto() != null) {
+			StoreImage storeImage = StoreImage.builder()
+				.store(savedStore)
+				.savedUrl(storeRegistRequestDto.storeImageDto().savedUrl())
+				.savedPath(storeRegistRequestDto.storeImageDto().savedPath())
+				.build();
 
-        return StoreUpdateResponseDto.fromEntity(store);
-    }
+			StoreImage savedStoreImage = storeImageRepository.save(storeImage);
+			store.setStoreImage(savedStoreImage);
+		}
 
+		return StoreRegistResponseDto.fromEntity(email, savedStore);
+	}
 
-    @Override
-    public Store findStore() {
-        String email = MemberInfo.getEmail();
-        return storeRepository.findByOwnerEmail(email)
-            .orElseThrow(StoreNotFoundException::new);
-    }
+	@Override
+	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+		Store store = findStore();
+		store.update(storeUpdateRequestDto);
 
-    @Override
-    public Store findStore(Integer storeId) {
-        return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
-    }
+		StoreImage storeImage = storeImageRepository.findByStore(store);
+		storeImage.updateStoreImage(storeUpdateRequestDto.storeImageDto());
 
-    @Override
-    public MenuListResponseDto findStoreMenus(Integer storeId) {
-        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
-        List<Menu> menuList = store.getMenuList();
+		storeRepository.save(store);
+		storeImageRepository.save(storeImage);
 
-        List<MenuResponseDto> menuResponseDtos = menuList.stream()
-            .map(MenuResponseDto::fromEntity)
-            .toList();
+		return StoreUpdateResponseDto.fromEntity(store);
+	}
 
-        return new MenuListResponseDto(menuResponseDtos);
-    }
+	@Override
+	public Store findStore() {
+		String email = MemberInfo.getEmail();
+		return storeRepository.findByOwnerEmail(email)
+			.orElseThrow(StoreNotFoundException::new);
+	}
 
-    @Override
-    public void deleteStore() {
-        String email = MemberInfo.getEmail();
-        Optional<Integer> storeIdByOwnerEmail = storeRepository.findStoreIdByOwnerEmail(email);
-        if (storeIdByOwnerEmail.isEmpty()) {
-            throw new StoreNotFoundException();
-        }
+	@Override
+	public Store findStore(Integer storeId) {
+		return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+	}
 
-        int storeId = storeIdByOwnerEmail.get();
-        storeRepository.deleteById(storeId);
-    }
+	@Override
+	public MenuListResponseDto findStoreMenus(Integer storeId) {
+		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+		List<Menu> menuList = store.getMenuList();
 
-    @Override
-    public boolean updateStoreStatus() {
-        Store store = findStore();
-        store.updateStatus();
+		List<MenuResponseDto> menuResponseDtos = menuList.stream()
+			.map(MenuResponseDto::fromEntity)
+			.toList();
 
-        return store.getIsOpen();
-    }
+		return MenuListResponseDto.builder()
+			.count(menuResponseDtos.size())
+			.menuResponseDtos(menuResponseDtos)
+			.build();
+	}
 
-    @Override
-    public boolean getStoreStatus() {
-        Store store = findStore();
+	@Override
+	public void deleteStore() {
+		String email = MemberInfo.getEmail();
+		Optional<Integer> storeIdByOwnerEmail = storeRepository.findStoreIdByOwnerEmail(email);
+		if (storeIdByOwnerEmail.isEmpty()) {
+			throw new StoreNotFoundException();
+		}
 
-        return store.getIsOpen();
-    }
+		int storeId = storeIdByOwnerEmail.get();
+		storeRepository.deleteById(storeId);
+	}
 
-    @Override
-    public StoreInfoListResponseDto findOpenStores() {
-        List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
-        log.info("openStores : {}", openStores.toArray());
+	@Override
+	public boolean updateStoreStatus() {
+		Store store = findStore();
+		store.updateStatus();
 
-        return new StoreInfoListResponseDto(openStores);
-    }
+		return store.getIsOpen();
+	}
 
-    @Override
-    public StoreLocationResponseDto updateStoreLocation(
-        StoreLocationRequestDto storeLocationRequestDto) {
-        Store store = findStore();
-        store.updateStoreLocation(storeLocationRequestDto);
+	@Override
+	public boolean getStoreStatus() {
+		Store store = findStore();
 
-        return StoreLocationResponseDto.fromEntity(store);
-    }
+		return store.getIsOpen();
+	}
+
+	@Override
+	public StoreInfoListResponseDto findOpenStores() {
+		List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
+		log.info("openStores : {}", openStores.toArray());
+
+		return new StoreInfoListResponseDto(openStores);
+	}
+
+	@Override
+	public StoreLocationResponseDto updateStoreLocation(
+		StoreLocationRequestDto storeLocationRequestDto) {
+		Store store = findStore();
+		store.updateStoreLocation(storeLocationRequestDto);
+
+		return StoreLocationResponseDto.fromEntity(store);
+	}
 
 }

@@ -34,8 +34,16 @@
 }
 
 .category, .address {
+  font-size: 13px;
+  padding-left: 10px;
   margin: 0;
   white-space: nowrap; /* 텍스트가 한 줄로 나오도록 설정 */
   overflow: hidden; /* 내용이 넘칠 때 숨기기 */
   text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
+}
+
+.distance {
+  font-size: 12px;
+  white-space: nowrap;
+  padding-left: 10px;
 }

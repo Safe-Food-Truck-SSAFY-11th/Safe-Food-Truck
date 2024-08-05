@@ -11,9 +11,11 @@ import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
 import com.safefoodtruck.sft.review.domain.Review;
+import com.safefoodtruck.sft.review.domain.ReviewImage;
 import com.safefoodtruck.sft.review.dto.request.ReviewRegistRequestDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
+import com.safefoodtruck.sft.review.repository.ReviewImageRepository;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
@@ -24,50 +26,43 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ReviewServiceImpl implements ReviewService  {
+public class ReviewServiceImpl implements ReviewService {
 
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
 	private final OrderRepository orderRepository;
+	private final ReviewImageRepository reviewImageRepository;
 
 	@Override
 	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member customer = memberRepository.findByEmail(email);
-		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
-			OrderNotFoundException::new);
+		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(OrderNotFoundException::new);
+
 		Review review = Review.of(customer, order, reviewRegistRequestDto);
+		Review savedReview = reviewRepository.save(review);
 
-		reviewRepository.save(review);
+		reviewRegistRequestDto.reviewImageDtos().forEach(dto -> {
+			ReviewImage reviewImage = ReviewImage.of(dto);
+			savedReview.addReviewImage(reviewImage);
+			reviewImageRepository.save(reviewImage);
+		});
 
-		return ReviewResponseDto.fromEntity(review);
+		return ReviewResponseDto.fromEntity(savedReview);
 	}
+
 
 	@Override
 	public ReviewListResponseDto findCustomerReviews() {
 		String email = MemberInfo.getEmail();
 		List<Review> customerReviews = reviewRepository.findByCustomerEmail(email);
-		List<ReviewResponseDto> reviewList = customerReviews.stream()
-			.map(ReviewResponseDto::fromEntity)
-			.toList();
-
-		return ReviewListResponseDto.builder()
-			.count(customerReviews.size())
-			.reviewList(reviewList)
-			.build();
+		return createReviewListResponseDto(customerReviews);
 	}
 
 	@Override
 	public ReviewListResponseDto findStoreReviews(final Integer storeId) {
 		List<Review> storeReviews = reviewRepository.findByStoreId(storeId);
-		List<ReviewResponseDto> reviewList = storeReviews.stream()
-			.map(ReviewResponseDto::fromEntity)
-			.toList();
-
-		return ReviewListResponseDto.builder()
-			.count(storeReviews.size())
-			.reviewList(reviewList)
-			.build();
+		return createReviewListResponseDto(storeReviews);
 	}
 
 	@Override
@@ -79,5 +74,16 @@ public class ReviewServiceImpl implements ReviewService  {
 	@Override
 	public void deleteReview(final Integer reviewId) {
 		reviewRepository.deleteById(reviewId);
+	}
+
+	private ReviewListResponseDto createReviewListResponseDto(List<Review> reviews) {
+		List<ReviewResponseDto> reviewList = reviews.stream()
+			.map(ReviewResponseDto::fromEntity)
+			.toList();
+
+		return ReviewListResponseDto.builder()
+			.count(reviews.size())
+			.reviewList(reviewList)
+			.build();
 	}
 }

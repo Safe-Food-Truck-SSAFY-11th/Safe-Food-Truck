@@ -1,0 +1,58 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  padding: 10px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  margin-bottom: 15px;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submitButton {
+  padding: 10px;
+  background-color: #c0d79e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.cancelButton {
+  padding: 10px;
+  background-color: #FFA285;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.successText {
+  color: green;
+  margin-top: 15px;
+}
+
+.errorText {
+  color: red;
+  margin-top: 15px;
+}

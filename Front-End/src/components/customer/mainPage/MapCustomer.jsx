@@ -2,15 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MapCustomer.module.css';
 import markerImage from 'assets/images/ft_marker.png'; // 이미지 경로 import
-import useFoodTruckStore from 'store/trucks/useFoodTruckStore'; // store.js의 경로에 맞게 수정
 
-function MapCustomer({ selectedType }) {
+function MapCustomer({ foodTrucks }) {
   const navigate = useNavigate();
-  const { foodTrucks, openFoodTruck, getFoodTruck } = useFoodTruckStore();
-
-  useEffect(() => {
-    openFoodTruck();
-  }, [openFoodTruck]);
 
   useEffect(() => {
     const apiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
@@ -45,10 +39,7 @@ function MapCustomer({ selectedType }) {
           markerImageOptions
         );
 
-        console.log(foodTrucks);
-
         const addMarker = (location) => {
-          console.log(location);
           const latitude = parseFloat(location.latitude);
           const longitude = parseFloat(location.longitude);
           if (isNaN(latitude) || isNaN(longitude)) {
@@ -70,8 +61,7 @@ function MapCustomer({ selectedType }) {
           // InfoWindow를 마커 위에 강제로 표시
           infowindow.open(map, marker);
 
-          window.kakao.maps.event.addListener(marker, 'click', async function() {
-            await getFoodTruck(location.storeId);
+          window.kakao.maps.event.addListener(marker, 'click', function() {
             navigate(`/foodtruckDetail/${location.storeId}`);
           });
         };
@@ -89,7 +79,8 @@ function MapCustomer({ selectedType }) {
       console.error('카카오맵 불러오기에 실패하였습니다.');
     };
 
-  }, [navigate, foodTrucks, getFoodTruck]);
+    console.log(foodTrucks)
+  }, [navigate, foodTrucks]);
 
   return (
     <div className={styles.mapContainer}>

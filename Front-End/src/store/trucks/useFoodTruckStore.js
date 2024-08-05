@@ -4,8 +4,9 @@ import axiosInstance from 'utils/axiosInstance'; // axiosInstance 파일의 경�
 const useFoodTruckStore = create((set) => ({
   foodTrucks: [],
   selectedTruck: null,
-  selectedTruckMenus: [], // 추가: 선택된 트럭의 메뉴 저장
+  selectedTruckMenus: [], 
 
+  
   // 트럭 상세조회 요청
   getFoodTruck: async (storeId) => {
     try {
