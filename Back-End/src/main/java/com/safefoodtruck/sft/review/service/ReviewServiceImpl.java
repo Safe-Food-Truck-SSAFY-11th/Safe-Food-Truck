@@ -1,15 +1,14 @@
 package com.safefoodtruck.sft.review.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
+import com.safefoodtruck.sft.reply.domain.Reply;
+import com.safefoodtruck.sft.reply.dto.response.ReplyResponseDto;
+import com.safefoodtruck.sft.reply.repository.ReplyRepository;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.domain.ReviewImage;
 import com.safefoodtruck.sft.review.dto.request.ReviewRegistRequestDto;
@@ -17,10 +16,11 @@ import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
 import com.safefoodtruck.sft.review.repository.ReviewImageRepository;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
-
-import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,13 +31,15 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
 	private final OrderRepository orderRepository;
+	private final ReplyRepository replyRepository;
 	private final ReviewImageRepository reviewImageRepository;
 
 	@Override
 	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member customer = memberRepository.findByEmail(email);
-		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(OrderNotFoundException::new);
+		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
+			OrderNotFoundException::new);
 
 		Review review = Review.of(customer, order, reviewRegistRequestDto);
 		Review savedReview = reviewRepository.save(review);
@@ -48,9 +50,8 @@ public class ReviewServiceImpl implements ReviewService {
 			reviewImageRepository.save(reviewImage);
 		});
 
-		return ReviewResponseDto.fromEntity(savedReview);
+		return ReviewResponseDto.fromEntity(savedReview, null);  // 등록 시점에는 reply가 없으므로 null을 전달
 	}
-
 
 	@Override
 	public ReviewListResponseDto findCustomerReviews() {
@@ -78,7 +79,11 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewListResponseDto createReviewListResponseDto(List<Review> reviews) {
 		List<ReviewResponseDto> reviewList = reviews.stream()
-			.map(ReviewResponseDto::fromEntity)
+			.map(review -> {
+				Reply reply = replyRepository.findByReviewId(review.getId());
+				ReplyResponseDto replyDto = (reply != null) ? ReplyResponseDto.fromEntity(reply) : null;
+				return ReviewResponseDto.fromEntity(review, replyDto);
+			})
 			.toList();
 
 		return ReviewListResponseDto.builder()
