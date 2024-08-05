@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import revImg from '../../../assets/images/truck-img.png'; // 임시 리뷰 이미지
+import revImg from 'assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
 import onwerReplyAI from '../../../gemini/gemini.js'
 import useTruckStore from "store/users/owner/truckStore";
+import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
   const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
   const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const { submitReply } = useOwnerReviewStore();
 
 useEffect(() => {
     const fetchData = () => {
@@ -48,7 +50,12 @@ useEffect(() => {
   };
 
   const handleReplySubmit = () => {
-    // 여기에 입력한 내용 처리하는 로직 추가
+    // 답글 등록 api 연결
+    const replyData = {
+      reviewId: review.id,
+      content: reply
+    }
+    submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
   };
