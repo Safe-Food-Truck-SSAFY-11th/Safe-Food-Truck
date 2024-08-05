@@ -11,6 +11,11 @@ const useTruckStore = create(
         offDay: "0000000",
         description: "",
         safetyLicenseNumber: "",
+        isOpen: 0,
+        storeImageDto: {
+          savedUrl: "",
+          savedPath: ""
+        }
       },
       updateForm: {
         name: "",
@@ -18,6 +23,21 @@ const useTruckStore = create(
         offDay: "0000000",
         description: "",
       },
+      //가입폼 세팅
+      setRegistForm: (name, value) =>
+        set((state) => ({
+          registForm: {
+            ...state.registForm,
+            [name]: value,
+          },
+        })),
+      setRegistImage: (imageURL) =>
+        set((state) => ({
+          registForm: {
+            ...state.registForm,
+            image: imageURL,
+          },
+        })),
       //업데이트폼 세팅
       setForm: (name, value) =>
         set((state) => ({
@@ -33,6 +53,23 @@ const useTruckStore = create(
             image: imageURL,
           },
         })),
+      //가입폼 토글
+      toggleRegistWorkingDay: (dayIndex) =>
+        set((state) => {
+          const { offDay } = state.registForm;
+          const newOffDay = offDay
+            .split("")
+            .map((day, index) =>
+              index === dayIndex ? (day === "0" ? "1" : "0") : day
+            )
+            .join("");
+          return {
+            registForm: {
+              ...state.registForm,
+              offDay: newOffDay,
+            },
+          };
+        }),
       //업데이트폼 토글
       toggleWorkingDay: (dayIndex) =>
         set((state) => {
