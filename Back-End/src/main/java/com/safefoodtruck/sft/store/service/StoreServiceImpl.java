@@ -1,5 +1,8 @@
 package com.safefoodtruck.sft.store.service;
 
+import com.safefoodtruck.sft.review.repository.ReviewRepository;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,19 +28,20 @@ import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
 	private final StoreRepository storeRepository;
 	private final MemberRepository memberRepository;
 	private final StoreImageRepository storeImageRepository;
+	private final ReviewRepository reviewRepository;
 
 	@Override
 	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
@@ -64,7 +68,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
-		Store store = findStore();
+		Store store = findLoginStore();
 		store.update(storeUpdateRequestDto);
 
 		StoreImage storeImage = storeImageRepository.findByStore(store);
@@ -77,15 +81,18 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public Store findStore() {
-		String email = MemberInfo.getEmail();
-		return storeRepository.findByOwnerEmail(email)
-			.orElseThrow(StoreNotFoundException::new);
+	public StoreFindResponseDto findMyStore() {
+		Store store = findLoginStore();
+		Integer averageStar = findStoreAverageStar(store.getId()).intValue();
+
+		return StoreFindResponseDto.fromEntity(store, averageStar);
 	}
 
 	@Override
-	public Store findStore(Integer storeId) {
-		return storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+	public StoreFindResponseDto findStoreById(Integer storeId) {
+		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+		Integer averageStar = findStoreAverageStar(storeId).intValue();
+		return StoreFindResponseDto.fromEntity(store, averageStar);
 	}
 
 	@Override
@@ -117,7 +124,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public boolean updateStoreStatus() {
-		Store store = findStore();
+		Store store = findLoginStore();
 		store.updateStatus();
 
 		return store.getIsOpen();
@@ -125,26 +132,55 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public boolean getStoreStatus() {
-		Store store = findStore();
+		Store store = findLoginStore();
 
 		return store.getIsOpen();
 	}
 
 	@Override
 	public StoreInfoListResponseDto findOpenStores() {
-		List<StoreInfoResponseDto> openStores = storeRepository.findOpenStores();
-		log.info("openStores : {}", openStores.toArray());
+		List<Store> openStores = storeRepository.findOpenStores();
+		log.info("Open stores count: {}", openStores.size());
+		List<StoreInfoResponseDto> storeInfoResponseDtos = new ArrayList<>();
 
-		return new StoreInfoListResponseDto(openStores);
+		for (Store openStore : openStores) {
+			try {
+				Double averageStar = findStoreAverageStar(openStore.getId());
+				log.info("Store ID: {}, Average Star: {}", openStore.getId(), averageStar);
+
+				StoreInfoResponseDto storeInfoResponseDto = StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
+				storeInfoResponseDtos.add(storeInfoResponseDto);
+
+				log.info("Store info: {}", storeInfoResponseDto.toString());
+			} catch (Exception e) {
+				log.error("Error processing store with ID {}: {}", openStore.getId(), e.getMessage());
+			}
+		}
+
+		return StoreInfoListResponseDto.builder()
+			.count(storeInfoResponseDtos.size())
+			.storeInfoResponseDtos(storeInfoResponseDtos)
+			.build();
 	}
 
 	@Override
 	public StoreLocationResponseDto updateStoreLocation(
 		StoreLocationRequestDto storeLocationRequestDto) {
-		Store store = findStore();
+		Store store = findLoginStore();
 		store.updateStoreLocation(storeLocationRequestDto);
 
 		return StoreLocationResponseDto.fromEntity(store);
 	}
 
+	public Store findLoginStore() {
+		String email = MemberInfo.getEmail();
+		log.info("login-email {}", email);
+		return storeRepository.findByOwnerEmail(email)
+			.orElseThrow(StoreNotFoundException::new);
+	}
+
+	public Double findStoreAverageStar(Integer storeId) {
+		Double averageStar = reviewRepository.findAverageStarByStoreId(storeId);
+		return (averageStar != null) ? averageStar : 0.0;
+	}
 }
