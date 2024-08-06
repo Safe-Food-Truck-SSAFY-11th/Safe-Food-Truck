@@ -97,10 +97,10 @@ const LoginUser = () => {
                 </span>
             </div>
             <div className={styles.inputContainer}>
-                <input type="text" placeholder="이메일" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
+                <input type="text" name="email" placeholder="이메일" className={styles.input} value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
             </div>
             <div className={styles.inputContainer}>
-                <input type="password" placeholder="비밀번호" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
+                <input type="password" name="password" placeholder="비밀번호" className={styles.input} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()} />
             </div>
             <button className={`${styles.loginButton} ${isGuest === false ? styles.ownerLoginButton : ''}`} onClick={handleLoginClick}>로그인</button>
             <div className={styles.findLoginInfo}>
