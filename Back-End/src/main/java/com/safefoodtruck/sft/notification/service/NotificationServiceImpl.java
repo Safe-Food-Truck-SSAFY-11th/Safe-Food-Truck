@@ -95,6 +95,8 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    @Async
+    @Transactional
     @Override
     public void acceptedSendNotify(String orderEmail, String storeName) {
         Member member = memberRepository.findByEmail(orderEmail);
