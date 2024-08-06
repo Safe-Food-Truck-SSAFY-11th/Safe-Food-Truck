@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { OpenVidu } from "openvidu-browser";
-import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom"; // useNavigate 및 useLocation 추가
+import axios from "axios";
 import styles from "./Live.module.css";
 import UserVideoComponent from "./UserVideoComponent";
 import truckImg from "assets/images/storeImg.png";
@@ -10,12 +11,14 @@ import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
-// const APPLICATION_SERVER_URL = "http://localhost:5000/";
 
 const Live = () => {
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
-  const [mySessionId, setMySessionId] = useState(storeId); //세션 아이디를 스토어아이디로 설정 -> 나중에 보안을 위해 수정해야될지도
+  const navigate = useNavigate(); // useNavigate 사용
+  const { state } = useLocation(); // useLocation 사용
+  const { token } = state || {}; // token을 state에서 받아옴
+  const [mySessionId, setMySessionId] = useState(storeId);
   const [myUserName, setMyUserName] = useState(
     sessionStorage.getItem("nickname")
   );
@@ -37,10 +40,6 @@ const Live = () => {
   const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
-    // // 초기 더미 데이터 설정 (사장님 역할)
-    // sessionStorage.setItem("role", "owner");
-    // sessionStorage.setItem("nickname", "푸바오");
-
     window.addEventListener("beforeunload", onbeforeunload);
     return () => {
       window.removeEventListener("beforeunload", onbeforeunload);
@@ -50,8 +49,10 @@ const Live = () => {
   useEffect(() => {
     if (role === "owner") {
       createSessionAndJoin(true); // 퍼블리셔로 참여
+    } else if (role === "customer" && token) {
+      joinExistingSession(token); // 구독자로 참여
     }
-  }, []);
+  }, [role, token]);
 
   const onbeforeunload = (event) => {
     leaveSession();
@@ -78,15 +79,15 @@ const Live = () => {
 
   const joinSession = async (e) => {
     e.preventDefault();
-    const role = sessionStorage.getItem("role");
-
     if (role === "owner") {
       await createSessionAndJoin(true); // 퍼블리셔로 참여
     } else if (role === "customer") {
       try {
-        await createSessionAndJoin(false); // 구독자로 참여
+        await isLive(mySessionId); // 세션이 라이브인지 확인하고 구독자로 참여
       } catch (error) {
         setModalMessage("현재 방송 중이 아닙니다!");
+        // 메인 페이지로 이동
+        navigate("/");
       }
     }
   };
@@ -154,15 +155,59 @@ const Live = () => {
     }
   };
 
+  const joinExistingSession = async (token) => {
+    OV.current = new OpenVidu();
+    const newSession = OV.current.initSession();
+
+    setSession(newSession);
+
+    newSession.on("streamCreated", (event) => {
+      const subscriber = newSession.subscribe(event.stream, undefined);
+      setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+      console.log(subscriber);
+      console.log(newSession.streamManagers);
+      // setMainStreamManager(newSession.publisher); // 메인 스트림 매니저로 설정
+    });
+
+    newSession.on("streamDestroyed", (event) => {
+      deleteSubscriber(event.stream.streamManager);
+    });
+
+    newSession.on("exception", (exception) => {
+      console.warn(exception);
+    });
+
+    newSession.on("signal:my-chat", (event) => {
+      const message = event.data.split(",");
+      const from = message[0];
+      const msg = message[1];
+      setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
+    });
+
+    try {
+      await newSession.connect(token, { clientData: myUserName });
+    } catch (error) {
+      console.error(
+        "There was an error connecting to the session:",
+        error.code,
+        error.message
+      );
+    }
+  };
+
   const leaveSession = () => {
     if (session) {
+      if (role === "owner") {
+        session.unpublish(publisher);
+      }
       session.disconnect();
+      session.off();
     }
 
     OV.current = null;
     setSession(undefined);
     setSubscribers([]);
-    setMySessionId("SessionA");
+    setMySessionId("no session");
     setMyUserName(sessionStorage.getItem("nickname"));
     setMainStreamManager(undefined);
     setPublisher(undefined);
@@ -251,14 +296,50 @@ const Live = () => {
   };
 
   const createToken = async (sessionId) => {
-    const response = await axios.post(
-      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
-      {},
-      {
-        headers: { "Content-Type": "application/json" },
+    try {
+      const response = await axios.post(
+        APPLICATION_SERVER_URL + "api/sessions/" + sessionId,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.status === 204) {
+        //모달 띄우기
+        setModalMessage("현재 방송 중이 아닙니다!");
+        return null;
       }
-    );
-    return response.data; // The token
+
+      return response.data; // The token
+    } catch (error) {
+      console.error("Error creating token:", error);
+      throw error;
+    }
+  };
+
+  const isLive = async (sessionId) => {
+    try {
+      const response = await axios.post(
+        APPLICATION_SERVER_URL + "api/sessions/" + sessionId,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.status === 204) {
+        //모달 띄우기
+        setModalMessage("현재 방송 중이 아닙니다!");
+      } else {
+        //라이브 페이지로 이동
+        const token = response.data; // The token
+        navigate(`/live/${sessionId}`, { state: { token } }); // token을 함께 전달
+      }
+    } catch (error) {
+      console.error("Error creating token:", error);
+      throw error;
+    }
   };
 
   const closeModal = () => {
@@ -304,13 +385,13 @@ const Live = () => {
             >
               공지사항 작성
             </button>
-          </div>
 
-          {mainStreamManager !== undefined ? (
-            <div className={styles.mainVideo}>
-              <UserVideoComponent streamManager={mainStreamManager} />
-            </div>
-          ) : null}
+            {mainStreamManager !== undefined ? (
+              <div className={styles.mainVideo}>
+                <UserVideoComponent streamManager={mainStreamManager} />
+              </div>
+            ) : null}
+          </div>
 
           {isChat ? (
             <div className={styles.chatContainer}>
@@ -390,10 +471,10 @@ const Live = () => {
           ) : null}
 
           {role === "owner" ? (
-            <>
+            <div className={styles.ownerItems}>
               <OpenClose />
               <JiguemOrder />
-            </>
+            </div>
           ) : null}
         </div>
       ) : null}

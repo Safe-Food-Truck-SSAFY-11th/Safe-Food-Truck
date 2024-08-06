@@ -57,6 +57,12 @@
   background-color: #17a2b8;
 }
 
+.session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .sessionHeader {
   display: flex;
   flex-wrap: wrap;
@@ -204,4 +210,10 @@
   color: black;
   border-radius: 10px;
   height: 40px;
+}
+
+.ownerItems {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
