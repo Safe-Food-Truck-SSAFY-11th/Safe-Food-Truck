@@ -1,11 +1,7 @@
 package com.safefoodtruck.sft.store.domain;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.store.dto.StoreImageDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,13 +9,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Table(name = "store_image")
 @Entity
@@ -41,11 +38,9 @@ public class StoreImage {
 	@JoinColumn(name = "store_id")
 	private Store store;
 
-	@NotNull
 	@Column(name = "saved_url")
 	private String savedUrl;
 
-	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
 
