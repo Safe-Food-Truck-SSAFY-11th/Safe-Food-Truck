@@ -3,13 +3,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100vh; 
     background-color: #FEC674;
     /* 손님 배경 색 */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow-y: scroll;
     /* 추가 */
 }
 
@@ -47,7 +47,6 @@
     background-color: #F8F8F8;
     border-radius: 50%;
     margin: 20px 0;
-    overflow: hidden;
 }
 
 .imageUpload img {
@@ -101,8 +100,8 @@
     display: flex;
     justify-content: space-between;
     width: 80%;
-    max-width: 400px;
-    margin-top: 20px;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
 }
 
 .joinButton {

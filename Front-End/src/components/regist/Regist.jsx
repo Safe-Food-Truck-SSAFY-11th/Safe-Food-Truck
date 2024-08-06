@@ -72,7 +72,8 @@ const Regist = () => {
 
     const handleUpload = async () => {
         if (!selectedFile) {
-            alert('Please select a file');
+            formData.memberImage.savedUrl = "",
+            formData.memberImage.savedPath = ""
             return;
         }
 
