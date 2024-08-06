@@ -16,8 +16,7 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
   return (
     <div className={styles.container}>
       <div className={styles.profileSection}>
-        {/* 여기서 유저 프로필 이미지를 가져오는 로직 작성해야 합니당 ㅠ */}
-        <img alt="Profile" className={styles.profileImage} /> 
+        <img src={memberInfo.memberImage.savedUrl} alt="Profile" className={styles.profileImage} /> 
         <button className={styles.profileButton} onClick={handleProfileEdit}>
           내 정보 수정
         </button>

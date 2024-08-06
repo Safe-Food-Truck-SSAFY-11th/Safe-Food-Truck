@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.common;
+package com.safefoodtruck.sft.common.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
