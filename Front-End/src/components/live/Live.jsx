@@ -64,39 +64,9 @@ const Live = () => {
     leaveSession();
   };
 
-  const handleChangeSessionId = (e) => {
-    setMySessionId(e.target.value);
-  };
-
-  const handleChangeUserName = (e) => {
-    setMyUserName(e.target.value);
-  };
-
-  const handleMainVideoStream = (stream) => {
-    if (mainStreamManager !== stream) {
-      mainStreamManager.current = stream;
-      // setMainStreamManager(stream);
-    }
-  };
-
   const deleteSubscriber = (streamManager) => {
     const newSubscribers = subscribers.filter((sub) => sub !== streamManager);
     setSubscribers(newSubscribers);
-  };
-
-  const joinSession = async (e) => {
-    e.preventDefault();
-    if (role === "owner") {
-      await createSessionAndJoin(); // 퍼블리셔로 참여
-    } else if (role === "customer") {
-      try {
-        await isLive(mySessionId); // 세션이 라이브인지 확인하고 구독자로 참여
-      } catch (error) {
-        setModalMessage("현재 방송 중이 아닙니다!");
-        // 메인 페이지로 이동
-        navigate("/");
-      }
-    }
   };
 
   const createSessionAndJoin = async () => {
@@ -210,6 +180,7 @@ const Live = () => {
   };
 
   const leaveSession = () => {
+    // 모든 연결 강제로 끊는 것 추가할 것 ->store로 리팩토링 -> 방송종료 버튼 눌러서 동작
     if (session) {
       if (role === "owner") {
         session.unpublish(publisher);
@@ -228,40 +199,6 @@ const Live = () => {
     mainStreamManager.current = undefined;
     // setMainStreamManager(undefined);
     setPublisher(undefined);
-  };
-
-  const switchCamera = async () => {
-    try {
-      const devices = await OV.current.getDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-
-      if (videoDevices && videoDevices.length > 1) {
-        const newVideoDevice = videoDevices.filter(
-          (device) =>
-            device.deviceId !==
-            publisher.stream.getMediaStream().getVideoTracks()[0].getSettings()
-              .deviceId
-        );
-
-        if (newVideoDevice.length > 0) {
-          const newPublisher = OV.current.initPublisher(undefined, {
-            videoSource: newVideoDevice[0].deviceId,
-            publishAudio: true,
-            publishVideo: true,
-            mirror: true,
-          });
-
-          await session.unpublish(publisher);
-          await session.publish(newPublisher);
-
-          setPublisher(newPublisher);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const toggleChat = () => {
@@ -335,30 +272,6 @@ const Live = () => {
     }
   };
 
-  const isLive = async (sessionId) => {
-    try {
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + "api/sessions/" + sessionId,
-        {},
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (response.status === 204) {
-        //모달 띄우기
-        setModalMessage("현재 방송 중이 아닙니다!");
-      } else {
-        //라이브 페이지로 이동
-        const token = response.data; // The token
-        navigate(`/live/${sessionId}`, { state: { token } }); // token을 함께 전달
-      }
-    } catch (error) {
-      console.error("Error creating token:", error);
-      throw error;
-    }
-  };
-
   const closeModal = () => {
     setModalMessage("");
   };
@@ -380,13 +293,6 @@ const Live = () => {
               id="buttonLeaveSession"
               onClick={leaveSession}
               value="Leave session"
-            />
-            <input
-              className={`${styles.btn} ${styles.btnLarge} ${styles.btnSuccess}`}
-              type="button"
-              id="buttonSwitchCamera"
-              onClick={switchCamera}
-              value="Switch Camera"
             />
             <button
               className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
@@ -489,20 +395,20 @@ const Live = () => {
                     </div>
                   ))}
                 </div>
-                <div>
-                  <form onSubmit={sendMessage} className={styles.messageForm}>
-                    <input
-                      type="text"
-                      className={styles.messageInput}
-                      value={message}
-                      onChange={handleMessageChange}
-                      placeholder="채팅을 입력하세요"
-                    />
-                    <button type="submit" className={styles.sendButton}>
-                      전송
-                    </button>
-                  </form>
-                </div>
+              </div>
+              <div className={styles.chatInputBox}>
+                <form onSubmit={sendMessage} className={styles.messageForm}>
+                  <input
+                    type="text"
+                    className={styles.messageInput}
+                    value={message}
+                    onChange={handleMessageChange}
+                    placeholder="채팅을 입력하세요"
+                  />
+                  <button type="submit" className={styles.sendButton}>
+                    전송
+                  </button>
+                </form>
               </div>
             </div>
           ) : null}

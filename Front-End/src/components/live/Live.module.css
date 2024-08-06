@@ -88,22 +88,38 @@
 }
 
 .chatContainer {
-  position: relative;
-  bottom: 0;
-  right: 0;
   width: 100%;
-  height: 400px;
+  height: 600px; /* 필요에 따라 조정 가능 */
   background-color: white;
   border-radius: 15px 15px 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+    /* 아래쪽 그림자 */ 0 -2px 4px rgba(0, 0, 0, 0.3),
+    /* 위쪽 그림자 */ 2px 0 4px rgba(0, 0, 0, 0.3),
+    /* 오른쪽 그림자 */ -2px 0 4px rgba(0, 0, 0, 0.3); /* 왼쪽 그림자 */
+  padding: 20px;
+  margin: 20px;
+  box-sizing: border-box;
 }
 
-.infoGreen {
-  color: #5bb527;
-  font-weight: bold;
+.chatBox {
+  flex: 1; /* 남은 공간을 차지하도록 설정 */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 가능 */
+}
+
+.chatInputBox {
+  display: flex;
+  width: 100%;
+  background-color: #f2f2f2;
+  padding: 5px 10px;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .noticeBox {
@@ -117,6 +133,11 @@
   padding: 10px;
   margin: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.infoGreen {
+  color: #5bb527;
+  font-weight: bold;
 }
 
 .truckImg {
@@ -138,10 +159,9 @@
 .noticeInfo {
   text-align: left;
 }
-.chatBox {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+
+.chatInfo p {
+  text-align: center;
 }
 
 .messageOwner {
@@ -157,14 +177,12 @@
 }
 
 .messageList {
-  flex: 1;
   overflow-y: auto;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   min-width: 300px; /* 최소 너비 */
-  min-height: 200px; /* 최소 높이 */
+  height: 100%;
 }
 
 .message {
@@ -190,9 +208,12 @@
 
 .messageForm {
   display: flex;
+  flex-direction: row;
   height: 50px;
   justify-content: center;
-  width: 100%;
+  align-items: center;
+  width: 95%;
+  gap: 10px;
 }
 
 .messageInput {
@@ -201,9 +222,11 @@
   border: none;
   border-top: 1px solid #ccc;
   border-bottom-left-radius: 10px;
+  width: 70%;
 }
 
 .sendButton {
+  margin: 0;
   padding: 10px 20px;
   border: none;
   background-color: #ffa285;
