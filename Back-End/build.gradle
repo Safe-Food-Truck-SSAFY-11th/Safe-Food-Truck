@@ -62,10 +62,10 @@ dependencies {
 	implementation 'io.openvidu:openvidu-java-client:2.29.0'
 
 	// QueryDsl
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
-	annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.0.0'
-	annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.0.0'
+	implementation 'com.querydsl:querydsl-jpa'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 sourceSets {
@@ -76,25 +76,6 @@ sourceSets {
 	}
 }
 
-task generateQueryDSL(type: JavaCompile) {
-	source = sourceSets.main.java
-	classpath = sourceSets.main.compileClasspath
-	options.annotationProcessorPath = configurations.annotationProcessor
-	destinationDirectory.set(file('build/generated/sources/annotationProcessor/java/main'))
-	options.compilerArgs = [
-			"-proc:only",
-			"-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
-	]
-}
-
-tasks.named('compileJava') {
-	dependsOn tasks.named('generateQueryDSL')
-}
-
-tasks.named('clean') {
-	delete file('build/generated')
-}
-
-tasks.named('generateQueryDSL').configure {
-	outputs.upToDateWhen { false }
+clean {
+	delete file('src/main/generated')
 }
