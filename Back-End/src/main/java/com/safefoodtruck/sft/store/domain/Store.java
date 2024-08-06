@@ -1,39 +1,41 @@
 package com.safefoodtruck.sft.store.domain;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "store")
+@Table(name = "store", indexes = {
+    @Index(name = "idx_store_is_open", columnList = "is_open"),
+    @Index(name = "idx_store_email", columnList = "email")
+})
 @Getter
 @Builder
 @ToString
@@ -59,7 +61,7 @@ public class Store {
     private Integer id;
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "email", referencedColumnName = "email")
     private Member owner;
 
@@ -93,13 +95,16 @@ public class Store {
     @Column(name = "is_open")
     private Boolean isOpen;
 
+    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    private StoreImage storeImage;
 
-   @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
-   private StoreImage storeImage;
-
-    @OneToMany(mappedBy = "store", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "store",fetch = LAZY, cascade = ALL, orphanRemoval = true)
     @Builder.Default
     private List<Menu> menuList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Order> orderList = new ArrayList<>();
 
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
         return Store.builder()
@@ -141,5 +146,10 @@ public class Store {
     public void setStoreImage(StoreImage storeImage) {
         this.storeImage = storeImage;
         storeImage.setStore(this);
+    }
+
+    public void addOrderList(Order order) {
+        orderList.add(order);
+        order.setStore(this);
     }
 }
