@@ -70,6 +70,7 @@ const useFoodTruckStore = create((set) => ({
     }
   },
 
+  // 트럭 찜 하기 함수
   JJimTruck: async (storeId) => {
     try {
 
@@ -79,7 +80,20 @@ const useFoodTruckStore = create((set) => ({
     } catch (error) {
       console.error('찜 등록 실패' , error);
     }
+  },
+
+  // 찜 한 트럭 찜 삭제하기 함수
+  unJJimTruck: async (favoriteId) => {
+    try {
+
+      const response = await axiosInstance.delete(`favorites/${favoriteId}`)
+      console.log(response.data)
+
+    } catch (error) {
+      console.error('찜 삭제 실패' , error)
+    }
   }
+
 }));
 
 export default useFoodTruckStore;
