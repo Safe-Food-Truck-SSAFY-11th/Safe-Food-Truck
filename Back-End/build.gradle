@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.safefoodtruck'
@@ -18,9 +17,6 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	querydsl {
-		extendsFrom compileClasspath
-	}
 }
 
 repositories {
@@ -33,21 +29,21 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// Swagger
+	//Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
-	// JWT
+	//JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	// ModelMapper
-	implementation 'org.modelmapper:modelmapper:2.4.2'
+	//ModelMapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.2'
 
-	// Send e-mail
+	//send e-mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	// p6spy
+	//p6spy
 	implementation 'p6spy:p6spy:3.9.1'
 	implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.0'
 
@@ -62,12 +58,12 @@ dependencies {
 	testImplementation 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// OpenVidu
+	// openvidu
 	implementation 'io.openvidu:openvidu-java-client:2.29.0'
 
 	// QueryDSL
-	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
@@ -76,31 +72,6 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-def querydslDir = 'src/main/generated'
-
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
-
-sourceSets {
-	main {
-		java {
-			srcDirs += querydslDir
-		}
-	}
-}
-
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
-}
-
 clean {
-	delete querydslDir
+	delete file('src/main/generated')
 }
-
-task cleanQuerydslSources(type: Delete) {
-	delete querydslDir
-}
-
-compileJava.dependsOn cleanQuerydslSources
