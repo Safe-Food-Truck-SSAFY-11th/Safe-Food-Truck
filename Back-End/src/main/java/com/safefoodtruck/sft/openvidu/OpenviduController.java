@@ -85,11 +85,10 @@ public class OpenviduController {
         // 연결 생성 및 로그 출력
         try {
             Connection connection = session.createConnection(properties);
+            log.info("Connection token: {}", connection.getToken());
         }catch (OpenViduHttpException e){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        log.info("Connection token: {}", connection.getToken());
-
         // 연결 토큰을 포함한 응답 반환
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
