@@ -88,7 +88,7 @@ task generateQueryDSL(type: JavaCompile) {
 }
 
 tasks.named('compileJava') {
-	finalizedBy(tasks.named('generateQueryDSL'))
+	dependsOn tasks.named('generateQueryDSL')
 }
 
 tasks.named('test') {
@@ -96,7 +96,7 @@ tasks.named('test') {
 }
 
 tasks.named('clean') {
-	delete file('src/main/generated')
+	delete file('build/generated')
 }
 
 tasks.named('generateQueryDSL').configure {
