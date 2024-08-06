@@ -72,8 +72,13 @@ const Regist = () => {
 
     const handleUpload = async () => {
         if (!selectedFile) {
-            formData.memberImage.savedUrl = "",
-            formData.memberImage.savedPath = ""
+            setFormData((prevData) => ({
+                ...prevData,
+                memberImage: {
+                    savedUrl: "",
+                    savedPath: ""
+                }
+            }));
             return;
         }
 
