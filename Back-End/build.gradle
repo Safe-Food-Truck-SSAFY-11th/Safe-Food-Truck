@@ -29,21 +29,21 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	//Swagger
+	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
-	//JWT
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	//ModelMapper
+	// ModelMapper
 	implementation 'org.modelmapper:modelmapper:2.4.2'
 
-	//send e-mail
+	// send e-mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//p6spy
+	// p6spy
 	implementation 'p6spy:p6spy:3.9.1'
 	implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.0'
 
@@ -61,7 +61,7 @@ dependencies {
 	// openvidu
 	implementation 'io.openvidu:openvidu-java-client:2.29.0'
 
-	//QueryDsl
+	// QueryDsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
@@ -97,4 +97,8 @@ tasks.named('test') {
 
 tasks.named('clean') {
 	delete file('src/main/generated')
+}
+
+tasks.named('generateQueryDSL').configure {
+	outputs.upToDateWhen { false }
 }
