@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.common;
+package com.safefoodtruck.sft.common.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
