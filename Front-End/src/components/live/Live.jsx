@@ -213,46 +213,47 @@ const Live = () => {
     setPublisher(undefined);
   };
 
-  const switchCamera = async () => {
-    try {
-      const devices = await OV.current.getDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
+  // // 기능제외
+  // const switchCamera = async () => {
+  //   try {
+  //     const devices = await OV.current.getDevices();
+  //     const videoDevices = devices.filter(
+  //       (device) => device.kind === "videoinput"
+  //     );
 
-      if (videoDevices && videoDevices.length > 1) {
-        // 현재 사용 중인 비디오 장치를 찾습니다.
-        const currentVideoDeviceId = publisher.stream
-          .getMediaStream()
-          .getVideoTracks()[0]
-          .getSettings().deviceId;
-        // 현재 사용 중인 장치가 아닌 다른 장치를 선택합니다.
-        const newVideoDevice = videoDevices.find(
-          (device) => device.deviceId !== currentVideoDeviceId
-        );
+  //     if (videoDevices && videoDevices.length > 1) {
+  //       // 현재 사용 중인 비디오 장치를 찾습니다.
+  //       const currentVideoDeviceId = publisher.stream
+  //         .getMediaStream()
+  //         .getVideoTracks()[0]
+  //         .getSettings().deviceId;
+  //       // 현재 사용 중인 장치가 아닌 다른 장치를 선택합니다.
+  //       const newVideoDevice = videoDevices.find(
+  //         (device) => device.deviceId !== currentVideoDeviceId
+  //       );
 
-        if (newVideoDevice) {
-          const newPublisher = OV.current.initPublisher(undefined, {
-            videoSource: newVideoDevice.deviceId,
-            publishAudio: true,
-            publishVideo: true,
-            mirror: true, // 전면 카메라일 경우 미러링 설정
-          });
+  //       if (newVideoDevice) {
+  //         const newPublisher = OV.current.initPublisher(undefined, {
+  //           videoSource: newVideoDevice.deviceId,
+  //           publishAudio: true,
+  //           publishVideo: true,
+  //           mirror: true, // 전면 카메라일 경우 미러링 설정
+  //         });
 
-          // 기존 퍼블리셔를 언퍼블리시합니다.
-          await session.unpublish(publisher);
-          // 새로운 퍼블리셔를 퍼블리시합니다.
-          await session.publish(newPublisher);
+  //         // 기존 퍼블리셔를 언퍼블리시합니다.
+  //         await session.unpublish(publisher);
+  //         // 새로운 퍼블리셔를 퍼블리시합니다.
+  //         await session.publish(newPublisher);
 
-          // 퍼블리셔를 새로운 퍼블리셔로 업데이트합니다.
-          setPublisher(newPublisher);
-          setMainStreamManager(newPublisher); // 메인 스트림 매니저로 설정
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  //         // 퍼블리셔를 새로운 퍼블리셔로 업데이트합니다.
+  //         setPublisher(newPublisher);
+  //         setMainStreamManager(newPublisher); // 메인 스트림 매니저로 설정
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   const toggleChat = () => {
     setIsChat(!isChat);
