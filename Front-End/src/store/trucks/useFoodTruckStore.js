@@ -68,6 +68,17 @@ const useFoodTruckStore = create((set) => ({
       console.error('찜 개수 조회 실패', error);
       return null;
     }
+  },
+
+  JJimTruck: async (storeId) => {
+    try {
+
+      const response = await axiosInstance.post(`favorites/${storeId}`)
+      console.log(response.data);
+      
+    } catch (error) {
+      console.error('찜 등록 실패' , error);
+    }
   }
 }));
 
