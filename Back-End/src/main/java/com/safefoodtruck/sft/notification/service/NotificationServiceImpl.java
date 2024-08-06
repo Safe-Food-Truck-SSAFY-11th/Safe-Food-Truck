@@ -47,7 +47,9 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
     }
 
+
     @Override
+    @Transactional
     public List<SelectNotificationResponseDto> selectNotifications(String userEmail) {
         Member member = memberRepository.findByEmail(userEmail);
         return member.getNotificationList().stream()
