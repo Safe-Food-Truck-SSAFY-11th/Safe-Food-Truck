@@ -68,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
 		orderMenuRepository.saveAll(orderMenuList);
 		savedOrder.calculateAmount();
+		store.addOrderList(savedOrder);
 
 		return createOrderRegistResponseDto(savedOrder, menuList);
 	}

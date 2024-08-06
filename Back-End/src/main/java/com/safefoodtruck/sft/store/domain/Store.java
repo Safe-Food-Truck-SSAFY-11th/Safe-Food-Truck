@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
@@ -97,6 +98,10 @@ public class Store {
     @Builder.Default
     private List<Menu> menuList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Order> orderList = new ArrayList<>();
+
     public static Store of(Member owner, StoreRegistRequestDto storeRegistRequestDto) {
         return Store.builder()
             .owner(owner)
@@ -137,5 +142,10 @@ public class Store {
     public void setStoreImage(StoreImage storeImage) {
         this.storeImage = storeImage;
         storeImage.setStore(this);
+    }
+
+    public void addOrderList(Order order) {
+        orderList.add(order);
+        order.setStore(this);
     }
 }
