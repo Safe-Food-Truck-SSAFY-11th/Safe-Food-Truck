@@ -9,4 +9,5 @@ public interface NotificationService {
     List<SelectNotificationResponseDto> selectNotifications(String userEmail);
     void deleteNotification(Integer id, String userEmail);
     void favoriteSendNotify(Integer storeId, String storeName);
+    void acceptedSendNotify(String orderEmail, String storeName);
 }

@@ -1,8 +1,10 @@
 package com.safefoodtruck.sft.notification.service;
 
-import com.safefoodtruck.sft.common.util.EventType;
+import static com.safefoodtruck.sft.common.util.EventType.*;
+
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
+import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -89,7 +91,21 @@ public class NotificationServiceImpl implements NotificationService {
                 .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new FavoriteNotificationDto(storeName), "open", EventType.FAVORITE.getEventType());
+                new FavoriteNotificationDto(storeName), "open", FAVORITE.getEventType());
         }
+    }
+
+    @Override
+    public void acceptedSendNotify(String orderEmail, String storeName) {
+        Member member = memberRepository.findByEmail(orderEmail);
+        String info = storeName + " 푸드트럭에서 주문을 수락하였습니다.";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(orderEmail,
+            new AcceptedNotificationDto(storeName), "accepted", ACCEPT.getEventType());
     }
 }
