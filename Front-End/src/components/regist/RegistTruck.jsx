@@ -66,7 +66,7 @@ const RegistTruck = () => {
 
     const handleValNumCheck = async () => {
         try {
-            const response = await axios.post(`http://openapi.foodsafetykorea.go.kr/api/${fskApiKey}/I2856/json/1/5/LCNS_NO=${valNum}`);
+            const response = await axios.post(`https://openapi.foodsafetykorea.go.kr/api/${fskApiKey}/I2856/json/1/5/LCNS_NO=${valNum}`);
             console.log(response.data);
             if (response.status === 200 && response.data.I2856.RESULT.CODE === "INFO-000") {
                 // 인허가 번호 검증 통과
