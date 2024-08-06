@@ -166,7 +166,7 @@ const Live = () => {
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
       console.log(subscriber);
       console.log(newSession.streamManagers);
-      // setMainStreamManager(newSession.publisher); // 메인 스트림 매니저로 설정
+      setMainStreamManager(newSession.streamManagers[0]); // 메인 스트림 매니저로 설정
     });
 
     newSession.on("streamDestroyed", (event) => {
