@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './MapCustomer.module.css';
 import markerImage from 'assets/images/ft_marker.png'; // 이미지 경로 import
 
-function MapCustomer({ foodTrucks }) {
+function MapCustomer({ openFoodTrucks , userLocation }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function MapCustomer({ foodTrucks }) {
         };
 
         // Ensure foodTrucks is processed as an array of storeInfoResponseDtos
-        const locations = foodTrucks.storeInfoResponseDtos || [];
+        const locations = openFoodTrucks.storeInfoResponseDtos || [];
 
         locations.forEach(location => {
           addMarker(location);
@@ -79,8 +79,9 @@ function MapCustomer({ foodTrucks }) {
       console.error('카카오맵 불러오기에 실패하였습니다.');
     };
 
-    console.log(foodTrucks)
-  }, [navigate, foodTrucks]);
+    console.log(openFoodTrucks)
+
+  }, [navigate, openFoodTrucks]);
 
   return (
     <div className={styles.mapContainer}>

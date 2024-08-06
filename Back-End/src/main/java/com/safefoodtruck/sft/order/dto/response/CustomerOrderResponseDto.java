@@ -11,11 +11,12 @@ import com.safefoodtruck.sft.review.dto.ReviewImageDto;
 import lombok.Builder;
 
 @Builder
-public record CustomerOrderResponseDto(Integer orderId, String storeName, Integer amount, List<MenuResponseDto> menuResponseDtos, List<ReviewImageDto> reviewImageDtos) {
+public record CustomerOrderResponseDto(Integer orderId, Integer storeId, String storeName, Integer amount, List<MenuResponseDto> menuResponseDtos, List<ReviewImageDto> reviewImageDtos) {
 
 	public static CustomerOrderResponseDto fromEntity(Order order, List<Menu> menus) {
 		return CustomerOrderResponseDto.builder()
 			.orderId(order.getId())
+			.storeId(order.getStoreId())
 			.storeName(order.getStore().getName())
 			.amount(order.getAmount())
 			.menuResponseDtos(convertMenusToDto(menus))
