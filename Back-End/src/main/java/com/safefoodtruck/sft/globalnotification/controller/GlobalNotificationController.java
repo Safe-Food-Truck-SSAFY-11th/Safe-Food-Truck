@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.globalnotification.controller;
 
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
+import com.safefoodtruck.sft.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class GlobalNotificationController {
 
     private final GlobalNotificationService globalNotificationService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping(value = "/subscribe/{email}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable("email") String email) {

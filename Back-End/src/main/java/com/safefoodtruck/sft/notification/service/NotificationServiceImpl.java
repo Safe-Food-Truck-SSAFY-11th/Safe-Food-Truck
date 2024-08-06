@@ -1,6 +1,9 @@
 package com.safefoodtruck.sft.notification.service;
 
-import com.safefoodtruck.sft.globalnotification.dto.SampleSseResponse;
+import com.safefoodtruck.sft.common.util.EventType;
+import com.safefoodtruck.sft.favorites.domain.Favorites;
+import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
+import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -13,11 +16,17 @@ import com.safefoodtruck.sft.notification.repository.NotificationRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@EnableAsync
+@Slf4j
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
@@ -25,6 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final ModelMapper modelMapper;
 
     private final GlobalNotificationService globalNotificationService;
+    private final FavoritesRepository favoritesRepository;
 
     @Override
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
@@ -35,13 +45,6 @@ public class NotificationServiceImpl implements NotificationService {
             .member(member)
             .info(sendNotificationRequestDto.getInfo())
             .build());
-
-        SampleSseResponse sample = SampleSseResponse.builder()
-            .name("JANG")
-            .message("NEW MESSAGE")
-            .build();
-
-        globalNotificationService.notify(targetEmail, sample, "SSE 테스트 입니당");
     }
 
     @Override
@@ -49,7 +52,8 @@ public class NotificationServiceImpl implements NotificationService {
         Member member = memberRepository.findByEmail(userEmail);
         return member.getNotificationList().stream()
             .map(notification -> {
-                SelectNotificationResponseDto dto = modelMapper.map(notification, SelectNotificationResponseDto.class);
+                SelectNotificationResponseDto dto = modelMapper.map(notification,
+                    SelectNotificationResponseDto.class);
                 dto.setEmail(notification.getMember().getEmail());
                 return dto;
             })
@@ -65,5 +69,25 @@ public class NotificationServiceImpl implements NotificationService {
             throw new NotSameUserException();
         }
         notificationRepository.delete(notification);
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void favoriteSendNotify(Integer storeId, String storeName) {
+        List<Favorites> favoriteList = favoritesRepository.findAllByStoreId(storeId);
+        for (Favorites favorite : favoriteList) {
+            Member member = favorite.getMember();
+            String targetEmail = member.getEmail();
+            String info = storeName + " 푸드트럭이 오픈하였습니다.";
+
+            notificationRepository.save(Notification.builder()
+                .member(member)
+                .info(info)
+                .build());
+
+            globalNotificationService.sendToClient(targetEmail,
+                new FavoriteNotificationDto(storeName), "open", EventType.FAVORITE.getEventType());
+        }
     }
 }
