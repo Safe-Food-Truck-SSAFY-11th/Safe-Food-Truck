@@ -11,6 +11,10 @@ const customerStore = create((set, get) => ({
     gender: '',
     birthdate: '',
     phone: '',
+    memberImage : {
+      savedUrl: 'empty',
+      savedPath: 'empty'
+    }
   },
   passwordMatch: null, // 비밀번호 일치 여부 상태
   emailTouched: false, // 이메일 입력 상태
