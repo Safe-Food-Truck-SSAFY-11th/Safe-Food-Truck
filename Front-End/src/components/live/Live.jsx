@@ -159,26 +159,18 @@ const Live = () => {
       const subscriber = newSession.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
 
-      console.log(
-        event.stream.session.remoteConnections.value.stream.streamManager
-      );
-
       console.log(event.stream.session.remoteConnections);
 
-      const newMainStreamManager = event.stream.session.remoteConnections
-        .map((item) => {
-          if (item.value.stream.hasAudio && item.value.stream.hasVideo) {
-            return item;
-          }
-        })
-        .filter((item) => item !== undefined);
+      const newMainStreamManager = Array.from(
+        event.stream.session.remoteConnections.values()
+      ).filter(
+        (item) =>
+          item && item.stream && item.stream.hasAudio && item.stream.hasVideo
+      );
 
-      console.log(newMainStreamManager);
+      console.log(newMainStreamManager.stream.streamManager);
 
-      // 이미 존재하는 스트림 중 카메라와 마이크를 사용하는 스트림을 메인 스트림 매니저로 설정
-      if (event.stream.stream.audioActive || event.stream.stream.videoActive) {
-        setMainStreamManager(subscriber);
-      }
+      setMainStreamManager(newMainStreamManager);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -198,13 +190,6 @@ const Live = () => {
 
     try {
       await newSession.connect(token, { clientData: myUserName });
-
-      let newPublisher = await OV.current.initPublisherAsync(undefined, {
-        audioSource: false, // 마이크 사용 안 함
-        videoSource: false, // 카메라 사용 안 함
-      });
-
-      setPublisher(newPublisher); // 퍼블리셔 설정
     } catch (error) {
       console.error(
         "There was an error connecting to the session:",
