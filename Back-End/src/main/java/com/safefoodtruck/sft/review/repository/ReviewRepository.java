@@ -18,4 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
 	@Query("SELECT AVG(r.star) FROM Review r WHERE r.order.store.id = :storeId")
 	Double findAverageStarByStoreId(@Param("storeId") Integer storeId);
+
+	@Query("SELECT r.order.store.id, AVG(r.star) FROM Review r GROUP BY r.order.store.id")
+	List<Object[]> findAverageStarsForAllStores();
 }
