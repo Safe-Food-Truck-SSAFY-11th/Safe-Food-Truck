@@ -81,10 +81,10 @@ public class OpenviduController {
         // 연결 속성 생성 및 로그 출력
         ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
         log.info("Connection properties: {}", properties);
-
+        Connection connection = null;
         // 연결 생성 및 로그 출력
         try {
-            Connection connection = session.createConnection(properties);
+            connection = session.createConnection(properties);
             log.info("Connection token: {}", connection.getToken());
         }catch (OpenViduHttpException e){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
