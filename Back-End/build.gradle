@@ -78,7 +78,7 @@ sourceSets {
 
 task generateQueryDSL(type: JavaCompile) {
 	source = sourceSets.main.java
-	classpath = configurations.compileClasspath
+	classpath = sourceSets.main.compileClasspath
 	options.annotationProcessorPath = configurations.annotationProcessor
 	destinationDir = file('build/generated/sources/annotationProcessor/java/main')
 	options.compilerArgs = [
@@ -87,8 +87,9 @@ task generateQueryDSL(type: JavaCompile) {
 	]
 }
 
-compileJava.dependsOn(generateQueryDSL)
-
+tasks.named('compileJava') {
+	finalizedBy(generateQueryDSL)
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
