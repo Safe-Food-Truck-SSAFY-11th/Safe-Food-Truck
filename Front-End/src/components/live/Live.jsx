@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 import { OpenVidu } from "openvidu-browser";
 import React, { useState, useEffect, useRef } from "react";
@@ -48,7 +49,7 @@ const Live = () => {
 
   useEffect(() => {
     if (role === "owner") {
-      createSessionAndJoin(true); // 퍼블리셔로 참여
+      createSessionAndJoin(); // 퍼블리셔로 참여
     } else if (role === "customer" && token) {
       joinExistingSession(token); // 구독자로 참여
     }
@@ -80,7 +81,7 @@ const Live = () => {
   const joinSession = async (e) => {
     e.preventDefault();
     if (role === "owner") {
-      await createSessionAndJoin(true); // 퍼블리셔로 참여
+      await createSessionAndJoin(); // 퍼블리셔로 참여
     } else if (role === "customer") {
       try {
         await isLive(mySessionId); // 세션이 라이브인지 확인하고 구독자로 참여
@@ -92,7 +93,7 @@ const Live = () => {
     }
   };
 
-  const createSessionAndJoin = async (isPublisher) => {
+  const createSessionAndJoin = async () => {
     OV.current = new OpenVidu();
     const newSession = OV.current.initSession();
 
@@ -103,9 +104,7 @@ const Live = () => {
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
 
       // 퍼블리셔 스트림이 생성될 때 메인 스트림 매니저로 설정
-      if (!isPublisher) {
-        setMainStreamManager(subscriber);
-      }
+      setMainStreamManager(subscriber);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -127,26 +126,21 @@ const Live = () => {
       const token = await getToken();
       await newSession.connect(token, { clientData: myUserName });
 
-      if (isPublisher) {
-        let newPublisher = await OV.current.initPublisherAsync(undefined, {
-          audioSource: undefined,
-          videoSource: undefined,
-          publishAudio: true,
-          publishVideo: true,
-          resolution: "640x480",
-          frameRate: 30,
-          insertMode: "APPEND",
-          mirror: true,
-        });
+      let newPublisher = await OV.current.initPublisherAsync(undefined, {
+        audioSource: undefined,
+        videoSource: undefined,
+        publishAudio: true,
+        publishVideo: true,
+        resolution: "640x480",
+        frameRate: 30,
+        insertMode: "APPEND",
+        mirror: true,
+      });
 
-        newSession.publish(newPublisher);
-        setPublisher(newPublisher); // 퍼블리셔 설정
-        setMainStreamManager(newPublisher);
-      }
+      newSession.publish(newPublisher);
+      setPublisher(newPublisher); // 퍼블리셔 설정
+      setMainStreamManager(newPublisher);
     } catch (error) {
-      if (!isPublisher) {
-        throw new Error("Session not found");
-      }
       console.log(
         "There was an error connecting to the session:",
         error.code,
@@ -164,9 +158,27 @@ const Live = () => {
     newSession.on("streamCreated", (event) => {
       const subscriber = newSession.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-      console.log(subscriber);
-      console.log(newSession.streamManagers);
-      setMainStreamManager(newSession.streamManagers[0]); // 메인 스트림 매니저로 설정
+
+      console.log(
+        event.stream.session.remoteConnections.value.stream.streamManager
+      );
+
+      console.log(event.stream.session.remoteConnections);
+
+      const newMainStreamManager = event.stream.session.remoteConnections
+        .map((item) => {
+          if (item.value.stream.hasAudio && item.value.stream.hasVideo) {
+            return item;
+          }
+        })
+        .filter((item) => item !== undefined);
+
+      console.log(newMainStreamManager);
+
+      // 이미 존재하는 스트림 중 카메라와 마이크를 사용하는 스트림을 메인 스트림 매니저로 설정
+      if (event.stream.stream.audioActive || event.stream.stream.videoActive) {
+        setMainStreamManager(subscriber);
+      }
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -186,6 +198,13 @@ const Live = () => {
 
     try {
       await newSession.connect(token, { clientData: myUserName });
+
+      let newPublisher = await OV.current.initPublisherAsync(undefined, {
+        audioSource: false, // 마이크 사용 안 함
+        videoSource: false, // 카메라 사용 안 함
+      });
+
+      setPublisher(newPublisher); // 퍼블리셔 설정
     } catch (error) {
       console.error(
         "There was an error connecting to the session:",
@@ -213,47 +232,39 @@ const Live = () => {
     setPublisher(undefined);
   };
 
-  // // 기능제외
-  // const switchCamera = async () => {
-  //   try {
-  //     const devices = await OV.current.getDevices();
-  //     const videoDevices = devices.filter(
-  //       (device) => device.kind === "videoinput"
-  //     );
+  const switchCamera = async () => {
+    try {
+      const devices = await OV.current.getDevices();
+      const videoDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
 
-  //     if (videoDevices && videoDevices.length > 1) {
-  //       // 현재 사용 중인 비디오 장치를 찾습니다.
-  //       const currentVideoDeviceId = publisher.stream
-  //         .getMediaStream()
-  //         .getVideoTracks()[0]
-  //         .getSettings().deviceId;
-  //       // 현재 사용 중인 장치가 아닌 다른 장치를 선택합니다.
-  //       const newVideoDevice = videoDevices.find(
-  //         (device) => device.deviceId !== currentVideoDeviceId
-  //       );
+      if (videoDevices && videoDevices.length > 1) {
+        const newVideoDevice = videoDevices.filter(
+          (device) =>
+            device.deviceId !==
+            publisher.stream.getMediaStream().getVideoTracks()[0].getSettings()
+              .deviceId
+        );
 
-  //       if (newVideoDevice) {
-  //         const newPublisher = OV.current.initPublisher(undefined, {
-  //           videoSource: newVideoDevice.deviceId,
-  //           publishAudio: true,
-  //           publishVideo: true,
-  //           mirror: true, // 전면 카메라일 경우 미러링 설정
-  //         });
+        if (newVideoDevice.length > 0) {
+          const newPublisher = OV.current.initPublisher(undefined, {
+            videoSource: newVideoDevice[0].deviceId,
+            publishAudio: true,
+            publishVideo: true,
+            mirror: true,
+          });
 
-  //         // 기존 퍼블리셔를 언퍼블리시합니다.
-  //         await session.unpublish(publisher);
-  //         // 새로운 퍼블리셔를 퍼블리시합니다.
-  //         await session.publish(newPublisher);
+          await session.unpublish(publisher);
+          await session.publish(newPublisher);
 
-  //         // 퍼블리셔를 새로운 퍼블리셔로 업데이트합니다.
-  //         setPublisher(newPublisher);
-  //         setMainStreamManager(newPublisher); // 메인 스트림 매니저로 설정
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
+          setPublisher(newPublisher);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const toggleChat = () => {
     setIsChat(!isChat);
