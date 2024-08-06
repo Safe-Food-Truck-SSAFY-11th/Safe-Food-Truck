@@ -18,7 +18,7 @@ spring:
     password: ${google-app-password}
     properties:
       mail.smtp.debug: true
-      mail.smtp.connectiontimeout: 1000 #1초
+      mail.smtp.connectiontimeout: 1000
       mail.starttls.enable: true
       mail.smtp.auth: true
   jpa:
@@ -26,10 +26,11 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        diarect: org.hibernate.dialect.MysqlDialect  # 쿼리의 기준이 되는 데이터베이스 엔진을 설정합니다.
-        show_sql: false  # sql 쿼리를 보여줍니다.
-        format_sql: false  # sql query formatting
-        use_sql_comments: false  # sql 쿼리의 추가정보를 보여줍니다.
+        diarect: org.hibernate.dialect.MysqlDialect
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+    open-in-view: false
 
 springdoc:
   swagger-ui:
