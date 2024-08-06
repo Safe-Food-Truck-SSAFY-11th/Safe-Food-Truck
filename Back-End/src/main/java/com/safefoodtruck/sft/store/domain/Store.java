@@ -15,6 +15,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -31,7 +32,10 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
-@Table(name = "store")
+@Table(name = "store", indexes = {
+    @Index(name = "idx_store_is_open", columnList = "is_open"),
+    @Index(name = "idx_store_email", columnList = "email")
+})
 @Getter
 @Builder
 @ToString
