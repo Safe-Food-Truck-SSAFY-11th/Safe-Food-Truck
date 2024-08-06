@@ -17,6 +17,7 @@ const useFoodTruckStore = create((set) => ({
       set((state) => ({
         selectedTruck: response.data,
       }));
+      return response.data;
     } catch (error) {
       console.error('트럭 가져오는데 실패 했음 ㅠㅜ', error);
     }
