@@ -126,7 +126,7 @@ public class StoreServiceImpl implements StoreService {
 	public boolean updateStoreStatus() {
 		Store store = findLoginStore();
 		store.updateStatus();
-		notificationService.favoriteSendNotify(store.getId(), store.getName());
+		if (store.getIsOpen()) notificationService.favoriteSendNotify(store.getId(), store.getName());
 		return store.getIsOpen();
 	}
 
