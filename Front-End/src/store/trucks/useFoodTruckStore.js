@@ -3,6 +3,7 @@ import axiosInstance from 'utils/axiosInstance'; // axiosInstance 파일의 경�
 
 const useFoodTruckStore = create((set) => ({
   foodTrucks: [],
+  openFoodTrucks: [],
   selectedTruck: null,
   selectedTruckMenus: [], 
 
@@ -45,13 +46,12 @@ const useFoodTruckStore = create((set) => ({
   },
 
   // 영업중인 푸드트럭 요청
-  openFoodTruck: async () => {
+  getOpenFoodTruck: async () => {
     try {
       const response = await axiosInstance.get('/stores/open/all');
-      const openFoodTrucks = response.data;
-
+    
       set((state) => ({
-        foodTrucks: openFoodTrucks
+        openFoodTrucks: response.data,
       }));
     } catch (error) {
       console.error('못 가져 왔어용', error);
