@@ -34,11 +34,9 @@ public class MemberImage {
     private Member member;
 
     @Column(name = "saved_url")
-    @NotNull
     private String savedUrl;
 
     @Column(name = "saved_path")
-    @NotNull
     private String savedPath;
 
     public void updateMemberImage(Member member, MemberImageDto memberImageDto) {
