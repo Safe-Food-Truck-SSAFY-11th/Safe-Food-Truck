@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.notification.service;
 
+import com.safefoodtruck.sft.globalnotification.dto.SampleSseResponse;
+import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.notification.domain.Notification;
@@ -22,15 +24,24 @@ public class NotificationServiceImpl implements NotificationService {
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
+    private final GlobalNotificationService globalNotificationService;
+
     @Override
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
-
-        Member member = memberRepository.findByEmail(sendNotificationRequestDto.getTargetEmail());
+        String targetEmail = sendNotificationRequestDto.getTargetEmail();
+        Member member = memberRepository.findByEmail(targetEmail);
 
         notificationRepository.save(Notification.builder()
             .member(member)
             .info(sendNotificationRequestDto.getInfo())
             .build());
+
+        SampleSseResponse sample = SampleSseResponse.builder()
+            .name("JANG")
+            .message("NEW MESSAGE")
+            .build();
+
+        globalNotificationService.notify(targetEmail, sample, "SSE 테스트 입니당");
     }
 
     @Override
