@@ -246,6 +246,7 @@ const Live = () => {
 
           // 퍼블리셔를 새로운 퍼블리셔로 업데이트합니다.
           setPublisher(newPublisher);
+          setMainStreamManager(newPublisher); // 메인 스트림 매니저로 설정
         }
       }
     } catch (e) {
