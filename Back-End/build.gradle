@@ -69,13 +69,25 @@ dependencies {
 }
 
 sourceSets {
-	main {
-		java {
-			srcDirs = ['src/main/java', 'build/generated/sources/annotationProcessor/java/main']
-		}
-	}
+	main.java.srcDirs += 'src/main/java'
+	main.java.srcDirs += 'build/generated/sources/annotationProcessor/java/main'
 }
 
+def querydslDir = 'build/generated/sources/annotationProcessor/java/main'
+
+task generateQueryDSL(type: JavaCompile) {
+	source = sourceSets.main.java
+	classpath = sourceSets.main.compileClasspath
+	options.annotationProcessorPath = configurations.annotationProcessor
+	destinationDirectory.set(file(querydslDir))
+	options.compilerArgs = [
+			"-proc:only",
+			"-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+	]
+}
+
+compileJava.dependsOn generateQueryDSL
+
 clean {
-	delete file('src/main/generated')
+	delete file(querydslDir)
 }
