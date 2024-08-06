@@ -8,14 +8,19 @@ import styles from './MainCustomer.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
 
 function MainCustomer() {
+  
   const [view, setView] = useState('map'); // 'map' or 'list'
+
   const [selectedType, setSelectedType] = useState('all'); // 선택된 타입 상태
-  const foodTrucks = useFoodTruckStore((state) => state.foodTrucks);
-  const openFoodTruck = useFoodTruckStore((state) => state.openFoodTruck);
+
+  const { openFoodTrucks , getOpenFoodTruck  } = useFoodTruckStore();
+
   const nickname = sessionStorage.getItem('nickname');
+
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -32,8 +37,10 @@ function MainCustomer() {
       console.error('Geolocation is not supported by this browser.');
     }
 
-    openFoodTruck();
-  }, [openFoodTruck]);
+    getOpenFoodTruck();
+  }, []);
+
+  console.log(openFoodTrucks)
 
   const handleSelectType = (type) => {
     setSelectedType(type);
@@ -63,9 +70,9 @@ function MainCustomer() {
       </div>
 
       {view === 'map' ? (
-        <MapCustomer foodTrucks={foodTrucks} />
+        <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
       ) : (
-        userLocation && <FoodTruckList foodTrucks={foodTrucks} userLocation={userLocation} />
+        <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
       )}
     </>
   );
