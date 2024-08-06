@@ -1,14 +1,10 @@
 package com.safefoodtruck.sft.review.domain;
 
-import static jakarta.persistence.FetchType.*;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.review.dto.ReviewImageDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,13 +13,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Table(name = "review_image")
 @Entity
@@ -46,11 +43,9 @@ public class ReviewImage {
 	@JoinColumn(name = "review_id")
 	private Review review;
 
-	@NotNull
 	@Column(name = "saved_url")
 	private String savedUrl;
 
-	@NotNull
 	@Column(name = "saved_path")
 	private String savedPath;
 

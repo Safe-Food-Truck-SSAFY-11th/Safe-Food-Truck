@@ -4,8 +4,10 @@ import FoodTruckItem from './FoodTruckItem';
 import styles from './FoodTruckList.module.css';
 import axios from 'axios';
 
-function FoodTruckList({ foodTrucks, userLocation }) {
-  const trucks = foodTrucks.storeInfoResponseDtos || [];
+function FoodTruckList({ openFoodTrucks, userLocation }) {
+
+  const trucks = openFoodTrucks.storeInfoResponseDtos || [];
+  
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate(); // useNavigate 훅 사용
 

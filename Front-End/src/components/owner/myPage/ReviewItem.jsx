@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
-import revImg from '../../../assets/images/truck-img.png'; // 임시 리뷰 이미지
+import React, { useState, useEffect } from 'react';
+import revImg from 'assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
 import onwerReplyAI from '../../../gemini/gemini.js'
+import useTruckStore from "store/users/owner/truckStore";
+import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
   const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
-  
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const { submitReply } = useOwnerReviewStore();
+
+  useEffect(() => {
+    const fetchData = () => {
+      fetchTruckInfo();
+    };
+
+    fetchData();
+  }, [fetchTruckInfo]);
+
   const owName = review.replies;
 
   function displayStars(rating) {
@@ -37,17 +50,24 @@ function ReviewItem({ review }) {
   };
 
   const handleReplySubmit = () => {
-    // 여기에 입력한 내용 처리하는 로직 추가
+    // 답글 등록 api 연결
+    const replyData = {
+      reviewId: review.id,
+      content: reply
+    };
+    submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
   };
 
   const handleAIBtnClick = async () => {
-    console.log('AI 초안 작성 버튼 클릭했어여');
-    const aiText = await onwerReplyAI();
+    setIsLoading(true); // 로딩 상태를 true로 설정
+    // name, offDay, storeType, description, menuListResponseDto. review.content
+    const aiText = await onwerReplyAI(truckInfo.name, truckInfo.offDay, truckInfo.storeType, truckInfo.description, truckInfo.menuListResponseDto, review.content);
     setAiReply(aiText); // AI 텍스트 상태 업데이트
     setReply(aiText); // AI 텍스트를 input 필드에 설정
-  }
+    setIsLoading(false); // 로딩 상태를 false로 설정
+  };
 
   return (
     <div className={reviewItemClass}>
@@ -58,21 +78,21 @@ function ReviewItem({ review }) {
       <hr className={styles.separator} />
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
-          <h4>{review.nickname} 님 {displayStars(review.star)}</h4>
+          <h4><span className={styles.customerName}>{review.nickname}</span> 님 {displayStars(review.star)}</h4>
         </div>
         <p>{review.content}</p>
-        {review.replies && review.replies.content && (
+        {review.replyResponseDto && review.replyResponseDto.content && (
           <>
             <hr className={styles.separator} />
             <div className={styles.reply}>
-              <h4>{owName} 사장님</h4>
-              <p>{review.replies.content}</p>
+              <h4><span className={styles.ownerName}>{truckInfo.name}</span> 사장님</h4>
+              <p>{review.replyResponseDto.content}</p>
             </div>
           </>
         )}
         {showReplyInput && (
           <div className={styles.replyInputContainer}>
-            <input
+            <textarea
               type="text"
               value={reply}
               onChange={handleReplyChange}
@@ -82,8 +102,8 @@ function ReviewItem({ review }) {
             <button onClick={handleReplySubmit} className={styles.submitButton}>
               등록
             </button>
-            <button className={styles.AIBtn} onClick={handleAIBtnClick}>
-              AI 초안 작성
+            <button className={styles.AIBtn} onClick={handleAIBtnClick} disabled={isLoading}>
+              {isLoading ? <span className={styles.spinner}></span> : 'AI 초안 작성'}
             </button>
           </div>
         )}

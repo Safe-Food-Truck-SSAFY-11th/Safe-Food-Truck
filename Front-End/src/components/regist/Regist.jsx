@@ -22,8 +22,8 @@ const Regist = () => {
         phoneNumber: '',
         businessNumber: null,
         memberImage : {
-            savedUrl: '',
-            savedPath: ''
+            savedUrl: 'empty',
+            savedPath: 'empty'
         }
     });
 
@@ -72,7 +72,6 @@ const Regist = () => {
 
     const handleUpload = async () => {
         if (!selectedFile) {
-            alert('Please select a file');
             return;
         }
 

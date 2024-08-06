@@ -9,7 +9,7 @@ const MyReviewItem = ({ review, onDelete }) => {
         <span><button className={styles.deleteButton} onClick={onDelete}>✖</button></span>
       </div>
       <div className={styles.reviewText}>
-        <h4>용훈 님 ★ {review.rating}</h4>
+        <h4>{review.nickname} 님 ★ {review.rating}</h4>
         <hr className={styles.hrLine}/>
         <p>{review.comment}</p>
         <p>{review.date}</p>

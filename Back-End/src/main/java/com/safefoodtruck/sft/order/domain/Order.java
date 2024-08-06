@@ -15,8 +15,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
-import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.review.domain.Review;
+import com.safefoodtruck.sft.store.domain.Store;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +27,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -57,6 +60,7 @@ public class Order {
     @JoinColumn(name = "email")
     private Member customer;
 
+    @Setter
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
@@ -84,6 +88,9 @@ public class Order {
     @Column(name = "order_time", columnDefinition = "TIMESTAMP")
     LocalDateTime orderTime;
 
+    @Column(name = "amount")
+    private Integer amount;
+
     @JsonProperty("email")
     public String getCustomerEmail() {
         return customer != null ? customer.getEmail() : null;
@@ -97,6 +104,14 @@ public class Order {
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);
+        calculateAmount();
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+	public void calculateAmount() {
+        this.amount = orderMenuList.stream().mapToInt(orderMenu -> orderMenu.getMenu().getPrice() * orderMenu.getCount()).sum();
     }
 
     public void acceptOrder() {

@@ -1,24 +1,18 @@
 package com.safefoodtruck.sft.store.service;
 
-import com.safefoodtruck.sft.review.repository.ReviewRepository;
-import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
+import com.safefoodtruck.sft.review.repository.ReviewRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.domain.StoreImage;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
@@ -27,9 +21,13 @@ import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -52,7 +50,7 @@ public class StoreServiceImpl implements StoreService {
 		store.setOwner(owner);
 		Store savedStore = storeRepository.save(store);
 
-		if(storeRegistRequestDto.storeImageDto() != null) {
+		if (storeRegistRequestDto.storeImageDto() != null) {
 			StoreImage storeImage = StoreImage.builder()
 				.store(savedStore)
 				.savedUrl(storeRegistRequestDto.storeImageDto().savedUrl())
@@ -139,23 +137,21 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public StoreInfoListResponseDto findOpenStores() {
-		List<Store> openStores = storeRepository.findByIsOpen(true);
+		List<Store> openStores = storeRepository.findAllOpenStores();
 		log.info("Open stores count: {}", openStores.size());
-		List<StoreInfoResponseDto> storeInfoResponseDtos = new ArrayList<>();
 
-		for (Store openStore : openStores) {
-			try {
-				Double averageStar = findStoreAverageStar(openStore.getId());
+		List<Object[]> averageStarsData = reviewRepository.findAverageStarsForAllStores();
+		Map<Integer, Double> averageStarsMap = averageStarsData.stream()
+			.collect(Collectors.toMap(data -> (Integer) data[0], data -> (Double) data[1]));
+
+		List<StoreInfoResponseDto> storeInfoResponseDtos = openStores.stream()
+			.map(openStore -> {
+				Double averageStar = averageStarsMap.getOrDefault(openStore.getId(), 0.0);
 				log.info("Store ID: {}, Average Star: {}", openStore.getId(), averageStar);
 
-				StoreInfoResponseDto storeInfoResponseDto = StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
-				storeInfoResponseDtos.add(storeInfoResponseDto);
-
-				log.info("Store info: {}", storeInfoResponseDto.toString());
-			} catch (Exception e) {
-				log.error("Error processing store with ID {}: {}", openStore.getId(), e.getMessage());
-			}
-		}
+				return StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
+			})
+			.collect(Collectors.toList());
 
 		return StoreInfoListResponseDto.builder()
 			.count(storeInfoResponseDtos.size())

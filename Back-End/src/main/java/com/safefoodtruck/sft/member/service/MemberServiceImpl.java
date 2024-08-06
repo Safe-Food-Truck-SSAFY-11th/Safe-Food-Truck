@@ -23,6 +23,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
     private final RandomPasswordService randomPasswordService;
     private final MemberImageRepository memberImageRepository;
 
+    @Transactional
     @Override
     public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
         if (signUpMethod.equals("common")) {

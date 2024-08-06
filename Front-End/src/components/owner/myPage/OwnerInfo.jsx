@@ -1,26 +1,46 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./OwnerInfo.module.css";
-import logo from "assets/images/sft-logo.png";
+import userStore from "store/users/userStore";
 import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
+import profile_img from "assets/images/profile_image.png"
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
+  const { fetchUser } = userStore();
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { getFoodTruckLikes } = useFoodTruckStore();
 
   const [likesCount, setLikesCount] = useState(0);
+  const [userInfo, setUserInfo] = useState({});
+
+  const imageUrl = userInfo?.memberImage?.savedUrl === 'empty' ? profile_img : userInfo?.memberImage?.savedUrl;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTruckData = async () => {
       await fetchTruckInfo();
-      const likes = await getFoodTruckLikes(truckInfo.storeId);
-      setLikesCount(likes);
     };
+    fetchTruckData();
+  }, [fetchTruckInfo]);
 
-    fetchData();
-  }, [fetchTruckInfo, getFoodTruckLikes, truckInfo.storeId]);
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (truckInfo.storeId) {
+        const likes = await getFoodTruckLikes(truckInfo.storeId);
+        setLikesCount(likes);
+      }
+    };
+    fetchLikes();
+  }, [truckInfo.storeId, getFoodTruckLikes]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await fetchUser();
+      setUserInfo(data);
+    };
+    fetchUserData();
+  }, [fetchUser]);
 
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
@@ -28,7 +48,7 @@ const OwnerInfo = () => {
 
   const handleTruckReviewClick = () => {
     navigate("/ownerReview");
-  }
+  };
 
   const handleTruckUpdateClick = () => {
     navigate("/manageTruck");
@@ -40,8 +60,8 @@ const OwnerInfo = () => {
 
   // 데이터
   const ownerName = sessionStorage.getItem("nickname");
-  const truckName = truckInfo.name;
-  const weeklyIncome = truckInfo.offDay;
+  const truckName = truckInfo?.name;
+  const weeklyIncome = truckInfo?.offDay;
 
   // 근무 요일 변환
   const getDayString = (income) => {
@@ -53,13 +73,13 @@ const OwnerInfo = () => {
       .join(" ");
   };
 
-  const formattedIncome = getDayString(weeklyIncome);
+  const formattedIncome = weeklyIncome ? getDayString(weeklyIncome) : "";
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <img src={logo} alt="Truck Owner" className={styles.image} />
+          <img src={imageUrl} alt="Truck Owner" className={styles.image} />
           <button className={styles.profileButton} onClick={handleUpdateClick}>
             내 정보 수정
           </button>

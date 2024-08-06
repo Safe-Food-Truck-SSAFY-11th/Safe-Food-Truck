@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './CustomerInfo.module.css';
+import profile_img from "assets/images/profile_image.png"
 
 const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
     navigate('/customerUpdate', { state: { memberInfo } });
   };
 
+  const imageUrl = memberInfo?.memberImage?.savedUrl === 'empty' ? profile_img : memberInfo?.memberImage?.savedUrl;
+
   if (!memberInfo) {
     return <div>Loading...</div>;
   }
@@ -16,8 +19,7 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
   return (
     <div className={styles.container}>
       <div className={styles.profileSection}>
-        {/* 여기서 유저 프로필 이미지를 가져오는 로직 작성해야 합니당 ㅠ */}
-        <img alt="Profile" className={styles.profileImage} /> 
+        <img src={imageUrl} alt="Profile" className={styles.profileImage} /> 
         <button className={styles.profileButton} onClick={handleProfileEdit}>
           내 정보 수정
         </button>
