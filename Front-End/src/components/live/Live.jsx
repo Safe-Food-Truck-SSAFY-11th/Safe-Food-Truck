@@ -10,6 +10,7 @@ import truckImg from "assets/images/storeImg.png";
 import Modal from "./Modal";
 import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
+import useTruckStore from "store/users/owner/truckStore";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -24,7 +25,7 @@ const Live = () => {
     sessionStorage.getItem("nickname")
   );
   const [session, setSession] = useState(undefined);
-  const [mainStreamManager, setMainStreamManager] = useState(undefined);
+  const mainStreamManager = useRef(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
   const [isChat, setIsChat] = useState(false);
@@ -34,6 +35,9 @@ const Live = () => {
     ceo: "푸바오",
     truck: "울퉁불퉁",
   });
+
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+
   const [storeNotice, setStoreNotice] = useState(
     "월 수 금 15:00~22:00 운영합니다 \n비오면 안나가요 \n07.19(금) 팥붕 안팔아요"
   );
@@ -48,6 +52,7 @@ const Live = () => {
   }, []);
 
   useEffect(() => {
+    console.log(truckInfo);
     if (role === "owner") {
       createSessionAndJoin(); // 퍼블리셔로 참여
     } else if (role === "customer" && token) {
@@ -69,7 +74,8 @@ const Live = () => {
 
   const handleMainVideoStream = (stream) => {
     if (mainStreamManager !== stream) {
-      setMainStreamManager(stream);
+      mainStreamManager.current = stream;
+      // setMainStreamManager(stream);
     }
   };
 
@@ -104,7 +110,8 @@ const Live = () => {
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
 
       // 퍼블리셔 스트림이 생성될 때 메인 스트림 매니저로 설정
-      setMainStreamManager(subscriber);
+      mainStreamManager.current = subscriber;
+      // setMainStreamManager(subscriber);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -139,7 +146,8 @@ const Live = () => {
 
       newSession.publish(newPublisher);
       setPublisher(newPublisher); // 퍼블리셔 설정
-      setMainStreamManager(newPublisher);
+      mainStreamManager.current = newPublisher;
+      // setMainStreamManager(newPublisher);
     } catch (error) {
       console.log(
         "There was an error connecting to the session:",
@@ -168,9 +176,11 @@ const Live = () => {
           item && item.stream && item.stream.hasAudio && item.stream.hasVideo
       );
 
-      console.log(newMainStreamManager.stream.streamManager);
+      console.log(newMainStreamManager);
+      console.log(newMainStreamManager[0].stream.streamManager);
 
-      setMainStreamManager(newMainStreamManager);
+      mainStreamManager.current = newMainStreamManager[0].stream.streamManager;
+      // setMainStreamManager(newMainStreamManager[0].stream.streamManager);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -205,6 +215,8 @@ const Live = () => {
         session.unpublish(publisher);
       }
       session.disconnect();
+      console.log(session);
+      console.log(subscribers);
       session.off();
     }
 
@@ -213,7 +225,8 @@ const Live = () => {
     setSubscribers([]);
     setMySessionId("no session");
     setMyUserName(sessionStorage.getItem("nickname"));
-    setMainStreamManager(undefined);
+    mainStreamManager.current = undefined;
+    // setMainStreamManager(undefined);
     setPublisher(undefined);
   };
 
@@ -390,11 +403,31 @@ const Live = () => {
               공지사항 작성
             </button>
 
-            {mainStreamManager !== undefined ? (
+            {mainStreamManager.current !== undefined ? (
               <div className={styles.mainVideo}>
-                <UserVideoComponent streamManager={mainStreamManager} />
+                <div className={styles.videoId}>
+                  {
+                    JSON.parse(mainStreamManager.current.stream.connection.data)
+                      .clientData
+                  }
+                </div>
+                <UserVideoComponent streamManager={mainStreamManager.current} />
               </div>
             ) : null}
+
+            {/* 
+            {subscribers.map((sub, i) => (
+              <div
+                key={i}
+                className={styles.mainVideo}
+                onClick={handleMainVideoStream(sub)}
+              >
+                <div className={styles.videoId}>
+                  {JSON.parse(sub.stream.connection.data).clientData}
+                </div>
+                <UserVideoComponent streamManager={sub} />
+              </div>
+            ))} */}
           </div>
 
           {isChat ? (
