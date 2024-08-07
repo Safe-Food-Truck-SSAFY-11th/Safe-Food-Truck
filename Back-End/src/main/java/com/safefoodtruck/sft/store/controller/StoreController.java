@@ -70,25 +70,63 @@ public class StoreController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "특정 점포 조회", description = "점포를 조회할 때 사용하는 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "점포조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "200", description = "점포 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreFindResponseDto> findStore(@PathVariable int storeId) {
+    public ResponseEntity<StoreFindResponseDto> findStore(@PathVariable("storeId") Integer storeId) {
         StoreFindResponseDto storeFindResponseDto = storeService.findStoreById(storeId);
         return new ResponseEntity<>(storeFindResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("{storeId}/menus")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "해당 가게 메뉴 전체 조회", description = "해당 가게의 메뉴 전체를 조회할 때 사용하는 API")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "해당 점포 메뉴 전체 조회", description = "해당 점포의 메뉴 전체를 조회할 때 사용하는 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "해당 가게 메뉴 전체 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "200", description = "해당 점포 메뉴 전체 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable Integer storeId) {
+    public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable("storeId") Integer storeId) {
         MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
         return new ResponseEntity<>(allMenu, HttpStatus.OK);
     }
+
+    @PatchMapping("notice")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "내 점포 공지사항 등록/수정", description = "내 점포 공지사항 등록/수정할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<String> updateStoreNotice(@RequestBody String notice) {
+        String updatedNotice = storeService.updateStoreNotice(notice);
+        return new ResponseEntity<>(updatedNotice, HttpStatus.OK);
+    }
+
+    @GetMapping("{storeId}/notice")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "특정 점포 공지사항 조회", description = "특정 점포 공지사항 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "특정 점포 공지사항 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<String> findStoreNotice(@PathVariable("storeId") Integer storeId) {
+        String storeNotice = storeService.findStoreNotice(storeId);
+        return new ResponseEntity<>(storeNotice, HttpStatus.OK);
+    }
+
+    @PatchMapping("notice/delete")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "내 점포 공지사항 삭제", description = "내 점포 공지사항 삭제할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "내 점포 공지사항 삭제에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<String> deleteStoreNotice() {
+        String notice = storeService.deleteStoreNotice();
+        return new ResponseEntity<>(notice, HttpStatus.OK);
+    }
+
+
 
     @PatchMapping
     @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")

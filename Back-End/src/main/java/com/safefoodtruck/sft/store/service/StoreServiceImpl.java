@@ -166,8 +166,32 @@ public class StoreServiceImpl implements StoreService {
 		StoreLocationRequestDto storeLocationRequestDto) {
 		Store store = findLoginStore();
 		store.updateStoreLocation(storeLocationRequestDto);
+		storeRepository.save(store);
 
 		return StoreLocationResponseDto.fromEntity(store);
+	}
+
+	@Override
+	public String updateStoreNotice(String notice) {
+		Store store = findLoginStore();
+		store.updateNotice(notice);
+		storeRepository.save(store);
+
+		return store.getNotice();
+	}
+
+	@Override
+	public String findStoreNotice(Integer storeId) {
+		return storeRepository.findNoticeById(storeId);
+	}
+
+	@Override
+	public String deleteStoreNotice() {
+		Store store = findLoginStore();
+		store.deleteNotice();
+		storeRepository.save(store);
+
+		return store.getNotice();
 	}
 
 	public Store findLoginStore() {

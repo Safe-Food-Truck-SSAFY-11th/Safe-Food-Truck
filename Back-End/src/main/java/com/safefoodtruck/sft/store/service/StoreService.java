@@ -33,4 +33,10 @@ public interface StoreService {
 	StoreLocationResponseDto updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
 
 	Double findStoreAverageStar(Integer storeId);
+
+	String updateStoreNotice(String notice);
+
+	String findStoreNotice(Integer storeId);
+
+	String deleteStoreNotice();
 }
