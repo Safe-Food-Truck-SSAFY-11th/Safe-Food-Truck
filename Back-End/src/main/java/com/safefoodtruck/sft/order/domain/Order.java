@@ -120,7 +120,7 @@ public class Order {
         this.status = REJECTED.get();
     }
 
-    public void completeOrder() {
+    private void completeOrder() {
         this.cookingStatus = COMPLETED.get();
     }
 
