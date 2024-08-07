@@ -1,16 +1,19 @@
 package com.safefoodtruck.sft.review.dto.response;
 
 import com.safefoodtruck.sft.reply.dto.response.ReplyResponseDto;
-import java.util.List;
-
 import com.safefoodtruck.sft.review.domain.Review;
-import com.safefoodtruck.sft.review.domain.ReviewImage;
-
+import com.safefoodtruck.sft.review.dto.ReviewImageDto;
+import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 
 @Builder
-public record ReviewResponseDto(Integer id, String email, String nickname, Integer storeId, Boolean isVisible, Integer star, String content, List<ReviewImage> reviewImages, ReplyResponseDto replyResponseDto) {
+public record ReviewResponseDto(Integer id, String email, String nickname, Integer storeId, Boolean isVisible, Integer star, String content, List<ReviewImageDto> reviewImageDtos, Optional<ReplyResponseDto> replyResponseDto) {
 	public static ReviewResponseDto fromEntity(Review review, ReplyResponseDto replyResponseDto) {
+		List<ReviewImageDto> reviewImageDtos = review.getReviewImages().stream()
+			.map(ReviewImageDto::fromEntity)
+			.toList();
+
 		return ReviewResponseDto.builder()
 			.id(review.getId())
 			.email(review.getCustomer().getEmail())
@@ -19,8 +22,8 @@ public record ReviewResponseDto(Integer id, String email, String nickname, Integ
 			.isVisible(review.getIsVisible())
 			.star(review.getStar())
 			.content(review.getContent())
-			.reviewImages(review.getReviewImages())
-			.replyResponseDto(replyResponseDto)
+			.reviewImageDtos(reviewImageDtos)
+			.replyResponseDto(Optional.ofNullable(replyResponseDto))
 			.build();
 	}
 }

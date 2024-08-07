@@ -1,20 +1,13 @@
 package com.safefoodtruck.sft.review.domain;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.order.domain.Order;
+import com.safefoodtruck.sft.reply.domain.Reply;
 import com.safefoodtruck.sft.review.dto.request.ReviewRegistRequestDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,11 +19,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "review")
@@ -48,16 +46,18 @@ public class Review {
 	private Integer id;
 
 	@NotNull
-	@JsonIgnore
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "email")
 	private Member customer;
 
 	@NotNull
-	@JsonIgnore
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "order_id")
 	private Order order;
+
+	@Setter
+	@OneToOne(mappedBy = "review", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+	private Reply reply;
 
 	@NotNull
 	@Column(name = "is_visible")
