@@ -19,28 +19,28 @@ services:
 
   nginx-react1:
     container_name: nginx-react1
-    image: nginx:alpine
+    image: nginx
     volumes:
       - /home/ubuntu/templates-react:/etc/nginx/templates
-      - /home/ubuntu/nginx-react/logs:/var/log/nginx
+      - /home/ubuntu/templates-react/nginx-react1/logs:/var/log/nginx
     networks:
       - app-network
 
   nginx-react2:
     container_name: nginx-react2
-    image: nginx:alpine
+    image: nginx
     volumes:
       - /home/ubuntu/templates-react:/etc/nginx/templates
-      - /home/ubuntu/nginx-react/logs:/var/log/nginx
+      - /home/ubuntu/templates-react/nginx-react2/logs:/var/log/nginx
     networks:
       - app-network
 
   nginx-react3:
     container_name: nginx-react3
-    image: nginx:alpine
+    image: nginx
     volumes:
       - /home/ubuntu/templates-react:/etc/nginx/templates
-      - /home/ubuntu/nginx-react/logs:/var/log/nginx
+      - /home/ubuntu/templates-react/nginx-react3/logs:/var/log/nginx
     networks:
       - app-network
 
