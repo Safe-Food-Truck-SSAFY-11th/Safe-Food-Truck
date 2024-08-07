@@ -1,13 +1,5 @@
 package com.safefoodtruck.sft.store.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -25,14 +17,20 @@ import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -167,8 +165,32 @@ public class StoreServiceImpl implements StoreService {
 		StoreLocationRequestDto storeLocationRequestDto) {
 		Store store = findLoginStore();
 		store.updateStoreLocation(storeLocationRequestDto);
+		storeRepository.save(store);
 
 		return StoreLocationResponseDto.fromEntity(store);
+	}
+
+	@Override
+	public StoreNoticeResponseDto updateStoreNotice(String notice) {
+		Store store = findLoginStore();
+		store.updateNotice(notice);
+		storeRepository.save(store);
+
+		return StoreNoticeResponseDto.fromEntity(store);
+	}
+
+	@Override
+	public StoreNoticeResponseDto findStoreNotice(Integer storeId) {
+		return StoreNoticeResponseDto.fromEntity(findLoginStore());
+	}
+
+	@Override
+	public StoreNoticeResponseDto deleteStoreNotice() {
+		Store store = findLoginStore();
+		store.deleteNotice();
+		storeRepository.save(store);
+
+		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
 	public Store findLoginStore() {
