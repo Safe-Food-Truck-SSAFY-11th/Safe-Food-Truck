@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import styles from "./ManageTruck.module.css";
 import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
-import useMenuStore from "store/users/owner/menuStore";
+import AWS from 'aws-sdk';
 
 const ManageTruck = () => {
   const navigate = useNavigate();
+  const [truckImage, setTruckImage] = useState(''); 
 
   const {
     updateForm,
     setForm,
-    setImage,
     toggleWorkingDay,
     categories,
     fetchTruckInfo,
@@ -24,15 +24,9 @@ const ManageTruck = () => {
     setForm(name, value);
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const imageURL = URL.createObjectURL(e.target.files[0]);
-      setImage(imageURL);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    await handleUpload();
     updateTruck();
     alert("수정이 완료되었습니다.");
     navigate('/mypageOwner');
@@ -49,7 +43,62 @@ const ManageTruck = () => {
 
   useEffect(() => {
     fetchTruckInfo();
+    setTruckImage(truckInfo.storeImageDto.savedUrl);
   }, []);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        setTruckImage(event.target.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+        return;
+    }
+
+    // AWS S3 설정
+    AWS.config.update({
+        accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+        region: `${process.env.REACT_APP_AWS_REGION}`,
+    });
+
+    const s3 = new AWS.S3();
+
+    // 업로드할 파일 정보 설정
+    const uploadParams = {
+        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+        Key: `stores/${updateForm.name}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+        Body: selectedFile,
+    };
+
+    // S3에 파일 업로드
+    return new Promise((resolve, reject) => {
+      s3.upload(uploadParams, (err, data) => {
+        if (err) {
+          console.error('Error uploading file:', err);
+          reject(err);
+        } else {
+          console.log('File uploaded successfully. ETag:', data.ETag);
+          updateForm.storeImageDto.savedUrl = data.Location;
+          updateForm.storeImageDto.savedPath = data.Key;
+
+          console.log('DATA = ', data);
+          console.log('FORM = ', updateForm);
+
+          // 업로드 완료 후 resolve 호출
+          resolve(data);
+        }
+      });
+    });
+  };
 
   return (
     <>
@@ -57,14 +106,14 @@ const ManageTruck = () => {
         <h1 className={styles.title}>푸드트럭 정보 수정</h1>
         <div className={styles.imageUpload}>
           <img
-            src={updateForm.image || imageIcon}
+            src={truckImage === 'empty' ? imageIcon : truckImage}
             alt="이미지 업로드"
             className={styles.uploadedImage}
           />
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageChange}
+            onChange={handleFileChange}
             className={styles.imageInput}
             id="fileInput" // 파일 입력 요소에 id 설정
             style={{ display: "none" }} // 입력 요소 숨기기

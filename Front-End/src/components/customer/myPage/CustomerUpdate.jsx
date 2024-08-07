@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './CustomerUpdate.module.css';
 import customerStore from 'store/users/customer/customerStore';
+import profile_img from "assets/images/profile_image.png"
+import AWS from 'aws-sdk';
 
 const CustomerUpdate = () => {
   const location = useLocation();
@@ -28,6 +30,7 @@ const CustomerUpdate = () => {
       setForm('gender', memberInfo.gender);
       setForm('birth', memberInfo.birth);
       setForm('phoneNumber', memberInfo.phoneNumber);
+      setForm('memberImage', memberInfo.memberImage);
     }
   }, [memberInfo, setForm]);
 
@@ -43,6 +46,8 @@ const CustomerUpdate = () => {
         const user = await getMemberInfo();
         setForm(user);
         setInitialNickname(user.nickname);
+        const imageUrl = user?.memberImage?.savedUrl === 'empty' ? profile_img : user?.memberImage?.savedUrl;
+        setProfileImage(imageUrl);
       } catch (error) {
         console.error('회원 정보 가져오기 실패')
       }
@@ -70,19 +75,9 @@ const CustomerUpdate = () => {
     checkNickname(form.nickname);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfileImage(reader.result);
-    };
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    await handleUpload();
   
     const updatedData = {
       email: form.email,
@@ -91,7 +86,7 @@ const CustomerUpdate = () => {
       gender: form.gender,
       birthdate: form.birthdate,
       phoneNumber: form.phoneNumber,
-      profileImage,
+      memberImage: form.memberImage
     };
   
     console.log(updatedData);
@@ -103,22 +98,71 @@ const CustomerUpdate = () => {
   };
   const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        setProfileImage(event.target.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+        return;
+    }
+
+    // AWS S3 설정
+    AWS.config.update({
+        accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+        region: `${process.env.REACT_APP_AWS_REGION}`,
+    });
+
+    const s3 = new AWS.S3();
+
+    // 업로드할 파일 정보 설정
+    const uploadParams = {
+        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+        Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+        Body: selectedFile,
+    };
+
+    // S3에 파일 업로드
+    return new Promise((resolve, reject) => {
+      s3.upload(uploadParams, (err, data) => {
+        if (err) {
+          console.error('Error uploading file:', err);
+          reject(err);
+        } else {
+          console.log('File uploaded successfully. ETag:', data.ETag);
+          form.memberImage.savedUrl = data.Location;
+          form.memberImage.savedPath = data.Key;
+
+          console.log('DATA = ', data);
+          console.log('FORM = ', form);
+
+          // 업로드 완료 후 resolve 호출
+          resolve(data);
+        }
+      });
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
       <div className={styles.imageContainer}>
         <div className={styles.imagePlaceholder}>
-          {profileImage ? <img src={profileImage} alt="Profile" /> : (
-            <div>
-              <img src="path/to/your/icon.png" alt="Icon" style={{ width: '24px', height: '24px' }} />
-              <p>image</p>
-            </div>
-          )}
+          <img src={profileImage} alt="Profile" />
           <input
             type="file"
             accept="image/*"
             style={{ display: 'none' }}
             id="profileImageUpload"
-            onChange={handleImageUpload}
+            onChange={handleFileChange}
           />
           <label htmlFor="profileImageUpload" className={styles.uploadButton}>수정</label>
         </div>

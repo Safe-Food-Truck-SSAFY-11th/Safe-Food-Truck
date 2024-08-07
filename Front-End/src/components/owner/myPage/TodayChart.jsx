@@ -1,25 +1,33 @@
-import React from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import styles from "./Chart.module.css";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TodayChart = () => {
+const TodayChart = ({ weeklySales }) => {
+  if (weeklySales.length === 0) {
+    return <div>Loading...</div>;
+  }
+
+  // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
+  const today = new Date().toISOString().split('T')[0];
+
+  // 오늘 날짜와 일치하는 데이터를 찾기
+  const todaySales = weeklySales.find(sale => sale.date === today);
+
+  if (!todaySales) {
+    return <div>오늘의 판매 데이터가 없습니다.</div>;
+  }
+
+  // 메뉴 데이터를 count 기준으로 내림차순 정렬
+  const sortedMenuDetails = todaySales.menuDetails.sort((a, b) => b.count - a.count);
+
   const todayData = {
-    labels: [
-      "슈크림 붕어빵",
-      "피자 붕어빵",
-      "치즈 붕어빵",
-      "팥 붕어빵",
-      "민트 붕어빵",
-      "초코 붕어빵",
-      "와사비 붕어빵",
-    ],
+    labels: sortedMenuDetails.map(menu => menu.menuName),
     datasets: [
       {
         label: "판매량",
-        data: [10, 7, 5, 4, 1, 1, 1],
+        data: sortedMenuDetails.map(menu => menu.count),
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)",
           "rgba(54, 162, 235, 0.6)",
@@ -27,7 +35,10 @@ const TodayChart = () => {
           "rgba(75, 192, 192, 0.6)",
           "rgba(153, 102, 255, 0.6)",
           "rgba(255, 159, 64, 0.6)",
-          "rgba(255, 205, 86, 0.6)",
+          "rgba(255, 230, 86, 0.6)",
+          "rgba(255, 190, 70, 0.6)",
+          "rgba(120, 200, 150, 0.6)",
+          "rgba(100, 100, 255, 0.6)"
         ],
         borderColor: [
           "rgba(255, 99, 132, 1)",
@@ -36,23 +47,60 @@ const TodayChart = () => {
           "rgba(75, 192, 192, 1)",
           "rgba(153, 102, 255, 1)",
           "rgba(255, 159, 64, 1)",
-          "rgba(255, 205, 86, 1)",
+          "rgba(255, 230, 86, 1)",
+          "rgba(255, 190, 70, 1)",
+          "rgba(120, 200, 150, 1)",
+          "rgba(100, 100, 255, 1)"
         ],
         borderWidth: 1,
-      },
-    ],
+      }
+    ]
+  };
+
+  const totalSalesCount = todayData.datasets[0].data.reduce((acc, curr) => acc + curr, 0);
+
+  const options = {
+    plugins: {
+      legend: {
+        labels: {
+          generateLabels: (chart) => {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const meta = chart.getDatasetMeta(0);
+                const style = meta.controller.getStyle(i);
+
+                return {
+                  text: `${label} (${data.datasets[0].data[i]})`,
+                  fillStyle: style.backgroundColor,
+                  strokeStyle: style.borderColor,
+                  lineWidth: style.borderWidth,
+                  hidden: !chart.getDataVisibility(i),
+                  index: i
+                };
+              });
+            }
+            return [];
+          }
+        }
+      }
+    }
   };
 
   return (
     <div className={styles.container}>
-      <p>
-        오늘의 매출은 <strong>100,000</strong>원 이에요
-      </p>
-      <p>
-        <strong>25</strong>개의 주문을 받았어요
-      </p>
-      <h3>오늘 팔린 메뉴</h3>
-      <Pie data={todayData} />
+      <div>
+        <p>
+          오늘의 매출은 <strong>{todaySales.totalAmount}</strong>원 이에요
+        </p>
+        <p>
+          <strong>{totalSalesCount}</strong>개의 주문을 받았어요
+        </p>
+      </div>
+      <div>
+        <h3>오늘 팔린 메뉴</h3>
+        <Pie data={todayData} options={options} />
+      </div>
     </div>
   );
 };

@@ -4,8 +4,10 @@ import FoodTruckItem from './FoodTruckItem';
 import styles from './FoodTruckList.module.css';
 import axios from 'axios';
 
-function FoodTruckList({ foodTrucks, userLocation }) {
-  const trucks = foodTrucks.storeInfoResponseDtos || [];
+function FoodTruckList({ openFoodTrucks, userLocation }) {
+
+  const trucks = openFoodTrucks.storeInfoResponseDtos || [];
+  
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -40,7 +42,7 @@ function FoodTruckList({ foodTrucks, userLocation }) {
 
   // 좌표 토대로 도로명 주소 변환하는 함수 입니당!!
   const getAddressFromCoordinates = async (lat, lon) => {
-    const apiKey = process.env.REACT_APP_KAKAO_COORDINATE_KEY;
+    const apiKey = process.env.REACT_APP_KAKAO_REST_API_KEY;
     const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lon}&y=${lat}`;
     try {
       const response = await axios.get(url, {

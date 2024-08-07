@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.order.service;
 
 import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 
+import com.safefoodtruck.sft.notification.service.NotificationService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final OrderMenuRepository orderMenuRepository;
 	private final MenuRepository menuRepository;
+	private final NotificationService notificationService;
 
 	@Override
 	public OrderRegistResponseDto order(final OrderRegistRequestDto orderRegistRequestDto) {
@@ -68,7 +70,9 @@ public class OrderServiceImpl implements OrderService {
 
 		orderMenuRepository.saveAll(orderMenuList);
 		savedOrder.calculateAmount();
+		store.addOrderList(savedOrder);
 
+		notificationService.orderedSendNotify(store.getOwner().getEmail());
 		return createOrderRegistResponseDto(savedOrder, menuList);
 	}
 
@@ -138,6 +142,12 @@ public class OrderServiceImpl implements OrderService {
 			throw new AlreadyProcessedOrderException();
 		}
 		order.acceptOrder();
+
+		if (order.getStatus().equals(ACCEPTED.get())) {
+			String orderEmail = order.getCustomerEmail();
+			String storeName = order.getStore().getName();
+			notificationService.acceptedSendNotify(orderEmail, storeName);
+		}
 		return order.getStatus();
 	}
 
@@ -148,6 +158,11 @@ public class OrderServiceImpl implements OrderService {
 			throw new AlreadyProcessedOrderException();
 		}
 		order.rejectOrder();
+		if (order.getStatus().equals(REJECTED.get())) {
+			String orderEmail = order.getCustomerEmail();
+			String storeName = order.getStore().getName();
+			notificationService.rejectedSendNotify(orderEmail, storeName);
+		}
 		return order.getStatus();
 	}
 
@@ -158,6 +173,11 @@ public class OrderServiceImpl implements OrderService {
 			throw new AlreadyCompletedOrderException();
 		}
 		order.completeOrder();
+		if (order.getCookingStatus().equals(COMPLETED.get())) {
+			String orderEmail = order.getCustomerEmail();
+			String storeName = order.getStore().getName();
+			notificationService.completedSendNotify(orderEmail, storeName);
+		}
 		return order.getCookingStatus();
 	}
 

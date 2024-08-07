@@ -1,16 +1,21 @@
-@import './sharedStyles.module.css'; /* 공유 스타일 임포트 */
-
 .header {
-  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  text-align: left;
   margin-bottom: 20px;
 }
 
-.header h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.jjimButton {
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-.header p {
-  margin: 5px 0;
+.jjimButton:hover {
+  background-color: #ff4757;
 }
