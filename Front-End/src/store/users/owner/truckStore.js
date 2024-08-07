@@ -13,15 +13,19 @@ const useTruckStore = create(
         safetyLicenseNumber: "",
         isOpen: 0,
         storeImageDto: {
-          savedUrl: "",
-          savedPath: "",
-        },
+          savedUrl: "empty",
+          savedPath: "empty"
+        }
       },
       updateForm: {
         name: "",
         storeType: "",
         offDay: "0000000",
         description: "",
+        storeImageDto: {
+          savedUrl: "empty",
+          savedPath: "empty"
+        }
       },
       //가입폼 세팅
       setRegistForm: (name, value) =>
@@ -122,15 +126,11 @@ const useTruckStore = create(
       updateTruck: async () => {
         try {
           const state = get();
-          const response = await axiosInstance.patch(
-            "/stores",
-            state.updateForm,
-            {
-              headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-              },
-            }
-          );
+          const response = await axiosInstance.patch("/stores", state.updateForm, {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          });
           set({ truckInfo: response.data });
           return response.data; // 성공적으로 응답을 반환
         } catch (error) {
@@ -149,9 +149,8 @@ const useTruckStore = create(
           // 요청이 성공하면 truckInfo 상태를 업데이트
           set({ truckInfo: response.data });
           // 요청이 성공하면 updateForm 상태를 업데이트
-          const { name, storeType, offDay, description, isOpen } =
-            response.data;
-          set({ updateForm: { name, storeType, offDay, description, isOpen } });
+          const { name, storeType, offDay, description, isOpen, storeImageDto } = response.data;
+          set({ updateForm: { name, storeType, offDay, description, isOpen, storeImageDto } });
         } catch (error) {
           console.error("트럭 정보 가져오기 실패", error);
         }
@@ -174,8 +173,8 @@ const useTruckStore = create(
       changeLocation: async (latitude, longitude) => {
         try {
           const response = await axiosInstance.patch("stores/location", {
-            latitude: latitude,
-            longitude: longitude,
+            'latitude': latitude,
+            'longitude': longitude,
           });
           console.log("점포 위치 변경 성공", response.data);
           set((state) => ({
@@ -200,7 +199,8 @@ const useTruckStore = create(
           offDay: state.truckInfo.offDay,
           description: state.truckInfo.description,
           isOpen: state.truckInfo.isOpen,
-        },
+          storeImageDto: state.truckInfo.storeImageDto,
+        }
       }),
       getStorage: () => sessionStorage,
     }

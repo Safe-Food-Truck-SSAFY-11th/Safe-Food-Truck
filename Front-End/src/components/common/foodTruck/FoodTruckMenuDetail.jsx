@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState , useParams } from 'react';
 import useCartStore from '../../../store/users/customer/cartStore';
 import styles from './FoodTruckMenuDetail.module.css';
 
 function FoodTruckMenuDetail({ menu }) {
+  const menuId = useParams();
   const [quantity, setQuantity] = useState(1);
   const addItemToCart = useCartStore(state => state.addItemToCart);
 

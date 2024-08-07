@@ -6,6 +6,7 @@ import markerImage from 'assets/images/ft_marker.png'; // 이미지 경로 impor
 function MapCustomer({ openFoodTrucks , userLocation }) {
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const apiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
     const script = document.createElement('script');
@@ -22,16 +23,27 @@ function MapCustomer({ openFoodTrucks , userLocation }) {
       window.kakao.maps.load(() => {
         const container = document.getElementById('map'); // 지도를 표시할 div
         const options = {
-          center: new window.kakao.maps.LatLng(36.3559, 127.3319), // 대전광역시 유성구의 중심 좌표
-          level: 3, // 지도의 확대 레벨
+
+          // geolocation 으로 계산해서 전달된 userLocation의 위도 경도 체크해서 중앙 좌표로 사용
+          center: new window.kakao.maps.LatLng(userLocation.latitude, userLocation.longitude),
+
+          // 지도의 확대 레벨
+          level: 3,
+
         };
 
         const map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
 
-        const markerImageSize = new window.kakao.maps.Size(45, 45); // 아이콘 이미지 크기
+        // 마커 크기 설정
+        const markerImageSize = new window.kakao.maps.Size(45, 45);
+
         const markerImageOptions = {
-          offset: new window.kakao.maps.Point(22.5, 45) // 아이콘 이미지의 좌표
+
+          // 마커 위치 설정
+          offset: new window.kakao.maps.Point(22.5, 45)
+
         };
+
 
         const markerImageObj = new window.kakao.maps.MarkerImage(
           markerImage,
@@ -39,6 +51,7 @@ function MapCustomer({ openFoodTrucks , userLocation }) {
           markerImageOptions
         );
 
+        // 마커 표시하는 로직
         const addMarker = (location) => {
           const latitude = parseFloat(location.latitude);
           const longitude = parseFloat(location.longitude);
@@ -66,7 +79,7 @@ function MapCustomer({ openFoodTrucks , userLocation }) {
           });
         };
 
-        // Ensure foodTrucks is processed as an array of storeInfoResponseDtos
+        // 푸드트럭들의 위치를 담아서 마커 추가하는 함수 반복문으로 돌림
         const locations = openFoodTrucks.storeInfoResponseDtos || [];
 
         locations.forEach(location => {
