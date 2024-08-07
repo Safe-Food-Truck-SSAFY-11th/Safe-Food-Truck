@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './OwnerUpdate.module.css';
 import useUserStore from 'store/users/userStore';
+import profile_img from "assets/images/profile_image.png"
+import AWS from 'aws-sdk';
 
 const OwnerUpdate = () => {
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const OwnerUpdate = () => {
   const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [form, setForm] = useState({});
-  const [profileImage, setProfileImage] = useState('assets/images/sft-logo.png'); // 기본 프로필 이미지 경로
+  const [profileImage, setProfileImage] = useState(''); 
   const [initialNickname, setInitialNickname] = useState('');
 
   useEffect(() => {
@@ -24,6 +26,8 @@ const OwnerUpdate = () => {
         const user = await fetchUser();
         setForm(user);
         setInitialNickname(user.nickname);
+        const imageUrl = user?.memberImage?.savedUrl === 'empty' ? profile_img : user?.memberImage?.savedUrl;
+        setProfileImage(imageUrl);
       } catch (error) {
         console.error('회원 정보 가져오기 실패')
       }
@@ -59,31 +63,81 @@ const OwnerUpdate = () => {
     checkNickname(form.nickname);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleUpload();
     updateUser(form);
     alert('정보가 성공적으로 업데이트되었습니다.');
     navigate('/mypageOwner');
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
         setProfileImage(event.target.result);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
+    };
+    reader.readAsDataURL(e.target.files[0]);
   };
 
-  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
+  const handleUpload = async () => {
+    if (!selectedFile) {
+        return;
+    }
+
+    // AWS S3 설정
+    AWS.config.update({
+        accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+        secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+        region: `${process.env.REACT_APP_AWS_REGION}`,
+    });
+
+    const s3 = new AWS.S3();
+
+    // 업로드할 파일 정보 설정
+    const uploadParams = {
+        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+        Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+        Body: selectedFile,
+    };
+
+    // S3에 파일 업로드
+    return new Promise((resolve, reject) => {
+      s3.upload(uploadParams, (err, data) => {
+        if (err) {
+          console.error('Error uploading file:', err);
+          reject(err);
+        } else {
+          console.log('File uploaded successfully. ETag:', data.ETag);
+          form.memberImage.savedUrl = data.Location;
+          form.memberImage.savedPath = data.Key;
+
+          console.log('DATA = ', data);
+          console.log('FORM = ', form);
+
+          // 업로드 완료 후 resolve 호출
+          resolve(data);
+        }
+      });
+    });
+  };
+
+  const handleGoBack = () => {
+    navigate('/mypageOwner');
+  }
 
   return (
     <div className={styles.container}>
       <h2>내 정보 수정</h2>
       <div className={styles.profileContainer} onClick={() => document.getElementById('profileImageInput').click()}>
         <img src={profileImage} alt="Profile" />
+        <input type="file" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
       </div>
-      <input type="file" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputContainer}>
           <label>이메일</label>
@@ -138,7 +192,7 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.buttons}>
           <button type="submit" className={styles.submitButton} disabled={!isFormValid}>수정하기</button>
-          <button type="button" className={styles.cancelButton}>취소하기</button>
+          <button type="button" className={styles.cancelButton} onClick={handleGoBack}>취소하기</button>
         </div>
       </form>
     </div>

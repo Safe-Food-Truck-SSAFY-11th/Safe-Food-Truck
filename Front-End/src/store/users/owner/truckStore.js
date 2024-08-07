@@ -13,8 +13,8 @@ const useTruckStore = create(
         safetyLicenseNumber: "",
         isOpen: 0,
         storeImageDto: {
-          savedUrl: "",
-          savedPath: ""
+          savedUrl: "empty",
+          savedPath: "empty"
         }
       },
       updateForm: {
@@ -22,6 +22,10 @@ const useTruckStore = create(
         storeType: "",
         offDay: "0000000",
         description: "",
+        storeImageDto: {
+          savedUrl: "empty",
+          savedPath: "empty"
+        }
       },
       //가입폼 세팅
       setRegistForm: (name, value) =>
@@ -145,8 +149,8 @@ const useTruckStore = create(
           // 요청이 성공하면 truckInfo 상태를 업데이트
           set({ truckInfo: response.data });
           // 요청이 성공하면 updateForm 상태를 업데이트
-          const { name, storeType, offDay, description, isOpen } = response.data;
-          set({ updateForm: { name, storeType, offDay, description, isOpen } });
+          const { name, storeType, offDay, description, storeImageDto } = response.data;
+          set({ updateForm: { name, storeType, offDay, description, storeImageDto } });
         } catch (error) {
           console.error("트럭 정보 가져오기 실패", error);
         }
@@ -190,7 +194,8 @@ const useTruckStore = create(
           storeType: state.truckInfo.storeType,
           offDay: state.truckInfo.offDay,
           description: state.truckInfo.description,
-          isOpen: state.truckInfo.isOpen
+          isOpen: state.truckInfo.isOpen,
+          storeImageDto: state.truckInfo.storeImageDto,
         }
       }),
       getStorage: () => sessionStorage,

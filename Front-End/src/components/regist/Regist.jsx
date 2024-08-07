@@ -41,8 +41,8 @@ const Regist = () => {
     const handleRegisterClick = async () => {
         try {
             await handleUpload();
-            const currentRole = formData.businessNumber ? 'owner' : 'customer';
-            const roleSpecificData = currentRole === 'customer' ? {} : { businessNumber: formData.businessNumber };
+            const currentRole = isGuest ? 'customer' : 'owner';
+            const roleSpecificData = currentRole === 'customer' ? { businessNumber: null} : { businessNumber: formData.businessNumber };
             const token = await registerUser('common', { ...formData, ...roleSpecificData });
             // 회원가입 후 스토리지에 바로 토큰 담아주기
             if (token) {
