@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import useReviewStore from 'store/reviews/useReviewStore';
+import React, { useState } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import useReviewStore from '../../../store/reviews/useReviewStore';
 import StarRating from './StarRating';
 import styles from './CreateReview.module.css';
 import AWS from 'aws-sdk';
 
-const CreateReview = () => {
+const CreateReview = ({ memberInfo }) => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { memberInfo } = location.state || {};
   const { currentReview, updateCurrentReview, createReview } = useReviewStore();
+
   const [reviewImages, setReviewImages] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -30,19 +29,19 @@ const CreateReview = () => {
 
   const handleUpload = async () => {
     if (!selectedFiles.length) {
-      return [];
+      return null; // 사진이 없을 경우 null 반환
     }
 
     AWS.config.update({
-      accessKeyId: process.env.REACT_APP_AWS_S3_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_AWS_S3_ACCESS_KEY,
-      region: process.env.REACT_APP_AWS_REGION,
+      accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+      secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+      region: `${process.env.REACT_APP_AWS_REGION}`,
     });
 
     const s3 = new AWS.S3();
     const uploadPromises = selectedFiles.map(file => {
       const uploadParams = {
-        Bucket: process.env.REACT_APP_AWS_BUCKET_NAME,
+        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
         Key: `members/${memberInfo.email}/${file.name}`,
         Body: file,
       };
@@ -65,27 +64,31 @@ const CreateReview = () => {
 
     try {
       const uploadResults = await Promise.all(uploadPromises);
-      setUploadedFiles(uploadResults);
-      console.log('Uploaded files:', uploadResults);
       return uploadResults;
     } catch (err) {
       console.error('Error uploading files:', err);
-      return [];
     }
   };
 
   const handleSubmit = async () => {
     const uploadedFiles = await handleUpload();
 
+    if (uploadedFiles && uploadedFiles.length > 0) {
+      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
+      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
+    } else {
+      // 사진이 없을 경우 기본값 설정
+      updateCurrentReview('savedUrl', 'empty');
+      updateCurrentReview('savedPath', 'empty');
+    }
+
     const newReview = {
       orderId: parseInt(orderId, 10),
       isVisible: currentReview.is_visible === 1,
       star: currentReview.rating,
       content: currentReview.content,
-      reviewImageDtos: uploadedFiles,
+      reviewImageDtos: uploadedFiles || [], // 업로드된 파일이 없으면 빈 배열
     };
-
-    console.log(currentReview);
 
     try {
       await createReview(newReview);
@@ -117,19 +120,18 @@ const CreateReview = () => {
       </div>
 
       <p>음식은 어떠셨나요?</p>
-
       <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value * 2)} />
 
       <input
         type="text"
-        value={memberInfo?.nickname || '닉네임'}
+        value={memberInfo.nickname}
         readOnly
         placeholder="닉네임"
         className={styles.input}
       />
 
       <textarea
-        value={currentReview?.content || ''}
+        value={currentReview.content}
         onChange={(e) => updateCurrentReview('content', e.target.value)}
         placeholder="리뷰 내용"
         className={styles.textarea}
@@ -139,7 +141,7 @@ const CreateReview = () => {
         <label>
           <input
             type="checkbox"
-            checked={currentReview?.is_visible === 1}
+            checked={currentReview.is_visible === 1}
             onChange={handleCheckboxChange}
           />
           사장님에게만 보이게
@@ -152,13 +154,6 @@ const CreateReview = () => {
         <button className={styles.backButton} onClick={() => window.history.back()}>
           돌아가기
         </button>
-      </div>
-      <div>
-        {reviewImages.map((image, index) => (
-          <div key={index}>
-            <p>{image.original_filename}</p>
-          </div>
-        ))}
       </div>
     </div>
   );
