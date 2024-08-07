@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.store.domain.Store;
 
@@ -92,6 +93,18 @@ public class Order {
 
     @Column(name = "amount")
     private Integer amount;
+
+    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer,
+        Store store) {
+        return Order.builder()
+            .customer(customer)
+            .store(store)
+            .request(orderRegistRequestDto.request())
+            .status(PENDING.get())
+            .cookingStatus(PREPARING.get())
+            .orderTime(LocalDateTime.now())
+            .build();
+    }
 
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
