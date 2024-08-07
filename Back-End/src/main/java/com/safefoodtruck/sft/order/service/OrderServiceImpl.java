@@ -2,7 +2,6 @@ package com.safefoodtruck.sft.order.service;
 
 import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 
-import com.safefoodtruck.sft.notification.service.NotificationService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
+import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
@@ -141,29 +141,36 @@ public class OrderServiceImpl implements OrderService {
 		if (order.isInValidRequest()) {
 			throw new AlreadyProcessedOrderException();
 		}
-		order.acceptOrder();
 
-		if (order.getStatus().equals(ACCEPTED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
+		order.acceptOrder();
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getStatus().equals(ACCEPTED.get())) {
+			String orderEmail = savedOrder.getCustomer().getEmail();
+			String storeName = savedOrder.getStore().getName();
 			notificationService.acceptedSendNotify(orderEmail, storeName);
 		}
-		return order.getStatus();
+
+		return savedOrder.getStatus();
 	}
 
 	@Override
 	public String rejectOrder(Integer orderId) {
 		Order order = getOrder(orderId);
+
 		if (order.isInValidRequest()) {
 			throw new AlreadyProcessedOrderException();
 		}
+
 		order.rejectOrder();
-		if (order.getStatus().equals(REJECTED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
-			notificationService.rejectedSendNotify(orderEmail, storeName);
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getStatus().equals(REJECTED.get())) {
+			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
+			String orderStoreName = savedOrder.getStore().getName();
+			notificationService.rejectedSendNotify(orderCustomerEmail, orderStoreName);
 		}
-		return order.getStatus();
+		return savedOrder.getStatus();
 	}
 
 	@Override
@@ -172,13 +179,16 @@ public class OrderServiceImpl implements OrderService {
 		if (order.isAlreadyCompletedOrder()) {
 			throw new AlreadyCompletedOrderException();
 		}
-		order.completeOrder();
-		if (order.getCookingStatus().equals(COMPLETED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
-			notificationService.completedSendNotify(orderEmail, storeName);
+
+		order.complete();
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getCookingStatus().equals(COMPLETED.get())) {
+			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
+			String orderStoreName = savedOrder.getStore().getName();
+			notificationService.completedSendNotify(orderCustomerEmail, orderStoreName);
 		}
-		return order.getCookingStatus();
+		return savedOrder.getCookingStatus();
 	}
 
 	private Order getOrder(Integer orderId) {
