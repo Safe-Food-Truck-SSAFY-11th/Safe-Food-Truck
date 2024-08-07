@@ -17,17 +17,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     public List<Store> findAllOpenStores() {
         QStore store = QStore.store;
 
-        return jpaQueryFactory.selectFrom(store).leftJoin(store.storeImage).fetchJoin()
-            .leftJoin(store.menuList).fetchJoin().leftJoin(store.owner).fetchJoin()
-            .where(store.isOpen.isTrue()).fetch();
-    }
-
-    @Override
-    public String findNoticeById(Integer storeId) {
-        QStore store = QStore.store;
-        return jpaQueryFactory.select(store.notice)
-            .from(store)
-            .where(store.id.eq((storeId)))
-            .fetchOne();
+        return jpaQueryFactory.selectFrom(store)
+            .leftJoin(store.storeImage).fetchJoin()
+            .where(store.isOpen.isTrue())
+            .fetch();
     }
 }

@@ -140,7 +140,6 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public StoreInfoListResponseDto findOpenStores() {
 		List<Store> openStores = storeRepository.findAllOpenStores();
-		log.info("Open stores count: {}", openStores.size());
 
 		List<Object[]> averageStarsData = reviewRepository.findAverageStarsForAllStores();
 		Map<Integer, Double> averageStarsMap = averageStarsData.stream()
