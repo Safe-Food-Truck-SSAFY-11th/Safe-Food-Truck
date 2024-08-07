@@ -130,7 +130,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreNoticeResponseDto> deleteStoreNotice() {
         StoreNoticeResponseDto storeNoticeResponseDto = storeService.deleteStoreNotice();
-        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.NO_CONTENT);
     }
 
 
