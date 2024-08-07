@@ -13,7 +13,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.store.domain.Store;
@@ -82,29 +81,27 @@ public class Order {
     private String status;
 
     @Column(name = "cooking_status")
-    @ColumnDefault("'preparing'")
+    @ColumnDefault("'waiting'")
     private String cookingStatus;
 
     @Column(name = "order_time", columnDefinition = "TIMESTAMP")
     LocalDateTime orderTime;
 
+    @Column(name = "complete_time", columnDefinition = "TIMESTAMP")
+    LocalDateTime completeTime;
+
     @Column(name = "amount")
     private Integer amount;
-
-    @JsonProperty("email")
-    public String getCustomerEmail() {
-        return customer != null ? customer.getEmail() : null;
-    }
-
-    @JsonProperty("store_id")
-    public Integer getStoreId() {
-        return store != null ? store.getId() : null;
-    }
 
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);
         calculateAmount();
+    }
+
+    public void complete() {
+        completeOrder();
+        completeTime = LocalDateTime.now();
     }
 
     @PostLoad
@@ -116,6 +113,7 @@ public class Order {
 
     public void acceptOrder() {
         this.status = ACCEPTED.get();
+        this.cookingStatus = PREPARING.get();
     }
 
     public void rejectOrder() {
