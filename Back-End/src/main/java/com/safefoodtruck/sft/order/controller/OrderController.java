@@ -25,6 +25,7 @@ import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -125,6 +126,26 @@ public class OrderController {
     public ResponseEntity<CustomerOrderListResponseDto> findCustomerOrderList() {
         CustomerOrderListResponseDto customerOrderList = orderService.findCustomerOrderList();
         return new ResponseEntity<>(customerOrderList, OK);
+    }
+
+    @GetMapping("/customers/pattern")
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
+    @Operation(summary = "주간 소비 패턴 조회", description = "주간 소비 패턴 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주간 소비 패턴 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<WeeklyCustomerOrderSummaryResponseDto> getWeeklyOrderSummary() {
+        WeeklyCustomerOrderSummaryResponseDto weeklyCustomerOrderSummary = orderService.getWeeklyCustomerOrderSummary();
+        return new ResponseEntity<>(weeklyCustomerOrderSummary, OK);
     }
 
     @GetMapping("owners")

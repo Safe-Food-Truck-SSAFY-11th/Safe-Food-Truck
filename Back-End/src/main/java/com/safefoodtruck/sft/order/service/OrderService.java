@@ -8,6 +8,7 @@ import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 
 public interface OrderService {
     OrderRegistResponseDto registOrder(OrderRegistRequestDto orderRegistRequestDto);
@@ -18,4 +19,5 @@ public interface OrderService {
     OwnerOrderListResponseDto findStoreOrderList();
     OrderDetailResponseDto findOrderDetail(Integer orderId);
     List<OrderSummaryResponseDto> getWeeklyOrderSummary();
+    WeeklyCustomerOrderSummaryResponseDto getWeeklyCustomerOrderSummary();
 }

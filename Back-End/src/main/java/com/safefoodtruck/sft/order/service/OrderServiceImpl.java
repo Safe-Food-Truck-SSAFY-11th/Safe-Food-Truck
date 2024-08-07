@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.order.service;
 import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -255,5 +257,11 @@ public class OrderServiceImpl implements OrderService {
 			.toList();
 	}
 
-
+	@Transactional(readOnly = true)
+	@Override
+	public WeeklyCustomerOrderSummaryResponseDto getWeeklyCustomerOrderSummary() {
+		String email = MemberInfo.getEmail();
+		LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+		return orderRepository.findWeeklyCustomerOrderSummary(email, weekAgo);
+	}
 }
