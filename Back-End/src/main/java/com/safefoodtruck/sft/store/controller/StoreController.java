@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.store.controller;
 
+import static com.safefoodtruck.sft.store.domain.StoreMessage.DEFAULT_STORE_NOTICE;
+
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
@@ -8,6 +10,7 @@ import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
@@ -97,9 +100,9 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<String> updateStoreNotice(@RequestBody String notice) {
-        String updatedNotice = storeService.updateStoreNotice(notice);
-        return new ResponseEntity<>(updatedNotice, HttpStatus.OK);
+    public ResponseEntity<StoreNoticeResponseDto> updateStoreNotice(@RequestBody String notice) {
+        StoreNoticeResponseDto storeNoticeResponseDto = storeService.updateStoreNotice(notice);
+        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("{storeId}/notice")
@@ -107,11 +110,15 @@ public class StoreController {
     @Operation(summary = "특정 점포 공지사항 조회", description = "특정 점포 공지사항 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "특정 점포 공지사항 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "204", description = "특정 점포에 등록된 공지사항이 없습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<String> findStoreNotice(@PathVariable("storeId") Integer storeId) {
-        String storeNotice = storeService.findStoreNotice(storeId);
-        return new ResponseEntity<>(storeNotice, HttpStatus.OK);
+    public ResponseEntity<StoreNoticeResponseDto> findStoreNotice(@PathVariable("storeId") Integer storeId) {
+        StoreNoticeResponseDto storeNoticeResponseDto = storeService.findStoreNotice(storeId);
+        if(storeNoticeResponseDto.notice().equals(DEFAULT_STORE_NOTICE)) {
+            return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
     @PatchMapping("notice/delete")
@@ -121,9 +128,9 @@ public class StoreController {
         @ApiResponse(responseCode = "204", description = "내 점포 공지사항 삭제에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<String> deleteStoreNotice() {
-        String notice = storeService.deleteStoreNotice();
-        return new ResponseEntity<>(notice, HttpStatus.OK);
+    public ResponseEntity<StoreNoticeResponseDto> deleteStoreNotice() {
+        StoreNoticeResponseDto storeNoticeResponseDto = storeService.deleteStoreNotice();
+        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
 

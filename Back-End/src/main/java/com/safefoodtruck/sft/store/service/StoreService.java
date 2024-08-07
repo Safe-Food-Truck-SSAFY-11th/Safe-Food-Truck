@@ -7,6 +7,7 @@ import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 
@@ -34,9 +35,9 @@ public interface StoreService {
 
 	Double findStoreAverageStar(Integer storeId);
 
-	String updateStoreNotice(String notice);
+	StoreNoticeResponseDto updateStoreNotice(String notice);
 
-	String findStoreNotice(Integer storeId);
+	StoreNoticeResponseDto findStoreNotice(Integer storeId);
 
-	String deleteStoreNotice();
+	StoreNoticeResponseDto deleteStoreNotice();
 }
