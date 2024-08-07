@@ -1,6 +1,22 @@
 package com.safefoodtruck.sft.store.controller;
 
-import static com.safefoodtruck.sft.store.domain.StoreMessage.DEFAULT_STORE_NOTICE;
+import static com.safefoodtruck.sft.store.domain.StoreMessage.*;
+
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
@@ -16,26 +32,13 @@ import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.service.StoreService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -82,7 +85,7 @@ public class StoreController {
     }
 
     @GetMapping("{storeId}/menus")
-    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "해당 점포 메뉴 전체 조회", description = "해당 점포의 메뉴 전체를 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "해당 점포 메뉴 전체 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
