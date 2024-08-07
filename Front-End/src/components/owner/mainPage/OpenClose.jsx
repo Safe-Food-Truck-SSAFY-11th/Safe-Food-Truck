@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./OpenClose.module.css";
 import useTruckStore from "store/users/owner/truckStore";
 
-const OpenClose = () => {
+const OpenClose = ({ onLiveEndClick }) => {
   const { truckInfo, switchStatus, isLive, toggleLive } = useTruckStore();
   const navigate = useNavigate();
 
@@ -17,8 +17,9 @@ const OpenClose = () => {
   };
 
   const handleLiveEndClick = () => {
-    toggleLive();
     //세션 종료하는 함수
+    onLiveEndClick();
+    toggleLive();
     navigate("/mainOwner");
   };
 

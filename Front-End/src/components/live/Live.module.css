@@ -37,12 +37,12 @@
   margin-top: 10px;
   border: none;
   border-radius: 5px;
-  color: white;
+  color: rgb(0, 0, 0);
   cursor: pointer;
 }
 
 .btnLarge {
-  font-size: 1.25em;
+  font-size: 1em;
 }
 
 .btnSuccess {
@@ -50,11 +50,11 @@
 }
 
 .btnDanger {
-  background-color: #dc3545;
+  background-color: #ffa285;
 }
 
 .btnInfo {
-  background-color: #17a2b8;
+  background-color: #89dfec;
 }
 
 .session {

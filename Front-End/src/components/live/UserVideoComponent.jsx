@@ -3,18 +3,18 @@ import OpenViduVideoComponent from "./OvVideo";
 import styles from "./UserVideo.module.css";
 
 const UserVideoComponent = ({ streamManager }) => {
-  const getNicknameTag = () => {
-    return JSON.parse(streamManager.stream.connection.data).clientData;
-  };
+  // const getNicknameTag = () => {
+  //   return JSON.parse(streamManager.stream.connection.data).clientData;
+  // };
 
   return (
     <div>
       {streamManager !== undefined ? (
         <div className={styles.streamcomponent}>
           <OpenViduVideoComponent streamManager={streamManager} />
-          <div>
+          {/* <div>
             <p>{getNicknameTag()}</p>
-          </div>
+          </div> */}
         </div>
       ) : null}
     </div>

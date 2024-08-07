@@ -10,11 +10,21 @@ import truckImg from "assets/images/storeImg.png";
 import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
 import useLiveStore from "store/live/useLiveStore";
+import useTruckStore from "store/users/owner/truckStore";
+import useFoodTruckStore from "store/trucks/useFoodTruckStore";
+import NoticeModal from "./NoticeModal";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
 const Live = () => {
-  const { isModalOpen, openModal } = useLiveStore();
+  const {
+    openModal,
+    ownerNickname,
+    notice,
+    fetchNotice,
+    isNoticeOpen,
+    openNoticeModal,
+  } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
@@ -29,17 +39,13 @@ const Live = () => {
   const mainStreamManager = useRef(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [isChat, setIsChat] = useState(false);
+  const [isChat, setIsChat] = useState(role === "customer");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [storeInfo, setStoreInfo] = useState({
-    ceo: "푸바오",
-    truck: "울퉁불퉁",
-  });
+  const { truckInfo } = useTruckStore();
+  const { selectedTruck } = useFoodTruckStore();
+  const trukName = role === "owner" ? truckInfo.name : selectedTruck.name;
 
-  const [storeNotice, setStoreNotice] = useState(
-    "월 수 금 15:00~22:00 운영합니다 \n비오면 안나가요 \n07.19(금) 팥붕 안팔아요"
-  );
   const OV = useRef();
 
   //페이지 떠나려고 할 때 동작
@@ -69,6 +75,8 @@ const Live = () => {
         if (res) {
           await endLive(); // 방송 종료
           navigate("/mainOwner"); // 사장님 메인페이지로 이동
+        } else {
+          window.history.pushState(null, "", "");
         }
       }
     };
@@ -88,7 +96,7 @@ const Live = () => {
         console.log(event);
         if (event.reason === "forceDisconnectByServer") {
           if (role === "customer") {
-            navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화 여부 전달
+            navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화
             openModal();
           }
         }
@@ -96,7 +104,13 @@ const Live = () => {
     }
   }, [session, navigate]);
 
-  // 사용자가 페이지를 떠나려고 할 때 동작
+  //공지사항 가져오기
+  useEffect(() => {
+    fetchNotice(storeId);
+    console.log(notice);
+  }, []);
+
+  // 사용자가 페이지를 떠나려고 할 때 동작 (새로고침, 창 닫기)
   const onbeforeunload = (event) => {
     leaveSession();
   };
@@ -234,11 +248,22 @@ const Live = () => {
     setMyUserName(sessionStorage.getItem("nickname"));
     mainStreamManager.current = undefined;
     setPublisher(undefined);
+
+    if (role === "owner") {
+      navigate("/mainOwner");
+    } else if (role === "customer") {
+      navigate(`/foodTruckDetail/${storeId}`);
+    }
   };
 
   //사장님 방송 종료 함수
   const endLive = async () => {
     console.log("3");
+
+    if (session) {
+      session.unpublish(publisher);
+    }
+    session.disconnect();
 
     try {
       const response = await axios.post(
@@ -261,9 +286,6 @@ const Live = () => {
     }
     return false;
   };
-
-  //공지사항 가져오기
-  const getNotice = async () => {};
 
   //채팅창 열고 닫기
   const toggleChat = () => {
@@ -341,44 +363,46 @@ const Live = () => {
     }
   };
 
-  //공지사항 작성 버튼
-  const noticeRegistClick = () => {};
-
   return (
     <div className={styles.container}>
       {session !== undefined ? (
         <div className={styles.session}>
           <div className={styles.sessionHeader}>
-            <h1 className={styles.sessionTitle}>{mySessionId}</h1>
-            <input
-              className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
-              type="button"
-              id="buttonLeaveSession"
-              onClick={leaveSession}
-              value="Leave session"
-            />
+            {role === "customer" ? (
+              <button
+                className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
+                id="buttonLeaveSession"
+                onClick={leaveSession}
+              >
+                나가기
+              </button>
+            ) : null}
+
             <button
               className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
               id="buttonChat"
               onClick={toggleChat}
             >
-              {isChat ? "Close Chat" : "Open Chat"}
+              {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
             </button>
-            <button
-              className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
-              id="noticeRegist"
-              onClick={noticeRegistClick}
-            >
-              공지사항 작성
-            </button>
+
+            {role === "owner" ? (
+              <button
+                className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+                id="noticeRegist"
+                onClick={openNoticeModal}
+              >
+                공지사항 작성
+              </button>
+            ) : null}
 
             {mainStreamManager.current !== undefined ? (
               <div className={styles.mainVideo}>
                 <div className={styles.videoId}>
-                  {
+                  {/* {
                     JSON.parse(mainStreamManager.current.stream.connection.data)
                       .clientData
-                  }
+                  } */}
                 </div>
                 <UserVideoComponent streamManager={mainStreamManager.current} />
               </div>
@@ -389,34 +413,37 @@ const Live = () => {
             <div className={styles.chatContainer}>
               <div className={styles.chatInfo}>
                 <p>
-                  <span className={styles.infoGreen}>{storeInfo.ceo}</span>{" "}
+                  <span className={styles.infoGreen}>{ownerNickname}</span>{" "}
                   사장님이 운영하는
                 </p>
                 <p>
-                  <span className={styles.infoGreen}>{storeInfo.truck}</span>{" "}
-                  트럭의 채팅방입니다
+                  <span className={styles.infoGreen}>{trukName}</span> 트럭의
+                  채팅방입니다
                 </p>
               </div>
-              <div className={styles.noticeBox}>
-                <div>
-                  <img
-                    className={styles.truckImg}
-                    src={truckImg}
-                    alt="트럭이미지"
-                  />
+              {notice === "" ? null : (
+                <div className={styles.noticeBox}>
+                  <div>
+                    <img
+                      className={styles.truckImg}
+                      src={truckImg}
+                      alt="트럭이미지"
+                    />
+                  </div>
+
+                  <div className={styles.noticeInfo}>
+                    <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
+                    <div className={styles.noticeContent}>{notice}</div>
+                  </div>
                 </div>
-                <div className={styles.noticeInfo}>
-                  <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
-                  <div className={styles.noticeContent}>{storeNotice}</div>
-                </div>
-              </div>
+              )}
               <div className={styles.chatBox}>
                 <div className={styles.messageList}>
                   {messages.map((msg, i) => (
                     <div
                       key={i}
                       className={`${styles.message} ${
-                        msg.from === storeInfo.ceo
+                        msg.from === ownerNickname
                           ? styles.messageOwner
                           : styles.messageCustomer
                       }`}
@@ -424,7 +451,7 @@ const Live = () => {
                       <div>
                         <b
                           className={`${
-                            msg.from === storeInfo.ceo
+                            msg.from === ownerNickname
                               ? styles.messageFromOwner
                               : styles.messageFromCustomer
                           }`}
@@ -434,7 +461,7 @@ const Live = () => {
                       </div>
                       <div
                         className={`${
-                          msg.from === storeInfo.ceo
+                          msg.from === ownerNickname
                             ? ""
                             : styles.messageFromCustomerText
                         }`}
@@ -464,12 +491,14 @@ const Live = () => {
 
           {role === "owner" ? (
             <div className={styles.ownerItems}>
-              <OpenClose />
+              <OpenClose onLiveEndClick={endLive} />
               <JiguemOrder />
             </div>
           ) : null}
         </div>
       ) : null}
+
+      {isNoticeOpen ? <NoticeModal /> : null}
     </div>
   );
 };
