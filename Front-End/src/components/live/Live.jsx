@@ -7,14 +7,15 @@ import axios from "axios";
 import styles from "./Live.module.css";
 import UserVideoComponent from "./UserVideoComponent";
 import truckImg from "assets/images/storeImg.png";
-import Modal from "./Modal";
 import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
-import useTruckStore from "store/users/owner/truckStore";
+import useLiveStore from "store/live/useLiveStore";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
 const Live = () => {
+  const { isModalOpen, openModal } = useLiveStore();
+
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
   const navigate = useNavigate(); // useNavigate 사용
@@ -36,14 +37,12 @@ const Live = () => {
     truck: "울퉁불퉁",
   });
 
-  const { truckInfo, fetchTruckInfo } = useTruckStore();
-
   const [storeNotice, setStoreNotice] = useState(
     "월 수 금 15:00~22:00 운영합니다 \n비오면 안나가요 \n07.19(금) 팥붕 안팔아요"
   );
   const OV = useRef();
-  const [modalMessage, setModalMessage] = useState("");
 
+  //페이지 떠나려고 할 때 동작
   useEffect(() => {
     window.addEventListener("beforeunload", onbeforeunload);
     return () => {
@@ -51,8 +50,8 @@ const Live = () => {
     };
   }, []);
 
+  //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
   useEffect(() => {
-    console.log(truckInfo);
     if (role === "owner") {
       createSessionAndJoin(); // 퍼블리셔로 참여
     } else if (role === "customer" && token) {
@@ -60,15 +59,55 @@ const Live = () => {
     }
   }, [role, token]);
 
+  // 뒤로가기 동작 처리 -> onbeforeunload랑 합치기
+  useEffect(() => {
+    const handleGoBack = async () => {
+      if (role === "customer") {
+        await leaveSession(); // 고객인 경우 방송 세션 종료
+      } else if (role === "owner") {
+        const res = window.confirm("방송을 종료하시겠습니까?");
+        if (res) {
+          await endLive(); // 방송 종료
+          navigate("/mainOwner"); // 사장님 메인페이지로 이동
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handleGoBack);
+
+    // // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    // return () => {
+    //   window.removeEventListener("popstate", handleGoBack);
+    // };
+  }, []);
+
+  //사장님 방송 종료 시 손님 페이지 이동 & 모달 켜기
+  useEffect(() => {
+    if (session) {
+      session.on("sessionDisconnected", (event) => {
+        console.log(event);
+        if (event.reason === "forceDisconnectByServer") {
+          if (role === "customer") {
+            navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화 여부 전달
+            openModal();
+          }
+        }
+      });
+    }
+  }, [session, navigate]);
+
+  // 사용자가 페이지를 떠나려고 할 때 동작
   const onbeforeunload = (event) => {
     leaveSession();
   };
 
+  //세션 구독자 삭제
   const deleteSubscriber = (streamManager) => {
     const newSubscribers = subscribers.filter((sub) => sub !== streamManager);
     setSubscribers(newSubscribers);
   };
 
+  //사장 - 새로 세션을 만들고 입장
   const createSessionAndJoin = async () => {
     OV.current = new OpenVidu();
     const newSession = OV.current.initSession();
@@ -81,7 +120,6 @@ const Live = () => {
 
       // 퍼블리셔 스트림이 생성될 때 메인 스트림 매니저로 설정
       mainStreamManager.current = subscriber;
-      // setMainStreamManager(subscriber);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -117,7 +155,6 @@ const Live = () => {
       newSession.publish(newPublisher);
       setPublisher(newPublisher); // 퍼블리셔 설정
       mainStreamManager.current = newPublisher;
-      // setMainStreamManager(newPublisher);
     } catch (error) {
       console.log(
         "There was an error connecting to the session:",
@@ -127,6 +164,7 @@ const Live = () => {
     }
   };
 
+  //손님 - 존재하는 세션에 입장
   const joinExistingSession = async (token) => {
     OV.current = new OpenVidu();
     const newSession = OV.current.initSession();
@@ -149,8 +187,8 @@ const Live = () => {
       console.log(newMainStreamManager);
       console.log(newMainStreamManager[0].stream.streamManager);
 
+      //세션에 연결된 영상, 오디오가 있는 스트림을 메인으로 설정
       mainStreamManager.current = newMainStreamManager[0].stream.streamManager;
-      // setMainStreamManager(newMainStreamManager[0].stream.streamManager);
     });
 
     newSession.on("streamDestroyed", (event) => {
@@ -179,16 +217,14 @@ const Live = () => {
     }
   };
 
+  //방송 나가는 함수
   const leaveSession = () => {
-    // 모든 연결 강제로 끊는 것 추가할 것 ->store로 리팩토링 -> 방송종료 버튼 눌러서 동작
     if (session) {
       if (role === "owner") {
         session.unpublish(publisher);
       }
       session.disconnect();
       console.log(session);
-      console.log(subscribers);
-      session.off();
     }
 
     OV.current = null;
@@ -197,18 +233,49 @@ const Live = () => {
     setMySessionId("no session");
     setMyUserName(sessionStorage.getItem("nickname"));
     mainStreamManager.current = undefined;
-    // setMainStreamManager(undefined);
     setPublisher(undefined);
   };
 
+  //사장님 방송 종료 함수
+  const endLive = async () => {
+    console.log("3");
+
+    try {
+      const response = await axios.post(
+        APPLICATION_SERVER_URL + "api/sessions/" + storeId + "/close",
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("방송종료");
+        return true;
+      } else {
+        console.log("4");
+      }
+    } catch (error) {
+      console.error("방송종료 중 에러발생!:", error);
+      throw error;
+    }
+    return false;
+  };
+
+  //공지사항 가져오기
+  const getNotice = async () => {};
+
+  //채팅창 열고 닫기
   const toggleChat = () => {
     setIsChat(!isChat);
   };
 
+  //채팅창 입력 내용
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
 
+  //채팅 전송
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim() !== "") {
@@ -230,6 +297,7 @@ const Live = () => {
     }
   };
 
+  //세션 토큰 가져오기
   const getToken = async () => {
     const sessionId = await createSession(mySessionId);
     console.log("세션아이디" + sessionId);
@@ -237,6 +305,7 @@ const Live = () => {
     return await createToken(sessionId);
   };
 
+  //세션 생성
   const createSession = async (sessionId) => {
     const response = await axios.post(
       APPLICATION_SERVER_URL + "api/sessions",
@@ -249,6 +318,7 @@ const Live = () => {
     return response.data; // The sessionId
   };
 
+  //세션 토근 발급
   const createToken = async (sessionId) => {
     try {
       const response = await axios.post(
@@ -260,8 +330,7 @@ const Live = () => {
       );
 
       if (response.status === 204) {
-        //모달 띄우기
-        setModalMessage("현재 방송 중이 아닙니다!");
+        console.log("204 해당 세션 없다고 뜸" + sessionId);
         return null;
       }
 
@@ -272,17 +341,11 @@ const Live = () => {
     }
   };
 
-  const closeModal = () => {
-    setModalMessage("");
-  };
-
   //공지사항 작성 버튼
   const noticeRegistClick = () => {};
 
   return (
     <div className={styles.container}>
-      {modalMessage && <Modal message={modalMessage} onClose={closeModal} />}
-
       {session !== undefined ? (
         <div className={styles.session}>
           <div className={styles.sessionHeader}>
@@ -320,20 +383,6 @@ const Live = () => {
                 <UserVideoComponent streamManager={mainStreamManager.current} />
               </div>
             ) : null}
-
-            {/* 
-            {subscribers.map((sub, i) => (
-              <div
-                key={i}
-                className={styles.mainVideo}
-                onClick={handleMainVideoStream(sub)}
-              >
-                <div className={styles.videoId}>
-                  {JSON.parse(sub.stream.connection.data).clientData}
-                </div>
-                <UserVideoComponent streamManager={sub} />
-              </div>
-            ))} */}
           </div>
 
           {isChat ? (

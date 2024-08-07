@@ -8,11 +8,12 @@ import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
 
 function FoodTruckSummary({ truck }) {
-  const { isModalOpen, openModal, closeModal } = useLiveStore();
+  const { isModalOpen, openModal } = useLiveStore();
   const navigate = useNavigate();
 
   const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
+  //현재 방송 중인지 확인하는 함수
   const isLive = async (sessionId) => {
     try {
       const response = await axios.post(
@@ -24,6 +25,7 @@ function FoodTruckSummary({ truck }) {
       );
 
       if (response.status === 204) {
+        console.log(response);
         //모달 띄우기
         openModal();
       } else {
@@ -40,6 +42,7 @@ function FoodTruckSummary({ truck }) {
 
   //라이브 방송보기 버튼 클릭
   const handleLiveClick = () => {
+    console.log(storeId);
     isLive(storeId);
   };
 
