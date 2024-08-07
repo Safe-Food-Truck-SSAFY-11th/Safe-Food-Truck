@@ -7,6 +7,7 @@ import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.OrderedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.RejcetedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -129,6 +130,8 @@ public class NotificationServiceImpl implements NotificationService {
             new RejcetedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
     }
 
+    @Async
+    @Transactional
     @Override
     public void completedSendNotify(String orderEmail, String storeName) {
         Member member = memberRepository.findByEmail(orderEmail);
@@ -141,5 +144,21 @@ public class NotificationServiceImpl implements NotificationService {
 
         globalNotificationService.sendToClient(orderEmail,
             new CompletedNotificationDto(storeName), "completed", CUSTOMER.getEventType());
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void orderedSendNotify(String ownerEmail) {
+        Member member = memberRepository.findByEmail(ownerEmail);
+        String info = "주문이 접수되었어요!";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(ownerEmail,
+            new OrderedNotificationDto(), "ordered", OWNER.getEventType());
     }
 }

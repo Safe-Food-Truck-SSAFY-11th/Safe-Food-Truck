@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class AcceptedNotificationDto {
+public class CompletedNotificationDto {
     private String storeName;
-    private final String message = "주문을 수락했어요";
+    private final String message = "조리완료! 빠르게 픽업하세요";
     private LocalDateTime timestamp;
 
-    public AcceptedNotificationDto(String storeName) {
+    public CompletedNotificationDto(String storeName) {
         this.storeName = storeName;
         this.timestamp = LocalDateTime.now();
     }

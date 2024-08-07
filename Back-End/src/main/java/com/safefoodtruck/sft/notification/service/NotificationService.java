@@ -12,5 +12,5 @@ public interface NotificationService {
     void acceptedSendNotify(String orderEmail, String storeName);
     void rejectedSendNotify(String orderEmail, String storeName);
     void completedSendNotify(String orderEmail, String storeName);
-
+    void orderedSendNotify(String ownerEmail);
 }

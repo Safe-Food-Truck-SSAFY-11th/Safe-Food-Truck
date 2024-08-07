@@ -72,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
 		savedOrder.calculateAmount();
 		store.addOrderList(savedOrder);
 
+		notificationService.orderedSendNotify(store.getOwner().getEmail());
 		return createOrderRegistResponseDto(savedOrder, menuList);
 	}
 
