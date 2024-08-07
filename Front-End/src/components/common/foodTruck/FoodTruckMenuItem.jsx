@@ -8,7 +8,7 @@ function FoodTruckMenuItem({ item }) {
   // 라우팅 시킬 네비게이트 훅 선언
   const navigate = useNavigate();
 
-  // 요소 클릭시 메뉴 객체 정보를 갖고 페이지 라우팅 시킴ㄴ
+  // 요소 클릭시 메뉴 객체 정보를 갖고 페이지 라우팅 시킴
   const handleClick = () => {
     navigate(`/menuDetail/${item.menuId}`, { state: { item } });
   };

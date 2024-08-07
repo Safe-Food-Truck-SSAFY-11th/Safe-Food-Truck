@@ -42,7 +42,9 @@ h3 {
 
 p {
   margin: 5px 0 0;
-  font-size: 0.9em;
+  font-size: 20px;
+  
+  text-align: center;
   color: #555;
 }
 
@@ -85,4 +87,8 @@ p {
 
 .details p {
   padding-left: 10px;
+}
+
+.quantityControl span {
+  padding-top: 10px;
 }

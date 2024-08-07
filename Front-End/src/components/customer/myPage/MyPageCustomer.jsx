@@ -92,8 +92,8 @@ const MyPageCustomer = () => {
 
   return (
     <div>
-      <Header/ >
-      <CustomerInfo onSelect={handleSelect} activeButton={activeButton} memberInfo={memberInfo} />
+      <Header />
+      <CustomerInfo onSelect={handleSelect} activeButton={activeButton} pastOrders={pastOrders} memberInfo={memberInfo} />
       <p>- - - - - - - - 현재 주문 내역 - - - - - - - -</p>
       <OrderNow memberInfo={memberInfo} />
       {renderSelectedComponent()}
