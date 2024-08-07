@@ -33,4 +33,6 @@ public interface FavoritesRepository extends JpaRepository<Favorites, Integer> {
             "FROM Favorites f " +
             "WHERE f.store.id = :storeId ")
     SelectFavoriteResponseDto findFavoritesCount(@Param("storeId") Integer storeId);
+
+    List<Favorites> findAllByStoreId(Integer storeId);
 }
