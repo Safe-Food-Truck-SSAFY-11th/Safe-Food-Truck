@@ -68,7 +68,7 @@ public class ReplyController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<ReplyResponseDto> findReply(@PathVariable Integer reviewId) {
+	public ResponseEntity<ReplyResponseDto> findReply(@PathVariable("reviewId") Integer reviewId) {
 		ReplyResponseDto replyResponseDto = replyService.findReply(reviewId);
 
 		return new ResponseEntity<>(replyResponseDto, OK);
