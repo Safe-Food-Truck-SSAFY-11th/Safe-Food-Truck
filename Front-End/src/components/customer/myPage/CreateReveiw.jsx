@@ -1,47 +1,101 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import useReviewStore from '../../../store/reviews/useReviewStore';
-import useReviewImageStore from '../../../store/reviews/useReviewImageStore';
-import useCustomerStore from '../../../store/users/customer/customerStore';
 import StarRating from './StarRating';
 import styles from './CreateReview.module.css';
+import AWS from 'aws-sdk';
 
-const CreateReview = () => {
+const CreateReview = ({ memberInfo }) => {
   const { orderId } = useParams();
-  const {
-    currentReview,
-    updateCurrentReview,
-    addReview,
-  } = useReviewStore();
-  const {
-    reviewImages,
-    addReviewImage,
-  } = useReviewImageStore();
-  const { form: { nickname, email } } = useCustomerStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { currentReview, updateCurrentReview, createReview } = useReviewStore();
+
+  const [reviewImages, setReviewImages] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+
     files.forEach(file => {
-      // 이미지 업로드 로직 추가 (예: 서버에 업로드하고 이미지 URL을 얻는 등)
-      const newImage = {
-        id: null,
-        original_filename: file.name,
-        stored_filename: `stored_${file.name}`,
-        path: `path/to/uploaded/images/${file.name}`,
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setReviewImages(prevState => [...prevState, event.target.result]);
       };
-      addReviewImage(newImage);
+      reader.readAsDataURL(file);
     });
   };
 
-  const handleSubmit = () => {
+  const handleUpload = async () => {
+    if (!selectedFiles.length) {
+      return null; // 사진이 없을 경우 null 반환
+    }
+
+    AWS.config.update({
+      accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+      secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+      region: `${process.env.REACT_APP_AWS_REGION}`,
+    });
+
+    const s3 = new AWS.S3();
+    const uploadPromises = selectedFiles.map(file => {
+      const uploadParams = {
+        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+        Key: `members/${memberInfo.email}/${file.name}`,
+        Body: file,
+      };
+
+      return new Promise((resolve, reject) => {
+        s3.upload(uploadParams, (err, data) => {
+          if (err) {
+            console.error('Error uploading file:', err);
+            reject(err);
+          } else {
+            console.log('File uploaded successfully. ETag:', data.ETag);
+            resolve({
+              savedUrl: data.Location,
+              savedPath: data.Key,
+            });
+          }
+        });
+      });
+    });
+
+    try {
+      const uploadResults = await Promise.all(uploadPromises);
+      return uploadResults;
+    } catch (err) {
+      console.error('Error uploading files:', err);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const uploadedFiles = await handleUpload();
+
+    if (uploadedFiles && uploadedFiles.length > 0) {
+      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
+      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
+    } else {
+      // 사진이 없을 경우 기본값 설정
+      updateCurrentReview('savedUrl', 'empty');
+      updateCurrentReview('savedPath', 'empty');
+    }
+
     const newReview = {
-      ...currentReview,
-      email,
-      foodTruck_id: parseInt(orderId, 10),
+      orderId: parseInt(orderId, 10),
+      isVisible: currentReview.is_visible === 1,
+      star: currentReview.rating,
+      content: currentReview.content,
+      reviewImageDtos: uploadedFiles || [], // 업로드된 파일이 없으면 빈 배열
     };
 
-    // 리뷰와 이미지를 제출하는 로직을 추가하세요
-    console.log(newReview);
+    try {
+      await createReview(newReview);
+      navigate(-1);
+    } catch (error) {
+      console.error('리뷰 작성에 실패했습니다', error);
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -51,6 +105,9 @@ const CreateReview = () => {
   return (
     <div className={styles.container}>
       <div className={styles.imageUpload} onClick={() => document.getElementById('imageUpload').click()}>
+        {reviewImages.map((image, index) => (
+          <img className={styles.img} key={index} src={image} alt="이미지 업로드" />
+        ))}
         <input
           id="imageUpload"
           type="file"
@@ -61,21 +118,25 @@ const CreateReview = () => {
         />
         <div className={styles.imagePlaceholder}>image</div>
       </div>
+
       <p>음식은 어떠셨나요?</p>
       <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value * 2)} />
+
       <input
         type="text"
-        value={nickname}
+        value={memberInfo.nickname}
         readOnly
         placeholder="닉네임"
         className={styles.input}
       />
+
       <textarea
         value={currentReview.content}
         onChange={(e) => updateCurrentReview('content', e.target.value)}
         placeholder="리뷰 내용"
         className={styles.textarea}
       />
+
       <div className={styles.checkboxContainer}>
         <label>
           <input
@@ -93,13 +154,6 @@ const CreateReview = () => {
         <button className={styles.backButton} onClick={() => window.history.back()}>
           돌아가기
         </button>
-      </div>
-      <div>
-        {reviewImages.map((image) => (
-          <div key={image.id}>
-            <p>{image.original_filename}</p>
-          </div>
-        ))}
       </div>
     </div>
   );

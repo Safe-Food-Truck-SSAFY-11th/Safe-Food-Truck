@@ -1,27 +1,28 @@
-.infoContainer {
-  background-color: #ffd27f;
+.container {
+  background-color: #FEC87F;
   padding: 20px;
   border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
-.infoBox {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.section {
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.infoBox h2 {
-  margin-top: 0;
-  font-size: 18px;
-}
-
-.imagePlaceholder {
+.truckImage {
   width: 100%;
-  height: 150px;
-  background-color: #d3d3d3;
-  border: 2px solid black;
+  height: auto;
+  border-radius: 5px;
 }
+
+h3 {
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 5px 0;
+}
+  

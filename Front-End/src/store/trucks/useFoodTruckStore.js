@@ -17,6 +17,7 @@ const useFoodTruckStore = create((set) => ({
       set((state) => ({
         selectedTruck: response.data,
       }));
+      return response.data;
     } catch (error) {
       console.error('트럭 가져오는데 실패 했음 ㅠㅜ', error);
     }
@@ -67,7 +68,32 @@ const useFoodTruckStore = create((set) => ({
       console.error('찜 개수 조회 실패', error);
       return null;
     }
+  },
+
+  // 트럭 찜 하기 함수
+  JJimTruck: async (storeId) => {
+    try {
+
+      const response = await axiosInstance.post(`favorites/${storeId}`)
+      console.log(response.data);
+      
+    } catch (error) {
+      console.error('찜 등록 실패' , error);
+    }
+  },
+
+  // 찜 한 트럭 찜 삭제하기 함수
+  unJJimTruck: async (favoriteId) => {
+    try {
+
+      const response = await axiosInstance.delete(`favorites/${favoriteId}`)
+      console.log(response.data)
+
+    } catch (error) {
+      console.error('찜 삭제 실패' , error)
+    }
   }
+
 }));
 
 export default useFoodTruckStore;
