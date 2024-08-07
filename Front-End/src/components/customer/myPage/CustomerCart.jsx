@@ -1,80 +1,82 @@
-import React, { useEffect } from 'react';
-import useCartStore from '../../../store/users/customer/cartStore';
+import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import styles from './CustomerCart.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const CustomerCart = () => {
-  const { cartItems, setCartItems, removeItemFromCart, updateItemQuantity, clearCart } = useCartStore();
-
+  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+  
+  const nickname = sessionStorage.getItem('nickname');
+  
   useEffect(() => {
-    // 더미 데이터 설정
-    const dummyCartItems = [
-      {
-        id: 1,
-        name: '맛있는 닭꼬치',
-        price: 8000,
-        quantity: 1,
-        image: 'https://via.placeholder.com/150',
-      },
-      {
-        id: 2,
-        name: '타코야끼',
-        price: 4000,
-        quantity: 2,
-        image: 'https://via.placeholder.com/150',
-      },
-    ];
-    setCartItems(dummyCartItems);
-  }, [setCartItems]);
+    // 장바구니에 저장된 쿠키 가져옴!
+    const cart = Cookies.get('cart');
 
-  const handleRemove = (itemId) => {
-    removeItemFromCart(itemId);
-  };
-
-  const handleQuantityChange = (itemId, quantity) => {
-    if (quantity > 0) {
-      updateItemQuantity(itemId, quantity);
+    // 장바구니에 상품이 있을때 파싱함
+    if (cart) {
+      setCartItems(JSON.parse(cart));
     }
+    
+  }, []);
+
+  const updateCartInCookies = (updatedItems) => {
+    setCartItems(updatedItems);
+    Cookies.set('cart', JSON.stringify(updatedItems), { expires: 1 / 72 });
   };
 
-  const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const handleIncrease = (index) => {
+    const updatedItems = [...cartItems];
+    updatedItems[index].quantity += 1;
+    updateCartInCookies(updatedItems);
+  };
+
+  const handleDecrease = (index) => {
+    const updatedItems = [...cartItems];
+    if (updatedItems[index].quantity > 1) {
+      updatedItems[index].quantity -= 1;
+    } else {
+      updatedItems.splice(index, 1);
+    }
+    updateCartInCookies(updatedItems);
+  };
+
+  const handleCheckout = () => {
+    alert('결제가 완료되었습니다!');
+    Cookies.remove('cart');
+    navigate('/mypageCustomer'); 
+  };
+
+  const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <div className={styles.cart}>
-      <h2>용훈님이 결제할 금액이에요!</h2>
-      {cartItems.length === 0 ? (
-        <p>장바구니가 비어 있습니다.</p>
-      ) : (
-        <div className={styles.cartItems}>
-          {cartItems.map((item) => (
-            <div key={item.id} className={styles.cartItem}>
-              <img src={item.image} alt={item.name} className={styles.cartItemImage} />
-              <div className={styles.cartItemDetails}>
+    <div className={styles.cartContainer}>
+      <h1>{nickname} 님의 결제예정 금액이에요!</h1>
+      {cartItems.length > 0 ? (
+        <>
+          {cartItems.map((item, index) => (
+            <div key={item.menuId} className={styles.cartItem}>
+              <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
+              <div className={styles.details}>
                 <h3>{item.name}</h3>
-                <p>{item.price.toLocaleString()}원</p>
+                <p>{item.price}원</p>
               </div>
-              <div className={styles.cartItemControls}>
-                <button onClick={() => handleQuantityChange(item.id, item.quantity - 1)}>-</button>
-                <input
-                  type="text"
-                  value={item.quantity}
-                  min="1"
-                  onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value, 10))}
-                />
-                <button onClick={() => handleQuantityChange(item.id, item.quantity + 1)}>+</button>
-              <button onClick={() => handleRemove(item.id)} className={styles.removeButton}>
-              제 거
-              </button>
+              <div className={styles.quantityControl}>
+                <button onClick={() => handleDecrease(index)}>-</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => handleIncrease(index)}>+</button>
               </div>
             </div>
           ))}
+          <button className={styles.checkoutButton} onClick={handleCheckout}>
+            {totalAmount}원 결제 할게요!
+          </button>
+        </>
+      ) : (
+        <div className={styles.emptyCartMessage}>
+          <p>장바구니에 담긴 상품이 없어요 🤣</p>
         </div>
       )}
-      <div className={styles.totalAmount}>
-        <p>{totalAmount.toLocaleString()}원 결제 할게요!</p>
-      </div>
-      <button onClick={clearCart} className={styles.clearButton}>
-        장바구니 비우기
-      </button>
     </div>
   );
 };
