@@ -14,6 +14,7 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
+import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.domain.StoreImage;
@@ -43,6 +44,7 @@ public class StoreServiceImpl implements StoreService {
 	private final MemberRepository memberRepository;
 	private final StoreImageRepository storeImageRepository;
 	private final ReviewRepository reviewRepository;
+	private final NotificationService notificationService;
 
 	@Override
 	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
@@ -127,14 +129,13 @@ public class StoreServiceImpl implements StoreService {
 	public boolean updateStoreStatus() {
 		Store store = findLoginStore();
 		store.updateStatus();
-
+		if (store.getIsOpen()) notificationService.favoriteSendNotify(store.getId(), store.getName());
 		return store.getIsOpen();
 	}
 
 	@Override
 	public boolean getStoreStatus() {
 		Store store = findLoginStore();
-
 		return store.getIsOpen();
 	}
 
