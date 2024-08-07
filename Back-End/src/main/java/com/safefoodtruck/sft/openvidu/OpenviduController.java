@@ -98,7 +98,7 @@ public class OpenviduController {
     public ResponseEntity<String> closeConnection(@PathVariable("sessionId") String sessionId,
         @RequestBody(required = false) Map<String, Object> params)
         throws OpenViduJavaClientException, OpenViduHttpException {
-
+        openvidu.fetch();
         Session session = openvidu.getActiveSession(sessionId);
 
         if (session == null){

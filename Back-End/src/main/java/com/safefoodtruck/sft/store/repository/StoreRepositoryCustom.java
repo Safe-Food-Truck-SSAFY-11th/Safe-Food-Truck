@@ -5,5 +5,4 @@ import java.util.List;
 
 public interface StoreRepositoryCustom {
     List<Store> findAllOpenStores();
-
 }

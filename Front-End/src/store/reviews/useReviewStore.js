@@ -3,6 +3,8 @@ import axiosInstance from 'utils/axiosInstance';
 
 const useReviewStore = create((set) => ({
   myReviews: [],
+  selectedReview: null,
+
   currentReview: {
     content: '',
     is_visible: 1,
@@ -34,12 +36,13 @@ const useReviewStore = create((set) => ({
   // 리뷰 삭제하기
   deleteReview: async (reviewId) => {
     try {
+      
       await axiosInstance.delete(`/reviews/${reviewId}`);
-      set((state) => ({
-        myReviews: state.myReviews.filter((review) => review.review_id !== reviewId),
-      }));
+      
     } catch (error) {
+
       console.error('리뷰 삭제에 실패했습니다', error);
+    
     }
   },
 

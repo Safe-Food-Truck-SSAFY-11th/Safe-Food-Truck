@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styles from './CustomerInfo.module.css';
 import profile_img from "assets/images/profile_image.png"
 
-const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
+const CustomerInfo = ({ onSelect, activeButton, memberInfo ,pastOrders  }) => {
+
+
+
   const navigate = useNavigate();
 
   const handleProfileEdit = () => {
@@ -13,8 +16,12 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
   const imageUrl = memberInfo?.memberImage?.savedUrl === 'empty' ? profile_img : memberInfo?.memberImage?.savedUrl;
 
   if (!memberInfo) {
-    return <div>Loading...</div>;
+    return <div>로딩중입니다!!</div>;
   }
+
+    // 과거 주문 목록을 토대로 내가 푸드트럭 몇 번 이용 했는지 횟수 가져옴!
+  console.log(pastOrders)
+  const pastOrderNum = pastOrders?.customerOrderResponseDtos?.length;
 
   return (
     <div className={styles.container}>
@@ -25,10 +32,9 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo }) => {
         </button>
       </div>
       <div className={styles.infoSection}>
-        <h2>반갑습니다 {memberInfo.name}님! 👏</h2>
+        <h2>반갑습니다 {memberInfo.nickname}님!</h2>
         <p>오늘 푸드트럭 어때요?</p>
-        {/* 여기 푸드트럭 몇 번 이용했는지 가져오는것도 필요함 ㅠㅠㅜㅠㅜ */}
-        <p>지금까지 푸드트럭 {0}번 만났어요!</p>
+        <p>지금까지 푸드트럭 {pastOrderNum}번 만났어요!</p>
         <div className={styles.buttons}>
           <button
             className={`${styles.actionButton} ${activeButton === 'liked' ? styles.active : ''}`}

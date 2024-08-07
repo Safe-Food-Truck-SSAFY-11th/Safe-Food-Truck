@@ -72,7 +72,7 @@ public class MenuController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<?> findMenu(@PathVariable Integer menuId) {
+	public ResponseEntity<?> findMenu(@PathVariable("menuId") Integer menuId) {
 		MenuResponseDto menu = menuService.findMenu(menuId);
 		return new ResponseEntity<>(menu, HttpStatus.OK);
 	}
@@ -92,7 +92,7 @@ public class MenuController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<?> updateMenu(@PathVariable Integer menuId, @RequestBody MenuUpdateRequestDto menuUpdateRequestDto) {
+	public ResponseEntity<?> updateMenu(@PathVariable("menuId") Integer menuId, @RequestBody MenuUpdateRequestDto menuUpdateRequestDto) {
 		MenuResponseDto menuResponseDto = menuService.updateMenu(menuId, menuUpdateRequestDto);
 
 		return new ResponseEntity<>(menuResponseDto, HttpStatus.OK);
@@ -113,7 +113,7 @@ public class MenuController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<?> deleteMenu(@PathVariable Integer menuId) {
+	public ResponseEntity<?> deleteMenu(@PathVariable("menuId") Integer menuId) {
 		menuService.deleteMenu(menuId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
