@@ -1,8 +1,14 @@
 package com.safefoodtruck.sft.store.domain;
 
 import static com.safefoodtruck.sft.store.domain.StoreMessage.*;
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.FetchType.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -10,6 +16,7 @@ import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,16 +28,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "store", indexes = {
@@ -97,7 +100,7 @@ public class Store {
     private Boolean isOpen;
 
     @Column(name = "notice")
-    private String notice = DEFAULT_STORE_NOTICE;
+    private String notice;
 
     @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private StoreImage storeImage;

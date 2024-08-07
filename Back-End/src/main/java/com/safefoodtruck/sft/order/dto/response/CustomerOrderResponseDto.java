@@ -1,9 +1,11 @@
 package com.safefoodtruck.sft.order.dto.response;
 
+import java.util.List;
+
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.order.domain.Order;
-import java.util.List;
+
 import lombok.Builder;
 
 @Builder
@@ -12,7 +14,7 @@ public record CustomerOrderResponseDto(Integer orderId, Integer storeId, String 
 	public static CustomerOrderResponseDto fromEntity(Order order, List<Menu> menus) {
 		return CustomerOrderResponseDto.builder()
 			.orderId(order.getId())
-			.storeId(order.getStoreId())
+			.storeId(order.getStore().getId())
 			.storeName(order.getStore().getName())
 			.amount(order.getAmount())
 			.menuResponseDtos(convertMenusToDto(menus))

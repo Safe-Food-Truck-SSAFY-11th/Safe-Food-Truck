@@ -9,8 +9,6 @@ import java.util.List;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.menu.dto.request.MenuUpdateRequestDto;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.store.domain.Store;
@@ -59,7 +57,6 @@ public class Menu {
 	@Column(name = "description")
 	private String description;
 
-	@JsonIgnore
 	@NotNull
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "store_id")
@@ -68,13 +65,16 @@ public class Menu {
 	@OneToOne(mappedBy = "menu", fetch = LAZY, cascade = ALL, orphanRemoval = true)
 	private MenuImage menuImage;
 
-	@OneToMany(mappedBy = "menu", cascade = ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "menu", fetch = LAZY, cascade = ALL, orphanRemoval = true)
 	@Builder.Default
 	private List<OrderMenu> orderMenuList = new ArrayList<>();
 
-	@JsonProperty("storeId")
-	public Integer getStoreId() {
-		return store.getId();
+	public static Menu of(String name, Integer price, String description) {
+		return Menu.builder()
+			.name(name)
+			.price(price)
+			.description(description)
+			.build();
 	}
 
 	public void setStore(Store store) {
@@ -85,14 +85,6 @@ public class Menu {
 	public void setMenuImage(MenuImage menuImage) {
 		this.menuImage = menuImage;
 		menuImage.setMenu(this);
-	}
-
-	public static Menu of(String name, Integer price, String description) {
-		return Menu.builder()
-			.name(name)
-			.price(price)
-			.description(description)
-			.build();
 	}
 
 	public void update(MenuUpdateRequestDto menuUpdateRequestDto) {

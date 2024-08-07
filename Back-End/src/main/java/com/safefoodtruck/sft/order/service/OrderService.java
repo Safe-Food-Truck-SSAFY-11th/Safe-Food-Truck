@@ -5,17 +5,17 @@ import java.util.List;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
 
 public interface OrderService {
-    OrderRegistResponseDto order(OrderRegistRequestDto orderRegistRequestDto);
+    OrderRegistResponseDto registOrder(OrderRegistRequestDto orderRegistRequestDto);
     String acceptOrder(Integer orderId);
     String rejectOrder(Integer orderId);
     String completeOrder(Integer orderId);
     CustomerOrderListResponseDto findCustomerOrderList();
-    OrderListResponseDto findStoreOrderList();
+    OwnerOrderListResponseDto findStoreOrderList();
     OrderDetailResponseDto findOrderDetail(Integer orderId);
     List<OrderSummaryResponseDto> getWeeklyOrderSummary();
 }

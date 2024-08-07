@@ -22,9 +22,9 @@ import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -61,7 +61,7 @@ public class OrderController {
         )
     })
     public ResponseEntity<OrderRegistResponseDto> createOrder(@RequestBody OrderRegistRequestDto orderRegistRequestDto) {
-        OrderRegistResponseDto order = orderService.order(orderRegistRequestDto);
+        OrderRegistResponseDto order = orderService.registOrder(orderRegistRequestDto);
         return new ResponseEntity<>(order, CREATED);
     }
 
@@ -142,8 +142,8 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<OrderListResponseDto> findStoreOrderList() {
-        OrderListResponseDto storeOrderList = orderService.findStoreOrderList();
+    public ResponseEntity<OwnerOrderListResponseDto> findStoreOrderList() {
+        OwnerOrderListResponseDto storeOrderList = orderService.findStoreOrderList();
         return new ResponseEntity<>(storeOrderList, OK);
     }
 
