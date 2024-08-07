@@ -4,19 +4,24 @@ services:
     image: spring-app
     networks:
       - app-network
+  server-number: 1
 
+---
   spring2:
     container_name: spring2
     image: spring-app
     networks:
       - app-network
+  server-number: 2
 
+---
   spring3:
     container_name: spring3
     image: spring-app
     networks:
       - app-network
-
+  server-number: 3
+---
   nginx-react1:
     container_name: nginx-react1
     image: nginx:alpine
@@ -25,7 +30,8 @@ services:
       - /home/ubuntu/nginx-react/logs:/var/log/nginx
     networks:
       - app-network
-
+  server-number: 11
+---
   nginx-react2:
     container_name: nginx-react2
     image: nginx:alpine
@@ -34,7 +40,8 @@ services:
       - /home/ubuntu/nginx-react/logs:/var/log/nginx
     networks:
       - app-network
-
+  server-number: 12
+---
   nginx-react3:
     container_name: nginx-react3
     image: nginx:alpine
@@ -43,7 +50,8 @@ services:
       - /home/ubuntu/nginx-react/logs:/var/log/nginx
     networks:
       - app-network
-
+  server-number: 13
+---
 networks:
   app-network:
     external: true
