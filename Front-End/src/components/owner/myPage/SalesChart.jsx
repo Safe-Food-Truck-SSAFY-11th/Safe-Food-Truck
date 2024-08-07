@@ -1,20 +1,33 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import useTruckStore from "../../../store/users/owner/truckStore";
 import TodayChart from "./TodayChart";
 import WeeklyChart from "./WeeklyChart";
+import SurveyView from "./SurveyView";
 import styles from "./SalesChart.module.css";
+import useChartStore from "store/users/owner/chartStore";
 
 const SalesChart = () => {
   const { activeTab, setActiveTab } = useTruckStore();
+  const [ weeklySales, setWeeklySales ] = useState([]);
+  const { getWeeklySales } = useChartStore();
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      const salesData = await getWeeklySales();
+      setWeeklySales(salesData);
+    };
+    fetchSalesData();
+    console.log(weeklySales)
+  }, [getWeeklySales]);
 
   const renderContent = () => {
     switch (activeTab) {
       case "today":
-        return <TodayChart />;
+        return <TodayChart weeklySales={weeklySales}/>;
       case "weekly":
-        return <WeeklyChart />;
-      case "average":
-        return <p>주간 평균 데이터가 여기에 표시됩니다.</p>;
+        return <WeeklyChart weeklySales={weeklySales}/>;
+      case "survey":
+        return <SurveyView />;
       default:
         return null;
     }
@@ -40,12 +53,12 @@ const SalesChart = () => {
           주간 매출
         </button>
         <button
-          onClick={() => setActiveTab("average")}
+          onClick={() => setActiveTab("survey")}
           className={`${styles.button} ${
-            activeTab === "average" ? styles.activeButton : ""
+            activeTab === "survey" ? styles.activeButton : ""
           }`}
         >
-          주간 평균
+          수요 확인
         </button>
       </div>
       <div className={styles.content}>{renderContent()}</div>

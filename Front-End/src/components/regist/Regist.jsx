@@ -22,8 +22,8 @@ const Regist = () => {
         phoneNumber: '',
         businessNumber: null,
         memberImage : {
-            savedUrl: '',
-            savedPath: ''
+            savedUrl: 'empty',
+            savedPath: 'empty'
         }
     });
 
@@ -72,13 +72,6 @@ const Regist = () => {
 
     const handleUpload = async () => {
         if (!selectedFile) {
-            setFormData((prevData) => ({
-                ...prevData,
-                memberImage: {
-                    savedUrl: "",
-                    savedPath: ""
-                }
-            }));
             return;
         }
 

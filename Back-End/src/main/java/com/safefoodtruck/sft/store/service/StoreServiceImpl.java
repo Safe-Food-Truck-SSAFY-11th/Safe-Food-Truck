@@ -1,5 +1,13 @@
 package com.safefoodtruck.sft.store.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -21,14 +29,9 @@ import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -147,11 +150,10 @@ public class StoreServiceImpl implements StoreService {
 		List<StoreInfoResponseDto> storeInfoResponseDtos = openStores.stream()
 			.map(openStore -> {
 				Double averageStar = averageStarsMap.getOrDefault(openStore.getId(), 0.0);
-				log.info("Store ID: {}, Average Star: {}", openStore.getId(), averageStar);
-
 				return StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
 			})
 			.collect(Collectors.toList());
+		log.info("store count : {}", storeInfoResponseDtos.size());
 
 		return StoreInfoListResponseDto.builder()
 			.count(storeInfoResponseDtos.size())

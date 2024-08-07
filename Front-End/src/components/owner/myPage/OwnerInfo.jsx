@@ -4,6 +4,7 @@ import styles from "./OwnerInfo.module.css";
 import userStore from "store/users/userStore";
 import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
+import profile_img from "assets/images/profile_image.png"
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ const OwnerInfo = () => {
 
   const [likesCount, setLikesCount] = useState(0);
   const [userInfo, setUserInfo] = useState({});
+
+  const imageUrl = userInfo?.memberImage?.savedUrl === 'empty' ? profile_img : userInfo?.memberImage?.savedUrl;
 
   useEffect(() => {
     const fetchTruckData = async () => {
@@ -76,7 +79,7 @@ const OwnerInfo = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <img src={userInfo?.memberImage?.savedUrl} alt="Truck Owner" className={styles.image} />
+          <img src={imageUrl} alt="Truck Owner" className={styles.image} />
           <button className={styles.profileButton} onClick={handleUpdateClick}>
             내 정보 수정
           </button>
