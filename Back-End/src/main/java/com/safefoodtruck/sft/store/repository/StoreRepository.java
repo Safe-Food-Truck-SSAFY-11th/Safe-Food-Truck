@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Integer>, StoreRepositoryCustom {
+
 	Optional<Integer> findStoreIdByOwnerEmail(String email);
 
 	@EntityGraph(attributePaths = {"storeImage", "menuList", "owner"})

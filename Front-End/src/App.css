@@ -28,6 +28,17 @@
   color: white;
 }
 
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
 .App-link {
   color: #61dafb;
 }

@@ -95,7 +95,7 @@ public class ReviewController {
 		)
 	})
 	public ResponseEntity<ReviewListResponseDto> findStoreReviews(
-		@PathVariable final Integer storeId) {
+		@PathVariable("storeId") final Integer storeId) {
 		ReviewListResponseDto storeReviews = reviewService.findStoreReviews(storeId);
 		return new ResponseEntity<>(storeReviews, OK);
 	}
@@ -116,7 +116,7 @@ public class ReviewController {
 		)
 	})
 	public ResponseEntity<Integer> findStoreStars(
-		@PathVariable final Integer storeId) {
+		@PathVariable("storeId") final Integer storeId) {
 		Integer storeStars = reviewService.findStoreStars(storeId);
 		return new ResponseEntity<>(storeStars, OK);
 	}
@@ -136,7 +136,7 @@ public class ReviewController {
 			content = @Content(mediaType = "application/json")
 		)
 	})
-	public ResponseEntity<Void> deleteReview(@PathVariable Integer reviewId) {
+	public ResponseEntity<Void> deleteReview(@PathVariable("reviewId") Integer reviewId) {
 		reviewService.deleteReview(reviewId);
 		return new ResponseEntity<>(NO_CONTENT);
 	}

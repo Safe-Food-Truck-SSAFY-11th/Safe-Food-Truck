@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Waiting from "./components/common/Waiting";
@@ -28,8 +28,87 @@ import Survey from "components/survey/Survey";
 import Live from "components/live/Live";
 
 function App() {
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [email, setEmail] = useState(sessionStorage.getItem('email') || '');
+
+  useEffect(() => {
+    // SSE 연결 설정 함수
+    const setupSSEConnection = (userEmail) => {
+      if (!userEmail) return;
+
+      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
+
+      eventSource.onopen = () => {
+        console.log("SSE connection opened");
+      };
+
+      eventSource.addEventListener('customer', (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data)
+  
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+  
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      });
+
+      eventSource.addEventListener('owner', (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data)
+  
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+  
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      });
+
+      eventSource.onerror = (error) => {
+        console.error("SSE error:", error);
+        eventSource.close(); // 오류가 발생하면 연결을 닫습니다.
+      };
+
+      return () => {
+        eventSource.close();
+        console.log("SSE connection closed");
+      };
+    };
+
+    // 최초 로드 시 이메일이 있으면 SSE 연결 설정
+    const cleanup = setupSSEConnection(email);
+
+    // 세션 스토리지의 변화를 감지하여 새로운 이메일을 읽어들임
+    const onStorageChange = (event) => {
+
+        console.log("EVENT = ", event);
+        if (event.key === 'email') {
+        const newEmail = event.newValue;
+        setEmail(newEmail);
+        if (cleanup) cleanup(); // 이전 SSE 연결 닫기
+        setupSSEConnection(newEmail);
+      }
+    };
+
+    // 세션 스토리지의 변화를 감지
+    window.addEventListener('storage', onStorageChange);
+
+    return () => {
+      if (cleanup) cleanup(); // 컴포넌트가 언마운트될 때 SSE 연결 닫기
+      window.removeEventListener('storage', onStorageChange);
+    };
+  }, [email]);
+
   return (
     <div className="App">
+      {showNotification && <div className="notification">{notificationMessage}</div>}
       <Routes>
         <Route path="/" element={<Waiting />} />
         <Route path="/login" element={<LoginUser />} />
