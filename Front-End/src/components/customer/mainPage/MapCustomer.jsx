@@ -20,12 +20,13 @@ function MapCustomer({ openFoodTrucks , userLocation }) {
         return;
       }
 
+      
       window.kakao.maps.load(() => {
         const container = document.getElementById('map'); // 지도를 표시할 div
         const options = {
-
+          
           // geolocation 으로 계산해서 전달된 userLocation의 위도 경도 체크해서 중앙 좌표로 사용
-          center: new window.kakao.maps.LatLng(userLocation.latitude, userLocation.longitude),
+          center: new window.kakao.maps.LatLng(userLocation?.latitude, userLocation?.longitude),
 
           // 지도의 확대 레벨
           level: 3,
