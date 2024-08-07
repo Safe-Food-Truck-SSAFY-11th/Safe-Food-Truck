@@ -9,6 +9,7 @@ import customerStore from 'store/users/customer/customerStore';
 import useUserStore from 'store/users/userStore';
 import useReviewStore from 'store/reviews/useReviewStore';
 import customerOrderStore from 'store/orders/customerOrderStore'
+import Header from 'components/common/Header';
 
 const MyPageCustomer = () => {
 
@@ -91,6 +92,7 @@ const MyPageCustomer = () => {
 
   return (
     <div>
+      <Header/ >
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} memberInfo={memberInfo} />
       <p>- - - - - - - - 현재 주문 내역 - - - - - - - -</p>
       <OrderNow memberInfo={memberInfo} />

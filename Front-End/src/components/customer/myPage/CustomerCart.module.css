@@ -1,108 +1,88 @@
-.cart {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100vh; /* 화면 전체 높이 */
+.cartContainer {
+  background-color: #F5A623;
   padding: 20px;
-  background-color: #FEC87F;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.cart h2 {
-  background-color: #ffffff;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
+  border-radius: 10px;
+  height: 100vh;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.cart p {
-  text-align: center;
-}
-
-.cartItems {
-  flex-grow: 1; 
-  overflow-y: auto;
-  margin-top: 20px;
+h1 {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #fff;
 }
 
 .cartItem {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 10px;
-  border-radius: 10px;
   margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.cartItemImage {
-  width: 50px;
-  height: 50px;
+.image {
+  width: 60px;
+  height: 60px;
   margin-right: 10px;
 }
 
-.cartItemDetails {
-  flex-grow: 1;
-}
-
-.cartItemDetails p {
-  font-size: 13px;
+.details {
+  flex: 1;
   text-align: left;
-  padding-bottom: 10px;
 }
 
-.cartItemDetails h3 {
-  padding-top: 7px;
-  font-size: 13px;
+h3 {
+  margin: 0;
+  font-size: 1em;
 }
 
-.cartItemControls {
+p {
+  margin: 5px 0 0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.quantityControl {
   display: flex;
   align-items: center;
-  background-color: #FEC87F;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-radius: 10px;
 }
 
-.cartItemControls button {
-  background-color: #ffffff;
-  text-align: center;
+.quantityControl button {
+  background-color: #F5A623;
+  border: none;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  margin: 5px;
+  border-radius: 5px;
+  font-size: 1.2em;
 }
 
-.cartItemControls input {
-  width: 40px;
-  text-align: center;
-  margin: 0 5px;
+.quantityControl span {
+  margin: 0 10px;
+  font-size: 1em;
 }
 
-.totalAmount {
-  background-color: #ffffff;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.clearButton {
-  background-color: #ff6b6b;
+.checkoutButton {
+  background-color: #fff;
+  color: #F5A623;
   border: none;
   padding: 10px 20px;
+  width: 100%;
   border-radius: 5px;
-  color: white;
+  font-size: 1em;
   cursor: pointer;
-  display: block;
-  margin: 20px auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.removeButton {
-  font-size: 10px;
-  text-align: center;
-  background-color: #E2EED0;
+.details p {
+  padding-left: 10px;
 }

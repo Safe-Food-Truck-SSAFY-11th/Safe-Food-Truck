@@ -43,7 +43,7 @@ function App() {
         <Route path="/review" element={<CreateReview />} />
         <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
         <Route path="/cart" element={<CustomerCart />} />
-        <Route path="/menuDetail" element={<FoodTruckMenuDetail />} />
+        <Route path="/menuDetail/:menuId" element={<FoodTruckMenuDetail />} />
         <Route path="/mypageOwner" element={<MyPageOwner />} />
         <Route path="/ownerUpdate" element={<OwnerUpdate />} />
         <Route path="/manageTruck" element={<ManageTruck />} />

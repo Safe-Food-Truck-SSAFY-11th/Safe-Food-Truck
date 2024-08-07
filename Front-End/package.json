@@ -14,6 +14,7 @@
     "firebase": "^10.12.5",
     "fullcalendar": "^6.1.15",
     "i": "^0.3.7",
+    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
