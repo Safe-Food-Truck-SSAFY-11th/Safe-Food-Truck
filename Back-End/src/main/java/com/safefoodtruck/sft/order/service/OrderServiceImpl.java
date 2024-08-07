@@ -2,15 +2,14 @@ package com.safefoodtruck.sft.order.service;
 
 import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
 
-import com.safefoodtruck.sft.notification.service.NotificationService;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -18,6 +17,7 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
+import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
@@ -25,10 +25,10 @@ import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
@@ -38,13 +38,11 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -55,14 +53,15 @@ public class OrderServiceImpl implements OrderService {
 	private final MenuRepository menuRepository;
 	private final NotificationService notificationService;
 
+	@Transactional
 	@Override
-	public OrderRegistResponseDto order(final OrderRegistRequestDto orderRegistRequestDto) {
+	public OrderRegistResponseDto registOrder(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member customer = memberRepository.findByEmail(email);
 		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
-		Order order = createOrder(orderRegistRequestDto, customer, store);
+		Order order = Order.of(orderRegistRequestDto, customer, store);
 		Order savedOrder = orderRepository.save(order);
 
 		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
@@ -73,18 +72,8 @@ public class OrderServiceImpl implements OrderService {
 		store.addOrderList(savedOrder);
 
 		notificationService.orderedSendNotify(store.getOwner().getEmail());
-		return createOrderRegistResponseDto(savedOrder, menuList);
-	}
 
-	private Order createOrder(OrderRegistRequestDto orderRegistRequestDto, Member customer, Store store) {
-		return Order.builder()
-			.customer(customer)
-			.store(store)
-			.request(orderRegistRequestDto.request())
-			.status(PENDING.get())
-			.cookingStatus(PREPARING.get())
-			.orderTime(LocalDateTime.now())
-			.build();
+		return createOrderRegistResponseDto(savedOrder, menuList);
 	}
 
 	private List<OrderMenu> createOrderMenus(Order savedOrder, List<OrderMenuRequestDto> menuList) {
@@ -114,12 +103,8 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(MenuNotFoundException::new).getPrice() * menuRequestDto.count())
 			.sum();
 
-		return OrderRegistResponseDto.builder()
-			.order(savedOrder)
-			.menuName(orderTitle)
-			.totalQuantity(totalQuantity)
-			.totalAmount(totalAmount)
-			.build();
+		return OrderRegistResponseDto.fromEntity(savedOrder, orderTitle, totalQuantity,
+			totalAmount);
 	}
 
 	private String createOrderTitle(List<OrderMenuRequestDto> menuList) {
@@ -135,56 +120,70 @@ public class OrderServiceImpl implements OrderService {
 		return orderTitle;
 	}
 
+	@Transactional
 	@Override
 	public String acceptOrder(Integer orderId) {
 		Order order = getOrder(orderId);
 		if (order.isInValidRequest()) {
 			throw new AlreadyProcessedOrderException();
 		}
-		order.acceptOrder();
 
-		if (order.getStatus().equals(ACCEPTED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
+		order.acceptOrder();
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getStatus().equals(ACCEPTED.get())) {
+			String orderEmail = savedOrder.getCustomer().getEmail();
+			String storeName = savedOrder.getStore().getName();
 			notificationService.acceptedSendNotify(orderEmail, storeName);
 		}
-		return order.getStatus();
+
+		return savedOrder.getStatus();
 	}
 
+	@Transactional
 	@Override
 	public String rejectOrder(Integer orderId) {
 		Order order = getOrder(orderId);
+
 		if (order.isInValidRequest()) {
 			throw new AlreadyProcessedOrderException();
 		}
+
 		order.rejectOrder();
-		if (order.getStatus().equals(REJECTED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
-			notificationService.rejectedSendNotify(orderEmail, storeName);
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getStatus().equals(REJECTED.get())) {
+			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
+			String orderStoreName = savedOrder.getStore().getName();
+			notificationService.rejectedSendNotify(orderCustomerEmail, orderStoreName);
 		}
-		return order.getStatus();
+		return savedOrder.getStatus();
 	}
 
+	@Transactional
 	@Override
 	public String completeOrder(final Integer orderId) {
 		Order order = getOrder(orderId);
 		if (order.isAlreadyCompletedOrder()) {
 			throw new AlreadyCompletedOrderException();
 		}
-		order.completeOrder();
-		if (order.getCookingStatus().equals(COMPLETED.get())) {
-			String orderEmail = order.getCustomerEmail();
-			String storeName = order.getStore().getName();
-			notificationService.completedSendNotify(orderEmail, storeName);
+
+		order.complete();
+		Order savedOrder = orderRepository.save(order);
+
+		if (savedOrder.getCookingStatus().equals(COMPLETED.get())) {
+			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
+			String orderStoreName = savedOrder.getStore().getName();
+			notificationService.completedSendNotify(orderCustomerEmail, orderStoreName);
 		}
-		return order.getCookingStatus();
+		return savedOrder.getCookingStatus();
 	}
 
 	private Order getOrder(Integer orderId) {
 		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public CustomerOrderListResponseDto findCustomerOrderList() {
 		String email = MemberInfo.getEmail();
@@ -202,14 +201,16 @@ public class OrderServiceImpl implements OrderService {
 		return CustomerOrderListResponseDto.fromEntity(customerOrderResponseDtos);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
-	public OrderListResponseDto findStoreOrderList() {
+	public OwnerOrderListResponseDto findStoreOrderList() {
 		String email = MemberInfo.getEmail();
-		List<Order> orders = orderRepository.findByStoreOwnerEmail(email);
+		List<Order> orders = orderRepository.findOrdersByStoreOwnerEmail(email);
 
-		return OrderListResponseDto.fromEntity(orders);
+		return OwnerOrderListResponseDto.fromEntity(orders);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public OrderDetailResponseDto findOrderDetail(Integer orderId) {
 		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
@@ -217,15 +218,15 @@ public class OrderServiceImpl implements OrderService {
 		return OrderDetailResponseDto.fromEntity(order);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<OrderSummaryResponseDto> getWeeklyOrderSummary() {
 		String email = MemberInfo.getEmail();
 		LocalDate today = LocalDate.now();
 		LocalDate weekAgo = today.minusDays(6);
 
-		List<Order> orders = orderRepository.findByStoreOwnerEmailAndOrderTimeBetween(email, weekAgo.atStartOfDay(), today.atTime(23, 59, 59));
+		List<Order> orders = orderRepository.findOrdersByStoreOwnerEmailAndOrderTimeBetween(email, weekAgo.atStartOfDay(), today.atTime(23, 59, 59));
 
-		// 날짜별로 주문을 그룹화
 		Map<LocalDate, List<Order>> ordersGroupedByDate = orders.stream()
 			.collect(Collectors.groupingBy(order -> order.getOrderTime().toLocalDate()));
 
@@ -234,10 +235,8 @@ public class OrderServiceImpl implements OrderService {
 				LocalDate date = entry.getKey();
 				List<Order> dailyOrders = entry.getValue();
 
-				// 해당 날짜의 총 매출 계산
 				int totalAmount = dailyOrders.stream().mapToInt(Order::getAmount).sum();
 
-				// 메뉴별로 주문 내역 정리
 				Map<String, Integer> menuSalesMap = new HashMap<>();
 				for (Order order : dailyOrders) {
 					for (OrderMenu orderMenu : order.getOrderMenuList()) {
@@ -247,7 +246,6 @@ public class OrderServiceImpl implements OrderService {
 					}
 				}
 
-				// 메뉴별 주문 내역 리스트 생성
 				List<OrderSummaryDto> menuOrderSummaries = menuSalesMap.entrySet().stream()
 					.map(e -> new OrderSummaryDto(e.getKey(), e.getValue()))
 					.toList();

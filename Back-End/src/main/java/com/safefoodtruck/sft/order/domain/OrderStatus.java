@@ -4,6 +4,7 @@ public enum OrderStatus {
 	PENDING("pending"),
 	ACCEPTED("accepted"),
 	REJECTED("rejected"),
+	WAITING("waiting"),
 	PREPARING("preparing"),
 	COMPLETED("completed");
 
