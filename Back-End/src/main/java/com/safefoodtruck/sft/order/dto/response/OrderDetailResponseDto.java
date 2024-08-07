@@ -13,8 +13,8 @@ public record OrderDetailResponseDto(Integer orderId, String customerEmail, Inte
 	public static OrderDetailResponseDto fromEntity(Order order) {
 		return OrderDetailResponseDto.builder()
 			.orderId(order.getId())
-			.customerEmail(order.getCustomerEmail())
-			.storeId(order.getStoreId())
+			.customerEmail(order.getCustomer().getEmail())
+			.storeId(order.getStore().getId())
 			.orderMenuList(order.getOrderMenuList())
 			.request(order.getRequest())
 			.status(order.getStatus())

@@ -1,15 +1,9 @@
 package com.safefoodtruck.sft.reply.domain;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.reply.dto.request.ReplyRegistRequestDto;
 import com.safefoodtruck.sft.review.domain.Review;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "reply")
@@ -41,7 +37,6 @@ public class Reply {
 	Integer id;
 
 	@NotNull
-	@JsonIgnore
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "review_id")
 	Review review;
@@ -50,16 +45,19 @@ public class Reply {
 	@JoinColumn(name = "content")
 	String content;
 
-	@JsonProperty("review_id")
-	public Integer getReviewId() {
-		return review != null ? review.getId() : null;
-	}
-
 	public static Reply of(Review review,
 		ReplyRegistRequestDto replyRegistRequestDto) {
-		return Reply.builder()
-			.review(review)
+		Reply reply = Reply.builder()
 			.content(replyRegistRequestDto.content())
 			.build();
+
+		reply.setReview(review);
+
+		return reply;
+	}
+
+	public void setReview(Review review) {
+		this.review = review;
+		review.setReply(this);
 	}
 }

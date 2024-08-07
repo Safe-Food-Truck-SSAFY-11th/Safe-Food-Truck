@@ -13,15 +13,18 @@ function FoodTruckDetail() {
   //모달창
   const { isModalOpen, openModal } = useLiveStore();
 
+  // Params 사용해서 storeId 가져오고 라우팅
   const { storeId } = useParams();
 
-  const [view, setView] = useState("menu");
+  // 컴포넌트 상태 변경을 위한 state사용 기본값 menu
+  const [view, setView] = useState('menu'); 
 
+  // api 요청을 통해 가져온 디테일 푸드트럭 변수 선언
   const selectedTruck = useFoodTruckStore((state) => state.selectedTruck);
 
-  const selectedTruckMenus = useFoodTruckStore(
-    (state) => state.selectedTruckMenus
-  );
+
+  // 선택된 트럭의 메뉴들을 가져온 변수 선언
+  const selectedTruckMenus = useFoodTruckStore((state) => state.selectedTruckMenus);
 
   const getFoodTruck = useFoodTruckStore((state) => state.getFoodTruck);
 
@@ -30,15 +33,29 @@ function FoodTruckDetail() {
   );
 
   useEffect(() => {
+
+    // 푸드트럭 기본 정보 가져오기
     getFoodTruck(storeId);
 
+    // 푸드트럭 메뉴들 가져오기
     getFoodTruckMenus(storeId);
-  }, [storeId, getFoodTruck, getFoodTruckMenus]);
 
+    // 푸드트럭에 달린 리뷰 가져오기 함수 추가 예정!
+
+  }, []);
+
+  // FoodTruckMenuList 컴포넌트로 props로 전달 할 배열
+  const menus = selectedTruckMenus.menuResponseDtos
+
+  // 안 불러와졌으면 로딩 상태 추가
   if (!selectedTruck) {
-    return <div>Loading...</div>;
+    return <div>푸드트럭 가져오는 중이에용</div>;
   }
-  console.log(selectedTruck);
+
+
+  // 선택된 트럭 체크
+  console.log(selectedTruck)
+
   return (
     <div className={styles.foodTruckDetail}>
       <FoodTruckSummary truck={selectedTruck} />
@@ -65,11 +82,9 @@ function FoodTruckDetail() {
       </div>
 
       <div className={styles.content}>
-        {view === "menu" && (
-          <FoodTruckMenuList menus={selectedTruckMenus.menuResponseDtos} />
-        )}
-        {view === "info" && <FoodTruckInfo truck={selectedTruck} />}
-        {view === "reviews" && <ReviewList truck={selectedTruck} />}
+        {view === 'menu' && <FoodTruckMenuList menus={menus} />}
+        {view === 'info' && <FoodTruckInfo truck={selectedTruck} />}
+        {view === 'reviews' && <ReviewList />}
       </div>
 
       {isModalOpen && <NoLiveModal />}

@@ -10,7 +10,7 @@ public record ReplyResponseDto(Integer id, Integer reviewId, String content) {
 	public static ReplyResponseDto fromEntity(Reply reply) {
 		return ReplyResponseDto.builder()
 			.id(reply.getId())
-			.reviewId(reply.getReviewId())
+			.reviewId(reply.getReview().getId())
 			.content(reply.getContent())
 			.build();
 	}

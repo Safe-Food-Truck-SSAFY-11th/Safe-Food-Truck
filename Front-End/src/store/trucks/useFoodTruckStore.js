@@ -36,6 +36,22 @@ const useFoodTruckStore = create((set) => ({
     }
   },
 
+  // 해당 메뉴 상세조회 요청
+  getMenuDetail: async (menuId) => {
+    try {
+      const response = await axiosInstance.get(`/menus/${menuId}`);
+
+      console.log(response.data)
+
+      return response.data
+
+    } catch (error) {
+
+      console.error('메뉴 디테일 못 가져옴 ㅠㅜ' , error)
+
+    }
+  },
+
   // 트럭 목록 조회 요청
   fetchFoodTrucks: async () => {
     try {
