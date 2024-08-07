@@ -157,6 +157,11 @@ public class OrderServiceImpl implements OrderService {
 			throw new AlreadyProcessedOrderException();
 		}
 		order.rejectOrder();
+		if (order.getStatus().equals(REJECTED.get())) {
+			String orderEmail = order.getCustomerEmail();
+			String storeName = order.getStore().getName();
+			notificationService.rejectedSendNotify(orderEmail, storeName);
+		}
 		return order.getStatus();
 	}
 

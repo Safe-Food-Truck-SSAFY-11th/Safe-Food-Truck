@@ -91,7 +91,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new FavoriteNotificationDto(storeName), "open", FAVORITE.getEventType());
+                new FavoriteNotificationDto(storeName), "open", CUSTOMER.getEventType());
         }
     }
 
@@ -108,6 +108,22 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName), "accepted", ACCEPT.getEventType());
+            new AcceptedNotificationDto(storeName), "accepted", CUSTOMER.getEventType());
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void rejectedSendNotify(String orderEmail, String storeName) {
+        Member member = memberRepository.findByEmail(orderEmail);
+        String info = storeName + " 푸드트럭에서 주문을 거절하였습니다.";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(orderEmail,
+            new AcceptedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
     }
 }

@@ -2,10 +2,8 @@ package com.safefoodtruck.sft.common.util;
 
 public enum EventType {
 
-    FAVORITE("favorite"),
-    ACCEPT("accept"),
-    REJECT("reject"),
-    COMPLETE("complete");
+    CUSTOMER("customer"),
+    OWNER("owner");
 
     private final String eventType;
 
