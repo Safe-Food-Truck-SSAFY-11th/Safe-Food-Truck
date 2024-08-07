@@ -36,7 +36,7 @@ function App() {
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
 
-      const eventSource = new EventSource(`http://localhost:8080/api/global-notification/subscribe/${userEmail}`);
+      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
