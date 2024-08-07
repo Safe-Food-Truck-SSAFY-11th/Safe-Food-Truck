@@ -39,8 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
 
     private final NotificationService notificationService;
-    private final JwtUtil jwtUtil;
-    private final NotificationRepository notificationRepository;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
@@ -57,21 +55,6 @@ public class NotificationController {
         String userEmail = MemberInfo.getEmail();
         List<SelectNotificationResponseDto> notificationList = notificationService.selectNotifications(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body(notificationList);
-    }
-
-    @PostMapping
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "알림 보내기", description = "알림을 보낼 때 사용하는 API")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200",
-            description = "알림이 정상적으로 전송되었습니다.",
-            content = @Content(mediaType = "application/json"))
-    })
-    public ResponseEntity<?> sendNotification(
-        @RequestBody SendNotificationRequestDto sendNotificationRequestDto
-    ) {
-        notificationService.sendNotification(sendNotificationRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("알림 전송 완료!");
     }
 
     @DeleteMapping("/{id}")

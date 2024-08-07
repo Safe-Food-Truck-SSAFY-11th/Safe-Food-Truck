@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.store.domain;
 
+import static com.safefoodtruck.sft.store.domain.StoreMessage.*;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -95,6 +96,9 @@ public class Store {
     @Column(name = "is_open")
     private Boolean isOpen;
 
+    @Column(name = "notice")
+    private String notice = DEFAULT_STORE_NOTICE;
+
     @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private StoreImage storeImage;
 
@@ -115,6 +119,7 @@ public class Store {
             .description(storeRegistRequestDto.description())
             .safetyLicenseNumber(storeRegistRequestDto.safetyLicenseNumber())
             .isOpen(storeRegistRequestDto.isOpen())
+            .notice(DEFAULT_STORE_NOTICE)
             .build();
     }
 
@@ -151,5 +156,13 @@ public class Store {
     public void addOrderList(Order order) {
         orderList.add(order);
         order.setStore(this);
+    }
+
+    public void updateNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public void deleteNotice() {
+        this.notice = DEFAULT_STORE_NOTICE;
     }
 }

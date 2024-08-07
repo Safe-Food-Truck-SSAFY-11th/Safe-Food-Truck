@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.openvidu;
 
 import jakarta.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,7 @@ public class OpenviduController {
         throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("진입 params: " + params);
         SessionProperties properties = SessionProperties.fromJson(params).build();
-        log.info("1 properties: " + properties.customSessionId());
+        log.info("properties: " + properties.customSessionId());
         Session session = openvidu.createSession(properties);
         log.info("session Id: " + session.getSessionId());
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
@@ -78,15 +79,40 @@ public class OpenviduController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // 연결 속성 생성 및 로그 출력
+        // 연결 속성 생성
         ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
-        log.info("Connection properties: {}", properties);
 
         // 연결 생성 및 로그 출력
-        Connection connection = session.createConnection(properties);
-        log.info("Connection token: {}", connection.getToken());
-
+        Connection connection;
+        try {
+            connection = session.createConnection(properties);
+            log.info("Connection token: {}", connection.getToken());
+        }catch (OpenViduHttpException e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         // 연결 토큰을 포함한 응답 반환
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{sessionId}/close")
+    public ResponseEntity<String> closeConnection(@PathVariable("sessionId") String sessionId,
+        @RequestBody(required = false) Map<String, Object> params)
+        throws OpenViduJavaClientException, OpenViduHttpException {
+        openvidu.fetch();
+        Session session = openvidu.getActiveSession(sessionId);
+
+        if (session == null){
+            log.info("세션을 종료 하려는데 존재하는 세션이 없음");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else {
+            log.info("sessionId: " + session.getSessionId());
+        }
+        List<Connection> activeConnections = session.getActiveConnections();
+        log.info("activeConnections: " + activeConnections.size());
+        for (Connection connection : activeConnections) {
+            log.info("disconnect token: " + connection.getToken());
+            session.forceDisconnect(connection);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

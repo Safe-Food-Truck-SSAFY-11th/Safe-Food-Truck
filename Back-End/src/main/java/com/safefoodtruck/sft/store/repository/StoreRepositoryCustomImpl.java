@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class StoreRepositoryCustomImpl implements
-    StoreRepositoryCustom {
+public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -20,8 +19,6 @@ public class StoreRepositoryCustomImpl implements
 
         return jpaQueryFactory.selectFrom(store)
             .leftJoin(store.storeImage).fetchJoin()
-            .leftJoin(store.menuList).fetchJoin()
-            .leftJoin(store.owner).fetchJoin()
             .where(store.isOpen.isTrue())
             .fetch();
     }

@@ -80,7 +80,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<String> acceptOrder(@PathVariable Integer orderId) {
+    public ResponseEntity<String> acceptOrder(@PathVariable("orderId") Integer orderId) {
         log.info("before service orderId : {}", orderId);
         String status = orderService.acceptOrder(orderId);
         log.info("after service orderId : {}", orderId);
@@ -102,7 +102,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<String> rejectOrder(@PathVariable Integer orderId) {
+    public ResponseEntity<String> rejectOrder(@PathVariable("orderId") Integer orderId) {
         String status = orderService.rejectOrder(orderId);
         return new ResponseEntity<>(status, OK);
     }
@@ -182,7 +182,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<OrderDetailResponseDto> findOrderDetail(@PathVariable final Integer orderId) {
+    public ResponseEntity<OrderDetailResponseDto> findOrderDetail(@PathVariable("orderId") final Integer orderId) {
         OrderDetailResponseDto orderDetail = orderService.findOrderDetail(orderId);
         return new ResponseEntity<>(orderDetail, OK);
     }
@@ -202,7 +202,7 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<String> completeOrder(@PathVariable Integer orderId) {
+    public ResponseEntity<String> completeOrder(@PathVariable("orderId") Integer orderId) {
         String cookingStatus = orderService.completeOrder(orderId);
         return new ResponseEntity<>(cookingStatus, OK);
     }
