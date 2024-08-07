@@ -172,6 +172,11 @@ public class OrderServiceImpl implements OrderService {
 			throw new AlreadyCompletedOrderException();
 		}
 		order.completeOrder();
+		if (order.getCookingStatus().equals(COMPLETED.get())) {
+			String orderEmail = order.getCustomerEmail();
+			String storeName = order.getStore().getName();
+			notificationService.completedSendNotify(orderEmail, storeName);
+		}
 		return order.getCookingStatus();
 	}
 

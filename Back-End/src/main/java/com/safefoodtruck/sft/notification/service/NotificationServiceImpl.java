@@ -5,7 +5,9 @@ import static com.safefoodtruck.sft.common.util.EventType.*;
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.RejcetedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -124,6 +126,20 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
+            new RejcetedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
+    }
+
+    @Override
+    public void completedSendNotify(String orderEmail, String storeName) {
+        Member member = memberRepository.findByEmail(orderEmail);
+        String info = storeName + " 푸드트럭에서 조리를 완료하였습니다.";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(orderEmail,
+            new CompletedNotificationDto(storeName), "completed", CUSTOMER.getEventType());
     }
 }

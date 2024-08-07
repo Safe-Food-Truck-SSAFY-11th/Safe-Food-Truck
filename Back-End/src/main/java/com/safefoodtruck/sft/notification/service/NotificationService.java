@@ -11,4 +11,6 @@ public interface NotificationService {
     void favoriteSendNotify(Integer storeId, String storeName);
     void acceptedSendNotify(String orderEmail, String storeName);
     void rejectedSendNotify(String orderEmail, String storeName);
+    void completedSendNotify(String orderEmail, String storeName);
+
 }
