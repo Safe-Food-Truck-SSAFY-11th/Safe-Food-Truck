@@ -27,7 +27,9 @@ public class ReplyServiceImpl implements ReplyService {
 	public ReplyResponseDto registReply(final ReplyRegistRequestDto replyRegistRequestDto) {
 		Review review = reviewRepository.findById(replyRegistRequestDto.reviewId()).orElseThrow(
 			ReviewNotFoundException::new);
+
 		Reply reply = Reply.of(review, replyRegistRequestDto);
+
 		replyRepository.save(reply);
 
 		return ReplyResponseDto.fromEntity(reply);
