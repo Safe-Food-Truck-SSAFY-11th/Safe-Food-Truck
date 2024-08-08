@@ -195,7 +195,7 @@ public class StoreServiceImpl implements StoreService {
 	public Store findLoginStore() {
 		String email = MemberInfo.getEmail();
 		log.info("login-email {}", email);
-		return storeRepository.findByOwnerEmail(email)
+		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(email)
 			.orElseThrow(StoreNotFoundException::new);
 	}
 
