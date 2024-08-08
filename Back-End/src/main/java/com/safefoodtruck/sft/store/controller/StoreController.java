@@ -1,9 +1,29 @@
 package com.safefoodtruck.sft.store.controller;
 
-import static com.safefoodtruck.sft.store.domain.StoreMessage.*;
+import static com.safefoodtruck.sft.store.domain.StoreMessage.DEFAULT_STORE_NOTICE;
 
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.service.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDateTime;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,28 +37,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
-import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
-import com.safefoodtruck.sft.store.service.StoreService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -103,8 +101,8 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreNoticeResponseDto> updateStoreNotice(@RequestBody String notice) {
-        StoreNoticeResponseDto storeNoticeResponseDto = storeService.updateStoreNotice(notice);
+    public ResponseEntity<StoreNoticeResponseDto> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+        StoreNoticeResponseDto storeNoticeResponseDto = storeService.updateStoreNotice(storeNoticeRegistRequestDto.notice());
         return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
