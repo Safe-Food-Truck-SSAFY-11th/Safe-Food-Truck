@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import styles from './FoodTruckMenuDetail.module.css';
 
 function FoodTruckMenuDetail() {
   // location 훅 사용
-  const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 부모 컴포넌트로 부터 전달받은 메뉴 객체 (item) 선언 및 사용
   const { item } = location.state;
@@ -55,14 +56,23 @@ function FoodTruckMenuDetail() {
       cart.push(cartItem);
     }
     
-     // 현재 시간 기준으로 20분 후의 시간을 계산하여 쿠키 만료 시간 설정 함
-     const expirationDate = new Date();
-     expirationDate.setMinutes(expirationDate.getMinutes() + 20);
- 
-     Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
+    // 현재 시간 기준으로 20분 후의 시간을 계산하여 쿠키 만료 시간 설정 함
+    const expirationDate = new Date();
+    expirationDate.setMinutes(expirationDate.getMinutes() + 20);
 
-    Cookies.set('cart', JSON.stringify(cart));
-    console.log(cart)
+    Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
+
+    console.log(cart);
+  };
+
+  // 뒤로가기 함수
+  const handleBack = () => {
+    navigate(-1); 
+  };
+
+  // 장바구니로 바로 이동시키는 함수
+  const handleGoToCart = () => {
+    navigate('/cart'); 
   };
 
   return (
@@ -83,6 +93,10 @@ function FoodTruckMenuDetail() {
       <button onClick={handleAddToCart} className={styles.addToCartButton}>
         {item.price * quantity}원 장바구니에 담을게요!
       </button>
+      <div className={styles.navigationButtons}>
+        <button onClick={handleBack} className={styles.navButton}>뒤로가기</button>
+        <button onClick={handleGoToCart} className={styles.navButton}>장바구니로 이동</button>
+      </div>
     </div>
   );
 }
