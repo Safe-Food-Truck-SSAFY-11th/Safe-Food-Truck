@@ -1,15 +1,8 @@
 package com.safefoodtruck.sft.order.service;
 
-import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
-
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.ACCEPTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.REJECTED;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -29,17 +22,27 @@ import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
+import com.safefoodtruck.sft.order.exception.OrderNotPreparingException;
+import com.safefoodtruck.sft.order.exception.UnAuthorizedOrderStatusUpdateException;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -61,7 +64,9 @@ public class OrderServiceImpl implements OrderService {
 		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
-		Order order = Order.of(orderRegistRequestDto, customer, store);
+		Order order = Order.of(orderRegistRequestDto, customer);
+		order.setStore(store);
+
 		Order savedOrder = orderRepository.save(order);
 
 		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
@@ -69,7 +74,6 @@ public class OrderServiceImpl implements OrderService {
 
 		orderMenuRepository.saveAll(orderMenuList);
 		savedOrder.calculateAmount();
-		store.addOrderList(savedOrder);
 
 		notificationService.orderedSendNotify(store.getOwner().getEmail());
 
@@ -123,13 +127,10 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	@Override
 	public String acceptOrder(Integer orderId) {
-		Order order = getOrder(orderId);
-		if (order.isInValidRequest()) {
-			throw new AlreadyProcessedOrderException();
-		}
+		Order validOrder = getValidPendingOrder(orderId);
 
-		order.acceptOrder();
-		Order savedOrder = orderRepository.save(order);
+		validOrder.acceptOrder();
+		Order savedOrder = orderRepository.save(validOrder);
 
 		if (savedOrder.getStatus().equals(ACCEPTED.get())) {
 			String orderEmail = savedOrder.getCustomer().getEmail();
@@ -143,14 +144,10 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	@Override
 	public String rejectOrder(Integer orderId) {
-		Order order = getOrder(orderId);
+		Order validOrder = getValidPendingOrder(orderId);
 
-		if (order.isInValidRequest()) {
-			throw new AlreadyProcessedOrderException();
-		}
-
-		order.rejectOrder();
-		Order savedOrder = orderRepository.save(order);
+		validOrder.rejectOrder();
+		Order savedOrder = orderRepository.save(validOrder);
 
 		if (savedOrder.getStatus().equals(REJECTED.get())) {
 			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
@@ -163,10 +160,7 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	@Override
 	public String completeOrder(final Integer orderId) {
-		Order order = getOrder(orderId);
-		if (order.isAlreadyCompletedOrder()) {
-			throw new AlreadyCompletedOrderException();
-		}
+		Order order = getValidPreparingOrder(orderId);
 
 		order.complete();
 		Order savedOrder = orderRepository.save(order);
@@ -177,10 +171,6 @@ public class OrderServiceImpl implements OrderService {
 			notificationService.completedSendNotify(orderCustomerEmail, orderStoreName);
 		}
 		return savedOrder.getCookingStatus();
-	}
-
-	private Order getOrder(Integer orderId) {
-		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 	}
 
 	@Transactional(readOnly = true)
@@ -255,5 +245,55 @@ public class OrderServiceImpl implements OrderService {
 			.toList();
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public WeeklyCustomerOrderSummaryResponseDto getWeeklyCustomerOrderSummary() {
+		String email = MemberInfo.getEmail();
+		LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+		return orderRepository.findWeeklyCustomerOrderSummary(email, weekAgo);
+	}
 
+	private Order getValidPendingOrder(Integer orderId) {
+		Order order = getOrder(orderId);
+		Store loginStore = findLoginStore();
+
+		if (!loginStore.getId().equals(order.getStore().getId())) {
+			throw new UnAuthorizedOrderStatusUpdateException();
+		}
+
+		if (order.isInValidRequest()) {
+			throw new AlreadyProcessedOrderException();
+		}
+
+
+		return order;
+	}
+
+	private Order getValidPreparingOrder(Integer orderId) {
+		Order order = getOrder(orderId);
+		Store loginStore = findLoginStore();
+
+		if (!loginStore.getId().equals(order.getStore().getId())) {
+			throw new UnAuthorizedOrderStatusUpdateException();
+		}
+
+		if(!order.isPreparingOrder()) {
+			throw new OrderNotPreparingException();
+		}
+
+		if (order.isAlreadyCompletedOrder()) {
+			throw new AlreadyCompletedOrderException();
+		}
+
+		return order;
+	}
+
+	private Order getOrder(Integer orderId) {
+		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+	}
+
+	private Store findLoginStore() {
+		String email = MemberInfo.getEmail();
+		return storeRepository.findByOwnerEmail(email).orElseThrow(StoreNotFoundException::new);
+	}
 }

@@ -19,9 +19,9 @@ const LoginUser = () => {
         // 토큰 보유 여부에 따른 리디렉션
         if (token) {
             fetchUser().then((user) => {
-                if (user.role === 'customer') {
+                if (user.role.indexOf('customer') != -1) {
                     navigate('/mainCustomer');
-                } else {
+                } else if (user.role.indexOf('owner') != -1) {
                     navigate('/mainOwner');
                 }
             }).catch((error) => {
@@ -37,9 +37,9 @@ const LoginUser = () => {
     const handleLoginClick = async () => {
         try {
             const user = await loginUser(email, password);
-            if (user.role === 'customer') {
+            if (user.role.indexOf('customer') != -1) {
                 navigate('/mainCustomer');
-            } else {
+            } else if (user.role.indexOf('owner') != -1) {
                 navigate('/mainOwner');
             }
         } catch (error) {

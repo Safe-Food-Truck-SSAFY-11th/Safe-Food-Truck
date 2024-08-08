@@ -20,11 +20,13 @@ import ManageTruck from "./components/owner/myPage/ManageTruck";
 import Chating from "./components/common/Chating";
 import OwnerReview from "./components/owner/myPage/OwnerReview";
 import ManageMenu from "components/owner/myPage/ManageMenu";
-import SocialRedirection from 'components/login/SocialRedirection';
-import SocialRegist from 'components/regist/socialRegist/SocialRegist';
+import SocialRedirection from "components/login/SocialRedirection";
+import SocialRegist from "components/regist/socialRegist/SocialRegist";
 import FindId from "components/login/FindId";
 import FindPassword from "components/login/FindPassword";
 import Survey from "components/survey/Survey";
+import Membership from "components/common/Membership";
+import Live from "components/live/Live";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
@@ -119,7 +121,7 @@ function App() {
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
         <Route path="/mypageCustomer" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
-        <Route path="/review" element={<CreateReview />} />
+        <Route path="/createReview/:orderId" element={<CreateReview />} />
         <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
         <Route path="/cart" element={<CustomerCart />} />
         <Route path="/menuDetail/:menuId" element={<FoodTruckMenuDetail />} />
@@ -133,6 +135,8 @@ function App() {
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPassword" element={<FindPassword />} />
         <Route path="/survey" element={<Survey />} />
+        <Route path="/membership" element={<Membership />} />
+        <Route path="/live/:storeId" element={<Live />} />
       </Routes>
     </div>
   );
