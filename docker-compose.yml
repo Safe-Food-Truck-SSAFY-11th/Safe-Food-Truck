@@ -1,15 +1,46 @@
 services:
-  spring:
-    container_name: spring
+  spring1:
+    container_name: spring1
     image: spring-app
     networks:
       - app-network
-  nginx-react:
-    container_name: nginx-react
-    image: nginx:alpine
+
+  spring2:
+    container_name: spring2
+    image: spring-app
+    networks:
+      - app-network
+
+  spring3:
+    container_name: spring3
+    image: spring-app
+    networks:
+      - app-network
+
+  nginx-react1:
+    container_name: nginx-react1
+    image: nginx
     volumes:
       - /home/ubuntu/templates-react:/etc/nginx/templates
-      - /home/ubuntu/nginx-react/logs:/var/log/nginx
+      - /home/ubuntu/templates-react/nginx-react1/logs:/var/log/nginx
+    networks:
+      - app-network
+
+  nginx-react2:
+    container_name: nginx-react2
+    image: nginx
+    volumes:
+      - /home/ubuntu/templates-react:/etc/nginx/templates
+      - /home/ubuntu/templates-react/nginx-react2/logs:/var/log/nginx
+    networks:
+      - app-network
+
+  nginx-react3:
+    container_name: nginx-react3
+    image: nginx
+    volumes:
+      - /home/ubuntu/templates-react:/etc/nginx/templates
+      - /home/ubuntu/templates-react/nginx-react3/logs:/var/log/nginx
     networks:
       - app-network
 
