@@ -36,17 +36,6 @@ function FoodTruckDetail() {
 
   } = useFoodTruckStore((state) => state);
 
-
-
-  // 선택된 트럭의 메뉴들을 가져온 변수 선언
-  const selectedTruckMenus = useFoodTruckStore((state) => state.selectedTruckMenus);
-
-  const getFoodTruck = useFoodTruckStore((state) => state.getFoodTruck);
-
-  const getFoodTruckMenus = useFoodTruckStore(
-    (state) => state.getFoodTruckMenus
-  );
-
   useEffect(() => {
 
     // 푸드트럭 기본 정보 가져오기

@@ -1,58 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import styles from './FoodTruckSummary.module.css';
-import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
-import customerStore from 'store/users/customer/customerStore';
-import { useParams } from 'react-router-dom';
-
-function FoodTruckSummary({ truck }) {
-  // 찜하기 찜 삭제하기 함수 호출을 위한 스토어 사용
-  const { JJimTruck, unJJimTruck } = useFoodTruckStore();
-
-  // 찜 트럭을 가져오고 내가 찜한 트럭을 반환하는 스토어 사용
-  const { getJJimTruck, myJJimTruck } = customerStore();
-
-  // foodTruckDetail/13 일 경우 13번 storeId를 갖는 디테일을 갖고 오기 위해 Params 사용
-  const { storeId } = useParams();
-
-  // 찜 되어 있는 트럭인지 체크하기 위한 상태 관리
-  const [isJJimmed, setIsJJimmed] = useState(false);
-
-  // myJJimTruck에서 Params를 통해 가져온 storeId가 존재하는지 체크하고 존재한다면 찜 여부를 세팅해야 하기 때문에
-  // favoriteId를 관리할 상태
-  const [favoriteId, setFavoriteId] = useState(null);
-
-  // 찜한 트럭인지 확인하기 전까지 로딩중임을 표시할 상태
-  const [loading, setLoading] = useState(true);
-
-  // 찜 한 트럭인지 체크하기 위한 함수 -> 더 좋은 로직 있을거 같은데 일단 지금은 이게 한계,,,
-  const checkJJimTruck = async () => {
-    await getJJimTruck();
-    // 내가 찜한 트럭이 있는지 먼저 조건문으로 확인 하고
-    if (myJJimTruck && myJJimTruck.memberFavoriteList) {
-      // 내가 찜한 트럭에 대한 정보 저장
-      const favoriteTruck = myJJimTruck.memberFavoriteList.find(favTruck => favTruck.storeId === parseInt(storeId, 10));
-
-      // 만약에 찜한 트럭이 맞다면?
-      if (favoriteTruck) {
-        // 찜 트럭이 있다고 체크 해주고
-        setIsJJimmed(true);
-
-        // 해당 찜 트럭의 favoriteId 저장
-        setFavoriteId(favoriteTruck.favoriteId);
-      } else {
-        setIsJJimmed(false);
-        setFavoriteId(null);
-      }
-    }
-    setLoading(false); // 로딩 완료
-  };
-
-  useEffect(() => {
-    checkJJimTruck();
-    //checkJJimTruck함수를 의존성 배열에 추가하여 함수 호출 될 때마다 페이지 렌더링 되도록 설정
-    // 찜하고 삭제 할 때 마다 버튼이 새로 렌더링 됩니다!
-  }, [storeId , checkJJimTruck]);
-
 import React, { useEffect, useState } from "react";
 import styles from "./FoodTruckSummary.module.css";
 import axios from "axios";
@@ -149,7 +94,7 @@ function FoodTruckSummary({ truck }) {
 
   useEffect(() => {
     checkJJimTruck();
-  }, [storeId]); // storeId, getJJimTruck, myJJimTruck를 의존성 배열에 추가
+  }, [storeId , checkJJimTruck]); // storeId, getJJimTruck, myJJimTruck를 의존성 배열에 추가
 
   // 그냥 버튼 누르면 실행되는 함수
   const handleJJimTruck = async () => {
@@ -185,10 +130,6 @@ function FoodTruckSummary({ truck }) {
 
       <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
         {isJJimmed ? '찜 삭제' : '찜하기'}
-      </button>
-
-      <button className={styles.jjimButton} onClick={handleJJimTruck}>
-        {isJJimmed ? "찜 삭제" : "찜하기"}
       </button>
 
       <button onClick={handleLiveClick}>LIVE 방송보기</button>
