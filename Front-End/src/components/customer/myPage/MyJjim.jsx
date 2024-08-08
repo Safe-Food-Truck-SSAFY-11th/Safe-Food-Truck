@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './MyJjim.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
 
@@ -9,6 +10,14 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
 
   // 푸드트럭 디테일 정보 호출하는 함수와 스토어 호출
   const { getFoodTruck } = useFoodTruckStore();
+
+  // 라우팅 시킬 네비게이트 훅
+  const navigate = useNavigate();
+
+  // 페이징 시킬 클릭 함수  
+  const handleTruckClick = (storeId) => {
+    navigate(`/FoodTruckDetail/${storeId}`);
+  };
 
   // 반복문 돌면서 JJimTrucks에 찜 푸드트럭 디테일 담을거임
   useEffect(() => {
@@ -45,7 +54,11 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
       ) : (
         <ul>
           {myJJimTrucks.map((truck, index) => (
-            <li key={index} className={styles.truckItem}>
+            <li
+              key={index}
+              className={styles.truckItem}
+              onClick={() => handleTruckClick(truck.storeId)}
+            >
               {truck.storeImageDto && truck.storeImageDto.savedUrl ? (
                 <img src={truck.storeImageDto.savedUrl} alt={truck.name} />
               ) : (
@@ -53,7 +66,11 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
               )}
               <h3>{truck.name}</h3>
               <p>{truck.storeType}</p>
-              <p>{truck.isOpen ? `${truck.name} 트럭은 현재 영업중이에요!` : `${truck.name} 트럭은 오늘 쉬어요😂`}</p>
+              <p>
+                {truck.isOpen
+                  ? `${truck.name} 트럭은 현재 영업중이에요!`
+                  : `${truck.name} 트럭은 오늘 쉬어요😂`}
+              </p>
             </li>
           ))}
         </ul>

@@ -13,7 +13,7 @@
     background-color: #FFEDD3;
 }
 
-.orderItem.completed {
+.orderItem.completed, .orderItem.rejected {
     background-color: #DDDDDD;
 }
 
@@ -41,6 +41,7 @@
 }
 
 .orderTime, .orderNumber, .completeTime {
+    font-size: 0.8rem;
     color: #707070;
 }
 

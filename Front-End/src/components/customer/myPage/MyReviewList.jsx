@@ -6,9 +6,13 @@ import styles from './MyReview.module.css';
 import useReviewStore from 'store/reviews/useReviewStore';
 
 const MyReviewList = ({ memberInfo, myReviews }) => {
+
   const { deleteReview } = useReviewStore();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
+
   const [selectedReviewId, setSelectedReviewId] = useState(null);
 
   const myReviewList = myReviews.reviewList || [];
@@ -46,7 +50,7 @@ const MyReviewList = ({ memberInfo, myReviews }) => {
           ))}
         </>
       )}
-      {isDeleteModalOpen && <DeleteReview onClose={closeDeleteModal} onConfirm={handleDeleteConfirm} />}
+      {isDeleteModalOpen && <DeleteReview onClose={closeDeleteModal} selectedReviewId={selectedReviewId} onConfirm={handleDeleteConfirm} />}
       {isDeleteCompleteModalOpen && <DeleteComplete onClose={closeDeleteCompleteModal} />}
     </div>
   );

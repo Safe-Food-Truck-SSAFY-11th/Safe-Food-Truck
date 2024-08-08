@@ -1,10 +1,30 @@
 package com.safefoodtruck.sft.order.controller;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
+import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
+import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
+import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
+import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
+import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
+import com.safefoodtruck.sft.order.exception.OrderNotPreparingException;
+import com.safefoodtruck.sft.order.exception.UnAuthorizedOrderStatusUpdateException;
+import com.safefoodtruck.sft.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +37,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
-import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderListResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
-import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
-import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
-import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
-import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
-import com.safefoodtruck.sft.order.service.OrderService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/orders")
@@ -61,7 +62,7 @@ public class OrderController {
         )
     })
     public ResponseEntity<OrderRegistResponseDto> createOrder(@RequestBody OrderRegistRequestDto orderRegistRequestDto) {
-        OrderRegistResponseDto order = orderService.order(orderRegistRequestDto);
+        OrderRegistResponseDto order = orderService.registOrder(orderRegistRequestDto);
         return new ResponseEntity<>(order, CREATED);
     }
 
@@ -81,9 +82,7 @@ public class OrderController {
         )
     })
     public ResponseEntity<String> acceptOrder(@PathVariable("orderId") Integer orderId) {
-        log.info("before service orderId : {}", orderId);
         String status = orderService.acceptOrder(orderId);
-        log.info("after service orderId : {}", orderId);
         return new ResponseEntity<>(status, OK);
     }
 
@@ -127,6 +126,26 @@ public class OrderController {
         return new ResponseEntity<>(customerOrderList, OK);
     }
 
+    @GetMapping("/customers/pattern")
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
+    @Operation(summary = "주간 소비 패턴 조회", description = "주간 소비 패턴 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "주간 소비 패턴 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<WeeklyCustomerOrderSummaryResponseDto> getWeeklyOrderSummary() {
+        WeeklyCustomerOrderSummaryResponseDto weeklyCustomerOrderSummary = orderService.getWeeklyCustomerOrderSummary();
+        return new ResponseEntity<>(weeklyCustomerOrderSummary, OK);
+    }
+
     @GetMapping("owners")
     @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
     @Operation(summary = "주문 목록 조회(사장)", description = "주문 목록을 조회할 때 사용하는 API")
@@ -142,8 +161,8 @@ public class OrderController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<OrderListResponseDto> findStoreOrderList() {
-        OrderListResponseDto storeOrderList = orderService.findStoreOrderList();
+    public ResponseEntity<OwnerOrderListResponseDto> findStoreOrderList() {
+        OwnerOrderListResponseDto storeOrderList = orderService.findStoreOrderList();
         return new ResponseEntity<>(storeOrderList, OK);
     }
 
@@ -207,7 +226,8 @@ public class OrderController {
         return new ResponseEntity<>(cookingStatus, OK);
     }
 
-    @ExceptionHandler({AlreadyCompletedOrderException.class, AlreadyProcessedOrderException.class, OrderNotFoundException.class})
+    @ExceptionHandler({OrderNotPreparingException.class ,AlreadyCompletedOrderException.class, AlreadyProcessedOrderException.class, OrderNotFoundException.class,
+        UnAuthorizedOrderStatusUpdateException.class})
     public ResponseEntity<ErrorResponseDto> orderException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),

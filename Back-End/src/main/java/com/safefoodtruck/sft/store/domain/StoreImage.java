@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,7 +33,6 @@ public class StoreImage {
 
 	@OneToOne
 	@MapsId
-	@Setter
 	@JoinColumn(name = "store_id")
 	private Store store;
 
@@ -61,5 +59,10 @@ public class StoreImage {
 			.savedUrl(storeImageDto.savedUrl())
 			.savedPath(storeImageDto.savedPath())
 			.build();
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
+		store.setStoreImage(this);
 	}
 }

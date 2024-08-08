@@ -7,7 +7,7 @@ ChartJS.register(ArcElement, LineElement, CategoryScale, LinearScale, PointEleme
 
 const WeeklyChart = ({ weeklySales }) => {
   if (weeklySales.length === 0) {
-    return <div>Loading...</div>;
+    return <div className={styles.container}>주간 판매 데이터가 없습니다.</div>;
   }
 
   // 모든 메뉴 이름을 수집하고, count 기준으로 내림차순 정렬

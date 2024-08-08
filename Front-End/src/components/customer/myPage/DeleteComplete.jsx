@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './DeleteComplete.module.css';
-import accessIcon from '../../../assets/images/accessButton.png';
+import accessIcon from 'assets/images/accessButton.png';
 
 const DeleteComplete = ({ onClose }) => {
   return (
