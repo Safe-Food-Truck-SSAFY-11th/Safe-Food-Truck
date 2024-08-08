@@ -27,17 +27,17 @@ const Header = () => {
     };
 
     const handleMyPageClick = () => {
-        if (role === 'customer') {
+        if (role.indexOf('customer') != -1) {
             navigate('/mypageCustomer');
-        } else if (role === 'owner') {
+        } else if (role.indexOf('owner') != -1) {
             navigate('/mypageOwner');
         }
     };
 
     const handleHomeClick = () => {
-        if (role === 'customer') {
+        if (role.indexOf('customer') != -1) {
             navigate('/mainCustomer');
-        } else if (role === 'owner') {
+        } else if (role.indexOf('owner') != -1) {
             navigate('/mainOwner');
         }
     };
@@ -51,7 +51,7 @@ const Header = () => {
 
     // 로그인 유저 role에 따른 렌더링 변경
     const renderHeader = () => {
-        if (role === 'customer') {
+        if (role.indexOf('customer') != -1) {
             return (
                 <header className={styles.headerCustomer}>
                     <div className={styles.topSection}>

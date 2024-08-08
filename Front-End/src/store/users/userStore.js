@@ -101,6 +101,33 @@ const userStore = create((set, get) => ({
     }
   },
 
+  joinMembership: async () => {
+    try {
+      await axios.post('members/vip');
+      alert('멤버십 가입이 완료되었습니다!');
+    } catch (error) {
+      console.error('멤버십 가입 오류:', error);
+    }
+  },
+
+  extendMembership: async () => {
+    try {
+      await axios.patch('members/vip');
+      alert('멤버십 연장이 완료되었습니다!');
+    } catch (error) {
+      console.error('멤버십 연장 오류:', error);
+    }
+  },
+
+  deactivateMembership: async () => {
+    try {
+      await axios.patch('members/vip/deactivate');
+      alert('멤버십 탈퇴가 완료되었습니다');
+    } catch (error) {
+      console.error('멤버십 탈퇴 오류: ', error);
+    }
+  }
+
 }));
 
 export default userStore;
