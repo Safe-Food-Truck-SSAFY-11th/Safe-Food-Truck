@@ -5,20 +5,16 @@ import styles from "./Chart.module.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const TodayChart = ({ weeklySales }) => {
-  if (weeklySales.length === 0) {
-    return <div>Loading...</div>;
-  }
-
   // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
   const today = new Date().toISOString().split('T')[0];
-
+  
   // 오늘 날짜와 일치하는 데이터를 찾기
   const todaySales = weeklySales.find(sale => sale.date === today);
-
-  if (!todaySales) {
-    return <div>오늘의 판매 데이터가 없습니다.</div>;
+  
+  if (weeklySales.length === 0 || !todaySales) {
+    return <div className={styles.container}>오늘의 판매 데이터가 없습니다.</div>;
   }
-
+  
   // 메뉴 데이터를 count 기준으로 내림차순 정렬
   const sortedMenuDetails = todaySales.menuDetails.sort((a, b) => b.count - a.count);
 
