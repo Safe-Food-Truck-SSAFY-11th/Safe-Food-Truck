@@ -19,6 +19,7 @@ const ManageTruck = () => {
     fetchTruckInfo,
     truckInfo,
     updateTruck,
+    deleteTruck
   } = useTruckStore();
 
   const handleChange = (e) => {
@@ -109,6 +110,14 @@ const ManageTruck = () => {
 
   const closeMakeLog = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
+  }
+
+  const handleDeleteStore = () => {
+    const confirmed = window.confirm('정말 삭제하시겠습니까?');
+    if (confirmed) {
+      deleteTruck();
+      navigate('/mainOwner');
+    }
   }
 
   return (
@@ -208,6 +217,7 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
+      <button onClick={handleDeleteStore}>점포삭제</button>
       {showWarning && <MakeLogo closeMakeLog={closeMakeLog} storeName={updateForm.name} storeType={updateForm.storeType} />}
     </>
   );

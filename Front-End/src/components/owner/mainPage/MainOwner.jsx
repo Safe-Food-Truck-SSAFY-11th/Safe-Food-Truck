@@ -5,10 +5,26 @@ import TruckStatus from './TruckStatus';
 import OpenClose from './OpenClose';
 import JiguemOrder from './JiguemOrder';
 import styles from './MainOwner.module.css';
+import useTruckStore from "store/users/owner/truckStore";
+import StoreRegistModal from "./StoreRegistModal";
 
 const MainOwner = () => {
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const { truckInfo, fetchTruckInfo } = useTruckStore();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  useEffect(() => {
+    fetchTruckInfo();
+  }, []);
+  
+  useEffect(() => {
+    if (truckInfo.errorMessage === '해당 점포는 존재하지 않습니다.') {
+      setModalIsOpen(true);
+    } else {
+      setModalIsOpen(false);
+    }
+  }, [truckInfo]);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -26,12 +42,21 @@ const MainOwner = () => {
     return null;
   }
 
+  const handleCloseModal = () => {
+    sessionStorage.clear();
+    navigate('/login');
+  };
+
   return (
     <div className={styles.container}>
       <Header />
       <TruckStatus />
       <OpenClose />
       <JiguemOrder />
+      <StoreRegistModal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCloseModal}
+      />
     </div>
   );
 };

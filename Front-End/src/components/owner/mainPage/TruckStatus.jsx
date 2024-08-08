@@ -5,11 +5,7 @@ import useTruckStore from "store/users/owner/truckStore";
 
 const TruckStatus = () => {
   const navigate = useNavigate();
-  const { truckInfo, fetchTruckInfo } = useTruckStore();
-
-  useEffect(() => {
-    fetchTruckInfo();
-  }, []);
+  const { truckInfo } = useTruckStore();
 
   // 푸드트럭 상태에 따른 문구 변경
   const renderStatusComment = () => {
