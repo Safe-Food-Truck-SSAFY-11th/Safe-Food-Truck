@@ -1,23 +1,19 @@
 package com.safefoodtruck.sft.order.domain;
 
-import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.ACCEPTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.PENDING;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.PREPARING;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.REJECTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.WAITING;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.store.domain.Store;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,19 +27,23 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "Orders")
 @Getter
 @Builder
-@ToString
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
@@ -60,7 +60,6 @@ public class Order {
     @JoinColumn(name = "email")
     private Member customer;
 
-    @Setter
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
@@ -82,29 +81,42 @@ public class Order {
     private String status;
 
     @Column(name = "cooking_status")
-    @ColumnDefault("'preparing'")
+    @ColumnDefault("'waiting'")
     private String cookingStatus;
 
     @Column(name = "order_time", columnDefinition = "TIMESTAMP")
     LocalDateTime orderTime;
 
+    @Column(name = "complete_time", columnDefinition = "TIMESTAMP")
+    LocalDateTime completeTime;
+
     @Column(name = "amount")
     private Integer amount;
 
-    @JsonProperty("email")
-    public String getCustomerEmail() {
-        return customer != null ? customer.getEmail() : null;
+    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer) {
+        return Order.builder()
+            .customer(customer)
+            .request(orderRegistRequestDto.request())
+            .status(PENDING.get())
+            .cookingStatus(WAITING.get())
+            .orderTime(LocalDateTime.now())
+            .build();
     }
 
-    @JsonProperty("store_id")
-    public Integer getStoreId() {
-        return store != null ? store.getId() : null;
+    public void setStore(Store store) {
+        this.store = store;
+        store.addOrder(this);
     }
 
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);
         calculateAmount();
+    }
+
+    public void complete() {
+        completeOrder();
+        completeTime = LocalDateTime.now();
     }
 
     @PostLoad
@@ -116,18 +128,23 @@ public class Order {
 
     public void acceptOrder() {
         this.status = ACCEPTED.get();
+        this.cookingStatus = PREPARING.get();
     }
 
     public void rejectOrder() {
         this.status = REJECTED.get();
     }
 
-    public void completeOrder() {
+    private void completeOrder() {
         this.cookingStatus = COMPLETED.get();
     }
 
     public boolean isInValidRequest() {
         return !status.equals(PENDING.get());
+    }
+
+    public boolean isPreparingOrder() {
+        return cookingStatus.equals(PREPARING.get());
     }
 
     public boolean isAlreadyCompletedOrder() {

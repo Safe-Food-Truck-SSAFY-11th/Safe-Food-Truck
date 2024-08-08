@@ -61,7 +61,7 @@ public class StoreServiceImpl implements StoreService {
 				.build();
 
 			StoreImage savedStoreImage = storeImageRepository.save(storeImage);
-			store.setStoreImage(savedStoreImage);
+			savedStoreImage.setStore(store);
 		}
 
 		return StoreRegistResponseDto.fromEntity(email, savedStore);
@@ -126,7 +126,7 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public boolean updateStoreStatus() {
 		Store store = findLoginStore();
-		store.updateStatus();
+		store.toggleOpenStatus();
 		if (store.getIsOpen()) notificationService.favoriteSendNotify(store.getId(), store.getName());
 		return store.getIsOpen();
 	}
