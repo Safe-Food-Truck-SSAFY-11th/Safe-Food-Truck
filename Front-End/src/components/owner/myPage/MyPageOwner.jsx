@@ -13,7 +13,7 @@ const MyPageOwner = () => {
     const token = sessionStorage.getItem('token');
     const role = sessionStorage.getItem('role');
 
-    if (!token || role !== 'owner') {
+    if (!token || role.indexOf('owner') == -1) {
       alert('접근 권한이 없습니다.');
       navigate('/login');
     } else {
@@ -48,11 +48,17 @@ const MyPageOwner = () => {
     }
   };
 
+  const handleMembershipBtn = () => {
+    // 멤버십 가입 페이지 이동
+    navigate('/membership');
+  }
+
   return (
     <div style={containerStyle}>
       <Header />
       <OwnerInfo />
       <SalesChart />
+      <button onClick={handleMembershipBtn}>멤버십 가입</button>
       <button onClick={handleDeleteAcct}>탈퇴하기</button>
     </div>
   );

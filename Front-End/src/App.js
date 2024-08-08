@@ -25,6 +25,7 @@ import SocialRegist from "components/regist/socialRegist/SocialRegist";
 import FindId from "components/login/FindId";
 import FindPassword from "components/login/FindPassword";
 import Survey from "components/survey/Survey";
+import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 
 function App() {
@@ -134,6 +135,7 @@ function App() {
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPassword" element={<FindPassword />} />
         <Route path="/survey" element={<Survey />} />
+        <Route path="/membership" element={<Membership />} />
         <Route path="/live/:storeId" element={<Live />} />
       </Routes>
     </div>
