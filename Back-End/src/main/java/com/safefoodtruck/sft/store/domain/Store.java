@@ -7,6 +7,7 @@ import static jakarta.persistence.FetchType.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -102,6 +103,7 @@ public class Store {
     @Column(name = "notice")
     private String notice;
 
+    @Setter
     @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private StoreImage storeImage;
 
@@ -138,7 +140,7 @@ public class Store {
         this.description = storeUpdateRequestDto.description();
     }
 
-    public void updateStatus() {
+    public void toggleOpenStatus() {
         this.isOpen = !this.isOpen;
     }
 
@@ -150,12 +152,7 @@ public class Store {
     public void addMenu(Menu menu) {
         menuList.add(menu);
     }
-
-    public void setStoreImage(StoreImage storeImage) {
-        this.storeImage = storeImage;
-        storeImage.setStore(this);
-    }
-
+    
     public void addOrderList(Order order) {
         orderList.add(order);
         order.setStore(this);
