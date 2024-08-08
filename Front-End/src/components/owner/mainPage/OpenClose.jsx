@@ -2,26 +2,37 @@ import { useNavigate } from "react-router-dom";
 import styles from "./OpenClose.module.css";
 import useTruckStore from "store/users/owner/truckStore";
 
-const OpenClose = () => {
-  const { truckInfo, switchStatus } = useTruckStore();
+const OpenClose = ({ onLiveEndClick }) => {
+  const { truckInfo, switchStatus, isLive, toggleLive } = useTruckStore();
   const navigate = useNavigate();
 
   const handleOpenClick = () => {
     navigate("/permitAreaCheck");
   };
 
-  // 방송 상태 확인 가능해지면 수정 **
-  const broadcasting = false;
+  const handleLiveStartClick = () => {
+    toggleLive();
+    const storeId = truckInfo.storeId;
+    navigate("/live/" + storeId);
+  };
+
+  const handleLiveEndClick = () => {
+    //세션 종료하는 함수
+    onLiveEndClick();
+    toggleLive();
+    navigate("/mainOwner");
+  };
 
   // 푸드트럭 상태에 따른 버튼 변경
   const renderButtons = () => {
     switch (truckInfo.isOpen) {
       case true: // 영업중
-        if (broadcasting) {
+        if (isLive) {
           return (
             <>
               <button
                 className={styles.openButton}
+                onClick={handleLiveEndClick}
               >
                 <span
                   role="img"
@@ -32,10 +43,7 @@ const OpenClose = () => {
                 </span>{" "}
                 방송종료
               </button>
-              <button
-                className={styles.closeButton}
-                onClick={switchStatus}
-              >
+              <button className={styles.closeButton} onClick={switchStatus}>
                 <span role="img" aria-label="close" className={styles.icon}>
                   🏢
                 </span>{" "}
@@ -48,6 +56,7 @@ const OpenClose = () => {
             <>
               <button
                 className={styles.openButton}
+                onClick={handleLiveStartClick}
               >
                 <span
                   role="img"
@@ -58,10 +67,7 @@ const OpenClose = () => {
                 </span>{" "}
                 방송시작
               </button>
-              <button
-                className={styles.closeButton}
-                onClick={switchStatus}
-              >
+              <button className={styles.closeButton} onClick={switchStatus}>
                 <span role="img" aria-label="close" className={styles.icon}>
                   🏢
                 </span>{" "}
