@@ -1,9 +1,6 @@
 package com.safefoodtruck.sft.order.repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -12,8 +9,10 @@ import com.safefoodtruck.sft.order.domain.QOrder;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderByStoreSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.store.domain.QStore;
-
 import jakarta.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
@@ -42,6 +41,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 			.join(order.store).fetchJoin()
 			.join(order.orderMenuList).fetchJoin()
 			.where(order.store.owner.email.eq(email)
+				.and(order.cookingStatus.eq(COMPLETED.get()))
 				.and(order.orderTime.between(start, end)))
 			.fetch();
 	}

@@ -101,7 +101,7 @@ public class Order {
             .store(store)
             .request(orderRegistRequestDto.request())
             .status(PENDING.get())
-            .cookingStatus(PREPARING.get())
+            .cookingStatus(WAITING.get())
             .orderTime(LocalDateTime.now())
             .build();
     }

@@ -82,9 +82,7 @@ public class OrderController {
         )
     })
     public ResponseEntity<String> acceptOrder(@PathVariable("orderId") Integer orderId) {
-        log.info("before service orderId : {}", orderId);
         String status = orderService.acceptOrder(orderId);
-        log.info("after service orderId : {}", orderId);
         return new ResponseEntity<>(status, OK);
     }
 
