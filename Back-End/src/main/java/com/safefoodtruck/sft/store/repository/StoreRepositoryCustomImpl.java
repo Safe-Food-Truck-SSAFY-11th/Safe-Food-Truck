@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.safefoodtruck.sft.store.domain.QStore;
 import com.safefoodtruck.sft.store.domain.Store;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,5 +22,15 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
             .leftJoin(store.storeImage).fetchJoin()
             .where(store.isOpen.isTrue())
             .fetch();
+    }
+
+    @Override
+    public Optional<Store> findStoreWithMenusAndImagesByOwnerEmail(String email) {
+        QStore store = QStore.store;
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(store)
+            .leftJoin(store.storeImage).fetchJoin()
+            .leftJoin(store.menuList).fetchJoin()
+            .where(store.owner.email.eq(email))
+            .fetchOne());
     }
 }
