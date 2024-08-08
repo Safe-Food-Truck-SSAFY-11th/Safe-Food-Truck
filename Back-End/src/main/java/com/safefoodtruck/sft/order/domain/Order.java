@@ -60,7 +60,6 @@ public class Order {
     @JoinColumn(name = "email")
     private Member customer;
 
-    @Setter
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
