@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.safefoodtruck.sft.order.domain.Order;
+import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 
 public interface OrderRepositoryCustom {
 	List<Order> findOrdersByStoreOwnerEmail(String email);
 	List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(String email, LocalDateTime start, LocalDateTime end);
+	WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(String email, LocalDateTime weekAgo);
 }

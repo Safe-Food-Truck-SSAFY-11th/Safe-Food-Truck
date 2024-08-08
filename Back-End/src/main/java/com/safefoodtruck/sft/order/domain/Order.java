@@ -1,23 +1,19 @@
 package com.safefoodtruck.sft.order.domain;
 
-import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.ACCEPTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.PENDING;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.PREPARING;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.REJECTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.WAITING;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.store.domain.Store;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,19 +27,23 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "Orders")
 @Getter
 @Builder
-@ToString
 @DynamicInsert
 @DynamicUpdate
 @AllArgsConstructor
@@ -60,7 +60,6 @@ public class Order {
     @JoinColumn(name = "email")
     private Member customer;
 
-    @Setter
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "store_id")
@@ -94,16 +93,19 @@ public class Order {
     @Column(name = "amount")
     private Integer amount;
 
-    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer,
-        Store store) {
+    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer) {
         return Order.builder()
             .customer(customer)
-            .store(store)
             .request(orderRegistRequestDto.request())
             .status(PENDING.get())
-            .cookingStatus(PREPARING.get())
+            .cookingStatus(WAITING.get())
             .orderTime(LocalDateTime.now())
             .build();
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+        store.addOrder(this);
     }
 
     public void addOrderMenu(OrderMenu orderMenu) {
@@ -139,6 +141,10 @@ public class Order {
 
     public boolean isInValidRequest() {
         return !status.equals(PENDING.get());
+    }
+
+    public boolean isPreparingOrder() {
+        return cookingStatus.equals(PREPARING.get());
     }
 
     public boolean isAlreadyCompletedOrder() {
