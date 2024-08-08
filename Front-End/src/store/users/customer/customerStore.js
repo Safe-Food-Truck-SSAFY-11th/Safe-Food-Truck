@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import axiosInstance from 'utils/axiosInstance';
 
 const customerStore = create((set, get) => ({
+
   form: {
     email: '',
     password: '',
@@ -16,19 +17,31 @@ const customerStore = create((set, get) => ({
       savedPath: 'empty'
     }
   },
-  passwordMatch: null, // 비밀번호 일치 여부 상태
-  emailTouched: false, // 이메일 입력 상태
-  passwordTouched: false, // 비밀번호 확인 입력 상태
-  nicknameChecked: false, // 닉네임 확인 상태
-  nicknameTouched: false, // 닉네임 입력 상태
-  memberInfo: null, // 회원 정보 상태 추가
+
+  // 비밀번호 일치 여부 상태
+  passwordMatch: null,
+  // 이메일 입력 상태
+  emailTouched: false, 
+  // 비밀번호 확인 입력 상태
+  passwordTouched: false,
+  // 닉네임 확인 상태 
+  nicknameChecked: false,
+  // 닉네임 입력 상태 
+  nicknameTouched: false,
+  // 회원 정보 상태 추가 
+  memberInfo: null,
+  // 내가 찜한 트럭 반환 받을 배열 추가 
   myJJimTruck: [],
+  // 내 소비패턴 객체 추가
+  mySobiPattern: null,
+
 
   setForm: (name, value) => {
     const updatedForm = { ...get().form, [name]: value };
     const passwordMatch = updatedForm.password === updatedForm.confirmPassword;
     set({ form: updatedForm, passwordMatch });
   },
+
   checkEmail: () => set({ emailChecked: true }),
   setEmailTouched: () => set({ emailTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
@@ -44,7 +57,8 @@ const customerStore = create((set, get) => ({
   setNicknameTouched: () => set({ nicknameTouched: true }),
 
 
-  getMemberInfo: async () => { // 회원 정보 가져오는 함수
+   // 회원 정보 가져오는 함수
+  getMemberInfo: async () => {
     try {
 
       const response = await axiosInstance.get('members')
@@ -59,7 +73,8 @@ const customerStore = create((set, get) => ({
     }
   },
 
-  modifyMemberInfo: async (updateData) => { // 회원 정보 수정하는
+  // 회원 정보 수정하는 함수
+  modifyMemberInfo: async (updateData) => { 
     try {
 
       const response = await axiosInstance.patch('members/modify', updateData)
@@ -73,7 +88,8 @@ const customerStore = create((set, get) => ({
     }
   },
 
-  getJJimTruck: async () => { // 내가 찜한 푸드트럭 가져오는 함수
+  // 내가 찜한 푸드트럭 가져오는 함수
+  getJJimTruck: async () => { 
     try {
 
       const response = await axiosInstance.get('favorites')
@@ -84,6 +100,21 @@ const customerStore = create((set, get) => ({
 
       console.error('찜 푸드트럭 가져오기 실패' , error)
       
+    }
+  },
+
+  // 소비 패턴 데이터 가져오는 함수
+  getSobiPattern: async () => {
+    try {
+
+      const response = await axiosInstance.get('orders/customers/pattern')
+
+      set({mySobiPattern : response.data})
+
+    } catch (error) {
+
+      console.error('소비패턴 못 가져옴' , error)
+
     }
   }
 
