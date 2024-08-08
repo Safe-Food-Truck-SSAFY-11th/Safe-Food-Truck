@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./FoodTruckSummary.module.css";
 import axios from "axios";
 import useLiveStore from "store/live/useLiveStore";
@@ -13,7 +13,7 @@ function FoodTruckSummary({ truck }) {
 
   const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
-  //현재 방송 중인지 확인하는 함수
+  // 현재 방송 중인지 확인하는 함수
   const isLive = async (sessionId) => {
     try {
       const response = await axios.post(
@@ -26,10 +26,10 @@ function FoodTruckSummary({ truck }) {
 
       if (response.status === 204) {
         console.log(response);
-        //모달 띄우기
+        // 모달 띄우기
         openModal();
       } else {
-        //라이브 페이지로 이동
+        // 라이브 페이지로 이동
         const token = response.data; // The token
         navigate(`/live/${sessionId}`, { state: { token: token } }); // token을 함께 전달
         return response.data; // The token
@@ -40,10 +40,10 @@ function FoodTruckSummary({ truck }) {
     }
   };
 
-  //라이브 방송보기 버튼 클릭
+  // 라이브 방송보기 버튼 클릭
   const handleLiveClick = () => {
-    console.log(storeId);
-    isLive(storeId);
+    console.log(truck.storeId);
+    isLive(truck.storeId);
   };
 
   // 찜하기 찜 삭제하기 함수 호출을 위한 스토어 사용
@@ -51,9 +51,6 @@ function FoodTruckSummary({ truck }) {
 
   // 찜 트럭을 가져오고 내가 찜한 트럭을 반환하는 스토어 사용
   const { getJJimTruck, myJJimTruck } = customerStore();
-
-  // foodTruckDetail/13 일 경우 13번 storeId를 갖는 디테일을 갖고 오기 위해 Params 사용
-  const { storeId } = useParams();
 
   // 찜 되어 있는 트럭인지 체크하기 위한 상태 관리
   const [isJJimmed, setIsJJimmed] = useState(false);
@@ -66,13 +63,13 @@ function FoodTruckSummary({ truck }) {
   const [loading, setLoading] = useState(true);
 
   // 찜 한 트럭인지 체크하기 위한 함수 -> 더 좋은 로직 있을거 같은데 일단 지금은 이게 한계,,,
-  const checkJJimTruck = async () => {
+  const checkJJimTruck = useCallback(async () => {
     await getJJimTruck();
     // 내가 찜한 트럭이 있는지 먼저 조건문으로 확인 하고
     if (myJJimTruck && myJJimTruck.memberFavoriteList) {
       // 내가 찜한 트럭에 대한 정보 저장
       const favoriteTruck = myJJimTruck.memberFavoriteList.find(
-        (favTruck) => favTruck.storeId === parseInt(storeId, 10)
+        (favTruck) => favTruck.storeId === parseInt(truck.storeId, 10)
       );
 
       // 만약에 찜한 트럭이 맞다면?
@@ -90,13 +87,8 @@ function FoodTruckSummary({ truck }) {
       }
     }
     setLoading(false); // 로딩 완료
-  };
+  }, [getJJimTruck, myJJimTruck, truck.storeId]);
 
-  useEffect(() => {
-    checkJJimTruck();
-  }, [storeId , checkJJimTruck]); // storeId, getJJimTruck, myJJimTruck를 의존성 배열에 추가
-
-  // 그냥 버튼 누르면 실행되는 함수
   const handleJJimTruck = async () => {
     try {
       if (isJJimmed) {
@@ -108,25 +100,24 @@ function FoodTruckSummary({ truck }) {
       }
       checkJJimTruck(); // 상태를 갱신하여 버튼 텍스트를 업데이트합니다.
     } catch (error) {
-
       console.error('찜 등록/삭제 실패', error);
       alert('찜 등록/삭제에 실패했습니다.');
-
-      console.error("찜 등록/삭제 실패", error);
-      alert("찜 등록/삭제에 실패했습니다.");
-
     }
   };
+
+  useEffect(() => {
+    checkJJimTruck();
+  }, [truck, checkJJimTruck]);
 
   if (loading) {
     return <div>찜 여부 체크중이에요 ..... </div>;
   }
-
+  
   return (
     <header className={styles.header}>
       <h1>{truck.name}</h1>
       <p>{truck.description}</p>
-      <p>★ {truck.rating}</p>
+      <p>★ {truck.averageStar}</p>
 
       <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
         {isJJimmed ? '찜 삭제' : '찜하기'}
@@ -134,7 +125,6 @@ function FoodTruckSummary({ truck }) {
 
       <button onClick={handleLiveClick}>LIVE 방송보기</button>
       {isModalOpen && <NoLiveModal />}
-
     </header>
   );
 }
