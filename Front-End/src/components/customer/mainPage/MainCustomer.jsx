@@ -8,19 +8,16 @@ import styles from './MainCustomer.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
 
 function MainCustomer() {
-  
   const [view, setView] = useState('map'); // 'map' or 'list'
-
   const [selectedType, setSelectedType] = useState('all'); // 선택된 타입 상태
 
-  const { openFoodTrucks , getOpenFoodTruck  } = useFoodTruckStore();
-
+  const { openFoodTrucks, getOpenFoodTruck } = useFoodTruckStore();
   const nickname = sessionStorage.getItem('nickname');
 
   const [userLocation, setUserLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -28,19 +25,20 @@ function MainCustomer() {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
+          setLoading(false);
         },
         (error) => {
           console.error('Error fetching user location:', error);
+          setLoading(false);
         }
       );
     } else {
       console.error('Geolocation is not supported by this browser.');
+      setLoading(false);
     }
 
     getOpenFoodTruck();
   }, []);
-
-  console.log(openFoodTrucks)
 
   const handleSelectType = (type) => {
     setSelectedType(type);
@@ -69,10 +67,14 @@ function MainCustomer() {
         </button>
       </div>
 
-      {view === 'map' ? (
-        <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+      {loading ? (
+        <p>Loading...</p> // 로딩 상태를 표시합니다.
       ) : (
-        <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+        view === 'map' ? (
+          <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+        ) : (
+          <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+        )
       )}
     </>
   );
