@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.survey.domain;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.safefoodtruck.sft.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +33,7 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "email")
     @NotNull
     private Member member;
