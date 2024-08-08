@@ -15,3 +15,20 @@
   height: 400px; /* 맵의 높이 설정 */
   border: 2px solid #ccc; /* 맵 테두리 설정 */
 }
+
+.searchButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  background-color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  background-color: #f0f0f0;
+}
