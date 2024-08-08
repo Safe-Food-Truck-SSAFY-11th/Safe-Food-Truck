@@ -27,6 +27,18 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
+    public Optional<Integer> findStoreIdByOwnerEmail(String email) {
+        QStore store = QStore.store;
+
+        Integer storeId = jpaQueryFactory.select(store.id)
+            .from(store)
+            .where(store.owner.email.eq(email))
+            .fetchOne();
+
+        return Optional.ofNullable(storeId);
+    }
+
+    @Override
     public Optional<Store> findStoreWithMenusAndImagesByOwnerEmail(String email) {
         QStore store = QStore.store;
         QMenu menu = QMenu.menu;
