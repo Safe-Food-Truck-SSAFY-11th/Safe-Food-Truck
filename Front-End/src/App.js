@@ -20,11 +20,12 @@ import ManageTruck from "./components/owner/myPage/ManageTruck";
 import Chating from "./components/common/Chating";
 import OwnerReview from "./components/owner/myPage/OwnerReview";
 import ManageMenu from "components/owner/myPage/ManageMenu";
-import SocialRedirection from 'components/login/SocialRedirection';
-import SocialRegist from 'components/regist/socialRegist/SocialRegist';
+import SocialRedirection from "components/login/SocialRedirection";
+import SocialRegist from "components/regist/socialRegist/SocialRegist";
 import FindId from "components/login/FindId";
 import FindPassword from "components/login/FindPassword";
 import Survey from "components/survey/Survey";
+import Live from "components/live/Live";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
@@ -133,6 +134,7 @@ function App() {
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPassword" element={<FindPassword />} />
         <Route path="/survey" element={<Survey />} />
+        <Route path="/live/:storeId" element={<Live />} />
       </Routes>
     </div>
   );

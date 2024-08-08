@@ -149,8 +149,8 @@ const useTruckStore = create(
           // 요청이 성공하면 truckInfo 상태를 업데이트
           set({ truckInfo: response.data });
           // 요청이 성공하면 updateForm 상태를 업데이트
-          const { name, storeType, offDay, description, storeImageDto } = response.data;
-          set({ updateForm: { name, storeType, offDay, description, storeImageDto } });
+          const { name, storeType, offDay, description, isOpen, storeImageDto } = response.data;
+          set({ updateForm: { name, storeType, offDay, description, isOpen, storeImageDto } });
         } catch (error) {
           console.error("트럭 정보 가져오기 실패", error);
         }
@@ -184,6 +184,10 @@ const useTruckStore = create(
           console.error("점포 위치 변경 실패", error);
         }
       },
+
+      // 방송상태
+      isLive: false,
+      toggleLive: () => set((state) => ({ isLive: !state.isLive })),
     }),
     // persist
     {
