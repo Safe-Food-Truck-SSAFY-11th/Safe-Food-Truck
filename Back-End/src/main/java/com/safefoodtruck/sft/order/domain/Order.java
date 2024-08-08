@@ -94,16 +94,19 @@ public class Order {
     @Column(name = "amount")
     private Integer amount;
 
-    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer,
-        Store store) {
+    public static Order of(OrderRegistRequestDto orderRegistRequestDto, Member customer) {
         return Order.builder()
             .customer(customer)
-            .store(store)
             .request(orderRegistRequestDto.request())
             .status(PENDING.get())
             .cookingStatus(WAITING.get())
             .orderTime(LocalDateTime.now())
             .build();
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+        store.addOrder(this);
     }
 
     public void addOrderMenu(OrderMenu orderMenu) {

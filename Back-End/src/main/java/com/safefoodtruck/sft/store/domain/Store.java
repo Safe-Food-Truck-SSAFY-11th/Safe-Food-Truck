@@ -152,10 +152,9 @@ public class Store {
     public void addMenu(Menu menu) {
         menuList.add(menu);
     }
-    
-    public void addOrderList(Order order) {
+
+    public void addOrder(Order order) {
         orderList.add(order);
-        order.setStore(this);
     }
 
     public void updateNotice(String notice) {
