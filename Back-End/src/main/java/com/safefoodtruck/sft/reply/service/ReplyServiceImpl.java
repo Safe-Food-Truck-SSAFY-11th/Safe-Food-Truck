@@ -34,11 +34,4 @@ public class ReplyServiceImpl implements ReplyService {
 
 		return ReplyResponseDto.fromEntity(reply);
 	}
-
-	@Override
-	public ReplyResponseDto findReply(final Integer reviewId) {
-		Reply reply = replyRepository.findByReviewId(reviewId);
-
-		return ReplyResponseDto.fromEntity(reply);
-	}
 }
