@@ -46,6 +46,36 @@ const useReviewStore = create((set) => ({
     }
   },
 
+  // 리뷰 신고하기 함수
+  reportReview: async () => {
+    try {
+
+      await axiosInstance.post(`/reviews`)
+
+      console.log('리뷰 신고 성공')
+
+    } catch (error) {
+
+      console.error('리뷰 신고 실패')
+
+    }
+  },
+
+  // 리뷰 신고여부 체크
+  isReportedReview: async (reviewId) => {
+    try {
+    
+     const response =  await axiosInstance.get(`/reviews/${reviewId}`)
+
+      return response.data
+
+    } catch (error){
+
+      console.error("리뷰 신고여부 체크 실패" , error)
+    
+    }
+  },
+
   // 현재 리뷰 업데이트
   updateCurrentReview: (field, value) =>
     set((state) => ({

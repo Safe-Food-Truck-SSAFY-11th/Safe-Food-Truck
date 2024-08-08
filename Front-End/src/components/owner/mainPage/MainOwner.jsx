@@ -14,7 +14,7 @@ const MainOwner = () => {
     const token = sessionStorage.getItem('token');
     const role = sessionStorage.getItem('role');
 
-    if (!token || role !== 'owner') {
+    if (!token || role.indexOf('owner') == -1) {
       alert('접근 권한이 없습니다.');
       navigate('/login');
     } else {

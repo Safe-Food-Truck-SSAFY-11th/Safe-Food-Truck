@@ -94,7 +94,7 @@ function FoodTruckSummary({ truck }) {
 
   useEffect(() => {
     checkJJimTruck();
-  }, [storeId]); // storeId, getJJimTruck, myJJimTruck를 의존성 배열에 추가
+  }, [storeId , checkJJimTruck]); // storeId, getJJimTruck, myJJimTruck를 의존성 배열에 추가
 
   // 그냥 버튼 누르면 실행되는 함수
   const handleJJimTruck = async () => {
@@ -108,8 +108,13 @@ function FoodTruckSummary({ truck }) {
       }
       checkJJimTruck(); // 상태를 갱신하여 버튼 텍스트를 업데이트합니다.
     } catch (error) {
+
+      console.error('찜 등록/삭제 실패', error);
+      alert('찜 등록/삭제에 실패했습니다.');
+
       console.error("찜 등록/삭제 실패", error);
       alert("찜 등록/삭제에 실패했습니다.");
+
     }
   };
 
@@ -122,12 +127,14 @@ function FoodTruckSummary({ truck }) {
       <h1>{truck.name}</h1>
       <p>{truck.description}</p>
       <p>★ {truck.rating}</p>
-      <button className={styles.jjimButton} onClick={handleJJimTruck}>
-        {isJJimmed ? "찜 삭제" : "찜하기"}
+
+      <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
+        {isJJimmed ? '찜 삭제' : '찜하기'}
       </button>
 
       <button onClick={handleLiveClick}>LIVE 방송보기</button>
       {isModalOpen && <NoLiveModal />}
+
     </header>
   );
 }
