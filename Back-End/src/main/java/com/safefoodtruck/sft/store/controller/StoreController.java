@@ -1,7 +1,5 @@
 package com.safefoodtruck.sft.store.controller;
 
-import static com.safefoodtruck.sft.store.domain.StoreMessage.DEFAULT_STORE_NOTICE;
-
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
@@ -111,14 +109,10 @@ public class StoreController {
     @Operation(summary = "특정 점포 공지사항 조회", description = "특정 점포 공지사항 조회할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "특정 점포 공지사항 조회에 성공하였습니다!", content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "204", description = "특정 점포에 등록된 공지사항이 없습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
     public ResponseEntity<StoreNoticeResponseDto> findStoreNotice(@PathVariable("storeId") Integer storeId) {
         StoreNoticeResponseDto storeNoticeResponseDto = storeService.findStoreNotice(storeId);
-        if(storeNoticeResponseDto.notice().equals(DEFAULT_STORE_NOTICE)) {
-            return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
