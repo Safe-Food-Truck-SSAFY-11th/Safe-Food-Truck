@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import ReportReview from './ReportReview';
 import ReportComplete from './ReportComplete';
 import styles from './ReviewItem.module.css';
-import reportIcon from '../../../assets/images/reportIcon.png';
+import reportIcon from 'assets/images/reportIcon.png';
 
-function ReviewItem({ review }) {
+function ReviewItem({ review, isReported }) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
@@ -31,12 +31,22 @@ function ReviewItem({ review }) {
       <hr className={styles.separator} />
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
-          <h4>{review.author} 님 ★ {review.rating}</h4>
+          <h4>{review.nickname} 님 ★ {review.star / 2}</h4>
           <span>{review.date}</span>
         </div>
         <p>{review.content}</p>
+        {review.replyResponseDto && (
+          <div className={styles.replyContent}>
+            <strong>사장님 답글 :</strong>
+            <p>{review.replyResponseDto.content}</p>
+          </div>
+        )}
       </div>
-      <button className={styles.reportButton} onClick={handleReportClick}>
+      <button
+        className={styles.reportButton}
+        onClick={handleReportClick}
+        disabled={isReported}
+      >
         <img src={reportIcon} alt="report" className={styles.reportIcon} />
       </button>
       {isReportModalOpen && <ReportReview onClose={handleCloseReportModal} onConfirm={handleConfirmReport} />}

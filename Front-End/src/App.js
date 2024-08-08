@@ -121,7 +121,7 @@ function App() {
         <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
         <Route path="/mypageCustomer" element={<MyPageCustomer />} />
         <Route path="/customerUpdate" element={<CustomerUpdate />} />
-        <Route path="/review" element={<CreateReview />} />
+        <Route path="/createReview/:orderId" element={<CreateReview />} />
         <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
         <Route path="/cart" element={<CustomerCart />} />
         <Route path="/menuDetail/:menuId" element={<FoodTruckMenuDetail />} />

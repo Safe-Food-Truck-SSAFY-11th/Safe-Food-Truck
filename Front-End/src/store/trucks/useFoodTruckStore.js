@@ -6,7 +6,7 @@ const useFoodTruckStore = create((set) => ({
   openFoodTrucks: [],
   selectedTruck: null,
   selectedTruckMenus: [], 
-
+  selectedTruckReviews: [],
   
   // 트럭 상세조회 요청
   getFoodTruck: async (storeId) => {
@@ -27,7 +27,7 @@ const useFoodTruckStore = create((set) => ({
   getFoodTruckMenus: async (storeId) => {
     try {
       const response = await axiosInstance.get(`/stores/${storeId}/menus`);
-      console.log(response.data);
+      
       set((state) => ({
         selectedTruckMenus: response.data,
       }));
@@ -48,6 +48,20 @@ const useFoodTruckStore = create((set) => ({
     } catch (error) {
 
       console.error('메뉴 디테일 못 가져옴 ㅠㅜ' , error)
+
+    }
+  },
+
+  // 해당 트럭에 달린 리뷰 리스트 요청
+  getFoodTruckReviews: async (storeId) => {
+    try {
+      const response = await axiosInstance.get(`/reviews/${storeId}`);
+      set((state) => ({
+        selectedTruckReviews: response.data,
+      }));
+    } catch (error) {
+
+      console.error('트럭 리뷰를 못 가져옴 ㅠㅜ' , error)
 
     }
   },
