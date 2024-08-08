@@ -168,4 +168,19 @@ public class Store {
     public void deleteNotice() {
         this.notice = DEFAULT_STORE_NOTICE;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Store store = (Store) o;
+
+        return id.equals(store.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
