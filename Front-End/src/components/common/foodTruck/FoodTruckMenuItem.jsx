@@ -3,14 +3,14 @@ import styles from './FoodTruckMenuItem.module.css';
 import { useNavigate } from 'react-router-dom';
 
 // 부모 컴포넌트로 부터 전달받은 menu 한 개 객체
-function FoodTruckMenuItem({ item }) {
+function FoodTruckMenuItem({ item , storeId }) {
   
   // 라우팅 시킬 네비게이트 훅 선언
   const navigate = useNavigate();
 
   // 요소 클릭시 메뉴 객체 정보를 갖고 페이지 라우팅 시킴
   const handleClick = () => {
-    navigate(`/menuDetail/${item.menuId}`, { state: { item } });
+    navigate(`/menuDetail/${item.menuId}`, { state: { item , storeId } });
   };
 
   return (

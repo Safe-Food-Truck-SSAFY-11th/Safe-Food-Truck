@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import styles from './CustomerCart.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation } from 'react-router-dom';
+import axiosInstance from 'utils/axiosInstance';
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [request, setRequest] = useState('');
   const navigate = useNavigate();
-  
-  const nickname = sessionStorage.getItem('nickname');
-  
-  useEffect(() => {
-    // 장바구니에 저장된 쿠키 가져옴!
-    const cart = Cookies.get('cart');
 
-    // 장바구니에 상품이 있을때 파싱함
+  const location = useLocation();
+
+  const { storeId } = location.state;
+
+  const nickname = sessionStorage.getItem('nickname');
+
+  useEffect(() => {
+    const cart = Cookies.get('cart');
     if (cart) {
       setCartItems(JSON.parse(cart));
     }
-    
   }, []);
 
   const updateCartInCookies = (updatedItems) => {
@@ -41,10 +43,25 @@ const CustomerCart = () => {
     updateCartInCookies(updatedItems);
   };
 
-  const handleCheckout = () => {
-    alert('결제가 완료되었습니다!');
-    Cookies.remove('cart');
-    navigate('/mypageCustomer'); 
+  const handleCheckout = async () => {
+    const payload = {
+      storeId: storeId,
+      request: "",
+      menuList: cartItems.map(item => ({
+        menuId: item.menuId,
+        count: item.quantity
+      }))
+    };
+    
+    try {
+      await axiosInstance.post('orders', payload);
+      alert('결제가 완료되었습니다!');
+      Cookies.remove('cart');
+      navigate('/mypageCustomer');
+    } catch (error) {
+      console.error('결제 실패:', error);
+      alert('결제에 실패했습니다.');
+    }
   };
 
   const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -68,6 +85,16 @@ const CustomerCart = () => {
               </div>
             </div>
           ))}
+          <div className={styles.requestBox}>
+            <label htmlFor="request">요구사항:</label>
+            <input
+              type="text"
+              id="request"
+              value={request}
+              onChange={(e) => setRequest(e.target.value)}
+              className={styles.requestInput}
+            />
+          </div>
           <button className={styles.checkoutButton} onClick={handleCheckout}>
             {totalAmount}원 결제 할게요!
           </button>

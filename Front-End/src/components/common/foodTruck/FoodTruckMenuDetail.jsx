@@ -9,8 +9,9 @@ function FoodTruckMenuDetail() {
   const navigate = useNavigate();
 
   // 부모 컴포넌트로 부터 전달받은 메뉴 객체 (item) 선언 및 사용
-  const { item } = location.state;
+  const { item , storeId } = location.state;
   
+
   // 수량 변경을 위한 상태 선언
   const [quantity, setQuantity] = useState(1);
 
@@ -72,7 +73,7 @@ function FoodTruckMenuDetail() {
 
   // 장바구니로 바로 이동시키는 함수
   const handleGoToCart = () => {
-    navigate('/cart'); 
+    navigate('/cart' , {state: { storeId }}); 
   };
 
   return (
