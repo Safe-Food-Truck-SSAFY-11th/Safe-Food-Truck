@@ -7,6 +7,7 @@ const useFoodTruckStore = create((set) => ({
   selectedTruck: null,
   selectedTruckMenus: [], 
   selectedTruckReviews: [],
+  likes: null,
   
   // 트럭 상세조회 요청
   getFoodTruck: async (storeId) => {
@@ -93,7 +94,9 @@ const useFoodTruckStore = create((set) => ({
   getFoodTruckLikes: async (storeId) => {
     try {
       const response = await axiosInstance.get(`favorites/${storeId}`);
-      return response.data.favoriteCount;
+      set((state) => ({
+        likes: response.data,
+      }));
     } catch (error) {
       console.error('찜 개수 조회 실패', error);
       return null;

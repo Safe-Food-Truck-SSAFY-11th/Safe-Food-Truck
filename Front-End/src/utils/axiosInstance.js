@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  // baseURL: "http://localhost:8080/api", // 로컬 테스트용 URL
-  baseURL: "https://i11b102.p.ssafy.io/api", // 배포 URL
+  baseURL: "http://localhost:8080/api", // 로컬 테스트용 URL
+  // baseURL: "https://i11b102.p.ssafy.io/api", // 배포 URL
   timeout: 50000, // 요청 타임아웃
 });
 
@@ -53,7 +53,7 @@ axiosInstance.interceptors.request.use(
 //         sessionStorage.removeItem("token");
 //         sessionStorage.removeItem("refresh_token");
 //         return Promise.reject(refreshError);
-//       } 
+//       }
 //     }
 //     return Promise.reject(error);
 //   }

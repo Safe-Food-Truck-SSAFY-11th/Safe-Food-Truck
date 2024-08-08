@@ -91,7 +91,7 @@ function FoodTruckDetail() {
 
       <div className={styles.content}>
         {view === 'menu' && <FoodTruckMenuList menus={menus} />}
-        {view === 'info' && <FoodTruckInfo truck={selectedTruck} />}
+        {view === 'info' && <FoodTruckInfo truck={selectedTruck} reviews={reviews} />}
         {view === 'reviews' && <ReviewList reviews={reviews}/>}
       </div>
 

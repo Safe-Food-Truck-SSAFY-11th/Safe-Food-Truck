@@ -20,7 +20,14 @@ const MyPageCustomer = () => {
   const [activeButton, setActiveButton] = useState(''); // 활성화된 버튼 상태
 
   // 내 정보 , 내가 찜한 트럭 가져오는 스토어 , 함수 호출
-  const { memberInfo, getMemberInfo, getJJimTruck, myJJimTruck } = customerStore(); 
+  const { 
+    memberInfo, 
+    getMemberInfo, 
+    getJJimTruck, 
+    myJJimTruck,
+    getSobiPattern,
+    mySobiPattern, 
+  } = customerStore(); 
 
   // 내 과거 주문 기록 불러오는 스토어 , 함수 호출
   const { getMyOrders , pastOrders} = customerOrderStore();
@@ -33,26 +40,21 @@ const MyPageCustomer = () => {
     getJJimTruck();
     getAllMyReview();
     getMyOrders();
+    getSobiPattern();
   },[]);
 
-  // 내가 찜한 트럭 가져옴
-  console.log(myJJimTruck)
-
-  // 내가 작성한 리뷰 가져옴
-  console.log(myReviews)
-
-  // 과거 주문내역 가져옴
-  console.log(pastOrders)
-
-
-
   const handleSelect = (component, button) => {
+
     if (activeButton === button) {
+
       setSelectedComponent('pattern'); // 기본 컴포넌트로 설정
       setActiveButton('');
+
     } else {
+
       setSelectedComponent(component);
       setActiveButton(button);
+
     }
   };
 
@@ -60,13 +62,13 @@ const MyPageCustomer = () => {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'liked':
-        return <MyJjim jjimTrucks={myJJimTruck} memberInfo={memberInfo} />;
+        return <MyJjim memberInfo={memberInfo} jjimTrucks={myJJimTruck} />;
       case 'review':
         return <MyReviewList memberInfo={memberInfo} myReviews={myReviews} />;
       case 'order':
         return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} />;
       default:
-        return <SobiPattern memberInfo={memberInfo} />;
+        return <SobiPattern memberInfo={memberInfo} mySobiPattern={mySobiPattern} />;
     }
   };
 

@@ -4,10 +4,12 @@ import styles from "./ManageTruck.module.css";
 import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
 import AWS from 'aws-sdk';
+import MakeLogo from "./MakeLogo";
 
 const ManageTruck = () => {
   const navigate = useNavigate();
   const [truckImage, setTruckImage] = useState(''); 
+  const [showWarning, setShowWarning] = useState(false); // 모달 표시 상태 추가
 
   const {
     updateForm,
@@ -100,6 +102,15 @@ const ManageTruck = () => {
     });
   };
 
+  const handleAILogo = (e) => {
+    e.preventDefault();
+    setShowWarning(true); // 모달 표시 상태를 true로 설정
+  }
+
+  const closeMakeLog = () => {
+    setShowWarning(false); // 모달 표시 상태를 false로 설정
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -124,6 +135,9 @@ const ManageTruck = () => {
             onClick={handleImageButtonClick} // 버튼 클릭 시 파일 입력 요소 클릭
           >
             사진 바꾸기
+          </button>
+          <button className={styles.AiBtn} onClick={handleAILogo}>
+            AI 로고 생성
           </button>
         </div>
         <div className={styles.inputContainer}>
@@ -194,6 +208,7 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
+      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} storeName={updateForm.name} storeType={updateForm.storeType} />}
     </>
   );
 };
