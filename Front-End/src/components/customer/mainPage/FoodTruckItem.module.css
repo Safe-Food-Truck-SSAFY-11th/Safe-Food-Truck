@@ -12,30 +12,21 @@
 }
 
 .icon {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
+  width: 70px; /* 이미지의 고정 너비 */
+  height: 70px; /* 이미지의 고정 높이 */
+  margin-right: 10px; /* 이미지와 텍스트 사이의 간격 */
+  object-fit: cover; /* 이미지가 영역을 채우도록 설정 */
+  border-radius: 10px;
 }
 
 .details {
   display: flex;
   flex-direction: column; 
   overflow: hidden; /* 내용이 넘칠 때 숨기기 */
-  
-}
-/* 
-.details h3 {
-  padding-left: 10px;
-} */
-
-
-.rating {
-  color: black;
 }
 
 .category, .address {
   font-size: 13px;
-  padding-left: 10px;
   margin: 0;
   white-space: nowrap; /* 텍스트가 한 줄로 나오도록 설정 */
   overflow: hidden; /* 내용이 넘칠 때 숨기기 */
@@ -45,5 +36,4 @@
 .distance {
   font-size: 12px;
   white-space: nowrap;
-  padding-left: 10px;
 }
