@@ -103,7 +103,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Async
     @Transactional
     @Override
-    public void acceptedSendNotify(String orderEmail, String storeName) {
+    public void acceptedSendNotify(String orderEmail, String storeName, Integer orderId) {
         Member member = memberRepository.findByEmail(orderEmail);
         String info = storeName + " 푸드트럭에서 주문을 수락하였습니다.";
 
@@ -113,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName), "accepted", CUSTOMER.getEventType());
+            new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER.getEventType());
     }
 
     @Async
