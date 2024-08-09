@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Header from "components/common/Header";
 import styles from "./Survey.module.css";
 import MapModal from "./MapModal";
-import axios from "utils/axiosInstance"
+import axios from "utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 // 버튼 이미지
 import snackBarBtn from "assets/images/surveyBtn/snackBar.png";
@@ -17,6 +18,8 @@ import crepeBtn from "assets/images/surveyBtn/crepe.png";
 import cupbapBtn from "assets/images/surveyBtn/cupbap.png";
 import steakBtn from "assets/images/surveyBtn/steak.png";
 import pizzaBtn from "assets/images/surveyBtn/pizza.png";
+import WarningModal from "./WarningModal";
+import ConfirmModal from "./ConfirmModal";
 
 const buttons = [
   { id: "snackBar", img: snackBarBtn, alt: "Snack Bar" },
@@ -42,6 +45,10 @@ function Survey() {
   const [sigungu, setSigungu] = useState("");
   const [dong, setDong] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWarningOpen, setIsWarningOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleButtonClick = (buttonId) => {
     setSelectedButton(buttonId);
@@ -63,6 +70,18 @@ function Survey() {
     parseAddress(address);
   };
 
+  //수요조사 횟수제한 모달 확인버튼 함수
+  const handleWarningConfirm = () => {
+    setIsWarningOpen(false);
+    navigate("/mainCustomer"); //다시 메인페이지로
+  };
+
+  //수요조사 등록완료 안내 모달 확인버튼 함수
+  const handleConfirmConfirm = () => {
+    setIsConfirmOpen(false);
+    navigate("/mainCustomer"); //다시 메인페이지로
+  };
+
   // 시도 시군구 동 자르기
   const parseAddress = (address) => {
     const parts = address.split(" ");
@@ -80,18 +99,27 @@ function Survey() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('surveys', [{
-        "storeType": selectedButton,
-        "sido": sido,
-        "sigungu": sigungu,
-        "dong": dong,
-        "latitude": latitude,
-        "longitude": longitude
-      }]);
+      const response = await axios.post("surveys", [
+        {
+          storeType: selectedButton,
+          sido: sido,
+          sigungu: sigungu,
+          dong: dong,
+          latitude: latitude,
+          longitude: longitude,
+        },
+      ]);
       console.log(response.data);
+
+      setIsConfirmOpen(true);
     } catch (error) {
-      console.error('수요조사 등록 실패: ', error);
-      throw error;
+      console.error("수요조사 등록 실패: ", error);
+      if (
+        error.response.data.errorMessage ===
+        "수요조사는 email당 하루 1회만 신청할 수 있습니다."
+      ) {
+        setIsWarningOpen(true);
+      }
     }
   };
 
@@ -101,7 +129,10 @@ function Survey() {
         <Header />
         <div className={styles.surveyContainer}>
           <h2 className={styles.surveyTitle}>
-            <span className={styles.userName}>{sessionStorage.getItem('nickname')}</span> 님이 원하는
+            <span className={styles.userName}>
+              {sessionStorage.getItem("nickname")}
+            </span>{" "}
+            님이 원하는
             <br />
             푸드트럭이 있으신가요?
           </h2>
@@ -114,7 +145,9 @@ function Survey() {
                     key={button.id}
                     src={button.img}
                     alt={button.alt}
-                    className={selectedButton === button.id ? styles.selected : ""}
+                    className={
+                      selectedButton === button.id ? styles.selected : ""
+                    }
                     onClick={() => handleButtonClick(button.id)}
                   />
                 ))}
@@ -125,12 +158,21 @@ function Survey() {
             <span role="img" aria-label="search" className={styles.searchIcon}>
               🔍
             </span>
-            <span className={styles.searchInput}>{address || "주소를 검색하세요"}</span>
+            <span className={styles.searchInput}>
+              {address || "주소를 검색하세요"}
+            </span>
           </div>
-          <button className={styles.submitBtn} onClick={handleSubmit}>제출할게요</button>
+          <button className={styles.submitBtn} onClick={handleSubmit}>
+            제출할게요
+          </button>
         </div>
       </div>
-      {isModalOpen && <MapModal onClose={handleModalClose} onConfirm={handleModalConfirm} />}
+      {isModalOpen && (
+        <MapModal onClose={handleModalClose} onConfirm={handleModalConfirm} />
+      )}
+      {isWarningOpen && <WarningModal onConfirm={handleWarningConfirm} />}
+
+      {isConfirmOpen && <ConfirmModal onConfirm={handleConfirmConfirm} />}
     </>
   );
 }

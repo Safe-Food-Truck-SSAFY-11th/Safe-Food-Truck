@@ -1,0 +1,23 @@
+.surveyArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.title {
+  width: 100%;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.surveyBtn button {
+  border-radius: 10px;
+  border: 2px solid #fec674;
+  background-color: white;
+  color: #fec674;
+  font-weight: bold;
+  font-size: 2em;
+  vertical-align: middle;
+}
