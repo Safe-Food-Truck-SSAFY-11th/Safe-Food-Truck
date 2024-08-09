@@ -9,7 +9,7 @@ const WarningModal = ({ onConfirm }) => {
           <img src={alertImg} alt="alert" />
         </div>
         <div>
-          <p>수요조사는 계정당 하루 1회만 신청할 수 있습니다 😰</p>
+          <p>수요조사는 계정당 일주일에 1회만 신청할 수 있어요 😰</p>
         </div>
         <div>
           <button className={styles.moveButton} onClick={onConfirm}>
