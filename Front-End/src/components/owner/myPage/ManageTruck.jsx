@@ -5,8 +5,6 @@ import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
 import AWS from 'aws-sdk';
 import MakeLogo from "./MakeLogo";
-import axiosInstance from "utils/axiosInstance";
-import axios from "axios";
 
 const ManageTruck = () => {
   const navigate = useNavigate();
@@ -49,6 +47,7 @@ const ManageTruck = () => {
   useEffect(() => {
     fetchTruckInfo();
     setTruckImage(truckInfo.storeImageDto.savedUrl);
+    translate();
   }, []);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -106,23 +105,13 @@ const ManageTruck = () => {
   };
   const [translateResult, setTranslateResult] = useState("");
 
-  const translate = async (e) => {
-    e.preventDefault();
-    const response = await axios.post(`https://naveropenapi.apigw.ntruss.com/nmt/v1/translation`,
-      {
-        source: 'auto',
-        target: 'en',
-        text: updateForm.storeType + "메뉴 카테고리를 대표로 하는" + updateForm.name + "이라는 이름의 푸드트럭"
-      },
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.REACT_APP_PAPAGO_CLIENT_ID,
-          'X-NCP-APIGW-API-KEY': process.env.REACT_APP_PAPAGO_CLIENT_SECRET,
-          'Content-Type': 'application/json'
-        },
-      });
-      console.log(response.data.translatedText);
-      setTranslateResult(response.data.translatedText);
+  const translate = () => {
+    var translationParam = {
+      source: 'auto',
+      target: 'en',
+      text: truckInfo.storeType + "카테고리를 메뉴 대표로 판매 하는" + truckInfo.name + "이라는 이름의 푸드트럭"
+    }
+    setTranslateResult(translationParam);
   }
 
   const handleAILogo = (e) => {
@@ -169,9 +158,6 @@ const ManageTruck = () => {
           </button>
           <button className={styles.AiBtn} onClick={handleAILogo}>
             AI 로고 생성
-          </button>
-          <button className={styles.AiBtn} onClick={translate}>
-            번역하기
           </button>
         </div>
         <div className={styles.inputContainer}>
@@ -242,7 +228,7 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
-      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} storeName={updateForm.name} storeType={updateForm.storeType} translateResult={translateResult}/>}
+      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult}/>}
     </>
   );
 };
