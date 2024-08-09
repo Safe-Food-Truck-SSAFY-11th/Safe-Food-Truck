@@ -180,7 +180,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public StoreNoticeResponseDto findStoreNotice(Integer storeId) {
-		return StoreNoticeResponseDto.fromEntity(findLoginStore());
+		return StoreNoticeResponseDto.fromEntity(findStore(storeId));
 	}
 
 	@Override
@@ -194,8 +194,12 @@ public class StoreServiceImpl implements StoreService {
 
 	public Store findLoginStore() {
 		String email = MemberInfo.getEmail();
-		log.info("login-email {}", email);
 		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(email)
+			.orElseThrow(StoreNotFoundException::new);
+	}
+
+	public Store findStore(Integer storeId) {
+		return storeRepository.findStoreWithMenusAndImagesByStoreId(storeId)
 			.orElseThrow(StoreNotFoundException::new);
 	}
 
