@@ -4,7 +4,5 @@ import lombok.Data;
 
 @Data
 public class LogoCreateRequestDto {
-    private String storeName;
-    private String storeType;
     private String logoStyle;
 }
