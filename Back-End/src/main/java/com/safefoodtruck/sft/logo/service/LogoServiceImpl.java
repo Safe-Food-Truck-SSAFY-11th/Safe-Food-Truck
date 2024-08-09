@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safefoodtruck.sft.logo.dto.request.LogoCreateRequestDto;
 import com.safefoodtruck.sft.logo.dto.response.LogoCreateResponseDto;
 import com.safefoodtruck.sft.logo.util.KakaoLogoRequestUtil;
+import com.safefoodtruck.sft.logo.util.PapagoTransRequestUtil;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,12 @@ public class LogoServiceImpl implements LogoService {
 
     @Value("${kakao-logo-app-key}")
     private String appKey;
+
+    @Value("${PAPAGO_CLIENT_0ID}")
+    private String PAPAGO_CLIENT_0ID;
+
+    @Value("${PAPAGO_CLIENT_SECRET}")
+    private String PAPAGO_CLIENT_SECRET;
 
     @Override
     public LogoCreateResponseDto createLogo(LogoCreateRequestDto logoCreateRequestDto) {
@@ -62,10 +69,38 @@ public class LogoServiceImpl implements LogoService {
     }
 
     private String makePrompt(LogoCreateRequestDto logoCreateRequestDto) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(logoCreateRequestDto.getStoreName()).append(", ");
-        sb.append(logoCreateRequestDto.getStoreType()).append(", ");
-        sb.append(logoCreateRequestDto.getLogoStyle());
-        return sb.toString();
+
+        //HTTP 헤더 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-NCP-APIGW-API-KEY-ID", PAPAGO_CLIENT_0ID);
+        headers.add("X-NCP-APIGW-API-KEY", PAPAGO_CLIENT_SECRET);
+        headers.add("Content-Type", "application/json");
+
+        //HTTP 바디 생성
+        Map<String, Object> body = PapagoTransRequestUtil.makeHttpBody(logoCreateRequestDto.getLogoStyle());
+
+        //Http 요청 보내기
+        HttpEntity<Map<String, Object>> transRequest = new HttpEntity<>(body, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+            "https://naveropenapi.apigw.ntruss.com/nmt/v1/translation",
+            HttpMethod.POST,
+            transRequest,
+            String.class
+        );
+
+        //Http 응답 (JSON)
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readTree(responseBody);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        log.info("TRANSRATE RESULT = " + jsonNode);
+
+        return jsonNode.get("message").get("result").get("translatedText").asText();
     }
 }

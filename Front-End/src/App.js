@@ -27,6 +27,7 @@ import FindPassword from "components/login/FindPassword";
 import Survey from "components/survey/Survey";
 import Membership from "components/common/Membership";
 import Live from "components/live/Live";
+import ManageSchedule from "components/owner/myPage/ManageSchedule";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
@@ -137,6 +138,7 @@ function App() {
         <Route path="/survey" element={<Survey />} />
         <Route path="/membership" element={<Membership />} />
         <Route path="/live/:storeId" element={<Live />} />
+        <Route path="/manageSchedule" element={<ManageSchedule />} />
       </Routes>
     </div>
   );

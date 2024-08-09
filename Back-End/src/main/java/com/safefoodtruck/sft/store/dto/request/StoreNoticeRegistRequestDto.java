@@ -1,4 +1,6 @@
 package com.safefoodtruck.sft.store.dto.request;
 
-public record StoreNoticeRegistRequestDto(String notice) {
+import java.util.Set;
+
+public record StoreNoticeRegistRequestDto(String notice, Set<String> connectedEmailList) {
 }
