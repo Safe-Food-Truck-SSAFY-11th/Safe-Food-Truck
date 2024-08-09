@@ -152,7 +152,8 @@ const useTruckStore = create(
           const { name, storeType, offDay, description, isOpen, storeImageDto } = response.data;
           set({ updateForm: { name, storeType, offDay, description, isOpen, storeImageDto } });
         } catch (error) {
-          console.error("트럭 정보 가져오기 실패", error);
+            set({ truckInfo: error.response.data });
+            console.error("트럭 정보 가져오기 실패", error);
         }
       },
 
@@ -185,6 +186,16 @@ const useTruckStore = create(
         }
       },
 
+      // 점포 삭제
+      deleteTruck: async () => {
+        try {
+          await axiosInstance.delete("stores");
+          alert('점포가 삭제되었습니다.');
+        } catch (error) {
+          console.error('점포 삭제 오류: ', error);
+        }
+      },
+
       // 방송상태
       isLive: false,
       toggleLive: () => set((state) => ({ isLive: !state.isLive })),
@@ -194,6 +205,7 @@ const useTruckStore = create(
       name: "ownerStore-storage",
       partialize: (state) => ({
         truckInfo: {
+          storeId: state.truckInfo.storeId,
           name: state.truckInfo.name,
           storeType: state.truckInfo.storeType,
           offDay: state.truckInfo.offDay,

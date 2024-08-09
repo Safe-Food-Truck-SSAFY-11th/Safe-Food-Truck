@@ -17,7 +17,7 @@ const RegistTruck = () => {
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         const role = sessionStorage.getItem('role');
-        if (!token || role !== 'owner') {
+        if (!token || role.indexOf('owner') == -1) {
             navigate('/login');
         }
     }, [navigate]);

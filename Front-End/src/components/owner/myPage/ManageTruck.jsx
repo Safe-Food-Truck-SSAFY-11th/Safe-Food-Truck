@@ -19,6 +19,7 @@ const ManageTruck = () => {
     fetchTruckInfo,
     truckInfo,
     updateTruck,
+    deleteTruck
   } = useTruckStore();
 
   const handleChange = (e) => {
@@ -46,6 +47,7 @@ const ManageTruck = () => {
   useEffect(() => {
     fetchTruckInfo();
     setTruckImage(truckInfo.storeImageDto.savedUrl);
+    translate();
   }, []);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -101,6 +103,16 @@ const ManageTruck = () => {
       });
     });
   };
+  const [translateResult, setTranslateResult] = useState("");
+
+  const translate = () => {
+    var translationParam = {
+      source: 'auto',
+      target: 'en',
+      text: truckInfo.storeType + "카테고리를 메뉴 대표로 판매 하는" + truckInfo.name + "이라는 이름의 푸드트럭"
+    }
+    setTranslateResult(translationParam);
+  }
 
   const handleAILogo = (e) => {
     e.preventDefault();
@@ -109,6 +121,14 @@ const ManageTruck = () => {
 
   const closeMakeLog = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
+  }
+
+  const handleDeleteStore = () => {
+    const confirmed = window.confirm('정말 삭제하시겠습니까?');
+    if (confirmed) {
+      deleteTruck();
+      navigate('/mainOwner');
+    }
   }
 
   return (
@@ -208,7 +228,7 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
-      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} storeName={updateForm.name} storeType={updateForm.storeType} />}
+      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult}/>}
     </>
   );
 };

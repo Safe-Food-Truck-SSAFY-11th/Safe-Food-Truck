@@ -51,6 +51,7 @@ public class OpenviduController {
     public ResponseEntity<String> initializeSession(
         @RequestBody(required = false) Map<String, Object> params)
         throws OpenViduJavaClientException, OpenViduHttpException {
+        openvidu.fetch();
         log.info("진입 params: " + params);
         SessionProperties properties = SessionProperties.fromJson(params).build();
         log.info("properties: " + properties.customSessionId());
@@ -68,6 +69,8 @@ public class OpenviduController {
     public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
         @RequestBody(required = false) Map<String, Object> params)
         throws OpenViduJavaClientException, OpenViduHttpException {
+
+        openvidu.fetch();
 
         // 세션 ID와 요청 매개변수 로그 출력
         log.info("sessionId: {}", sessionId);
