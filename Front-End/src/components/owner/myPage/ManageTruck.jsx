@@ -106,11 +106,7 @@ const ManageTruck = () => {
   const [translateResult, setTranslateResult] = useState("");
 
   const translate = () => {
-    var translationParam = {
-      source: 'auto',
-      target: 'en',
-      text: truckInfo.storeType + "카테고리를 메뉴 대표로 판매 하는" + truckInfo.name + "이라는 이름의 푸드트럭"
-    }
+    var translationParam = truckInfo.storeType + "카테고리를 메뉴 대표로 판매 하는" + truckInfo.name + "이라는 이름의 푸드트럭"
     setTranslateResult(translationParam);
   }
 
