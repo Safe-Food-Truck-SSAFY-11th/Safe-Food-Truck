@@ -25,18 +25,35 @@ const StarRating = ({ maxStars = 5, onRatingChange }) => {
   const bind = useDrag(({ movement: [mx], memo = rating }) => {
     const newRating = Math.min(maxStars, Math.max(0, Math.round((memo + mx / 24) * 2) / 2));
     setHoverRating(newRating);
-    onRatingChange(newRating);
     return memo;
   }, { axis: 'x' });
 
+  const handleMouseLeave = () => {
+    setHoverRating(rating);
+  };
+
+  const handleStarClick = (index) => {
+    setRating(index + 1);
+    setHoverRating(index + 1);
+    onRatingChange(index + 1);
+  };
+
   return (
-    <div className={styles.starRating} {...bind()}>
+    <div 
+      className={styles.starRating} 
+      {...bind()} 
+      onMouseLeave={handleMouseLeave}
+    >
       {[...Array(maxStars)].map((_, i) => (
-        <Star 
-          key={i} 
-          filled={i < hoverRating} 
-          half={hoverRating > i && hoverRating < i + 1} 
-        />
+        <span
+          key={i}
+          onClick={() => handleStarClick(i)}
+        >
+          <Star 
+            filled={i < hoverRating} 
+            half={hoverRating > i && hoverRating < i + 1} 
+          />
+        </span>
       ))}
     </div>
   );

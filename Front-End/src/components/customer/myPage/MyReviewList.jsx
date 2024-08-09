@@ -1,47 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MyReviewItem from './MyReviewItem';
 import DeleteReview from './DeleteReview';
 import DeleteComplete from './DeleteComplete';
 import styles from './MyReview.module.css';
 import useReviewStore from 'store/reviews/useReviewStore';
 
-const MyReviewList = ({ memberInfo, myReviews }) => {
-
-  const { deleteReview } = useReviewStore();
-
+const MyReviewList = ({ memberInfo }) => {
+  const { myReviews, getAllMyReview, deleteReview } = useReviewStore();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
-
   const [selectedReviewId, setSelectedReviewId] = useState(null);
 
-  const myReviewList = myReviews.reviewList || [];
-
-  console.log(myReviewList);
-
+  // 삭제 모달 열기
   const openDeleteModal = (reviewId) => {
     setSelectedReviewId(reviewId);
     setIsDeleteModalOpen(true);
   };
 
+  // 삭제 모달 닫기
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteConfirm = () => {
-    deleteReview(selectedReviewId);
+  // 삭제 확인 처리
+  const handleDeleteConfirm = async () => {
+    await deleteReview(selectedReviewId);
     setIsDeleteModalOpen(false);
     setIsDeleteCompleteModalOpen(true);
   };
 
+  // 삭제 완료 모달 닫기
   const closeDeleteCompleteModal = () => {
     setIsDeleteCompleteModalOpen(false);
+    getAllMyReview(); // 리뷰 목록 다시 가져오기
   };
+  
+  // 컴포넌트 마운트 시 리뷰 목록 가져오기
+  useEffect(() => {
+    getAllMyReview();
+  }, []);
+
+
+
+  const myReviewList = myReviews.reviewList || [];
 
   return (
     <div className={styles.container}>
       {myReviewList.length === 0 ? (
-        <p className={styles.noReview}> {memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</p>
+        <p className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</p>
       ) : (
         <>
           <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
@@ -50,8 +56,16 @@ const MyReviewList = ({ memberInfo, myReviews }) => {
           ))}
         </>
       )}
-      {isDeleteModalOpen && <DeleteReview onClose={closeDeleteModal} selectedReviewId={selectedReviewId} onConfirm={handleDeleteConfirm} />}
-      {isDeleteCompleteModalOpen && <DeleteComplete onClose={closeDeleteCompleteModal} />}
+      {isDeleteModalOpen && (
+        <DeleteReview 
+          onClose={closeDeleteModal} 
+          selectedReviewId={selectedReviewId} 
+          onConfirm={handleDeleteConfirm} 
+        />
+      )}
+      {isDeleteCompleteModalOpen && (
+        <DeleteComplete onClose={closeDeleteCompleteModal} />
+      )}
     </div>
   );
 };

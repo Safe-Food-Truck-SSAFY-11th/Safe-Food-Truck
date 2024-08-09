@@ -30,19 +30,36 @@ const MyPageCustomer = () => {
   } = customerStore(); 
 
   // 내 과거 주문 기록 불러오는 스토어 , 함수 호출
-  const { getMyOrders , pastOrders} = customerOrderStore();
+  const { getMyOrders , pastOrders , getOrderDetails , nowOrderId , nowOrder } = customerOrderStore();
 
+  console.log(nowOrderId)
   // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
   const { getAllMyReview, myReviews } = useReviewStore(); 
-
+  
+  // 리뷰는 리뷰 리스트 컴포넌트에서 동적으로 상태가 변하기 때문에 부모 컴포넌트에서 상태가 변경 될 때마다
+  // 렌더링 되어야 하므로 useEffect 훅에서 따로 빼줬습니다.
   useEffect(() => {
+    
+    getAllMyReview();
+    
+  },[]);
+  
+  useEffect(() => {
+    
     getMemberInfo();
     getJJimTruck();
-    getAllMyReview();
     getMyOrders();
     getSobiPattern();
   },[]);
 
+  useEffect(() => {
+    if (nowOrderId) {
+      getOrderDetails(nowOrderId);
+    }
+  }, [nowOrderId, getOrderDetails]);
+  
+  
+  console.log(nowOrder)
   const handleSelect = (component, button) => {
 
     if (activeButton === button) {
@@ -97,7 +114,7 @@ const MyPageCustomer = () => {
       <Header />
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} pastOrders={pastOrders} memberInfo={memberInfo} />
       <p>- - - - - - - - 현재 주문 내역 - - - - - - - -</p>
-      <OrderNow memberInfo={memberInfo} />
+      <OrderNow memberInfo={memberInfo} nowOrder={nowOrder} />
       {renderSelectedComponent()}
       <button onClick={handleDeleteAcct}>탈퇴하기</button>
     </div>

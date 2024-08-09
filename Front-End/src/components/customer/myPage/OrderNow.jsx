@@ -1,65 +1,49 @@
-import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
+import React from 'react';
 import styles from './OrderNow.module.css';
 
-const OrderNow = () => {
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+const OrderNow = ({ memberInfo, nowOrder }) => {
 
-  // api 추가되면 사용할 로직
-//   useEffect(() => {
-//     const fetchOrder = async () => {
-//       try {
-//         const response = await axios.get('/api/order/current'); 
-//         setOrder(response.data);
-//       } catch (error) {
-//         console.error("Error fetching order", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchOrder();
-//   }, []);
-
-useEffect(() => {
-    const fetchOrder = async () => {
-  
-      const dummyOrder = {
-        orderTime: '2024.07.17 17:39:59',
-        foodName: '핵불닭 타코야끼 8알',
-      };
-
-
-      setTimeout(() => {
-        setOrder(dummyOrder);
-        setLoading(false);
-      }, 1000);
-    };
-
-    fetchOrder();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!order) {
+  // nowOrder가 없을 때
+  if (!nowOrder) {
     return (
-    <div className={styles.container}>
-      <div className={styles.noOrder}>주문한 음식이 없어요 😥</div>
-    </div>
-  )
+      <div className={styles.container}>
+        <div className={styles.noOrder}>
+          {memberInfo.nickname} 님이 주문한 음식이 없어요 😥
+        </div>
+      </div>
+    );
   }
+
+  // Cooking status에 따른 메시지 출력
+  let statusMessage = '';
+  switch (nowOrder.cookingStatus) {
+    case 'waiting':
+      statusMessage = '매장에서 주문을 확인하고 있어요';
+      break;
+    case 'preparing':
+      statusMessage = '메뉴를 준비중이에요';
+      break;
+    case 'completed':
+      statusMessage = '조리가 완료 됬어요!';
+      break;
+    default:
+      statusMessage = '주문 상태를 확인할 수 없습니다.';
+  }
+  
+  const orderMenus = nowOrder.orderMenuListResponseDto.orderMenuResponseDtos;
+  const menuCount = orderMenus.length;
+  const menuText = menuCount > 1
+    ? `${orderMenus[0].menuName} 외 ${menuCount - 1}건`
+    : `${orderMenus[0].menuName} ${orderMenus[0].count}개`;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span className={styles.status}>주문 진행 중</span>
-        <span className={styles.orderTime}>주문한 시간 : {order.orderTime}</span>
+        <span className={styles.status}>{statusMessage}</span>
+        <span className={styles.orderTime}>주문 시간 : {nowOrder.orderTime}</span>
       </div>
       <div className={styles.orderDetails}>
-        <p>{order.foodName}</p>
+        <p>{menuText}</p>
       </div>
     </div>
   );
