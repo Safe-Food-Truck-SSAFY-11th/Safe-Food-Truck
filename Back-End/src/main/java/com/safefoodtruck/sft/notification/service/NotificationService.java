@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.notification.service;
 import com.safefoodtruck.sft.notification.dto.SelectNotificationResponseDto;
 import com.safefoodtruck.sft.notification.dto.SendNotificationRequestDto;
 import java.util.List;
+import java.util.Set;
 
 public interface NotificationService {
     void sendNotification(SendNotificationRequestDto sendNotificationRequestDto);
@@ -13,4 +14,5 @@ public interface NotificationService {
     void rejectedSendNotify(String orderEmail, String storeName);
     void completedSendNotify(String orderEmail, String storeName);
     void orderedSendNotify(String ownerEmail);
+    void changedNoticeNotify(Set<String> connectedEmailList);
 }
