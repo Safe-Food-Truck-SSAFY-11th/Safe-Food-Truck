@@ -10,7 +10,7 @@ const OrderPast = ({ memberInfo, pastOrders }) => {
 
   const handleReviewButtonClick = (orderId) => {
     navigate(`/createReview/${orderId}`, { state: { memberInfo } });
-  };
+  };  
   return (
     <div className={styles.container}>
       {results.length > 0 ? (

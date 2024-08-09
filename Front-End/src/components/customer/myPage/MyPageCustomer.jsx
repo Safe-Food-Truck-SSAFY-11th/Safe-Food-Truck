@@ -30,9 +30,14 @@ const MyPageCustomer = () => {
   } = customerStore(); 
 
   // 내 과거 주문 기록 불러오는 스토어 , 함수 호출
-  const { getMyOrders , pastOrders , getOrderDetails , nowOrderId , nowOrder } = customerOrderStore();
+  const { 
+    getMyOrders, 
+    pastOrders, 
+    getOrderDetails, 
+    nowOrderId, 
+    nowOrder,
+  } = customerOrderStore();
 
-  console.log(nowOrderId)
   // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
   const { getAllMyReview, myReviews } = useReviewStore(); 
   
@@ -45,7 +50,6 @@ const MyPageCustomer = () => {
   },[]);
   
   useEffect(() => {
-    
     getMemberInfo();
     getJJimTruck();
     getMyOrders();
@@ -53,13 +57,12 @@ const MyPageCustomer = () => {
   },[]);
 
   useEffect(() => {
+
     if (nowOrderId) {
       getOrderDetails(nowOrderId);
     }
-  }, [nowOrderId, getOrderDetails]);
+  }, [getOrderDetails]);
   
-  
-  console.log(nowOrder)
   const handleSelect = (component, button) => {
 
     if (activeButton === button) {
