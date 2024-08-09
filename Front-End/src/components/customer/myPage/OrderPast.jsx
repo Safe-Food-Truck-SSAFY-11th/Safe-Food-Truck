@@ -5,9 +5,7 @@ import styles from './OrderPast.module.css';
 const OrderPast = ({ memberInfo, pastOrders }) => {
   const navigate = useNavigate();
 
-  const results = pastOrders.customerOrderResponseDtos;
-
-  console.log(results);
+  const results = [...pastOrders.customerOrderResponseDtos].reverse();
 
   const handleReviewButtonClick = (orderId) => {
     navigate(`/createReview/${orderId}`, { state: { memberInfo } });
