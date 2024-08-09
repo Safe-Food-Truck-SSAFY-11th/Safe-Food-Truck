@@ -28,6 +28,10 @@ const useLiveStore = create((set) => ({
   isNoticeOpen: false,
   openNoticeModal: () => set({ isNoticeOpen: true }),
   closeNoticeModal: () => set({ isNoticeOpen: false }),
+
+  //방송 시작 실패여부
+  isLiveFailed: false,
+  setIsLiveFailed: (isLiveFailed) => set({ isLiveFailed: isLiveFailed }),
 }));
 
 export default useLiveStore;

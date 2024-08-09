@@ -24,6 +24,8 @@ const Live = () => {
     fetchNotice,
     isNoticeOpen,
     openNoticeModal,
+    setIsLiveFailed,
+    isLiveFailed,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
@@ -69,15 +71,17 @@ const Live = () => {
   // 뒤로가기 동작 처리 -> onbeforeunload랑 합치기
   useEffect(() => {
     const handleGoBack = async () => {
-      if (role.indexOf("customer") !== -1) {
-        await leaveSession(); // 고객인 경우 방송 세션 종료
-      } else if (role.indexOf("owner") !== -1) {
-        const res = window.confirm("방송을 종료하시겠습니까?");
-        if (res) {
-          await endLive(); // 방송 종료
-          navigate("/mainOwner"); // 사장님 메인페이지로 이동
-        } else {
-          window.history.pushState(null, "", "");
+      if (session) {
+        if (role.indexOf("customer") !== -1) {
+          await leaveSession(); // 고객인 경우 방송 세션 종료
+        } else if (role.indexOf("owner") !== -1) {
+          const res = window.confirm("방송을 종료하시겠습니까?");
+          if (res) {
+            await endLive(); // 방송 종료
+            navigate("/mainOwner"); // 사장님 메인페이지로 이동
+          } else {
+            window.history.pushState(null, "", "");
+          }
         }
       }
     };
@@ -274,13 +278,9 @@ const Live = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
-      if (response.status === 200) {
-        console.log("방송종료");
-        return true;
-      } else {
-        console.log("4");
-      }
+      console.log(response);
+      console.log("방송종료");
+      return true;
     } catch (error) {
       console.error("방송종료 중 에러발생!:", error);
       throw error;
@@ -354,6 +354,14 @@ const Live = () => {
 
       if (response.status === 204) {
         console.log("204 해당 세션 없다고 뜸" + sessionId);
+
+        //사장이 방송시작하려는데 오류 발생한 경우
+        if (role.indexOf("owner") !== -1) {
+          alert("방송 시작 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+          setIsLiveFailed(true);
+          leaveSession();
+          // navigate("/mainOwner");
+        }
         return null;
       }
 
@@ -396,19 +404,18 @@ const Live = () => {
                 공지사항 작성
               </button>
             ) : null}
-
-            {mainStreamManager.current !== undefined ? (
-              <div className={styles.mainVideo}>
-                <div className={styles.videoId}>
-                  {/* {
+          </div>
+          {mainStreamManager.current !== undefined ? (
+            <div className={styles.mainVideo}>
+              <div className={styles.videoId}>
+                {/* {
                     JSON.parse(mainStreamManager.current.stream.connection.data)
                       .clientData
                   } */}
-                </div>
-                <UserVideoComponent streamManager={mainStreamManager.current} />
               </div>
-            ) : null}
-          </div>
+              <UserVideoComponent streamManager={mainStreamManager.current} />
+            </div>
+          ) : null}
 
           {isChat ? (
             <div className={styles.chatContainer}>
