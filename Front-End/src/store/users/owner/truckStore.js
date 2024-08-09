@@ -205,6 +205,7 @@ const useTruckStore = create(
       name: "ownerStore-storage",
       partialize: (state) => ({
         truckInfo: {
+          storeId: state.truckInfo.storeId,
           name: state.truckInfo.name,
           storeType: state.truckInfo.storeType,
           offDay: state.truckInfo.offDay,

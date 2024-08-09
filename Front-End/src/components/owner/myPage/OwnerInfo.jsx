@@ -5,13 +5,14 @@ import userStore from "store/users/userStore";
 import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import profile_img from "assets/images/profile_image.png"
+import ManageStore from "./ManageStore";
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
   const { fetchUser } = userStore();
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { getFoodTruckLikes } = useFoodTruckStore();
-
+  const [showManageModal, setShowManageModal] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [userInfo, setUserInfo] = useState({});
 
@@ -51,7 +52,10 @@ const OwnerInfo = () => {
   };
 
   const handleTruckUpdateClick = () => {
-    navigate("/manageTruck");
+    setShowManageModal(true);
+  };
+  const modalClose = () => {
+    setShowManageModal(false);
   };
 
   const handleMenuManageClick = () => {
@@ -76,39 +80,42 @@ const OwnerInfo = () => {
   const formattedIncome = weeklyIncome ? getDayString(weeklyIncome) : "";
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <img src={imageUrl} alt="Truck Owner" className={styles.image} />
-          <button className={styles.profileButton} onClick={handleUpdateClick}>
-            내 정보 수정
-          </button>
-        </div>
-        <div className={styles.info}>
-          <p>
-            반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
-            사장님!
-          </p>
-          <p className={styles.infoText}>
-            <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
-            손님 : <span className={styles.highlight}>{likesCount}</span> 명
-          </p>
-          <p className={styles.infoText}>
-            <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
-          </p>
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div>
+            <img src={imageUrl} alt="Truck Owner" className={styles.image} />
+            <button className={styles.profileButton} onClick={handleUpdateClick}>
+              내 정보 수정
+            </button>
+          </div>
+          <div className={styles.info}>
+            <p>
+              반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
+              사장님!
+            </p>
+            <p className={styles.infoText}>
+              <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
+              손님 : <span className={styles.highlight}>{likesCount}</span> 명
+            </p>
+            <p className={styles.infoText}>
+              <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
+            </p>
 
-          <div className={styles.buttons}>
-            <button className={styles.button} onClick={handleTruckReviewClick}>트럭 리뷰 보기</button>
-            <button className={styles.button} onClick={handleTruckUpdateClick}>
-              트럭 정보 수정
-            </button>
-            <button className={styles.button} onClick={handleMenuManageClick}>
-              판매 메뉴 관리
-            </button>
+            <div className={styles.buttons}>
+              <button className={styles.button} onClick={handleTruckReviewClick}>트럭 리뷰 보기</button>
+              <button className={styles.button} onClick={handleTruckUpdateClick}>
+                트럭 정보 수정
+              </button>
+              <button className={styles.button} onClick={handleMenuManageClick}>
+                판매 메뉴 관리
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {showManageModal && <ManageStore modalClose={modalClose} />}
+    </>
   );
 };
 
