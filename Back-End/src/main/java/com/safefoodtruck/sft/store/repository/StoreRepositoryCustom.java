@@ -7,5 +7,6 @@ import java.util.Optional;
 public interface StoreRepositoryCustom {
     List<Store> findAllOpenStores();
     Optional<Integer> findStoreIdByOwnerEmail(String email);
+    Optional<Store> findStoreWithMenusAndImagesByStoreId(Integer storeId);
     Optional<Store> findStoreWithMenusAndImagesByOwnerEmail(String email);
 }

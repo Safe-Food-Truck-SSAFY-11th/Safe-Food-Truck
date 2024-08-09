@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.store.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.safefoodtruck.sft.member.domain.QMember;
 import com.safefoodtruck.sft.menu.domain.QMenu;
 import com.safefoodtruck.sft.menu.domain.QMenuImage;
 import com.safefoodtruck.sft.store.domain.QStore;
@@ -37,6 +38,24 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         return Optional.ofNullable(storeId);
     }
+
+    @Override
+    public Optional<Store> findStoreWithMenusAndImagesByStoreId(Integer storeId) {
+        QStore store = QStore.store;
+        QMenu menu = QMenu.menu;
+        QMenuImage menuImage = QMenuImage.menuImage;
+        QMember owner = QMember.member;
+
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(store)
+            .leftJoin(store.storeImage).fetchJoin()
+            .leftJoin(store.owner, owner).fetchJoin()
+            .leftJoin(store.menuList, menu).fetchJoin()
+            .leftJoin(menu.menuImage, menuImage).fetchJoin()
+            .where(store.id.eq(storeId))
+            .fetchOne());
+    }
+
+
 
     @Override
     public Optional<Store> findStoreWithMenusAndImagesByOwnerEmail(String email) {
