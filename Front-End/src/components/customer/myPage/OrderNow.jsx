@@ -14,25 +14,28 @@ const OrderNow = ({ memberInfo, nowOrder }) => {
 
   // 주문 상태에 따른 메시지
   const statusMessage = () => {
-
+  
     if (nowOrder.status === 'pending') {
 
       return '매장에서 주문을 확인하고 있어요';
 
     }
     else if (nowOrder.status === 'accepted') {
+    
+      if (nowOrder.cookingStatus === 'completed')
 
-      switch(nowOrder.cookingStatus) {
-        case 'waiting':
-          return '메뉴를 준비중이에요';
-        case 'complete':
-          return '메뉴가 준비됬어요';
-        default :
-          return '진행중인 주문을 확인할 수 없어요'
-      }
+        return '메뉴 준비가 완료 됬어요'
+
+      else if (nowOrder.cookingStatus === 'waiting')
+
+        return '메뉴 준비중이에요'
+
+    }
+    else if (nowOrder.status === 'rejected') {
+
+      return '주문을 거절했어요'
       
     }
-    
   }
 
   return (
