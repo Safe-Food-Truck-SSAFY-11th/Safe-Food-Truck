@@ -20,7 +20,6 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo ,pastOrders  }) => {
   }
 
     // 과거 주문 목록을 토대로 내가 푸드트럭 몇 번 이용 했는지 횟수 가져옴!
-  console.log(pastOrders)
   const pastOrderNum = pastOrders?.customerOrderResponseDtos?.length;
 
   return (

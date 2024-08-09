@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import styles from './CustomerCart.module.css';
 import { useNavigate , useLocation } from 'react-router-dom';
 import axiosInstance from 'utils/axiosInstance';
+import customerOrderStore from 'store/orders/customerOrderStore';
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,6 +13,8 @@ const CustomerCart = () => {
   const location = useLocation();
 
   const { storeId } = location.state;
+
+  const { setNowOrderId , nowOrderId } = customerOrderStore();
 
   const nickname = sessionStorage.getItem('nickname');
 
@@ -54,13 +57,27 @@ const CustomerCart = () => {
     };
     
     try {
-      await axiosInstance.post('orders', payload);
-      alert('결제가 완료되었습니다!');
+     const response =  await axiosInstance.post('orders', payload);
+      alert('주문이 완료되었습니다!');
+
+      const nowOrder = response.data
+
+      console.log(nowOrder)
+
+      setNowOrderId(nowOrder.orderId)
+
+      console.log(nowOrderId)
+
       Cookies.remove('cart');
+
       navigate('/mypageCustomer');
+
     } catch (error) {
+
       console.error('결제 실패:', error);
+
       alert('결제에 실패했습니다.');
+
     }
   };
 
@@ -96,7 +113,7 @@ const CustomerCart = () => {
             />
           </div>
           <button className={styles.checkoutButton} onClick={handleCheckout}>
-            {totalAmount}원 결제 할게요!
+            {totalAmount}원 주문 할게요!
           </button>
         </>
       ) : (
