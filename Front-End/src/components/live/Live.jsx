@@ -39,12 +39,13 @@ const Live = () => {
   const mainStreamManager = useRef(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [isChat, setIsChat] = useState(role === "customer");
+  const [isChat, setIsChat] = useState(role.indexOf("customer") !== -1);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const { truckInfo } = useTruckStore();
   const { selectedTruck } = useFoodTruckStore();
-  const trukName = role === "owner" ? truckInfo.name : selectedTruck.name;
+  const trukName =
+    role.indexOf("owner") !== -1 ? truckInfo.name : selectedTruck.name;
 
   const OV = useRef();
 
@@ -58,7 +59,7 @@ const Live = () => {
 
   //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
   useEffect(() => {
-    if (role === "owner") {
+    if (role.indexOf("owner") !== -1) {
       createSessionAndJoin(); // 퍼블리셔로 참여
     } else if (role === "customer" && token) {
       joinExistingSession(token); // 구독자로 참여
@@ -68,9 +69,9 @@ const Live = () => {
   // 뒤로가기 동작 처리 -> onbeforeunload랑 합치기
   useEffect(() => {
     const handleGoBack = async () => {
-      if (role === "customer") {
+      if (role.indexOf("customer") !== -1) {
         await leaveSession(); // 고객인 경우 방송 세션 종료
-      } else if (role === "owner") {
+      } else if (role.indexOf("owner") !== -1) {
         const res = window.confirm("방송을 종료하시겠습니까?");
         if (res) {
           await endLive(); // 방송 종료
@@ -95,7 +96,7 @@ const Live = () => {
       session.on("sessionDisconnected", (event) => {
         console.log(event);
         if (event.reason === "forceDisconnectByServer") {
-          if (role === "customer") {
+          if (role.indexOf("customer") !== -1) {
             navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화
             openModal();
           }
@@ -234,7 +235,7 @@ const Live = () => {
   //방송 나가는 함수
   const leaveSession = () => {
     if (session) {
-      if (role === "owner") {
+      if (role.indexOf("owner") !== -1) {
         session.unpublish(publisher);
       }
       session.disconnect();
@@ -249,9 +250,9 @@ const Live = () => {
     mainStreamManager.current = undefined;
     setPublisher(undefined);
 
-    if (role === "owner") {
+    if (role.indexOf("owner") !== -1) {
       navigate("/mainOwner");
-    } else if (role === "customer") {
+    } else if (role.indexOf("customer") !== -1) {
       navigate(`/foodTruckDetail/${storeId}`);
     }
   };
@@ -368,7 +369,7 @@ const Live = () => {
       {session !== undefined ? (
         <div className={styles.session}>
           <div className={styles.sessionHeader}>
-            {role === "customer" ? (
+            {role.indexOf("customer") !== -1 ? (
               <button
                 className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
                 id="buttonLeaveSession"
@@ -386,7 +387,7 @@ const Live = () => {
               {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
             </button>
 
-            {role === "owner" ? (
+            {role.indexOf("owner") !== -1 ? (
               <button
                 className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
                 id="noticeRegist"
@@ -489,7 +490,7 @@ const Live = () => {
             </div>
           ) : null}
 
-          {role === "owner" ? (
+          {role.indexOf("owner") !== -1 ? (
             <div className={styles.ownerItems}>
               <OpenClose onLiveEndClick={endLive} />
               <JiguemOrder />
