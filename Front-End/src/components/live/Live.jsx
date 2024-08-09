@@ -20,12 +20,16 @@ const Live = () => {
   const {
     openModal,
     ownerNickname,
-    notice,
+    notice: storeNotice,
     fetchNotice,
     isNoticeOpen,
     openNoticeModal,
     setIsLiveFailed,
     isLiveFailed,
+    members,
+    addMember,
+    deleteMember,
+    resetMembers,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
@@ -48,6 +52,7 @@ const Live = () => {
   const { selectedTruck } = useFoodTruckStore();
   const trukName =
     role.indexOf("owner") !== -1 ? truckInfo.name : selectedTruck.name;
+  const [notice, setNotice] = useState(storeNotice);
 
   const OV = useRef();
 
@@ -112,8 +117,9 @@ const Live = () => {
   //공지사항 가져오기
   useEffect(() => {
     fetchNotice(storeId);
+    setNotice(storeNotice);
     console.log(notice);
-  }, []);
+  }, [storeNotice]);
 
   // 사용자가 페이지를 떠나려고 할 때 동작 (새로고침, 창 닫기)
   const onbeforeunload = (event) => {
@@ -156,9 +162,30 @@ const Live = () => {
       setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
     });
 
+    //새로운 커넥션 생기는 경우
+    newSession.on("connectionCreated", (event) => {
+      //새 커넥션의 email을 memeber 배열에 추가
+      console.log("Connection " + event.connection.connectionId + " created");
+      console.log(JSON.parse(event.connection.data).email);
+      addMember(JSON.parse(event.connection.data).email);
+      console.log(members);
+    });
+
+    //커넥션 끊기는 경우
+    newSession.on("connectionDestroyed", (event) => {
+      //끊긴 커넥션의 email을 member 배열에서 제거
+      console.log("Connection " + event.connection.connectionId + " desproyed");
+      console.log(JSON.parse(event.connection.data).email);
+      deleteMember(JSON.parse(event.connection.data).email);
+      console.log(members);
+    });
+
     try {
       const token = await getToken();
-      await newSession.connect(token, { clientData: myUserName });
+      await newSession.connect(token, {
+        clientData: myUserName,
+        email: sessionStorage.getItem("email"),
+      });
 
       let newPublisher = await OV.current.initPublisherAsync(undefined, {
         audioSource: undefined,
@@ -194,18 +221,20 @@ const Live = () => {
       const subscriber = newSession.subscribe(event.stream, undefined);
       setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
 
+      console.log("리모트 커넥션");
       console.log(event.stream.session.remoteConnections);
 
+      //사장님 화면을 송출하기
       const newMainStreamManager = Array.from(
         event.stream.session.remoteConnections.values()
       ).filter(
         (item) =>
           item && item.stream && item.stream.hasAudio && item.stream.hasVideo
       );
-
+      console.log("메인스트림메니저");
       console.log(newMainStreamManager);
+      console.log("그 중 첫번째");
       console.log(newMainStreamManager[0].stream.streamManager);
-
       //세션에 연결된 영상, 오디오가 있는 스트림을 메인으로 설정
       mainStreamManager.current = newMainStreamManager[0].stream.streamManager;
     });
@@ -226,7 +255,10 @@ const Live = () => {
     });
 
     try {
-      await newSession.connect(token, { clientData: myUserName });
+      await newSession.connect(token, {
+        clientData: myUserName,
+        email: sessionStorage.getItem("email"),
+      });
     } catch (error) {
       console.error(
         "There was an error connecting to the session:",
@@ -265,6 +297,9 @@ const Live = () => {
   const endLive = async () => {
     console.log("3");
 
+    //방송 참여자 초기화
+    resetMembers();
+    console.log(members);
     if (session) {
       session.unpublish(publisher);
     }
@@ -280,12 +315,11 @@ const Live = () => {
       );
       console.log(response);
       console.log("방송종료");
-      return true;
+      return response.data;
     } catch (error) {
       console.error("방송종료 중 에러발생!:", error);
       throw error;
     }
-    return false;
   };
 
   //채팅창 열고 닫기
@@ -341,7 +375,7 @@ const Live = () => {
     return response.data; // The sessionId
   };
 
-  //세션 토근 발급
+  //세션 토큰 발급
   const createToken = async (sessionId) => {
     try {
       const response = await axios.post(
@@ -407,12 +441,6 @@ const Live = () => {
           </div>
           {mainStreamManager.current !== undefined ? (
             <div className={styles.mainVideo}>
-              <div className={styles.videoId}>
-                {/* {
-                    JSON.parse(mainStreamManager.current.stream.connection.data)
-                      .clientData
-                  } */}
-              </div>
               <UserVideoComponent streamManager={mainStreamManager.current} />
             </div>
           ) : null}
