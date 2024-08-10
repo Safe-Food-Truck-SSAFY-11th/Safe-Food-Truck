@@ -19,8 +19,6 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
@@ -47,7 +45,7 @@ public class StoreServiceImpl implements StoreService {
 	private final NotificationService notificationService;
 
 	@Override
-	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
+	public void registStore(StoreRegistRequestDto storeRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member owner = memberRepository.findByEmail(email);
 		Store store = Store.of(owner, storeRegistRequestDto);
@@ -65,12 +63,10 @@ public class StoreServiceImpl implements StoreService {
 			StoreImage savedStoreImage = storeImageRepository.save(storeImage);
 			savedStoreImage.setStore(store);
 		}
-
-		return StoreRegistResponseDto.fromEntity(email, savedStore);
 	}
 
 	@Override
-	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+	public void updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
 		Store store = findLoginStore();
 		store.update(storeUpdateRequestDto);
 
@@ -79,8 +75,6 @@ public class StoreServiceImpl implements StoreService {
 
 		storeRepository.save(store);
 		storeImageRepository.save(storeImage);
-
-		return StoreUpdateResponseDto.fromEntity(store);
 	}
 
 	@Override
@@ -172,7 +166,7 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreNoticeResponseDto updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+	public void updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
 		if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
 			throw new NullListException();
 		}
@@ -181,7 +175,6 @@ public class StoreServiceImpl implements StoreService {
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
 		notificationService.changedNoticeNotify(ownerEmail, storeNoticeRegistRequestDto.connectedEmailList());
-		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
 	@Override
