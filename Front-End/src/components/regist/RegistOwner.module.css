@@ -4,6 +4,7 @@
 }
 
 .inputContainer {
+    width: 100%;
     margin-bottom: 10px;
     position: relative;
 }
@@ -50,18 +51,21 @@
 }
 
 .hintText {
+    text-align: left;
     font-size: 12px;
     color: green;
     margin-top: 5px;
 }
 
 .errorText {
+    text-align: left;
     font-size: 12px;
     color: red;
     margin-top: 5px;
 }
 
 .inputRow {
+    width: 100%;
     display: flex;
     justify-content: space-between;
 }

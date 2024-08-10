@@ -3,7 +3,7 @@ import styles from './RegistUser.module.css';
 import useUserStore from 'store/users/userStore';
 
 const RegistUser = ({ formData, onFormChange }) => {
-  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched, isValidEmailForm } = useUserStore();
+  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, pwdValid, setPwdValid, passwordValidChk, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched, passwordCheckTouched, setPasswordCheckTouched } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -17,6 +17,11 @@ const RegistUser = ({ formData, onFormChange }) => {
   useEffect(() => {
     setPasswordMatch(formData.password === formData.confirmPassword);
   }, [formData.password, formData.confirmPassword, setPasswordMatch]);
+
+  useEffect(() => {
+    handlePwdCheck(formData.password);
+    console.log(pwdValid);
+  }, [formData.password]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +38,11 @@ const RegistUser = ({ formData, onFormChange }) => {
     setPasswordTouched();
   }
 
+  const handlePwdCheckChange = (e) => {
+    handleChange(e);
+    setPasswordCheckTouched();
+  }
+
   const handleNicknameChange = (e) => {
     handleChange(e);
     setNicknameTouched();
@@ -42,6 +52,10 @@ const RegistUser = ({ formData, onFormChange }) => {
     setEmailValid(emailValidChk(email));
     checkEmail(email);
   };
+
+  const handlePwdCheck = (pwd) => {
+    setPwdValid(passwordValidChk(pwd));
+  }
 
   const handleNicknameCheck = () => {
     checkNickname(formData.nickname);
@@ -61,12 +75,13 @@ const RegistUser = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호</label>
-        <input type="password" name="password" value={formData.password || ''} onChange={handleChange} />
+        <input type="password" name="password" value={formData.password || ''} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
+        {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호확인</label>
-        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePasswordChange} />
-        {passwordTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePwdCheckChange} placeholder='영문, 숫자, 특수문자 조합 8-16자'/>
+        {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
@@ -99,7 +114,7 @@ const RegistUser = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
+        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} placeholder='숫자만 입력하세요'/>
       </div>
     </form>
   );

@@ -4,7 +4,7 @@ import useUserStore from 'store/users/userStore';
 import axios from 'axios';
 
 const RegistOwner = ({ formData, onFormChange }) => {
-  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched } = useUserStore();
+  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, pwdValid, setPwdValid, passwordValidChk, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched, passwordCheckTouched, setPasswordCheckTouched } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [bsNumValid, setBsNumValid] = useState(null);
 
@@ -19,6 +19,11 @@ const RegistOwner = ({ formData, onFormChange }) => {
   useEffect(() => {
     setPasswordMatch(formData.password === formData.confirmPassword);
   }, [formData.password, formData.confirmPassword, setPasswordMatch]);
+
+  useEffect(() => {
+    handlePwdCheck(formData.password);
+    console.log(pwdValid);
+  }, [formData.password]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,6 +43,11 @@ const RegistOwner = ({ formData, onFormChange }) => {
     setPasswordTouched();
   };
 
+  const handlePwdCheckChange = (e) => {
+    handleChange(e);
+    setPasswordCheckTouched();
+  }
+
   const handleNicknameChange = (e) => {
     handleChange(e);
     setNicknameTouched();
@@ -47,6 +57,10 @@ const RegistOwner = ({ formData, onFormChange }) => {
     setEmailValid(emailValidChk(email));
     checkEmail(email);
   };
+
+  const handlePwdCheck = (pwd) => {
+    setPwdValid(passwordValidChk(pwd));
+  }
 
   const handleNicknameCheck = () => {
     checkNickname(formData.nickname);
@@ -98,12 +112,13 @@ const RegistOwner = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호</label>
-        <input type="password" name="password" value={formData.password || ''} onChange={handleChange} />
+        <input type="password" name="password" value={formData.password || ''} onChange={handlePasswordChange} />
+        {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호확인</label>
-        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePasswordChange} />
-        {passwordTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePwdCheckChange} />
+        {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
@@ -136,12 +151,14 @@ const RegistOwner = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
+        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} placeholder='숫자만 입력하세요'/>
       </div>
       <div className={styles.inputContainer}>
         <label>사업자 번호</label>
-        <input type="text" name="businessNumber" value={formData.businessNumber || ''} onChange={handleChange} />
-        <button type="button" className={styles.duplicateButton} onClick={handleBusNumCheck}>사업자 번호 확인</button>
+        <div className={styles.emailContainer}>
+          <input type="text" name="businessNumber" value={formData.businessNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
+          <button type="button" className={styles.duplicateButton} onClick={handleBusNumCheck}>사업자 번호 확인</button>
+        </div>
         {bsNumValid === false && <p className={styles.errorText}>사업자 번호가 유효하지 않습니다</p>}
         {bsNumValid === true && <p className={styles.hintText}>유효한 사업자 번호입니다</p>}
       </div>
