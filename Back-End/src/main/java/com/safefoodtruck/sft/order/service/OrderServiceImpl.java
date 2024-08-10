@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 	public OrderRegistResponseDto registOrder(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
-		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
+		Store store = storeRepository.findStoreWithMenusAndImagesByStoreId(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
 		Order order = Order.of(orderRegistRequestDto, customer);

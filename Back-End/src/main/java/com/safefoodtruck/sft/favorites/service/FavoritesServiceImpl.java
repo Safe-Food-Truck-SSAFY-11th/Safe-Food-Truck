@@ -14,6 +14,7 @@ import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
 import groovy.util.logging.Slf4j;
@@ -44,7 +45,7 @@ public class FavoritesServiceImpl implements FavoritesService {
         }
         Member member = memberRepository.findByEmail(userEmail).orElseThrow(
             NotFoundMemberException::new);;
-        Store store = storeRepository.findById(storeId).get();
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
         favoritesRepository.save(Favorites.builder()
             .member(member)
             .store(store)
