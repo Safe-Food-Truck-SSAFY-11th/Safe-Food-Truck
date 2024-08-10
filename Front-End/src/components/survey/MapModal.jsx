@@ -86,9 +86,9 @@ const MapModal = ({ onClose, onConfirm }) => {
       <div className={styles.modalContent}>
         <div id="map" className={styles.map}></div>
         <div className={styles.btnContainer}>
-          <button id="currentLocationBtn">현재 위치로</button>
-          <button id="confirmBtn">확인</button>
-          <button onClick={onClose}>닫기</button>
+          <button className={styles.button} id="currentLocationBtn">현재 위치로</button>
+          <button className={styles.button} id="confirmBtn">확인</button>
+          <button className={styles.button} onClick={onClose}>닫기</button>
         </div>
       </div>
     </div>

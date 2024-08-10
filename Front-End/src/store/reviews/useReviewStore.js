@@ -10,7 +10,7 @@ const useReviewStore = create((set) => ({
     is_visible: 1,
     rating: 0,
     savedPath: 'empty',
-    savedUrl: 'empty'
+    savedUrl: 'empty',
   },
 
   // 내가 작성한 리뷰 전체 조회
@@ -27,7 +27,10 @@ const useReviewStore = create((set) => ({
   createReview: async (newReview) => {
     try {
       const response = await axiosInstance.post('/reviews', newReview);
-      set((state) => ({ myReviews: [...state.myReviews, response.data] }));
+      console.log(response.data);
+      set((state) => ({
+        myReviews: [...state.myReviews, response.data],
+      }));
     } catch (error) {
       console.error('리뷰 작성에 실패 했습니다', error);
     }
@@ -36,43 +39,32 @@ const useReviewStore = create((set) => ({
   // 리뷰 삭제하기
   deleteReview: async (reviewId) => {
     try {
-      
       await axiosInstance.delete(`/reviews/${reviewId}`);
-      
+      set((state) => ({
+        myReviews: state.myReviews.filter((review) => review.id !== reviewId),
+      }));
     } catch (error) {
-
       console.error('리뷰 삭제에 실패했습니다', error);
-    
     }
   },
 
   // 리뷰 신고하기 함수
   reportReview: async () => {
     try {
-
-      await axiosInstance.post(`/reviews`)
-
-      console.log('리뷰 신고 성공')
-
+      await axiosInstance.post(`/reviews`);
+      console.log('리뷰 신고 성공');
     } catch (error) {
-
-      console.error('리뷰 신고 실패')
-
+      console.error('리뷰 신고 실패');
     }
   },
 
   // 리뷰 신고여부 체크
   isReportedReview: async (reviewId) => {
     try {
-    
-     const response =  await axiosInstance.get(`/reviews/${reviewId}`)
-
-      return response.data
-
-    } catch (error){
-
-      console.error("리뷰 신고여부 체크 실패" , error)
-    
+      const response = await axiosInstance.get(`/reviews/${reviewId}`);
+      return response.data;
+    } catch (error) {
+      console.error('리뷰 신고여부 체크 실패', error);
     }
   },
 

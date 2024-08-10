@@ -13,6 +13,7 @@ import useLiveStore from "store/live/useLiveStore";
 import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import NoticeModal from "./NoticeModal";
+import chatbot from "gemini/geminiChatBot";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -332,11 +333,38 @@ const Live = () => {
     setMessage(e.target.value);
   };
 
+  const aiAply = async (modifiedMessage) => {
+    var result = await chatbot(storeId, modifiedMessage);
+    try{
+      // 사장님이 보내는 채팅으로 등록
+      const nickname = sessionStorage.getItem("nickname");
+      session.signal({
+        data: `${ownerNickname},${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
+        to: [],
+        type: "my-chat",
+      }).then(() => {
+        // console.log("AI message successfully sent:", result);
+        setMessage(""); // 입력 필드 초기화
+      }).catch((error) => {
+        console.error("Error sending AI message:", error);
+      });
+    }catch(error){
+      console.error("Error during AI application:", error);
+    }
+  }
+
   //채팅 전송
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim() !== "") {
       const nickname = sessionStorage.getItem("nickname");
+      // /ai로 시작하면 chatBot 함수 실행
+      console.log("메세지 확인: ", message)
+      if (message.startsWith("/ai")) {
+        // 메시지에서 /ai를 제외한 부분으로 대체
+        const modifiedMessage = message.replace(/^\/ai\s*/, '');
+        aiAply(modifiedMessage);
+      }
       session
         .signal({
           data: `${nickname},${message}`,
