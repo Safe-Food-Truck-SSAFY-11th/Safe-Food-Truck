@@ -14,13 +14,11 @@ function FoodTruckMenuDetail() {
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 관리
 
   const handleIncrease = () => {
-    setQuantity(quantity + 1);
+    setQuantity(prevQuantity => prevQuantity + 1);
   };
 
   const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : prevQuantity));
   };
 
   const handleAddToCart = () => {
@@ -31,39 +29,38 @@ function FoodTruckMenuDetail() {
     };
     
     let cart = Cookies.get('cart');
-  
-    cart = JSON.parse(cart);
+    
+    // 쿠키가 존재하지 않으면 빈 배열로 초기화
+    if (!cart) {
+      cart = [];
+    } else {
+      cart = JSON.parse(cart);
+    }
 
     // 이미 장바구니에 물건이 담겨 있으면?
     if (cart.length !== 0) {
-
-      // 이미 존재하는 storeId를 장바구니의 0번째 인덱스에서 꺼내오고
       const existingStoreId = cart[0].storeId;
-  
-      // 만약 지금 담으려는 storeId와 이전에 담은 메뉴의 storeId가 다르다면 모달 띄워서 경고 함
+
       if (existingStoreId !== storeId) {
         setModalMessage('다른 푸드트럭의 메뉴는 한 번에 담을 수 없어요.');
-        setIsModalOpen(true); // 모달 열기
+        setIsModalOpen(true);
         return;
       }
-      
-    } else {
-      cart = [];
     }
-  
+
     const existingItemIndex = cart.findIndex(cartItem => cartItem.menuId === item.menuId);
-  
+
     if (existingItemIndex !== -1) {
       cart[existingItemIndex].quantity += quantity;
     } else {
       cart.push(cartItem);
     }
-  
+
     const expirationDate = new Date();
     expirationDate.setMinutes(expirationDate.getMinutes() + 20);
-  
+
     Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
-  
+
     console.log(cart);
   };
 
@@ -78,6 +75,11 @@ function FoodTruckMenuDetail() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const formattedPrice = new Intl.NumberFormat('ko-KR', {
+    style: 'currency',
+    currency: 'KRW',
+  }).format(item.price * quantity);
 
   return (
     <div className={styles.menuDetail}>
@@ -95,7 +97,7 @@ function FoodTruckMenuDetail() {
       <p className={styles.descriptionTitle}>상세 설명이에요!</p>
       <p className={styles.description}>{item.description}</p>
       <button onClick={handleAddToCart} className={styles.addToCartButton}>
-        {item.price * quantity}원 장바구니에 담을게요!
+        {formattedPrice} 장바구니에 담을게요!
       </button>
       <div className={styles.navigationButtons}>
         <button onClick={handleBack} className={styles.navButton}>뒤로가기</button>
