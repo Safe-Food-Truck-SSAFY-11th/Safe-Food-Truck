@@ -1,9 +1,15 @@
 video {
   width: 100%;
+  /* height: 30vh; */
   height: auto;
   float: left;
   cursor: pointer;
-  border-radius: 10px;
+  /* border-radius: 10px; */
+}
+
+.streamcomponent {
+  width: 100%;
+  height: 100%;
 }
 .streamcomponent div {
   position: absolute;
