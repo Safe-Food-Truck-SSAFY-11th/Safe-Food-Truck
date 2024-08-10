@@ -1,6 +1,11 @@
 package com.safefoodtruck.sft.order.repository;
 
-import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,10 +14,8 @@ import com.safefoodtruck.sft.order.domain.QOrder;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderByStoreSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.store.domain.QStore;
+
 import jakarta.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
@@ -61,7 +64,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 				order.amount.sum().intValue()))
 			.from(order)
 			.join(order.store, store)
-			.where(order.customer.email.eq(email).and(order.orderTime.goe(weekAgo)))
+			.where(
+				order.customer.email.eq(email)
+					.and(order.orderTime.goe(weekAgo))
+					.and(order.status.eq(ACCEPTED.get()))
+			)
 			.groupBy(order.store.id, store.name, store.storeType)
 			.orderBy(order.amount.sum().desc(), order.count().desc())
 			.fetch();
@@ -70,15 +77,24 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 		Long weeklyOrderCount = queryFactory
 			.select(order.count())
 			.from(order)
-			.where(order.customer.email.eq(email).and(order.orderTime.goe(weekAgo)))
+			.where(
+				order.customer.email.eq(email)
+					.and(order.orderTime.goe(weekAgo))
+					.and(order.status.eq(ACCEPTED.get()))
+			)
 			.fetchOne();
 
 		Integer weeklyTotalAmount = queryFactory
 			.select(order.amount.sum().intValue())
 			.from(order)
-			.where(order.customer.email.eq(email).and(order.orderTime.goe(weekAgo)))
+			.where(
+				order.customer.email.eq(email)
+					.and(order.orderTime.goe(weekAgo))
+					.and(order.status.eq(ACCEPTED.get()))
+			)
 			.fetchOne();
 
 		return WeeklyCustomerOrderSummaryResponseDto.of(weeklyOrderCount, weeklyTotalAmount, storeOrderSummaries);
 	}
+
 }
