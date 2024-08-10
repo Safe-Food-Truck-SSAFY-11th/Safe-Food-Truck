@@ -17,6 +17,7 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
     <div className={styles.container}>
       <div className={styles.section}>
         <h3>푸드트럭 사진</h3>
+        <hr/>
         {truck.storeImageDto?.savedUrl ? (
           <img
             src={truck.storeImageDto.savedUrl}
@@ -29,12 +30,15 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
       </div>
       <div className={styles.section}>
         <h3>영업 스케줄</h3>
+        <hr/>
         {scheduleList && scheduleList.length > 0 ? (
           <ul>
             {scheduleList.map((schedule, index) => (
               <li key={index}>
                 <strong>{daysOfWeek[schedule.day - 1]}:</strong> {schedule.address}
-                <p>상세 주소 : {schedule.addAddress}</p>
+                <br/>
+                <span>상세 주소 : {schedule.addAddress}</span>
+                <hr/>
               </li>
             ))}
           </ul>
@@ -44,7 +48,8 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
       </div>
       <div className={styles.section}>
         <h3>가게 통계</h3>
-        <p>{isMeet ? '만났던 푸드트럭이에요!' : '만난 적 없는 푸드트럭이에요!'}</p>
+        <hr/>
+        <p>{isMeet ? '예전에 만났던 푸드트럭이에요!' : '만난 적 없는 푸드트럭이에요!'}</p>
         <p>리뷰: {reviews.length} 개</p>
         <p>찜: {likes?.favoriteCount || 0} 개</p>
       </div>

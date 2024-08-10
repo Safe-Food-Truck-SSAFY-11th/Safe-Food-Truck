@@ -1,10 +1,4 @@
 .menuList {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-  
-  .menuList p {
-    text-align: center;
-    font-size: 18px;
   }

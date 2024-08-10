@@ -12,17 +12,29 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.section span {
+  font-weight: bold;
+  padding-left: 61px;
+}
+
 .truckImage {
   width: 100%;
   height: auto;
   border-radius: 5px;
 }
 
-h3 {
+.container h2 {
+
   margin-bottom: 10px;
 }
 
-p {
+.section p {
   margin: 5px 0;
+  color: black;
+  text-align: left;
+  padding-left: 2px;
 }
   
+.container hr {
+  padding-left: 10px;
+}
