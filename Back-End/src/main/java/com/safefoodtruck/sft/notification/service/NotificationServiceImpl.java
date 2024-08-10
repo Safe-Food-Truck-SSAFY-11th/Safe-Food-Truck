@@ -170,6 +170,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Async
+    @Transactional
     @Override
     public void changedNoticeNotify(String ownerEmail, Set<String> connectedEmailList) {
         for (String connectedEmail : connectedEmailList) {
