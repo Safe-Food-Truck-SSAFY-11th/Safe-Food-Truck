@@ -1,28 +1,9 @@
 package com.safefoodtruck.sft.store.controller;
 
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
-import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
-import com.safefoodtruck.sft.store.service.StoreService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import static org.springframework.http.HttpStatus.*;
+
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +16,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.service.StoreService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -51,9 +52,9 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "점포 등록에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreRegistResponseDto> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
-        StoreRegistResponseDto store = storeService.registStore(storeRegistRequestDto);
-        return new ResponseEntity<>(store, HttpStatus.CREATED);
+    public ResponseEntity<Void> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
+        storeService.registStore(storeRegistRequestDto);
+        return new ResponseEntity<>(CREATED);
     }
 
     @GetMapping
@@ -65,7 +66,21 @@ public class StoreController {
     })
     public ResponseEntity<StoreFindResponseDto> findStore() {
         StoreFindResponseDto storeFindResponseDto = storeService.findMyStore();
-        return new ResponseEntity<>(storeFindResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeFindResponseDto, OK);
+    }
+
+    @GetMapping("/duplication-safety-license-number/{safety-license-number}")
+    @Operation(summary = "인허가번호 중복확인", description = "점포 등록시 인허가번호 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 인허가 번호 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> isDuplicateSafetyLicenseNumber(@PathVariable("safety-license-number") String safetyLicenseNumber) {
+        String responseMessage = storeService.checkDuplicateSafetyLicenseNumber(safetyLicenseNumber);
+        return new ResponseEntity<>(responseMessage, OK);
     }
 
     @GetMapping("{storeId}")
@@ -77,7 +92,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreFindResponseDto> findStore(@PathVariable("storeId") Integer storeId) {
         StoreFindResponseDto storeFindResponseDto = storeService.findStoreById(storeId);
-        return new ResponseEntity<>(storeFindResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeFindResponseDto, OK);
     }
 
     @GetMapping("{storeId}/menus")
@@ -89,7 +104,7 @@ public class StoreController {
     })
     public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable("storeId") Integer storeId) {
         MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
-        return new ResponseEntity<>(allMenu, HttpStatus.OK);
+        return new ResponseEntity<>(allMenu, OK);
     }
 
     @PatchMapping("notice")
@@ -99,9 +114,9 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreNoticeResponseDto> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
-        StoreNoticeResponseDto storeNoticeResponseDto = storeService.updateStoreNotice(storeNoticeRegistRequestDto);
-        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
+    public ResponseEntity<Void> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+        storeService.updateStoreNotice(storeNoticeRegistRequestDto);
+        return new ResponseEntity<>(OK);
     }
 
     @GetMapping("{storeId}/notice")
@@ -113,7 +128,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreNoticeResponseDto> findStoreNotice(@PathVariable("storeId") Integer storeId) {
         StoreNoticeResponseDto storeNoticeResponseDto = storeService.findStoreNotice(storeId);
-        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeNoticeResponseDto, OK);
     }
 
     @PatchMapping("notice/delete")
@@ -123,9 +138,9 @@ public class StoreController {
         @ApiResponse(responseCode = "204", description = "내 점포 공지사항 삭제에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreNoticeResponseDto> deleteStoreNotice() {
-        StoreNoticeResponseDto storeNoticeResponseDto = storeService.deleteStoreNotice();
-        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteStoreNotice() {
+        storeService.deleteStoreNotice();
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
 
@@ -137,9 +152,9 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "점포수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreUpdateResponseDto> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
-        StoreUpdateResponseDto store = storeService.updateStore(storeUpdateRequestDto);
-        return new ResponseEntity<>(store, HttpStatus.OK);
+    public ResponseEntity<Void> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
+        storeService.updateStore(storeUpdateRequestDto);
+        return new ResponseEntity<>(OK);
     }
 
     @DeleteMapping
@@ -151,7 +166,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> deleteStore() {
         storeService.deleteStore();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @GetMapping("/open")
@@ -163,7 +178,7 @@ public class StoreController {
     })
     public ResponseEntity<Boolean> getStoreStatus() {
         Boolean storeStatus = storeService.getStoreStatus();
-        return new ResponseEntity<>(storeStatus, HttpStatus.OK);
+        return new ResponseEntity<>(storeStatus, OK);
     }
 
     @PatchMapping("/open")
@@ -173,9 +188,9 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "점포 영업 상태 변경에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Boolean> updateStoreStatus() {
-        Boolean isOpen = storeService.updateStoreStatus();
-        return new ResponseEntity<>(isOpen, HttpStatus.OK);
+    public ResponseEntity<Void> updateStoreStatus() {
+        storeService.updateStoreStatus();
+        return new ResponseEntity<>(OK);
     }
 
     @GetMapping("/open/all")
@@ -187,7 +202,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreInfoListResponseDto> findOpenStores() {
         StoreInfoListResponseDto openStores = storeService.findOpenStores();
-        return new ResponseEntity<>(openStores, HttpStatus.OK);
+        return new ResponseEntity<>(openStores, OK);
     }
 
     @PatchMapping("/location")
@@ -197,19 +212,19 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "점포 영업 위치 변경에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<StoreLocationResponseDto> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
-        StoreLocationResponseDto storeLocation = storeService.updateStoreLocation(storeLocationRequestDto);
-        return new ResponseEntity<>(storeLocation, HttpStatus.OK);
+    public ResponseEntity<Void> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
+        storeService.updateStoreLocation(storeLocationRequestDto);
+        return new ResponseEntity<>(OK);
     }
 
     @ExceptionHandler({StoreNotFoundException.class, StoreImageNotFoundException.class})
     public ResponseEntity<ErrorResponseDto> handleStoreException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            INTERNAL_SERVER_ERROR.value(),
             e.getMessage(),
             LocalDateTime.now()
         );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }

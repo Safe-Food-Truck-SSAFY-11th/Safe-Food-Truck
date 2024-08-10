@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
@@ -61,8 +62,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderRegistResponseDto registOrder(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email);
-		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
+		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+		Store store = storeRepository.findStoreWithMenusAndImagesByStoreId(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
 		Order order = Order.of(orderRegistRequestDto, customer);
