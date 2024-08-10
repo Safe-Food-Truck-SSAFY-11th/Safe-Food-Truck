@@ -17,7 +17,7 @@ function FoodTruckMenuItem({ item , storeId }) {
     <div className={styles.menuItem} onClick={handleClick}>
       <div className={styles.imageContainer}>
         {item.menuImageDto ? (
-          <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
+          <img src={item.menuImageDto.savedUrl} alt={'사진'} className={styles.image} />
         ) : (
           <div className={styles.placeholder}>
             이미지 없음
@@ -26,8 +26,8 @@ function FoodTruckMenuItem({ item , storeId }) {
       </div>
       <div className={styles.details}>
         <h3>{item.name}</h3>
-        <p>{item.description}</p>
-        <p>{item.price}원</p>
+        <span>{item.description}</span>
+        <span>{item.price.toLocaleString()}원</span> {/* 숫자에 쉼표 추가 */}
       </div>
     </div>
   );

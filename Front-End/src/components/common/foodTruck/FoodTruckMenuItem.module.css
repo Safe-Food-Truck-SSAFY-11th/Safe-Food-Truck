@@ -9,38 +9,59 @@
 }
 
 .imageContainer {
+  padding-left: 10px;
   flex-shrink: 0;
+  margin-right: 15px; /* 이미지와 텍스트 사이에 약간의 간격 추가 */
 }
 
 .image {
-  width: 60px;
-  height: 60px;
+  width: 70px; /* 이미지 너비를 70px로 설정 */
+  height: 70px; /* 이미지 높이를 70px로 설정 */
   object-fit: cover;
-  margin-right: 10px;
+  border-radius: 5px; /* 이미지의 모서리를 둥글게 설정 */
 }
 
 .placeholder {
-  width: 60px;
-  height: 60px;
+  width: 70px; /* 이미지 너비와 동일하게 설정 */
+  height: 70px; /* 이미지 높이와 동일하게 설정 */
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f0f0f0;
   color: #888;
   font-size: 12px;
-  margin-right: 10px;
   border-radius: 5px;
+  margin-right: 15px; /* 이미지와 텍스트 사이에 약간의 간격 추가 */
 }
 
 .details {
-  flex: 1;
+  display: flex;
+
+  flex-direction: column;
+
+  flex: 3;
 }
 
 .details h3 {
-  margin: 0;
-  font-size: 1.2em;
+  font-size: 18px;
+
+  padding-left: 18px;
+
+  padding-bottom: 3px;
 }
 
-.details p {
-  margin: 5px 0;
+.details span {
+  padding-left: 18px;
+
+  font-size: 14px;
+  padding-bottom: 3px;
+
+  /* 줄바꿈 없이 한 줄로 유지 */
+  white-space: nowrap;
+
+   /* 넘치는 텍스트는 숨김 */ 
+  overflow: hidden;
+
+  /* 넘치는 부분을 생략 부호(...)로 표시 */
+  text-overflow: ellipsis; 
 }

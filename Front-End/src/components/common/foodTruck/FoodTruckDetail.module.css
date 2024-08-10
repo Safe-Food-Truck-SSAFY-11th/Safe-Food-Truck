@@ -1,36 +1,41 @@
 @import './sharedStyles.module.css'; /* 공유 스타일 임포트 */
 
 .foodTruckDetail {
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #ffcc80; /* 배경 색상 */
-  padding: 20px;
+  padding: 15px; /* 패딩을 조정하여 더 작은 화면에 맞춤 */
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  margin: 20px auto;
+  width: 95%; /* 화면 너비에 맞게 조정 (양쪽에 약간의 여유 공간 확보) */
+  max-width: 400px; /* 최대 너비를 설정하여 큰 화면에서도 디자인 유지 */
+  /* margin: 15px auto; 상하 여백 줄이기 */
 }
 
 .nav {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* 하단 여백 조정 */
 }
 
 .nav button {
   background: none;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px; /* 패딩을 줄여서 작은 화면에 맞춤 */
   cursor: pointer;
-  font-size: 18px;
-  margin: 0 10px;
+  font-size: 22px; /* 폰트 크기를 줄여 작은 화면에 맞춤 */
+  margin: 0 25px; /* 버튼 사이의 간격 줄이기 */
 }
 
 .nav button.selected {
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid white;
+  color: white;
 }
 
 .content {
   width: 100%;
+  max-width: 400px; /* 최대 너비를 설정하여 큰 화면에서도 디자인 유지 */
+  margin-top: 10px; /* 콘텐츠와 네비게이션 사이의 간격 조정 */
 }
