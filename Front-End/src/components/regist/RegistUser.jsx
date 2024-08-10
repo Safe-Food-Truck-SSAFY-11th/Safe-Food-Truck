@@ -3,7 +3,7 @@ import styles from './RegistUser.module.css';
 import useUserStore from 'store/users/userStore';
 
 const RegistUser = ({ formData, onFormChange }) => {
-  const { emailChecked, checkEmail, nicknameChecked, checkNickname, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched } = useUserStore();
+  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched, isValidEmailForm } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -38,8 +38,9 @@ const RegistUser = ({ formData, onFormChange }) => {
     setNicknameTouched();
   };
 
-  const handleEmailCheck = () => {
-    checkEmail(formData.email);
+  const handleEmailCheck = (email) => {
+    setEmailValid(emailValidChk(email));
+    checkEmail(email);
   };
 
   const handleNicknameCheck = () => {
@@ -52,10 +53,11 @@ const RegistUser = ({ formData, onFormChange }) => {
         <label>이메일</label>
         <div className={styles.emailContainer}>
           <input type="email" name="email" value={formData.email || ''} onChange={handleEmailChange} className={styles.emailInput} />
-          <button type="button" className={styles.duplicateButton} onClick={handleEmailCheck}>중복확인</button>
+          <button type="button" className={styles.duplicateButton} onClick={() => {handleEmailCheck(formData.email)}} >중복확인</button>
         </div>
-        {emailTouched && emailChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 이메일이에요</p>}
-        {emailTouched && emailChecked === 'Duplicate' && <p className={styles.errorText}>이미 사용 중인 이메일입니다</p>}
+        {emailTouched && !emailValid && emailChecked === 'Possible' && <p className={styles.errorText}>이메일 양식을 확인해주세요</p>}
+        {emailTouched && emailValid && emailChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 이메일이에요</p>}
+        {emailTouched && emailValid && emailChecked === 'Duplicate' && <p className={styles.errorText}>이미 사용 중인 이메일입니다</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호</label>

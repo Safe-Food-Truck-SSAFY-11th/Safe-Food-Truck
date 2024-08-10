@@ -73,10 +73,20 @@ const userStore = create((set, get) => ({
     }
   },
 
+  emailValid: null,
+  setEmailValid: (valid) => set({ emailValid: valid}),
   setEmailTouched: () => set({ emailTouched: true }),
   setNicknameTouched: () => set({ nicknameTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
   setPasswordMatch: (match) => set({ passwordMatch: match }),
+
+  // 이메일 유효성 검사
+  emailValidChk: (email) => {
+    const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+    if(pattern.test(email) === false) { return false; }
+    else { return true; }
+  },
 
   updateUser: async (form) => {
     try {
