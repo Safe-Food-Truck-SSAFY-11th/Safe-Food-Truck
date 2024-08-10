@@ -33,7 +33,7 @@
   gap: 3vw;
 }
 
-button {
+.button {
   margin-top: 10px;
   padding: 10px;
   background-color: #fb833e;

@@ -17,7 +17,9 @@ import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.ChangeNoticeNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.LiveStartNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.OrderedNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.RegistReviewNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.RejcetedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -45,6 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final GlobalNotificationService globalNotificationService;
     private final FavoritesRepository favoritesRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
@@ -178,5 +181,43 @@ public class NotificationServiceImpl implements NotificationService {
             globalNotificationService.sendToClient(connectedEmail,
                 new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
         }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void liveStartNotify(Integer storeId) {
+        List<Favorites> favoriteList = favoritesRepository.findAllByStoreId(storeId);
+        String storeName = storeRepository.findById(storeId)
+            .orElseThrow(StoreNotFoundException::new).getName();
+        for (Favorites favorite : favoriteList) {
+            Member member = favorite.getMember();
+            String targetEmail = member.getEmail();
+            String info = storeName + " 푸드트럭이 방송을 시작하였습니다.";
+
+            notificationRepository.save(Notification.builder()
+                .member(member)
+                .info(info)
+                .build());
+
+            globalNotificationService.sendToClient(targetEmail,
+                new LiveStartNotificationDto(storeName, storeId), "live start", LIVE.getEventType());
+        }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void registReviewNotify(String ownerEmail, Integer storeId) {
+        Member member = memberRepository.findByEmail(ownerEmail);
+        String info = "리뷰가 달렸어요!";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(ownerEmail,
+            new RegistReviewNotificationDto(storeId), "review", OWNER.getEventType());
     }
 }

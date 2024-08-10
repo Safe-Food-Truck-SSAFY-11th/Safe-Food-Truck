@@ -8,6 +8,7 @@ const NoticeModal = () => {
     notice: initialNotice,
     closeNoticeModal,
     setNotice: setStoreNotice,
+    members,
   } = useLiveStore();
   const [notice, setNotice] = useState(initialNotice || "");
 
@@ -16,13 +17,20 @@ const NoticeModal = () => {
     setNotice(event.target.value);
   };
 
-  // 공지사항 등록
+  // 공지사항 등록/수정
   const handleRegistButtonClick = async () => {
+    // Set을 배열로 변환
+    const membersArray = Array.from(members); // members가 Set인 경우
     try {
-      await axiosInstance.patch("/stores/notice", { notice });
+      const response = await axiosInstance.patch("/stores/notice", {
+        notice,
+        members: membersArray,
+      });
       setStoreNotice(notice);
       console.log(notice);
+      console.log(members);
       closeNoticeModal(); // 모달 닫기
+      console.log("공지사항 등록/수정 성공:", response); // 응답 데이터 확인
     } catch (error) {
       console.error("공지사항 등록 중 오류 발생:", error);
     }
