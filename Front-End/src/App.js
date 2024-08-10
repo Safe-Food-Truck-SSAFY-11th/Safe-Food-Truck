@@ -31,42 +31,77 @@ import ManageSchedule from "components/owner/myPage/ManageSchedule";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [email, setEmail] = useState(sessionStorage.getItem('email') || '');
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [email, setEmail] = useState(sessionStorage.getItem("email") || "");
 
   useEffect(() => {
     // SSE 연결 설정 함수
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
 
-      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
+      const eventSource = new EventSource(
+        `https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`
+      );
+
+      console.log("App.js 이벤트 소스 :");
+      console.log(eventSource);
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
       };
 
-      eventSource.addEventListener('customer', (event) => {
+      eventSource.addEventListener("customer", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
-        console.log(data)
-  
+        console.log(data);
+
         setNotificationMessage(data.message);
         setShowNotification(true);
-  
+
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
         }, 3000);
       });
 
-      eventSource.addEventListener('owner', (event) => {
+      eventSource.addEventListener("owner", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
-        console.log(data)
-  
+        console.log(data);
+
         setNotificationMessage(data.message);
         setShowNotification(true);
-  
+
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      });
+
+      //공지사항 변경 알림
+      eventSource.addEventListener("notice", (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      });
+
+      //방송시작 알림
+      eventSource.addEventListener("live", (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
@@ -89,9 +124,8 @@ function App() {
 
     // 세션 스토리지의 변화를 감지하여 새로운 이메일을 읽어들임
     const onStorageChange = (event) => {
-
-        console.log("EVENT = ", event);
-        if (event.key === 'email') {
+      console.log("EVENT = ", event);
+      if (event.key === "email") {
         const newEmail = event.newValue;
         setEmail(newEmail);
         if (cleanup) cleanup(); // 이전 SSE 연결 닫기
@@ -100,17 +134,19 @@ function App() {
     };
 
     // 세션 스토리지의 변화를 감지
-    window.addEventListener('storage', onStorageChange);
+    window.addEventListener("storage", onStorageChange);
 
     return () => {
       if (cleanup) cleanup(); // 컴포넌트가 언마운트될 때 SSE 연결 닫기
-      window.removeEventListener('storage', onStorageChange);
+      window.removeEventListener("storage", onStorageChange);
     };
   }, [email]);
 
   return (
     <div className="App">
-      {showNotification && <div className="notification">{notificationMessage}</div>}
+      {showNotification && (
+        <div className="notification">{notificationMessage}</div>
+      )}
       <Routes>
         <Route path="/" element={<Waiting />} />
         <Route path="/login" element={<LoginUser />} />
