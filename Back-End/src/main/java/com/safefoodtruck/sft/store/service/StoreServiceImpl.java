@@ -1,5 +1,13 @@
 package com.safefoodtruck.sft.store.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
@@ -19,19 +27,12 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -46,7 +47,7 @@ public class StoreServiceImpl implements StoreService {
 	private final NotificationService notificationService;
 
 	@Override
-	public StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto) {
+	public void registStore(StoreRegistRequestDto storeRegistRequestDto) {
 		String email = MemberInfo.getEmail();
 		Member owner = memberRepository.findByEmail(email);
 		Store store = Store.of(owner, storeRegistRequestDto);
@@ -64,12 +65,10 @@ public class StoreServiceImpl implements StoreService {
 			StoreImage savedStoreImage = storeImageRepository.save(storeImage);
 			savedStoreImage.setStore(store);
 		}
-
-		return StoreRegistResponseDto.fromEntity(email, savedStore);
 	}
 
 	@Override
-	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+	public void updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
 		Store store = findLoginStore();
 		store.update(storeUpdateRequestDto);
 
@@ -78,8 +77,6 @@ public class StoreServiceImpl implements StoreService {
 
 		storeRepository.save(store);
 		storeImageRepository.save(storeImage);
-
-		return StoreUpdateResponseDto.fromEntity(store);
 	}
 
 	@Override
@@ -125,11 +122,10 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public boolean updateStoreStatus() {
+	public void updateStoreStatus() {
 		Store store = findLoginStore();
 		store.toggleOpenStatus();
-		if (store.getIsOpen()) notificationService.favoriteSendNotify(store.getId(), store.getName());
-		return store.getIsOpen();
+		if (store.getIsOpen().equals(Boolean.TRUE)) notificationService.favoriteSendNotify(store.getId(), store.getName());
 	}
 
 	@Override
@@ -171,12 +167,11 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreNoticeResponseDto updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+	public void updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
 		Store store = findLoginStore();
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
 		notificationService.changedNoticeNotify(storeNoticeRegistRequestDto.connectedEmailList());
-		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
 	@Override
@@ -185,12 +180,10 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreNoticeResponseDto deleteStoreNotice() {
+	public void deleteStoreNotice() {
 		Store store = findLoginStore();
 		store.deleteNotice();
 		storeRepository.save(store);
-
-		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
 	public Store findLoginStore() {
