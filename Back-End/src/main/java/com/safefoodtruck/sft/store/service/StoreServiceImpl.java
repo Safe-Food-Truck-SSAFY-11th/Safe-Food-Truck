@@ -21,6 +21,7 @@ import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
@@ -172,10 +173,14 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public StoreNoticeResponseDto updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+		if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
+			throw new NullListException();
+		}
 		Store store = findLoginStore();
+		String ownerEmail = store.getOwner().getEmail();
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
-		notificationService.changedNoticeNotify(storeNoticeRegistRequestDto.connectedEmailList());
+		notificationService.changedNoticeNotify(ownerEmail, storeNoticeRegistRequestDto.connectedEmailList());
 		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
