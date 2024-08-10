@@ -16,4 +16,5 @@ public interface NotificationService {
     void orderedSendNotify(String ownerEmail);
     void changedNoticeNotify(Set<String> connectedEmailList);
     void liveStartNotify(Integer storeId);
+    void registReviewNotify(String ownerEmail, Integer storeId);
 }

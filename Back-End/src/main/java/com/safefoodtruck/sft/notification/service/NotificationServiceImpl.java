@@ -10,6 +10,7 @@ import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.LiveStartNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.OrderedNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.RegistReviewNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.RejcetedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
@@ -197,5 +198,21 @@ public class NotificationServiceImpl implements NotificationService {
             globalNotificationService.sendToClient(targetEmail,
                 new LiveStartNotificationDto(storeName, storeId), "live start", LIVE.getEventType());
         }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void registReviewNotify(String ownerEmail, Integer storeId) {
+        Member member = memberRepository.findByEmail(ownerEmail);
+        String info = "리뷰가 달렸어요!";
+
+        notificationRepository.save(Notification.builder()
+            .member(member)
+            .info(info)
+            .build());
+
+        globalNotificationService.sendToClient(ownerEmail,
+            new RegistReviewNotificationDto(storeId), "review", OWNER.getEventType());
     }
 }

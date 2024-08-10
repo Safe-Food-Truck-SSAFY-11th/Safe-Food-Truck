@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.review.service;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
+import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
@@ -16,6 +17,7 @@ import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
 import com.safefoodtruck.sft.review.repository.ReviewImageRepository;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
+import com.safefoodtruck.sft.store.domain.Store;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final OrderRepository orderRepository;
 	private final ReplyRepository replyRepository;
 	private final ReviewImageRepository reviewImageRepository;
+	private final NotificationService notificationService;
 
 	@Override
 	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
@@ -49,7 +52,10 @@ public class ReviewServiceImpl implements ReviewService {
 			savedReview.addReviewImage(reviewImage);
 			reviewImageRepository.save(reviewImage);
 		});
-
+		Store store = order.getStore();
+		String ownerEmail = store.getOwner().getEmail();
+		Integer storeId = store.getId();
+		notificationService.registReviewNotify(ownerEmail, storeId);
 		return ReviewResponseDto.fromEntity(savedReview, null);  // 등록 시점에는 reply가 없으므로 null을 전달
 	}
 
