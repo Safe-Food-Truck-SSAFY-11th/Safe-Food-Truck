@@ -3,12 +3,11 @@ import styles from "./NoticeModal.module.css";
 import axiosInstance from "utils/axiosInstance";
 import useLiveStore from "store/live/useLiveStore";
 
-const NoticeModal = () => {
+const NoticeModal = ({ members }) => {
   const {
     notice: initialNotice,
     closeNoticeModal,
     setNotice: setStoreNotice,
-    members,
   } = useLiveStore();
   const [notice, setNotice] = useState(initialNotice || "");
 

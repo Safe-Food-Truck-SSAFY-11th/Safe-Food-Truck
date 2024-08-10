@@ -6,7 +6,6 @@ import { useParams, useNavigate, useLocation } from "react-router-dom"; // useNa
 import axios from "axios";
 import styles from "./Live.module.css";
 import UserVideoComponent from "./UserVideoComponent";
-import truckImg from "assets/images/storeImg.png";
 import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
 import useLiveStore from "store/live/useLiveStore";
@@ -14,6 +13,8 @@ import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import NoticeModal from "./NoticeModal";
 import chatbot from "gemini/geminiChatBot";
+import ChatBox from "./ChatBox";
+import truck_img from "assets/images/truck-img.png";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -27,10 +28,6 @@ const Live = () => {
     openNoticeModal,
     setIsLiveFailed,
     isLiveFailed,
-    members,
-    addMember,
-    deleteMember,
-    resetMembers,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
@@ -46,14 +43,42 @@ const Live = () => {
   const mainStreamManager = useRef(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [isChat, setIsChat] = useState(role.indexOf("customer") !== -1);
+  const [isChat, setIsChat] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const { truckInfo } = useTruckStore();
   const { selectedTruck } = useFoodTruckStore();
-  const trukName =
+  const truckName =
     role.indexOf("owner") !== -1 ? truckInfo.name : selectedTruck.name;
   const [notice, setNotice] = useState(storeNotice);
+
+  //트럭사진
+  const truckImg =
+    role.indexOf("owner") !== -1
+      ? truckInfo?.storeImageDto?.savedUrl === "empty"
+        ? truck_img
+        : truckInfo?.storeImageDto?.savedUrl
+      : selectedTruck?.storeImageDto?.savedUrl === "empty"
+      ? truck_img
+      : selectedTruck?.storeImageDto?.savedUrl;
+
+  //방송 참여자 이메일 목록
+  const members = useRef(new Set());
+
+  // 방송 참여자 이메일 추가
+  const addMember = (email) => {
+    members.current.add(email);
+  };
+
+  // 방송 참여자 삭제
+  const deleteMember = (email) => {
+    members.current.delete(email);
+  };
+
+  // 방송 참여자 이메일 목록 비우기
+  const resetMembers = () => {
+    members.current.clear();
+  };
 
   const OV = useRef();
 
@@ -169,7 +194,7 @@ const Live = () => {
       console.log("Connection " + event.connection.connectionId + " created");
       console.log(JSON.parse(event.connection.data).email);
       addMember(JSON.parse(event.connection.data).email);
-      console.log(members);
+      console.log(members.current);
     });
 
     //커넥션 끊기는 경우
@@ -178,7 +203,7 @@ const Live = () => {
       console.log("Connection " + event.connection.connectionId + " desproyed");
       console.log(JSON.parse(event.connection.data).email);
       deleteMember(JSON.parse(event.connection.data).email);
-      console.log(members);
+      console.log(members.current);
     });
 
     try {
@@ -249,7 +274,7 @@ const Live = () => {
     });
 
     newSession.on("signal:my-chat", (event) => {
-      const message = event.data.split(",");
+      const message = event.data.split("|||");
       const from = message[0];
       const msg = message[1];
       setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
@@ -300,7 +325,7 @@ const Live = () => {
 
     //방송 참여자 초기화
     resetMembers();
-    console.log(members);
+    console.log(members.current);
     if (session) {
       session.unpublish(publisher);
     }
@@ -337,10 +362,9 @@ const Live = () => {
     var result = await chatbot(storeId, modifiedMessage);
     try {
       // 사장님이 보내는 채팅으로 등록
-      const nickname = sessionStorage.getItem("nickname");
       session
         .signal({
-          data: `${ownerNickname},${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
+          data: `${ownerNickname}|||${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
           to: [],
           type: "my-chat",
         })
@@ -478,16 +502,6 @@ const Live = () => {
 
           {isChat ? (
             <div className={styles.chatContainer}>
-              <div className={styles.chatInfo}>
-                <p>
-                  <span className={styles.infoGreen}>{ownerNickname}</span>{" "}
-                  사장님이 운영하는
-                </p>
-                <p>
-                  <span className={styles.infoGreen}>{trukName}</span> 트럭의
-                  채팅방입니다
-                </p>
-              </div>
               {notice === "" ? null : (
                 <div className={styles.noticeBox}>
                   <div>
@@ -504,41 +518,12 @@ const Live = () => {
                   </div>
                 </div>
               )}
-              <div className={styles.chatBox}>
-                <div className={styles.messageList}>
-                  {messages.map((msg, i) => (
-                    <div
-                      key={i}
-                      className={`${styles.message} ${
-                        msg.from === ownerNickname
-                          ? styles.messageOwner
-                          : styles.messageCustomer
-                      }`}
-                    >
-                      <div>
-                        <b
-                          className={`${
-                            msg.from === ownerNickname
-                              ? styles.messageFromOwner
-                              : styles.messageFromCustomer
-                          }`}
-                        >
-                          {msg.from}
-                        </b>
-                      </div>
-                      <div
-                        className={`${
-                          msg.from === ownerNickname
-                            ? ""
-                            : styles.messageFromCustomerText
-                        }`}
-                      >
-                        {msg.message}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+
+              <ChatBox
+                messages={messages}
+                ownerNickname={ownerNickname}
+                truckName={truckName}
+              />
               <div className={styles.chatInputBox}>
                 <form onSubmit={sendMessage} className={styles.messageForm}>
                   <input
@@ -547,6 +532,7 @@ const Live = () => {
                     value={message}
                     onChange={handleMessageChange}
                     placeholder="채팅을 입력하세요"
+                    maxLength={200}
                   />
                   <button type="submit" className={styles.sendButton}>
                     전송
@@ -565,7 +551,7 @@ const Live = () => {
         </div>
       ) : null}
 
-      {isNoticeOpen ? <NoticeModal /> : null}
+      {isNoticeOpen ? <NoticeModal members={members.current} /> : null}
     </div>
   );
 };
