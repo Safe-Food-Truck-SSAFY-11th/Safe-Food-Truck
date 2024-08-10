@@ -157,7 +157,7 @@ const Live = () => {
     });
 
     newSession.on("signal:my-chat", (event) => {
-      const message = event.data.split(",");
+      const message = event.data.split("|||");
       const from = message[0];
       const msg = message[1];
       setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
@@ -335,23 +335,26 @@ const Live = () => {
 
   const aiAply = async (modifiedMessage) => {
     var result = await chatbot(storeId, modifiedMessage);
-    try{
+    try {
       // 사장님이 보내는 채팅으로 등록
       const nickname = sessionStorage.getItem("nickname");
-      session.signal({
-        data: `${ownerNickname},${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
-        to: [],
-        type: "my-chat",
-      }).then(() => {
-        // console.log("AI message successfully sent:", result);
-        setMessage(""); // 입력 필드 초기화
-      }).catch((error) => {
-        console.error("Error sending AI message:", error);
-      });
-    }catch(error){
+      session
+        .signal({
+          data: `${ownerNickname},${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
+          to: [],
+          type: "my-chat",
+        })
+        .then(() => {
+          // console.log("AI message successfully sent:", result);
+          setMessage(""); // 입력 필드 초기화
+        })
+        .catch((error) => {
+          console.error("Error sending AI message:", error);
+        });
+    } catch (error) {
       console.error("Error during AI application:", error);
     }
-  }
+  };
 
   //채팅 전송
   const sendMessage = (e) => {
@@ -359,15 +362,15 @@ const Live = () => {
     if (message.trim() !== "") {
       const nickname = sessionStorage.getItem("nickname");
       // /ai로 시작하면 chatBot 함수 실행
-      console.log("메세지 확인: ", message)
+      console.log("메세지 확인: ", message);
       if (message.startsWith("/ai")) {
         // 메시지에서 /ai를 제외한 부분으로 대체
-        const modifiedMessage = message.replace(/^\/ai\s*/, '');
+        const modifiedMessage = message.replace(/^\/ai\s*/, "");
         aiAply(modifiedMessage);
       }
       session
         .signal({
-          data: `${nickname},${message}`,
+          data: `${nickname}|||${message}`,
           to: [],
           type: "my-chat",
         })
