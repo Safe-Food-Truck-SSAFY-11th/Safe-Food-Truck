@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.store.service;
 
+import static com.safefoodtruck.sft.common.ValidationMessage.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +28,6 @@ import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
@@ -50,7 +51,8 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public void registStore(StoreRegistRequestDto storeRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member owner = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);;
+		Member owner = memberRepository.findByEmail(email)
+			.orElseThrow(NotFoundMemberException::new);
 		Store store = Store.of(owner, storeRegistRequestDto);
 
 		store.setOwner(owner);
@@ -126,7 +128,8 @@ public class StoreServiceImpl implements StoreService {
 	public void updateStoreStatus() {
 		Store store = findLoginStore();
 		store.toggleOpenStatus();
-		if (store.getIsOpen().equals(Boolean.TRUE)) notificationService.favoriteSendNotify(store.getId(), store.getName());
+		if (store.getIsOpen().equals(Boolean.TRUE))
+			notificationService.favoriteSendNotify(store.getId(), store.getName());
 	}
 
 	@Override
@@ -141,15 +144,14 @@ public class StoreServiceImpl implements StoreService {
 
 		List<Object[]> averageStarsData = reviewRepository.findAverageStarsForAllStores();
 		Map<Integer, Double> averageStarsMap = averageStarsData.stream()
-			.collect(Collectors.toMap(data -> (Integer) data[0], data -> (Double) data[1]));
+			.collect(Collectors.toMap(data -> (Integer)data[0], data -> (Double)data[1]));
 
 		List<StoreInfoResponseDto> storeInfoResponseDtos = openStores.stream()
 			.map(openStore -> {
 				Double averageStar = averageStarsMap.getOrDefault(openStore.getId(), 0.0);
 				return StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
 			})
-			.collect(Collectors.toList());
-		log.info("store count : {}", storeInfoResponseDtos.size());
+			.toList();
 
 		return StoreInfoListResponseDto.builder()
 			.count(storeInfoResponseDtos.size())
@@ -158,13 +160,11 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreLocationResponseDto updateStoreLocation(
+	public void updateStoreLocation(
 		StoreLocationRequestDto storeLocationRequestDto) {
 		Store store = findLoginStore();
 		store.updateStoreLocation(storeLocationRequestDto);
 		storeRepository.save(store);
-
-		return StoreLocationResponseDto.fromEntity(store);
 	}
 
 	@Override
@@ -185,6 +185,13 @@ public class StoreServiceImpl implements StoreService {
 		Store store = findLoginStore();
 		store.deleteNotice();
 		storeRepository.save(store);
+	}
+
+	@Override
+	public String checkDuplicateSafetyLicenseNumber(final String safetyLicenseNumber) {
+		boolean exists = storeRepository.findStoreWithMenusAndImagesBySafetyLicenseNumber(safetyLicenseNumber)
+			.isPresent();
+		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	public Store findLoginStore() {

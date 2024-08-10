@@ -69,6 +69,20 @@ public class StoreController {
         return new ResponseEntity<>(storeFindResponseDto, OK);
     }
 
+    @GetMapping("/duplication-safety-license-number/{safety-license-number}")
+    @Operation(summary = "인허가번호 중복확인", description = "점포 등록시 인허가번호 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 인허가 번호 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> isDuplicateSafetyLicenseNumber(@PathVariable("safety-license-number") String safetyLicenseNumber) {
+        String responseMessage = storeService.checkDuplicateSafetyLicenseNumber(safetyLicenseNumber);
+        return new ResponseEntity<>(responseMessage, OK);
+    }
+
     @GetMapping("{storeId}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "특정 점포 조회", description = "점포를 조회할 때 사용하는 API")

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
@@ -97,7 +96,7 @@ public class MemberController {
         )
     })
     public ResponseEntity<String> isDuplicateBusinessNumber(@PathVariable("business-number") String businessNumber) {
-        String responseMessage = memberService.checkDuplicateEmail(businessNumber);
+        String responseMessage = memberService.checkDuplicateBusinessNumber(businessNumber);
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
@@ -265,7 +264,7 @@ public class MemberController {
 
     @ExceptionHandler({MemberDuplicateException.class, NotFoundMemberException.class,
         ResignedMemberException.class})
-    public ResponseEntity<?> memberDuplicateException(Exception e) throws JsonProcessingException {
+    public ResponseEntity<?> memberDuplicateException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponseDto(

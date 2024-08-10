@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.member.service;
 
+import static com.safefoodtruck.sft.common.ValidationMessage.*;
+
 import java.time.LocalDate;
 
 import org.modelmapper.ModelMapper;
@@ -44,9 +46,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
 		if (signUpMethod.equals("common")) {
-			Member memTmp = memberRepository.findByEmail(signUpMemberDto.getEmail())
-				.orElseThrow(NotFoundMemberException::new);
-			if (memTmp != null) {
+			boolean exists = memberRepository.findByEmail(signUpMemberDto.getEmail()).isPresent();
+			if(exists) {
 				throw new MemberDuplicateException();
 			}
 		}
@@ -114,19 +115,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String checkDuplicateEmail(String email) {
 		boolean exists = memberRepository.findByEmail(email).isPresent();
-		return exists ? "Duplicate" : "Possible";
+		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	@Override
 	public String checkDuplicateNickname(String nickname) {
 		boolean exists = memberRepository.findByNickname(nickname).isPresent();
-		return exists ? "Duplicate" : "Possible";
+		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	@Override
 	public String checkDuplicateBusinessNumber(final String businessNumber) {
 		boolean exists = memberRepository.findByBusinessNumber(businessNumber).isPresent();
-		return exists ? "Duplicate" : "Possible";
+		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	@Override
