@@ -18,14 +18,15 @@
 }
 
 .title {
-    font-size: 24px;
+    font-size: 40px;
+    font-weight: 100;
     color: black;
     margin-bottom: 20px;
     animation: fadeIn 1s ease-in-out;
 }
 
 .subtitle {
-    font-size: 14px;
+    font-size: 20px;
     color: black;
     animation: fadeIn 1s ease-in-out;
 }
