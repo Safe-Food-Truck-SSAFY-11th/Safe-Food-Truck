@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.store.controller;
 
+import static org.springframework.http.HttpStatus.*;
+
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
@@ -20,7 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,7 +52,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
         storeService.registStore(storeRegistRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(CREATED);
     }
 
     @GetMapping
@@ -63,7 +64,21 @@ public class StoreController {
     })
     public ResponseEntity<StoreFindResponseDto> findStore() {
         StoreFindResponseDto storeFindResponseDto = storeService.findMyStore();
-        return new ResponseEntity<>(storeFindResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeFindResponseDto, OK);
+    }
+
+    @GetMapping("/duplication-safety-license-number/{safety-license-number}")
+    @Operation(summary = "인허가번호 중복확인", description = "점포 등록시 인허가번호 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 인허가 번호 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> isDuplicateSafetyLicenseNumber(@PathVariable("safety-license-number") String safetyLicenseNumber) {
+        String responseMessage = storeService.checkDuplicateSafetyLicenseNumber(safetyLicenseNumber);
+        return new ResponseEntity<>(responseMessage, OK);
     }
 
     @GetMapping("{storeId}")
@@ -75,7 +90,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreFindResponseDto> findStore(@PathVariable("storeId") Integer storeId) {
         StoreFindResponseDto storeFindResponseDto = storeService.findStoreById(storeId);
-        return new ResponseEntity<>(storeFindResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeFindResponseDto, OK);
     }
 
     @GetMapping("{storeId}/menus")
@@ -87,7 +102,7 @@ public class StoreController {
     })
     public ResponseEntity<MenuListResponseDto> findStoreMenus(@PathVariable("storeId") Integer storeId) {
         MenuListResponseDto allMenu = storeService.findStoreMenus(storeId);
-        return new ResponseEntity<>(allMenu, HttpStatus.OK);
+        return new ResponseEntity<>(allMenu, OK);
     }
 
     @PatchMapping("notice")
@@ -99,7 +114,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
         storeService.updateStoreNotice(storeNoticeRegistRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
     @GetMapping("{storeId}/notice")
@@ -111,7 +126,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreNoticeResponseDto> findStoreNotice(@PathVariable("storeId") Integer storeId) {
         StoreNoticeResponseDto storeNoticeResponseDto = storeService.findStoreNotice(storeId);
-        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(storeNoticeResponseDto, OK);
     }
 
     @PatchMapping("notice/delete")
@@ -123,7 +138,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> deleteStoreNotice() {
         storeService.deleteStoreNotice();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
 
@@ -137,7 +152,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
         storeService.updateStore(storeUpdateRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
     @DeleteMapping
@@ -149,7 +164,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> deleteStore() {
         storeService.deleteStore();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @GetMapping("/open")
@@ -161,7 +176,7 @@ public class StoreController {
     })
     public ResponseEntity<Boolean> getStoreStatus() {
         Boolean storeStatus = storeService.getStoreStatus();
-        return new ResponseEntity<>(storeStatus, HttpStatus.OK);
+        return new ResponseEntity<>(storeStatus, OK);
     }
 
     @PatchMapping("/open")
@@ -173,7 +188,7 @@ public class StoreController {
     })
     public ResponseEntity<Void> updateStoreStatus() {
         storeService.updateStoreStatus();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
     @GetMapping("/open/all")
@@ -185,7 +200,7 @@ public class StoreController {
     })
     public ResponseEntity<StoreInfoListResponseDto> findOpenStores() {
         StoreInfoListResponseDto openStores = storeService.findOpenStores();
-        return new ResponseEntity<>(openStores, HttpStatus.OK);
+        return new ResponseEntity<>(openStores, OK);
     }
 
     @PatchMapping("/location")
@@ -197,17 +212,17 @@ public class StoreController {
     })
     public ResponseEntity<Void> updateStoreLocation(@RequestBody StoreLocationRequestDto storeLocationRequestDto) {
         storeService.updateStoreLocation(storeLocationRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
     @ExceptionHandler({StoreNotFoundException.class, StoreImageNotFoundException.class})
     public ResponseEntity<ErrorResponseDto> handleStoreException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            INTERNAL_SERVER_ERROR.value(),
             e.getMessage(),
             LocalDateTime.now()
         );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }
@@ -215,11 +230,11 @@ public class StoreController {
     @ExceptionHandler({NullListException.class})
     public ResponseEntity<ErrorResponseDto> NullLIstException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
-            HttpStatus.BAD_REQUEST.value(),
+            BAD_REQUEST.value(),
             e.getMessage(),
             LocalDateTime.now()
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(BAD_REQUEST)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }
