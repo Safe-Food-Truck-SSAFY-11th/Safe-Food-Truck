@@ -87,6 +87,20 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
+    @GetMapping("/duplication-business-number/{business-number}")
+    @Operation(summary = "사업자번호 중복확인", description = "회원가입시 사업자번호 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 사업자번호 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> isDuplicateBusinessNumber(@PathVariable("business-number") String businessNumber) {
+        String responseMessage = memberService.checkDuplicateEmail(businessNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
+    }
+
     @PostMapping("/{method}")
     @Operation(summary = "회원가입", description = "회원가입 할 때 사용하는 API")
     @ApiResponses(value = {

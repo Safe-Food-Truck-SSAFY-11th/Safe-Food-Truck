@@ -113,22 +113,20 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public String checkDuplicateEmail(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
-		if (member == null) {
-			return "Possible";
-		}
-		return "Duplicate";
+		boolean exists = memberRepository.findByEmail(email).isPresent();
+		return exists ? "Duplicate" : "Possible";
 	}
 
 	@Override
 	public String checkDuplicateNickname(String nickname) {
-		Member member = memberRepository.findByNickname(nickname)
-			.orElseThrow(NotFoundMemberException::new);
-		if (member == null) {
-			return "Possible";
-		}
-		return "Duplicate";
+		boolean exists = memberRepository.findByNickname(nickname).isPresent();
+		return exists ? "Duplicate" : "Possible";
+	}
+
+	@Override
+	public String checkDuplicateBusinessNumber(final String businessNumber) {
+		boolean exists = memberRepository.findByBusinessNumber(businessNumber).isPresent();
+		return exists ? "Duplicate" : "Possible";
 	}
 
 	@Override
