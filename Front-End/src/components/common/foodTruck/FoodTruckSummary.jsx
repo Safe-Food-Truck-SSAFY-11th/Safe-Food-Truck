@@ -117,7 +117,7 @@ function FoodTruckSummary({ truck }) {
     <header className={styles.header}>
       <h1>{truck.name}</h1>
       <p>{truck.description}</p>
-      <p>★ {truck.averageStar}</p>
+      <p>★ {truck.averageStar / 2}</p>
 
       <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
         {isJJimmed ? '찜 삭제' : '찜하기'}

@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import revImg from 'assets/images/truck-img.png'; // 임시 리뷰 이미지
 import styles from './ReviewItem.module.css';
-import onwerReplyAI from '../../../gemini/gemini.js'
+import onwerReplyAI from '../../../gemini/gemini.js';
 import useTruckStore from "store/users/owner/truckStore";
 import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [reply, setReply] = useState('');
   const [aiReply, setAiReply] = useState(''); // AI 텍스트 상태 추가
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [revImg, setRevImg] = useState([]);
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { submitReply } = useOwnerReviewStore();
 
   useEffect(() => {
     const fetchData = () => {
       fetchTruckInfo();
+      setRevImg(review.reviewImageDtos);
     };
 
     fetchData();
   }, [fetchTruckInfo]);
-
-  const owName = review.replies;
 
   function displayStars(rating) {
     let stars = '';
@@ -50,7 +52,6 @@ function ReviewItem({ review }) {
   };
 
   const handleReplySubmit = () => {
-    // 답글 등록 api 연결
     const replyData = {
       reviewId: review.id,
       content: reply
@@ -69,12 +70,39 @@ function ReviewItem({ review }) {
     setIsLoading(false); // 로딩 상태를 false로 설정
   };
 
+  const settings = {
+    slide: 'div',
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <div className={reviewItemClass}>
       {review.isVisible === false && (
         <div className={styles.secretLabel}>나한테만 보이는 리뷰입니다</div>
       )}
-      <img src={revImg} alt="review" className={styles.reviewImage} />
+      <div className={styles.reviewImages}>
+      {revImg.length > 0 && revImg[0].savedUrl !== 'empty'? (
+        revImg.length === 1 ? (
+          <div>
+            <img src={revImg[0].savedUrl} alt="review-single" className={styles.reviewImage} />
+          </div>
+        ) : (
+          <Slider {...settings}>
+            {revImg.map((img, index) => (
+              img.savedUrl !== 'empty' && (
+                <div key={index}>
+                  <img src={img.savedUrl} alt={`review-${index}`} className={styles.reviewImage} />
+                </div>
+              )
+            ))}
+          </Slider>
+        )
+      ) : null}
+      </div>
       <hr className={styles.separator} />
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>

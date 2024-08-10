@@ -1,44 +1,52 @@
 .truckStatus {
-    display: flex;
-    align-items: center;
-    background-color: #EAFFC9;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    margin: 20px 10px;
-    width: 88vw;
+  display: flex;
+  align-items: center;
+  background-color: #eaffc9;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 20px 10px;
+  width: 88vw;
 }
 
 .chatBtn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #A9DF55;
-    padding: 8px;
-    border-radius: 10px;
-    margin-right: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    min-width: 10vw; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #a9df55;
+  padding: 8px;
+  border-radius: 10px;
+  margin-right: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  min-width: 10vw;
 }
 
 .chatIcon {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
 }
 
 .chatBtn p {
-    font-size: 0.8rem;
-    color: #407223;
+  font-size: 0.8rem;
+  color: #407223;
 }
 
 .statusText {
-    display: flex;
-    flex-direction: column;
-    color: #407223; /* 기본 텍스트 색상 */
-    font-size: 0.9rem; /* 폰트 크기 작게 조정 */
+  display: flex;
+  flex-direction: column;
+  color: #407223; /* 기본 텍스트 색상 */
+  font-size: 0.9rem; /* 폰트 크기 작게 조정 */
 }
 
 .inputText {
-    color: #5BB527; /* 변경 텍스트 색상 */
+  color: #5bb527; /* 변경 텍스트 색상 */
+}
+
+.image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
 }
