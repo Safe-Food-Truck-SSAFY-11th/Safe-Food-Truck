@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.safefoodtruck.sft.menu.domain.QMenu;
 import com.safefoodtruck.sft.menu.domain.QMenuImage;
@@ -26,65 +27,65 @@ import jakarta.persistence.EntityManager;
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+	private final QOrder order = QOrder.order;
+	private final QReview review = QReview.review;
+	private final QStore store = QStore.store;
+	private final QStoreImage storeImage = QStoreImage.storeImage;
+	private final QMenu menu = QMenu.menu;
+	private final QMenuImage menuImage = QMenuImage.menuImage;
+	private final QOrderMenu qOrderMenu = QOrderMenu.orderMenu;
 
 	public OrderRepositoryCustomImpl(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
 	@Override
-	public List<Order> findByCustomerEmail(final String email) {
-		QOrder order = QOrder.order;
-		QReview review = QReview.review;
-		QStore store = QStore.store;
-		QStoreImage storeImage = QStoreImage.storeImage;
-		QMenu menu = QMenu.menu;
-		QMenuImage menuImage = QMenuImage.menuImage;
-		QOrderMenu qOrderMenu = QOrderMenu.orderMenu;
+	public Order findByOrderId(final Integer orderId) {
+		return baseOrderQuery()
+			.where(order.id.eq(orderId))
+			.fetchOne();
+	}
 
-		return queryFactory.selectFrom(order)
-			.join(order.store, store).fetchJoin()
-			.leftJoin(store.storeImage, storeImage).fetchJoin()
-			.leftJoin(order.orderMenuList, qOrderMenu).fetchJoin()
-			.leftJoin(qOrderMenu.menu, menu).fetchJoin()
-			.leftJoin(menu.menuImage, menuImage).fetchJoin()
-			.leftJoin(order.review, review).fetchJoin()
+	@Override
+	public List<Order> findByCustomerEmail(final String email) {
+		return baseOrderQuery()
 			.where(order.customer.email.eq(email))
 			.fetch();
 	}
 
-
 	@Override
 	public List<Order> findOrdersByStoreOwnerEmail(String email) {
-		QOrder order = QOrder.order;
-
-		return queryFactory.selectFrom(order)
-			.join(order.store).fetchJoin()
+		return baseOrderQuery()
 			.where(order.store.owner.email.eq(email))
 			.fetch();
 	}
 
 	@Override
-	public List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(String email,
-		LocalDateTime start, LocalDateTime end) {
-		QOrder order = QOrder.order;
-
-		return queryFactory.selectFrom(order)
-			.join(order.store).fetchJoin()
-			.join(order.orderMenuList).fetchJoin()
-			.where(order.store.owner.email.eq(email)
-				.and(order.cookingStatus.eq(COMPLETED.get()))
-				.and(order.orderTime.between(start, end)))
+	public List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(
+		String email, LocalDateTime start, LocalDateTime end) {
+		return baseOrderQuery()
+			.where(
+				order.store.owner.email.eq(email)
+					.and(order.cookingStatus.eq(COMPLETED.get()))
+					.and(order.orderTime.between(start, end))
+			)
 			.fetch();
 	}
 
 	@Override
-	public WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(String email,
-		LocalDateTime weekAgo) {
-		QOrder order = QOrder.order;
-		QStore store = QStore.store;
+	public WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(
+		String email, LocalDateTime weekAgo) {
 
-		// 가게별 주문 횟수와 금액 조회
-		List<CustomerOrderByStoreSummaryDto> storeOrderSummaries = queryFactory
+		List<CustomerOrderByStoreSummaryDto> storeOrderSummaries = getCustomerOrderSummaryByStore(email, weekAgo);
+
+		Long weeklyOrderCount = getWeeklyOrderCount(email, weekAgo);
+		Integer weeklyTotalAmount = getWeeklyTotalAmount(email, weekAgo);
+
+		return WeeklyCustomerOrderSummaryResponseDto.of(weeklyOrderCount, weeklyTotalAmount, storeOrderSummaries);
+	}
+
+	private List<CustomerOrderByStoreSummaryDto> getCustomerOrderSummaryByStore(String email, LocalDateTime weekAgo) {
+		return queryFactory
 			.select(Projections.constructor(CustomerOrderByStoreSummaryDto.class,
 				order.store.id,
 				store.name,
@@ -101,9 +102,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 			.groupBy(order.store.id, store.name, store.storeType)
 			.orderBy(order.amount.sum().desc(), order.count().desc())
 			.fetch();
+	}
 
-		// 일주일간 총 주문 횟수와 총 금액 조회
-		Long weeklyOrderCount = queryFactory
+	private Long getWeeklyOrderCount(String email, LocalDateTime weekAgo) {
+		return queryFactory
 			.select(order.count())
 			.from(order)
 			.where(
@@ -112,8 +114,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 					.and(order.status.eq(ACCEPTED.get()))
 			)
 			.fetchOne();
+	}
 
-		Integer weeklyTotalAmount = queryFactory
+	private Integer getWeeklyTotalAmount(String email, LocalDateTime weekAgo) {
+		return queryFactory
 			.select(order.amount.sum().intValue())
 			.from(order)
 			.where(
@@ -122,9 +126,15 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 					.and(order.status.eq(ACCEPTED.get()))
 			)
 			.fetchOne();
-
-		return WeeklyCustomerOrderSummaryResponseDto.of(weeklyOrderCount, weeklyTotalAmount,
-			storeOrderSummaries);
 	}
 
+	private JPAQuery<Order> baseOrderQuery() {
+		return queryFactory.selectFrom(order)
+			.leftJoin(order.review, review).fetchJoin()
+			.leftJoin(order.store, store).fetchJoin()
+			.leftJoin(store.storeImage, storeImage).fetchJoin()
+			.leftJoin(order.orderMenuList, qOrderMenu).fetchJoin()
+			.leftJoin(qOrderMenu.menu, menu).fetchJoin()
+			.leftJoin(menu.menuImage, menuImage).fetchJoin();
+	}
 }
