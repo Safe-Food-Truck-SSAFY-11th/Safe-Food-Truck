@@ -2,10 +2,16 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./TruckStatus.module.css";
 import useTruckStore from "store/users/owner/truckStore";
+import truck_img from "assets/images/truck-img.png";
 
 const TruckStatus = () => {
   const navigate = useNavigate();
   const { truckInfo } = useTruckStore();
+
+  const imageUrl =
+    truckInfo?.storeImageDto?.savedUrl === "empty"
+      ? truck_img
+      : truckInfo?.storeImageDto?.savedUrl;
 
   // 푸드트럭 상태에 따른 문구 변경
   const renderStatusComment = () => {
@@ -29,17 +35,13 @@ const TruckStatus = () => {
   const formattedDate = getFormattedDate();
 
   const handleChatBtn = () => {
-    navigate('/chating');
+    navigate("/chating");
   };
 
   return (
     <div className={styles.truckStatus}>
-      <div className={styles.chatBtn} onClick={handleChatBtn}>
-        <span role="img" aria-label="chat" className={styles.chatIcon}>
-          💬
-        </span>
-        <p>채팅방</p>
-      </div>
+      <img src={imageUrl} alt="Truck" className={styles.image} />
+
       <div className={styles.statusText}>
         <p>
           오늘은 <span className={styles.inputText}>{formattedDate}</span>{" "}

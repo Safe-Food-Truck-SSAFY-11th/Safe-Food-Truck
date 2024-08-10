@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./OpenClose.module.css";
 import useTruckStore from "store/users/owner/truckStore";
+import { useEffect } from "react";
+import useLiveStore from "store/live/useLiveStore";
 
 const OpenClose = ({ onLiveEndClick }) => {
   const { truckInfo, switchStatus, isLive, toggleLive } = useTruckStore();
+  const { isLiveFailed, setIsLiveFailed } = useLiveStore();
   const navigate = useNavigate();
 
   const handleOpenClick = () => {
@@ -22,6 +25,13 @@ const OpenClose = ({ onLiveEndClick }) => {
     toggleLive();
     navigate("/mainOwner");
   };
+
+  useEffect(() => {
+    if (isLiveFailed && isLive) {
+      toggleLive();
+      setIsLiveFailed(false);
+    }
+  });
 
   // 푸드트럭 상태에 따른 버튼 변경
   const renderButtons = () => {

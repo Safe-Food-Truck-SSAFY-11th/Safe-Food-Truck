@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class AcceptedNotificationDto {
+public class LiveStartNotificationDto {
     private String storeName;
-    private Integer orderId;
-    private final String message = "주문을 수락했어요";
+    private Integer storeId;
+    private final String message = "방송을 시작했어요";
     private LocalDateTime timestamp;
 
-    public AcceptedNotificationDto(String storeName, Integer orderId) {
+    public LiveStartNotificationDto(String storeName, Integer storeId) {
         this.storeName = storeName;
-        this.orderId = orderId;
+        this.storeId = storeId;
         this.timestamp = LocalDateTime.now();
     }
 }

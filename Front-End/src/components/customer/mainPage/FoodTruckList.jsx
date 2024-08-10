@@ -5,9 +5,7 @@ import styles from './FoodTruckList.module.css';
 import axios from 'axios';
 
 function FoodTruckList({ openFoodTrucks, userLocation }) {
-
   const trucks = openFoodTrucks.storeInfoResponseDtos || [];
-  
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -16,15 +14,8 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
       const addressPromises = trucks.map(async (truck) => {
         const { latitude, longitude } = truck;
 
-        // 내 위치 확인
-        console.log(userLocation.latitude, userLocation.longitude);
-
         const distance = calculateDistance(userLocation.latitude, userLocation.longitude, latitude, longitude);
 
-        // 푸드트럭이랑 떨어진 거리
-        console.log(distance);
-
-        // 거리 5km 미만인 경우만 배열에 추가
         if (distance <= 5) {
           const address = await getAddressFromCoordinates(latitude, longitude);
           return { ...truck, address, distance };
@@ -40,7 +31,6 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
     fetchAddresses();
   }, [trucks, userLocation]);
 
-  // 좌표 토대로 도로명 주소 변환하는 함수 입니당!!
   const getAddressFromCoordinates = async (lat, lon) => {
     const apiKey = process.env.REACT_APP_KAKAO_REST_API_KEY;
     const url = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lon}&y=${lat}`;
@@ -61,7 +51,6 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
     }
   };
 
-  // 거리 계산하는 함수
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRadian = (degree) => (degree * Math.PI) / 180;
     const R = 6371;
@@ -90,6 +79,7 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
             category={truck.menuCategory}
             address={truck.address}
             distance={truck.distance}
+            imageUrl={truck.storeImageDto?.savedUrl} // 이미지 URL 전달
             onClick={() => navigate(`/foodtruckDetail/${truck.storeId}`)} // 클릭 시 디테일 페이지로 이동
           />
         ))
