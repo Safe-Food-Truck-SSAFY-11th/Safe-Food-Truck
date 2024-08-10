@@ -2,12 +2,15 @@ import React, { useEffect } from 'react';
 import styles from './FoodTruckInfo.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
 
-function FoodTruckInfo({ truck, reviews }) {
+function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
   const { getFoodTruckLikes, likes } = useFoodTruckStore();
-  console.log(truck);
+
+  const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
+  const scheduleList = selectedTruckSchedule.scheduleList;
 
   useEffect(() => {
-      getFoodTruckLikes(truck.storeId);
+    getFoodTruckLikes(truck.storeId);
   }, []);
 
   return (
@@ -25,13 +28,23 @@ function FoodTruckInfo({ truck, reviews }) {
         )}
       </div>
       <div className={styles.section}>
-        <h3>푸드트럭 정보</h3>
-        <p>상호명 : {truck.name}</p>
-        <p>운영시간: {truck.operatingHours}</p>
-        <p>전화번호: {truck.phoneNumber}</p>
+        <h3>영업 스케줄</h3>
+        {scheduleList && scheduleList.length > 0 ? (
+          <ul>
+            {scheduleList.map((schedule, index) => (
+              <li key={index}>
+                <strong>{daysOfWeek[schedule.day - 1]}:</strong> {schedule.address}
+                <p>상세 주소 : {schedule.addAddress}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>스케줄 정보가 없습니다.</p>
+        )}
       </div>
       <div className={styles.section}>
         <h3>가게 통계</h3>
+        <p>{isMeet ? '만났던 푸드트럭이에요!' : '만난 적 없는 푸드트럭이에요!'}</p>
         <p>리뷰: {reviews.length} 개</p>
         <p>찜: {likes?.favoriteCount || 0} 개</p>
       </div>

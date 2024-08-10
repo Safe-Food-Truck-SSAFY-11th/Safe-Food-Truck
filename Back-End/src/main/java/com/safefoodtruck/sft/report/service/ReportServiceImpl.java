@@ -1,6 +1,9 @@
 package com.safefoodtruck.sft.report.service;
 
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.report.domain.Report;
 import com.safefoodtruck.sft.report.dto.request.ReportInsertRequestDto;
@@ -10,10 +13,9 @@ import com.safefoodtruck.sft.report.exception.NotFoundReviewException;
 import com.safefoodtruck.sft.report.repository.ReportRepository;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportInsertResponseDto insertReport(String userEmail,
         ReportInsertRequestDto reportInsertRequestDto) {
-        Member member = memberRepository.findByEmail(userEmail);
+        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
+            NotFoundMemberException::new);;
         Review review = reviewRepository.findById(reportInsertRequestDto.getReviewId())
             .orElseThrow(NotFoundReviewException::new);
 
@@ -41,7 +44,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportSelectResponseDto selectReport(String userEmail, Integer reviewId) {
-        Member member = memberRepository.findByEmail(userEmail);
+        Member member = memberRepository.findByEmail(userEmail).orElseThrow(NotFoundMemberException::new);;
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(NotFoundReviewException::new);
         Report report = reportRepository.findByReviewAndMember(review, member);

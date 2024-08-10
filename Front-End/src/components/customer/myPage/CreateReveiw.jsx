@@ -5,12 +5,12 @@ import StarRating from './StarRating';
 import styles from './CreateReview.module.css';
 import AWS from 'aws-sdk';
 
-const CreateReview = ({ memberInfo }) => {
+const CreateReview = () => {
   const { orderId } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
+  const memberInfo = location.state;
+  const navigate = useNavigate();
   const { currentReview, updateCurrentReview, createReview } = useReviewStore();
-
   const [reviewImages, setReviewImages] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -29,7 +29,7 @@ const CreateReview = ({ memberInfo }) => {
 
   const handleUpload = async () => {
     if (!selectedFiles.length) {
-      return null; // 사진이 없을 경우 null 반환
+      return [];
     }
 
     AWS.config.update({
@@ -67,27 +67,27 @@ const CreateReview = ({ memberInfo }) => {
       return uploadResults;
     } catch (err) {
       console.error('Error uploading files:', err);
+      return [];
     }
   };
 
   const handleSubmit = async () => {
     const uploadedFiles = await handleUpload();
 
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
-      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
-    } else {
-      // 사진이 없을 경우 기본값 설정
+    if (uploadedFiles.length === 0) {
       updateCurrentReview('savedUrl', 'empty');
       updateCurrentReview('savedPath', 'empty');
+    } else {
+      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
+      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
     }
 
     const newReview = {
       orderId: parseInt(orderId, 10),
       isVisible: currentReview.is_visible === 1,
-      star: currentReview.rating,
+      star: currentReview.rating * 2,
       content: currentReview.content,
-      reviewImageDtos: uploadedFiles || [], // 업로드된 파일이 없으면 빈 배열
+      reviewImageDtos: uploadedFiles,
     };
 
     try {
@@ -95,6 +95,7 @@ const CreateReview = ({ memberInfo }) => {
       navigate(-1);
     } catch (error) {
       console.error('리뷰 작성에 실패했습니다', error);
+      console.log(newReview);
     }
   };
 
@@ -120,13 +121,13 @@ const CreateReview = ({ memberInfo }) => {
       </div>
 
       <p>음식은 어떠셨나요?</p>
-      <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value * 2)} />
+      <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value)} />
 
       <input
         type="text"
-        value={memberInfo.nickname}
+        value={memberInfo.memberInfo.nickname}
         readOnly
-        placeholder="닉네임"
+        placeholder={memberInfo.memberInfo.nickname}
         className={styles.input}
       />
 

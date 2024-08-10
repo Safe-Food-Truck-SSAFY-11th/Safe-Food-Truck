@@ -10,6 +10,8 @@ import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
@@ -50,9 +52,9 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "점포 등록에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Void> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
-        storeService.registStore(storeRegistRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<StoreRegistResponseDto> registStore(@RequestBody StoreRegistRequestDto storeRegistRequestDto) {
+        StoreRegistResponseDto store = storeService.registStore(storeRegistRequestDto);
+        return new ResponseEntity<>(store, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -98,9 +100,9 @@ public class StoreController {
         @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Void> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
-        storeService.updateStoreNotice(storeNoticeRegistRequestDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<StoreNoticeResponseDto> updateStoreNotice(@RequestBody StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+        StoreNoticeResponseDto storeNoticeResponseDto = storeService.updateStoreNotice(storeNoticeRegistRequestDto);
+        return new ResponseEntity<>(storeNoticeResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("{storeId}/notice")
@@ -136,9 +138,9 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "점포수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Void> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
-        storeService.updateStore(storeUpdateRequestDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<StoreUpdateResponseDto> updateStore(@RequestBody StoreUpdateRequestDto storeUpdateRequestDto) {
+        StoreUpdateResponseDto store = storeService.updateStore(storeUpdateRequestDto);
+        return new ResponseEntity<>(store, HttpStatus.OK);
     }
 
     @DeleteMapping

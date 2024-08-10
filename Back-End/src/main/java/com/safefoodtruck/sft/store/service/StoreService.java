@@ -7,7 +7,6 @@ import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 
 public interface StoreService {
@@ -24,13 +23,13 @@ public interface StoreService {
 
 	void deleteStore();
 
-	boolean updateStoreStatus();
+	void updateStoreStatus();
 
 	boolean getStoreStatus();
 
 	StoreInfoListResponseDto findOpenStores();
 
-	StoreLocationResponseDto updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
+	void updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
 
 	Double findStoreAverageStar(Integer storeId);
 
@@ -38,5 +37,7 @@ public interface StoreService {
 
 	StoreNoticeResponseDto findStoreNotice(Integer storeId);
 
-	StoreNoticeResponseDto deleteStoreNotice();
+	void deleteStoreNotice();
+
+	String checkDuplicateSafetyLicenseNumber(String safetyLicenseNumber);
 }

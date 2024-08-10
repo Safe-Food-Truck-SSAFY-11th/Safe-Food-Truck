@@ -28,11 +28,21 @@ function MapCustomer({ openFoodTrucks, userLocation }) {
         const options = {
           center: new window.kakao.maps.LatLng(currentLocation?.latitude, currentLocation?.longitude),
           level: 4,
+          // 확대/축소 컨트롤 추가
+          zoomControl: true,
+          panControl: true,
         };
 
         // 지도 표시할 객체 map 생성 하는 메서드 입니당.
         const mapInstance = new window.kakao.maps.Map(container, options);
         setMap(mapInstance);
+
+         // 줌 컨트롤러 위치 설정 (예: 오른쪽 아래)
+         const zoomControl = new window.kakao.maps.ZoomControl();
+         mapInstance.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+
+         const panControl = new window.kakao.maps.MapTypeControl();
+         mapInstance.addControl(panControl, window.kakao.maps.ControlPosition.TOPRIGHT);
 
         // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록
         window.kakao.maps.event.addListener(mapInstance, 'center_changed', function() {
