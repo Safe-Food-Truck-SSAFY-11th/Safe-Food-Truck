@@ -31,6 +31,8 @@ import com.safefoodtruck.sft.notification.dto.SendNotificationRequestDto;
 import com.safefoodtruck.sft.notification.exception.NotFoundNotificationException;
 import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.notification.repository.NotificationRepository;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.repository.StoreRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -209,7 +211,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void registReviewNotify(String ownerEmail, Integer storeId) {
-        Member member = memberRepository.findByEmail(ownerEmail);
+        Member member = memberRepository.findByEmail(ownerEmail).orElseThrow();
         String info = "리뷰가 달렸어요!";
 
         notificationRepository.save(Notification.builder()
