@@ -1,24 +1,23 @@
 import React, { useEffect } from "react";
 import styles from "./MenuUpdate.module.css";
 import useMenuStore from "store/users/owner/menuStore";
-import imageIcon from "assets/images/sft-logo.png";
 
 const MenuUpdate = () => {
   const { menuForm, setMenuForm, setMenuImage, closeUpdate, updateMenu } =
-    useMenuStore();
-
+  useMenuStore();
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMenuForm(name, value);
   };
-
+  
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const imageURL = URL.createObjectURL(e.target.files[0]);
       setMenuImage(imageURL);
     }
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(menuForm);
@@ -26,7 +25,7 @@ const MenuUpdate = () => {
     closeUpdate();
     window.location.reload();
   };
-
+  
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>
@@ -34,7 +33,7 @@ const MenuUpdate = () => {
           <div className={styles.imageSection}>
             <img
               //   src={menuForm.image || imageIcon}
-              src={imageIcon}
+              src={menuForm.savedUrl}
               alt="이미지 업로드"
               className={styles.uploadedImage}
             />

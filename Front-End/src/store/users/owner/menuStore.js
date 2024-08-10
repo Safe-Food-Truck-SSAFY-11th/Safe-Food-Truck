@@ -16,6 +16,8 @@ const useMenuStore = create((set) => ({
     name: "",
     price: "",
     description: "",
+    savedUrl: "",
+    savedPath: ""
   },
   setMenuForm: (name, value) =>
     set((state) => ({
@@ -35,6 +37,8 @@ const useMenuStore = create((set) => ({
         name: menu.name,
         price: menu.price,
         description: menu.description,
+        savedUrl: menu.savedUrl,
+        savedPath: menu.savedpath
       },
     });
   },
@@ -51,9 +55,15 @@ const useMenuStore = create((set) => ({
               name: state.menuForm.name,
               price: state.menuForm.price,
               description: state.menuForm.description,
+              menuImageDto: {
+                savedUrl: state.menuForm.savedUrl,
+                savedPath: state.menuForm.savedPath
+              }
             },
           ],
         };
+        
+        console.log("메뉴가 잘 추가하려고 시도 하나요?", requestBody);
 
         // POST 요청을 통해 메뉴 추가
         const response = await axiosInstance.post("/menus", requestBody);
@@ -62,7 +72,7 @@ const useMenuStore = create((set) => ({
         console.log("메뉴추가 성공");
         return {
           menus: [...state.menus, response.data], // 서버에서 받은 응답을 menus에 추가
-          menuForm: { menuName: "", price: "", description: "" }, // 폼 초기화
+          menuForm: { menuName: "", price: "", description: "", savedPath: "", savedUrl: "" }, // 폼 초기화
         };
       } catch (error) {
         console.error("메뉴 추가에 실패 ㅠㅜ", error);
@@ -82,6 +92,10 @@ const useMenuStore = create((set) => ({
           name: state.menuForm.name,
           price: state.menuForm.price,
           description: state.menuForm.description,
+          menuImageDto: {
+            savedUrl: state.menuForm.savedUrl,
+            savedPath: state.menuForm.savedPath
+          }
         };
 
         // PATCH 요청을 통해 메뉴 수정
@@ -139,12 +153,17 @@ const useMenuStore = create((set) => ({
   // 메뉴 로딩
   fetchMenu: async () => {
     const response = await axiosInstance.get("/stores");
+    console.log("지금 막 가져온 메뉴 데이터 확인 ~ ", response.data);
     const updatedMenus = response.data.menuListResponseDto.menuResponseDtos.map(
       (menu) => ({
         menuId: menu.menuId,
         name: menu.name,
         price: menu.price,
         description: menu.description,
+        menuImageDto: {
+          savedUrl: menu.menuImageDto.savedUrl,
+          savedPath: menu.menuImageDto.savedPath
+        }
       })
     );
     set({ menus: updatedMenus }); // 상태 업데이트
