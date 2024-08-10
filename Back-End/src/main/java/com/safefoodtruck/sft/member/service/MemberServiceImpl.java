@@ -1,6 +1,6 @@
 package com.safefoodtruck.sft.member.service;
 
-import static com.safefoodtruck.sft.common.ValidationMessage.*;
+import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 
 import java.time.LocalDate;
 
