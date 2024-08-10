@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.review.service;
 
+import com.safefoodtruck.sft.store.domain.Store;
 import java.util.List;
 
 import org.springframework.stereotype.Service;

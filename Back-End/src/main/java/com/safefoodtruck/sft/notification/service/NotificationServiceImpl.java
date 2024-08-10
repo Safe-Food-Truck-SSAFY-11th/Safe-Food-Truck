@@ -2,6 +2,8 @@ package com.safefoodtruck.sft.notification.service;
 
 import static com.safefoodtruck.sft.common.util.EventType.*;
 
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.repository.StoreRepository;
 import java.util.List;
 import java.util.Set;
 
@@ -211,7 +213,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void registReviewNotify(String ownerEmail, Integer storeId) {
-        Member member = memberRepository.findByEmail(ownerEmail);
+        Member member = memberRepository.findByEmail(ownerEmail).orElseThrow();
         String info = "리뷰가 달렸어요!";
 
         notificationRepository.save(Notification.builder()
