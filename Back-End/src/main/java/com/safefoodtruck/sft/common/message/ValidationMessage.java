@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.common;
+package com.safefoodtruck.sft.common.message;
 
 public enum ValidationMessage {
 	POSSIBLE("Possible"),

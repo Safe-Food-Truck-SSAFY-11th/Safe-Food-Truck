@@ -1,6 +1,6 @@
 package com.safefoodtruck.sft.store.service;
 
-import static com.safefoodtruck.sft.common.ValidationMessage.*;
+import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 
 import java.util.List;
 import java.util.Map;

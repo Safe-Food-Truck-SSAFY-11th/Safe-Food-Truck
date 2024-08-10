@@ -34,7 +34,6 @@ import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
-import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.exception.OrderNotPreparingException;
 import com.safefoodtruck.sft.order.exception.UnAuthorizedOrderStatusUpdateException;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
@@ -205,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(readOnly = true)
 	@Override
 	public OrderDetailResponseDto findOrderDetail(Integer orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		Order order = orderRepository.findByOrderId(orderId);
 
 		return OrderDetailResponseDto.fromEntity(order);
 	}
@@ -291,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private Order getOrder(Integer orderId) {
-		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		return orderRepository.findByOrderId(orderId);
 	}
 
 	private Store findLoginStore() {
