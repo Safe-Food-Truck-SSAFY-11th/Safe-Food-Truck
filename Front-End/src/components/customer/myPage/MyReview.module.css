@@ -64,3 +64,16 @@ h3 {
 .deleteButton:hover {
   color: #FF4500;
 }
+
+.reviewImages {
+  width: 70vw;
+  margin-top: 25px;
+  max-height: 90%;
+  margin-bottom: 10px;
+}
+
+.reviewImage {
+  margin: 10%;
+  max-width: 80%;
+  max-height: 80%;
+}
