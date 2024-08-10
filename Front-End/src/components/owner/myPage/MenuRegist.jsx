@@ -9,10 +9,10 @@ import useTruckStore from "store/users/owner/truckStore";
 const MenuRegist = () => {
   const { menuForm, setMenuForm, setMenuImage, closeRegist, addMenu } =
     useMenuStore();
+  const { truckInfo } = useTruckStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("target ====== ", e.target);
     setMenuForm(name, value);
   };
   const [selectedImage, setSelectedImage] = useState(null);
@@ -32,7 +32,7 @@ const MenuRegist = () => {
 
     addMenu();
     closeRegist();
-    // window.location.reload();
+    window.location.reload();
   };
   const handleUpload = async () => {
       if (!selectedImage) {
@@ -48,13 +48,11 @@ const MenuRegist = () => {
 
       const s3 = new AWS.S3();
 
-      const ownerEmail = sessionStorage.getItem("email");
-      // const storeId = useTruckStore.info.storeId;
 
       // 업로드할 파일 정보 설정
       const uploadParams = {
           Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-          Key: `stores/${ownerEmail}/menus/${selectedImage.name}`, // S3에 저장될 경로와 파일명
+          Key: `stores/${truckInfo.storeId}/menus/${selectedImage.name}`, // S3에 저장될 경로와 파일명
           Body: selectedImage,
       };
 
@@ -68,8 +66,6 @@ const MenuRegist = () => {
                   console.log('File uploaded successfully. ETag:', data.ETag);
                   setMenuForm("savedUrl", data.Location);
                   setMenuForm("savedPath", data.Key);
-                  // menuForm.savedUrl = data.Location;
-                  // menuForm.savedPath = data.Key;
 
                   console.log('DATA = ', data);
                   console.log('FORM = ', menuForm);

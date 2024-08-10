@@ -17,7 +17,8 @@ const useMenuStore = create((set) => ({
     price: "",
     description: "",
     savedUrl: "",
-    savedPath: ""
+    savedPath: "",
+    image: "" //S3에 올리기 전
   },
   setMenuForm: (name, value) =>
     set((state) => ({
@@ -29,7 +30,6 @@ const useMenuStore = create((set) => ({
     })),
 
   openUpdate: (menu) => {
-    console.log(menu);
     set({
       isUpdateOpen: true,
       menuForm: {
@@ -37,8 +37,9 @@ const useMenuStore = create((set) => ({
         name: menu.name,
         price: menu.price,
         description: menu.description,
-        savedUrl: menu.savedUrl,
-        savedPath: menu.savedpath
+        savedUrl: menu.menuImageDto.savedUrl,
+        savedPath: menu.menuImageDto.savedPath,
+        image: menu.menuImageDto.savedUrl
       },
     });
   },
@@ -72,7 +73,7 @@ const useMenuStore = create((set) => ({
         console.log("메뉴추가 성공");
         return {
           menus: [...state.menus, response.data], // 서버에서 받은 응답을 menus에 추가
-          menuForm: { menuName: "", price: "", description: "", savedPath: "", savedUrl: "" }, // 폼 초기화
+          menuForm: { menuName: "", price: "", description: "", savedPath: "", savedUrl: "", image: "" }, // 폼 초기화
         };
       } catch (error) {
         console.error("메뉴 추가에 실패 ㅠㅜ", error);
@@ -97,7 +98,8 @@ const useMenuStore = create((set) => ({
             savedPath: state.menuForm.savedPath
           }
         };
-
+        console.log("ID === ", menuId);
+console.log("LAST MENU ===== ", requestBody);
         // PATCH 요청을 통해 메뉴 수정
         const response = await axiosInstance.patch(
           `/menus/${menuId}`, // URL에 슬래시 추가
@@ -114,7 +116,7 @@ const useMenuStore = create((set) => ({
 
         return {
           menus: updatedMenus, // 수정된 메뉴로 업데이트
-          menuForm: { menuId: -1, menuName: "", price: "", description: "" }, // 폼 초기화
+          menuForm: { menuId: -1, menuName: "", price: "", description: "", savedUrl: "", savedPath: ""}, // 폼 초기화
         };
       } catch (error) {
         console.error("메뉴 수정 실패 ㅠㅜ", error);
@@ -163,7 +165,8 @@ const useMenuStore = create((set) => ({
         menuImageDto: {
           savedUrl: menu.menuImageDto.savedUrl,
           savedPath: menu.menuImageDto.savedPath
-        }
+        },
+        image: menu.menuImageDto.savedUrl
       })
     );
     set({ menus: updatedMenus }); // 상태 업데이트
