@@ -9,11 +9,16 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.safefoodtruck.sft.menu.domain.QMenu;
+import com.safefoodtruck.sft.menu.domain.QMenuImage;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.domain.QOrder;
+import com.safefoodtruck.sft.order.domain.QOrderMenu;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderByStoreSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
+import com.safefoodtruck.sft.review.domain.QReview;
 import com.safefoodtruck.sft.store.domain.QStore;
+import com.safefoodtruck.sft.store.domain.QStoreImage;
 
 import jakarta.persistence.EntityManager;
 
@@ -29,12 +34,24 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 	@Override
 	public List<Order> findByCustomerEmail(final String email) {
 		QOrder order = QOrder.order;
+		QReview review = QReview.review;
+		QStore store = QStore.store;
+		QStoreImage storeImage = QStoreImage.storeImage;
+		QMenu menu = QMenu.menu;
+		QMenuImage menuImage = QMenuImage.menuImage;
+		QOrderMenu qOrderMenu = QOrderMenu.orderMenu;
 
 		return queryFactory.selectFrom(order)
-			.join(order.store).fetchJoin()
+			.join(order.store, store).fetchJoin()
+			.leftJoin(store.storeImage, storeImage).fetchJoin()
+			.leftJoin(order.orderMenuList, qOrderMenu).fetchJoin()
+			.leftJoin(qOrderMenu.menu, menu).fetchJoin()
+			.leftJoin(menu.menuImage, menuImage).fetchJoin()
+			.leftJoin(order.review, review).fetchJoin()
 			.where(order.customer.email.eq(email))
 			.fetch();
 	}
+
 
 	@Override
 	public List<Order> findOrdersByStoreOwnerEmail(String email) {
