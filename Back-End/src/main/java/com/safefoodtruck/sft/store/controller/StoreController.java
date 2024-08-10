@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.store.controller;
 
+import static org.springframework.http.HttpStatus.*;
+
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
@@ -8,10 +10,7 @@ import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
@@ -20,9 +19,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import static org.springframework.http.HttpStatus.*;
 import java.time.LocalDateTime;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,26 +34,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
-import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
-import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
-import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
-import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
-import com.safefoodtruck.sft.store.service.StoreService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/stores")
@@ -251,11 +230,11 @@ public class StoreController {
     @ExceptionHandler({NullListException.class})
     public ResponseEntity<ErrorResponseDto> NullLIstException(Exception e) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
-            HttpStatus.BAD_REQUEST.value(),
+            BAD_REQUEST.value(),
             e.getMessage(),
             LocalDateTime.now()
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(BAD_REQUEST)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }

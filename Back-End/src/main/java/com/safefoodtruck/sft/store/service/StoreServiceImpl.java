@@ -29,8 +29,6 @@ import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
@@ -171,7 +169,7 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public StoreNoticeResponseDto updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
+	public void updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
 		if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
 			throw new NullListException();
 		}
@@ -180,7 +178,6 @@ public class StoreServiceImpl implements StoreService {
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
 		notificationService.changedNoticeNotify(ownerEmail, storeNoticeRegistRequestDto.connectedEmailList());
-		return StoreNoticeResponseDto.fromEntity(store);
 	}
 
 	@Override
