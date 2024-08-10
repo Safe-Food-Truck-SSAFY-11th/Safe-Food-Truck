@@ -23,6 +23,7 @@ import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
 import com.safefoodtruck.sft.review.repository.ReviewImageRepository;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
+import com.safefoodtruck.sft.store.domain.Store;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
