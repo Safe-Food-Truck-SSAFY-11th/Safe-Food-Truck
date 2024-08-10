@@ -1,7 +1,26 @@
 package com.safefoodtruck.sft.store.controller;
 
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
+import com.safefoodtruck.sft.store.exception.NullListException;
+import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.service.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import static org.springframework.http.HttpStatus.*;
-
 import java.time.LocalDateTime;
 
 import org.springframework.http.MediaType;
@@ -225,6 +244,18 @@ public class StoreController {
             LocalDateTime.now()
         );
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler({NullListException.class})
+    public ResponseEntity<ErrorResponseDto> NullLIstException(Exception e) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+            HttpStatus.BAD_REQUEST.value(),
+            e.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }
