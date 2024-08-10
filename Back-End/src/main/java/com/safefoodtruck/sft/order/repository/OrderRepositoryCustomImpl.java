@@ -18,12 +18,22 @@ import com.safefoodtruck.sft.store.domain.QStore;
 import jakarta.persistence.EntityManager;
 
 @Repository
-public class OrderRepositoryImpl implements OrderRepositoryCustom {
+public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	public OrderRepositoryImpl(EntityManager em) {
+	public OrderRepositoryCustomImpl(EntityManager em) {
 		this.queryFactory = new JPAQueryFactory(em);
+	}
+
+	@Override
+	public List<Order> findByCustomerEmail(final String email) {
+		QOrder order = QOrder.order;
+
+		return queryFactory.selectFrom(order)
+			.join(order.store).fetchJoin()
+			.where(order.customer.email.eq(email))
+			.fetch();
 	}
 
 	@Override
@@ -37,7 +47,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 	}
 
 	@Override
-	public List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(String email, LocalDateTime start, LocalDateTime end) {
+	public List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(String email,
+		LocalDateTime start, LocalDateTime end) {
 		QOrder order = QOrder.order;
 
 		return queryFactory.selectFrom(order)
@@ -50,7 +61,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 	}
 
 	@Override
-	public WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(String email, LocalDateTime weekAgo) {
+	public WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(String email,
+		LocalDateTime weekAgo) {
 		QOrder order = QOrder.order;
 		QStore store = QStore.store;
 
@@ -94,7 +106,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 			)
 			.fetchOne();
 
-		return WeeklyCustomerOrderSummaryResponseDto.of(weeklyOrderCount, weeklyTotalAmount, storeOrderSummaries);
+		return WeeklyCustomerOrderSummaryResponseDto.of(weeklyOrderCount, weeklyTotalAmount,
+			storeOrderSummaries);
 	}
 
 }
