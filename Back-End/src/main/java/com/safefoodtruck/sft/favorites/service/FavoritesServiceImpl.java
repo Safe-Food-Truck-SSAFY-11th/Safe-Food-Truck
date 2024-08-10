@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.favorites.service;
 
+import com.safefoodtruck.sft.favorites.dto.response.CheckIsFavoriteResponseDto;
 import org.springframework.stereotype.Service;
 
 import com.safefoodtruck.sft.favorites.domain.Favorites;
@@ -68,5 +69,14 @@ public class FavoritesServiceImpl implements FavoritesService {
     @Override
     public SelectFavoriteResponseDto selectFavoriteCount(Integer storeId) {
         return favoritesRepository.findFavoritesCount(storeId);
+    }
+
+    @Override
+    public CheckIsFavoriteResponseDto checkIsFavorite(String userEmail, Integer storeId) {
+        CheckIsFavoriteResponseDto checkIsFavoriteResponseDto = favoritesRepository.checkIsFavorite(userEmail, storeId);
+        if (checkIsFavoriteResponseDto == null) {
+            checkIsFavoriteResponseDto = new CheckIsFavoriteResponseDto(-1);
+        }
+        return checkIsFavoriteResponseDto;
     }
 }

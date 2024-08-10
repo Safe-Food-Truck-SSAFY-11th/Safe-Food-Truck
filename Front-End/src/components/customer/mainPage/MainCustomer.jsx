@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import BroadCastList from "./BroadCastList";
 import FoodFilter from "./FoodFilter";
-import MapCustomer from "./MapCustomer";
 import FoodTruckList from "./FoodTruckList";
+import MapCustomer from "./MapCustomer";
 import Header from "../../common/Header";
-import styles from "./MainCustomer.module.css";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import SurveyArea from "./SurveyArea";
+import styles from "./MainCustomer.module.css";
 
 function MainCustomer() {
-  const [view, setView] = useState('map'); // 'map' or 'list'
-  const [selectedType, setSelectedType] = useState('all'); // 선택된 타입 상태
+  const [view, setView] = useState('map');
+  const [selectedType, setSelectedType] = useState('all');
 
   const { openFoodTrucks, getOpenFoodTruck } = useFoodTruckStore();
   const nickname = sessionStorage.getItem('nickname');
-
   const [userLocation, setUserLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -73,12 +71,12 @@ function MainCustomer() {
       </div>
 
       {loading ? (
-        <p>Loading...</p> // 로딩 상태를 표시합니다.
+        <p>Loading...</p>
       ) : (
         view === 'map' ? (
-          <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+          <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
         ) : (
-          <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} />
+          <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
         )
       )}
     </>
