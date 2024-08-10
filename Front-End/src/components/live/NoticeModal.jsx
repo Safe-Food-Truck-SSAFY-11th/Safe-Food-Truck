@@ -20,11 +20,11 @@ const NoticeModal = () => {
   // 공지사항 등록/수정
   const handleRegistButtonClick = async () => {
     // Set을 배열로 변환
-    const membersArray = Array.from(members); // members가 Set인 경우
+    const membersArray = members ? Array.from(members) : []; // members가 Set인 경우, undefined 체크
     try {
       const response = await axiosInstance.patch("/stores/notice", {
         notice,
-        members: membersArray,
+        connectedEmailList: membersArray,
       });
       setStoreNotice(notice);
       console.log(notice);

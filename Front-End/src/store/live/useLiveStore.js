@@ -41,7 +41,7 @@ const useLiveStore = create((set) => ({
     set((state) => {
       // const newMembers = new Set(state.members); // 기존 Set 복사
       // newMembers.add(email); // 새로운 멤버 추가
-      return { members: state.members.add(email) }; // 상태 업데이트
+      return { members: state.members?.add(email) }; // 상태 업데이트
     }),
 
   deleteMember: (email) =>
@@ -53,7 +53,7 @@ const useLiveStore = create((set) => ({
 
   resetMembers: () =>
     set((state) => {
-      return { members: state.members.clear() }; // 셋 초기화
+      return { members: state.members?.clear() }; // 셋 초기화
     }),
 }));
 
