@@ -1,15 +1,19 @@
 package com.safefoodtruck.sft.store.repository;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.safefoodtruck.sft.member.domain.QMember;
 import com.safefoodtruck.sft.menu.domain.QMenu;
 import com.safefoodtruck.sft.menu.domain.QMenuImage;
 import com.safefoodtruck.sft.store.domain.QStore;
+import com.safefoodtruck.sft.store.domain.QStoreImage;
 import com.safefoodtruck.sft.store.domain.Store;
-import java.util.List;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,14 +64,16 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     @Override
     public Optional<Store> findStoreWithMenusAndImagesByOwnerEmail(String email) {
         QStore store = QStore.store;
+        QStoreImage storeImage = QStoreImage.storeImage;
         QMenu menu = QMenu.menu;
         QMenuImage menuImage = QMenuImage.menuImage;
 
         return Optional.ofNullable(jpaQueryFactory.selectFrom(store)
-            .leftJoin(store.storeImage).fetchJoin()
+            .leftJoin(store.storeImage, storeImage).fetchJoin()
             .leftJoin(store.menuList, menu).fetchJoin()
             .leftJoin(menu.menuImage, menuImage).fetchJoin()
             .where(store.owner.email.eq(email))
             .fetchOne());
     }
+
 }

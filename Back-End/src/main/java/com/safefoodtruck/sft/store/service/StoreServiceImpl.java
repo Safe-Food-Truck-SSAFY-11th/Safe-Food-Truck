@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
@@ -49,7 +50,7 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	public void registStore(StoreRegistRequestDto storeRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member owner = memberRepository.findByEmail(email);
+		Member owner = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);;
 		Store store = Store.of(owner, storeRegistRequestDto);
 
 		store.setOwner(owner);

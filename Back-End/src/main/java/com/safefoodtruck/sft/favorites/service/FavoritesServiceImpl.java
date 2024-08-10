@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.favorites.service;
 
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
@@ -9,12 +11,13 @@ import com.safefoodtruck.sft.favorites.exception.NotInsertedFavoriteException;
 import com.safefoodtruck.sft.favorites.exception.NotWriterFavoriteException;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
+
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +42,8 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (memberFavoritesDto != null) {
             throw new ImpossibleRetryException();
         }
-        Member member = memberRepository.findByEmail(userEmail);
+        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
+            NotFoundMemberException::new);;
         Store store = storeRepository.findById(storeId).get();
         favoritesRepository.save(Favorites.builder()
             .member(member)
