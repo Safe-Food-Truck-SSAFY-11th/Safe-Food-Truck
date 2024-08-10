@@ -107,7 +107,7 @@ function FoodTruckSummary({ truck }) {
 
   useEffect(() => {
     checkJJimTruck();
-  }, [truck, checkJJimTruck]);
+  }, [truck, ]);
 
   if (loading) {
     return <div>찜 여부 체크중이에요 ..... </div>;

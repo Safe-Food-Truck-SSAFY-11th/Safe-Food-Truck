@@ -186,9 +186,6 @@ function MapCustomer({ openFoodTrucks, userLocation }) {
       <button id="searchButton" className={styles.searchButton} onClick={searchCurrentLocation}>
         현위치에서 검색
       </button>
-      <button id="updateLocationButton" className={styles.updateLocationButton} onClick={updateCurrentLocation}>
-        현위치 갱신
-      </button>
       <div id="map" className={styles.map}></div>
     </div>
   );

@@ -68,7 +68,6 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
 
     return distance;
   };
-
   return (
     <div className={styles.foodTruckList}>
       {Array.isArray(addresses) && addresses.length > 0 ? (
@@ -76,6 +75,7 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
           <FoodTruckItem
             key={truck.storeId}
             name={truck.name}
+            type={truck.storeType}
             category={truck.menuCategory}
             address={truck.address}
             distance={truck.distance}
