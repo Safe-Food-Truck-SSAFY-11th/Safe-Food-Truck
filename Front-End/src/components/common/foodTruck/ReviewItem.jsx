@@ -50,7 +50,6 @@ function ReviewItem({ review, isReported }) {
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
           <h4>{review.nickname} 님 ★ {review.star / 2}</h4>
-          <span>{review.date}</span>
         </div>
         <p>{review.content}</p>
         <hr className={styles.seperator}/>

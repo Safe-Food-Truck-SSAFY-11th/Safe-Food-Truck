@@ -4,40 +4,59 @@
   border-radius: 10px;
   margin-bottom: 20px;
   width: 90%;
+  display: flex;
+  align-items: center;
 }
 
-.header h1, .header h3, .header p {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 20px;
-  text-align: center;
+.header img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  margin-right: 20px;
+}
 
-  /* 최대 너비를 설정하여 글자 수 많아져도 균형 유지 */
-  max-width: 300px; 
- 
-  /* 가운데 정렬 */
-  margin-left: auto; 
-  
-  margin-right: auto; 
-  /* 긴 단어는 줄 바꿈 처리 */
-  word-wrap: break-word; 
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 텍스트를 왼쪽 정렬 */
+  flex: 1;
+}
+
+.textContainer h1,
+.textContainer h3,
+.textContainer p {
+  margin: 0;
+  font-size: 19px;
+  padding-bottom: 25px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .jjimButton,
-.unJJimButton {
+.unJJimButton,
+.liveButton {
   padding: 10px 20px;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
-  font-size: 16px;
-  flex: 1; /* 두 버튼이 동일한 너비를 갖도록 설정 */
+  border: none;
+  flex: 1;
+  margin-right: 10px; /* 버튼 간격 */
 }
 
 .unJJimButton {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.jjimButton {
   background-color: #ff4757;
+  color: white;
 }
 
 .jjimButton:hover,
@@ -46,24 +65,10 @@
 }
 
 .liveButton {
-  padding: 10px 20px;
   background-color: #4caf50;
   color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 16px;
-  flex: 1; /* 두 버튼이 동일한 너비를 갖도록 설정 */
 }
 
 .liveButton:hover {
   background-color: #45a049;
-}
-
-.buttonContainer {
-  display: flex;
-  gap: 10px; /* 버튼 간격을 동일하게 설정 */
-  justify-content: space-between;
-  margin-top: 20px; /* 버튼 컨테이너와 상단 콘텐츠 간격 */
 }
