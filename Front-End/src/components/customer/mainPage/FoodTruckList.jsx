@@ -4,10 +4,10 @@ import FoodTruckItem from './FoodTruckItem';
 import styles from './FoodTruckList.module.css';
 import axios from 'axios';
 
-function FoodTruckList({ openFoodTrucks, userLocation }) {
+function FoodTruckList({ openFoodTrucks, userLocation, selectedType }) {
   const trucks = openFoodTrucks.storeInfoResponseDtos || [];
   const [addresses, setAddresses] = useState([]);
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -68,10 +68,14 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
 
     return distance;
   };
+
+  // selectedType이 'all'이 아니면 해당 타입만 필터링
+  const filteredTrucks = selectedType === 'all' ? addresses : addresses.filter(truck => truck.storeType === selectedType);
+
   return (
     <div className={styles.foodTruckList}>
-      {Array.isArray(addresses) && addresses.length > 0 ? (
-        addresses.map(truck => (
+      {Array.isArray(filteredTrucks) && filteredTrucks.length > 0 ? (
+        filteredTrucks.map(truck => (
           <FoodTruckItem
             key={truck.storeId}
             name={truck.name}
