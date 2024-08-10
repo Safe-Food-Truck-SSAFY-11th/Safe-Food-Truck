@@ -3,6 +3,7 @@ package com.safefoodtruck.sft.menu.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.menu.domain.Menu;
@@ -19,7 +20,6 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,13 +76,12 @@ public class MenuServiceImpl implements MenuService {
 			.orElseThrow(MenuNotFoundException::new);
 		menu.update(menuUpdateRequestDto);
 
-		if (menuUpdateRequestDto.menuImageDto() != null) {
-			MenuImage menuImage = MenuImage.of(menuUpdateRequestDto.menuImageDto());
-			menuImageRepository.save(menuImage);
-			menu.setMenuImage(menuImage);
-		}
+		MenuImage menuImage = menuImageRepository.findByMenu(menu);
+		menuImage.updateMenuImage(menuUpdateRequestDto.menuImageDto());
 
 		Menu savedMenu = menuRepository.save(menu);
+		menuImageRepository.save(menuImage);
+
 		return MenuResponseDto.fromEntity(savedMenu);
 	}
 
