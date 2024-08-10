@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safefoodtruck.sft.logo.dto.request.LogoCreateRequestDto;
 import com.safefoodtruck.sft.logo.dto.response.LogoCreateResponseDto;
 import com.safefoodtruck.sft.logo.util.KakaoLogoRequestUtil;
-import com.safefoodtruck.sft.logo.util.KakaoTransRequestUtil;
+import com.safefoodtruck.sft.logo.util.PapagoTransRequestUtil;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +77,7 @@ public class LogoServiceImpl implements LogoService {
         headers.add("Content-Type", "application/json");
 
         //HTTP 바디 생성
-        Map<String, Object> body = KakaoTransRequestUtil.makeHttpBody(logoCreateRequestDto.getLogoStyle());
+        Map<String, Object> body = PapagoTransRequestUtil.makeHttpBody(logoCreateRequestDto.getLogoStyle());
 
         //Http 요청 보내기
         HttpEntity<Map<String, Object>> transRequest = new HttpEntity<>(body, headers);

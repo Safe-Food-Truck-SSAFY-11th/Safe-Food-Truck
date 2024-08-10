@@ -135,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
 		if (savedOrder.getStatus().equals(ACCEPTED.get())) {
 			String orderEmail = savedOrder.getCustomer().getEmail();
 			String storeName = savedOrder.getStore().getName();
-			notificationService.acceptedSendNotify(orderEmail, storeName);
+			notificationService.acceptedSendNotify(orderEmail, storeName, orderId);
 		}
 
 		return savedOrder.getStatus();

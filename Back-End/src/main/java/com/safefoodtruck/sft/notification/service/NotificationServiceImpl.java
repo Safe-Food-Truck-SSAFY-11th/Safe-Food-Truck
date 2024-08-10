@@ -5,6 +5,7 @@ import static com.safefoodtruck.sft.common.util.EventType.*;
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
+import com.safefoodtruck.sft.globalnotification.dto.ChangeNoticeNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.OrderedNotificationDto;
@@ -19,6 +20,7 @@ import com.safefoodtruck.sft.notification.exception.NotFoundNotificationExceptio
 import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.notification.repository.NotificationRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +103,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Async
     @Transactional
     @Override
-    public void acceptedSendNotify(String orderEmail, String storeName) {
+    public void acceptedSendNotify(String orderEmail, String storeName, Integer orderId) {
         Member member = memberRepository.findByEmail(orderEmail);
         String info = storeName + " 푸드트럭에서 주문을 수락하였습니다.";
 
@@ -111,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName), "accepted", CUSTOMER.getEventType());
+            new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER.getEventType());
     }
 
     @Async
@@ -160,5 +162,14 @@ public class NotificationServiceImpl implements NotificationService {
 
         globalNotificationService.sendToClient(ownerEmail,
             new OrderedNotificationDto(), "ordered", OWNER.getEventType());
+    }
+
+    @Async
+    @Override
+    public void changedNoticeNotify(Set<String> connectedEmailList) {
+        for (String connectedEmail : connectedEmailList) {
+            globalNotificationService.sendToClient(connectedEmail,
+                new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
+        }
     }
 }
