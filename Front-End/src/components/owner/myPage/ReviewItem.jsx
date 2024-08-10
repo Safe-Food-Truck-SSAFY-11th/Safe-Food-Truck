@@ -63,6 +63,7 @@ function ReviewItem({ review }) {
 
   const handleAIBtnClick = async () => {
     setIsLoading(true); // 로딩 상태를 true로 설정
+    // name, offDay, storeType, description, menuListResponseDto. review.content
     const aiText = await onwerReplyAI(truckInfo.name, truckInfo.offDay, truckInfo.storeType, truckInfo.description, truckInfo.menuListResponseDto, review.content);
     setAiReply(aiText); // AI 텍스트 상태 업데이트
     setReply(aiText); // AI 텍스트를 input 필드에 설정
