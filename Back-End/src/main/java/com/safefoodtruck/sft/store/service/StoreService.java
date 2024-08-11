@@ -1,6 +1,8 @@
 package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.StoreImageDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
@@ -40,4 +42,6 @@ public interface StoreService {
 	void deleteStoreNotice();
 
 	String checkDuplicateSafetyLicenseNumber(String safetyLicenseNumber);
+
+	void updateStoreAILogo (StoreAILogoRequestDto storeAILogoRequestDto);
 }

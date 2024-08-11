@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
@@ -239,4 +240,15 @@ public class StoreController {
             .body(errorResponse);
     }
 
+    @PatchMapping("/ai-logo")
+    @PreAuthorize("hasAnyRole('ROLE_owner', 'ROLE_vip_owner')")
+    @Operation(summary = "AI 로고 저장", description = "AI 로고 저장 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "내 점포 공지사항 등록/수정에 성공하였습니다!", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Error Message 로 전달함", content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<Void> updateStoreAILogo(@RequestBody StoreAILogoRequestDto storeAILogoRequestDto) {
+        storeService.updateStoreAILogo(storeAILogoRequestDto);
+        return new ResponseEntity<>(OK);
+    }
 }
