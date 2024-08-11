@@ -16,18 +16,14 @@ const PermitAreaCheck = () => {
   const currSidoRef = useRef("");
   const [mapCenterLat, setMapCenterLat] = useState();
   const [mapCenterLon, setMapCenterLon] = useState();
-
   const [filteredAreaList, setFilteredAreaList] = useState([]);
-
   const { permitAreaList, addCoord, coordList, isOpen, openWarning } =
     usePermitAreaStore(); //허가구역
-
   const mapRef = useRef(null); // 지도 객체를 참조할 ref
   const currLocationRef = useRef([currLat, currLon]); // 트럭 현재 위치를 참조할 ref
-
   const navigate = useNavigate();
-
   const { truckInfo, switchStatus, changeLocation } = useTruckStore();
+  const [isLocationLoaded, setIsLocationLoaded] = useState(false);
 
   //현재 위치의 시도를 기준으로 허가구역 필터링
   const filterByRegion = (sido) => {
@@ -62,11 +58,18 @@ const PermitAreaCheck = () => {
         //지도 처음위치도 현재위치로
         setMapCenterLat(position.coords.latitude);
         setMapCenterLon(position.coords.longitude);
+        setIsLocationLoaded(true); // 위치 정보가 로드되었음을 설정
       },
       (error) => {
         console.error("Error occurred while retrieving location:", error);
+        setIsLocationLoaded(true); // 에러 발생 시에도 로드 상태로 설정
       }
     );
+
+    if (!isLocationLoaded) {
+      // 위치 정보가 로드되지 않았으면 뒤에 코드를 실행하지 않음
+      return;
+    }
 
     const kakaoMapApiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
 
@@ -181,7 +184,7 @@ const PermitAreaCheck = () => {
     script.onerror = (err) => {
       console.error("카카오맵 스크립트를 로드하는 데 실패했습니다.");
     };
-  }, [addCoord, filteredAreaList.length]);
+  }, [addCoord, filteredAreaList.length, isLocationLoaded]);
 
   // 원을 지도에 그리는 함수
   const drawCircle = (map, lat, lon) => {
@@ -273,14 +276,18 @@ const PermitAreaCheck = () => {
       <div className={styles.compSize}>
         <h3>오늘은 어디서 장사할까요? 🤔</h3>
         <div className={styles.permitAreaCheck}>
-          <div id="map" className={styles.map}>
-            <div className={styles.resetControl}>
-              <MdMyLocation
-                className={styles.resetBtn}
-                onClick={resetLocation}
-              />
+          {isLocationLoaded ? (
+            <div id="map" className={styles.map}>
+              <div className={styles.resetControl}>
+                <MdMyLocation
+                  className={styles.resetBtn}
+                  onClick={resetLocation}
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div>위치 정보를 불러오는 중...</div>
+          )}
         </div>
         <div className={styles.buttons}>
           <button className={styles.allowButton} onClick={handleSelectClick}>
