@@ -10,10 +10,12 @@ const MyReviewList = ({ memberInfo }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   // 삭제 모달 열기
-  const openDeleteModal = (reviewId) => {
+  const openDeleteModal = (reviewId, orderId) => {
     setSelectedReviewId(reviewId);
+    setSelectedOrderId(orderId);
     setIsDeleteModalOpen(true);
   };
 
@@ -24,7 +26,7 @@ const MyReviewList = ({ memberInfo }) => {
 
   // 삭제 확인 처리
   const handleDeleteConfirm = async () => {
-    await deleteReview(selectedReviewId);
+    // await deleteReview(selectedReviewId);
     setIsDeleteModalOpen(false);
     setIsDeleteCompleteModalOpen(true);
   };
@@ -52,7 +54,7 @@ const MyReviewList = ({ memberInfo }) => {
         <>
           <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
           {myReviewList.map(review => (
-            <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id)} />
+            <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id, review.orderId)} />
           ))}
         </>
       )}
@@ -60,7 +62,9 @@ const MyReviewList = ({ memberInfo }) => {
         <DeleteReview 
           onClose={closeDeleteModal} 
           selectedReviewId={selectedReviewId} 
-          onConfirm={handleDeleteConfirm} 
+          onConfirm={handleDeleteConfirm}
+          selectedOrderId={selectedOrderId} 
+          memberEmail={memberInfo.email}
         />
       )}
       {isDeleteCompleteModalOpen && (

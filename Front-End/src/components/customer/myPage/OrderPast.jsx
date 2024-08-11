@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './OrderPast.module.css';
+import useReviewStore from 'store/reviews/useReviewStore';
 
 const OrderPast = ({ memberInfo, pastOrders }) => {
   const navigate = useNavigate();
+  const { initCurrentReview } = useReviewStore();
 
+  // 컴포넌트가 처음 마운트될 때만 상태 초기화
+  useEffect(() => {
+    initCurrentReview();
+  }, [initCurrentReview]); // initCurrentReview를 의존성 배열에 추가
   // 과거 주문 내역을 역순으로 정렬
   const results = [...pastOrders.customerOrderResponseDtos].reverse();
 
