@@ -13,6 +13,18 @@ const useReviewStore = create((set) => ({
     savedUrl: 'empty',
   },
 
+  initCurrentReview: () => {
+    set((state) => ({
+      currentReview: {
+        content: '',
+        is_visible: 1,
+        rating: 0,
+        savedPath: 'empty',
+        savedUrl: 'empty',
+      },
+    }));
+  },
+
   // 내가 작성한 리뷰 전체 조회
   getAllMyReview: async () => {
     try {
@@ -30,6 +42,13 @@ const useReviewStore = create((set) => ({
       console.log(response.data);
       set((state) => ({
         myReviews: [...state.myReviews, response.data],
+        currentReview: {
+          content: '',
+          is_visible: 1,
+          rating: 0,
+          savedPath: 'empty',
+          savedUrl: 'empty',
+        },
       }));
     } catch (error) {
       console.error('리뷰 작성에 실패 했습니다', error);

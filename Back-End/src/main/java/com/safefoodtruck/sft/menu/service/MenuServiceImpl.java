@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.menu.service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +21,8 @@ import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
 
+import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -36,11 +37,27 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public MenuListResponseDto registMenu(MenuListRegistRequestDto menuListRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Store store = storeRepository.findByOwnerEmail(email)
+		Store store = storeRepository.findStoreWithMenusAndImagesByOwnerEmail(email)
 			.orElseThrow(StoreNotFoundException::new);
 
-		List<MenuResponseDto> menuResponseDtos = menuListRegistRequestDto.menuRegistRequestDtos().stream()
-			.map(dto -> createAndSaveMenu(store, dto))
+		List<Menu> menus = menuListRegistRequestDto.menuRegistRequestDtos()
+			.stream()
+			.map(dto -> createMenu(store, dto))
+			.toList();
+
+		List<Menu> savedMenus = menuRepository.saveAll(menus);
+
+		List<MenuImage> menuImages = savedMenus.stream()
+			.flatMap(menu -> menu.getMenuImage() != null ? Stream.of(menu.getMenuImage()) :
+				Stream.empty())
+			.toList();
+
+		if (!menuImages.isEmpty()) {
+			menuImageRepository.saveAll(menuImages);
+		}
+
+		List<MenuResponseDto> menuResponseDtos = savedMenus.stream()
+			.map(MenuResponseDto::fromEntity)
 			.toList();
 
 		return MenuListResponseDto.builder()
@@ -49,31 +66,26 @@ public class MenuServiceImpl implements MenuService {
 			.build();
 	}
 
-	private MenuResponseDto createAndSaveMenu(Store store, MenuRegistRequestDto dto) {
+	private Menu createMenu(Store store, MenuRegistRequestDto dto) {
 		Menu menu = Menu.of(dto.name(), dto.price(), dto.description());
 		menu.setStore(store);
-		Menu savedMenu = menuRepository.save(menu);
 
 		if (dto.menuImageDto() != null) {
 			MenuImage menuImage = MenuImage.of(dto.menuImageDto());
-			savedMenu.setMenuImage(menuImage);
-			menuImageRepository.save(menuImage);
+			menu.setMenuImage(menuImage);
 		}
 
-		return MenuResponseDto.fromEntity(savedMenu);
+		return menu;
 	}
 
 	@Override
 	public MenuResponseDto findMenu(Integer menuId) {
-		Menu menu = menuRepository.findById(menuId)
-			.orElseThrow(MenuNotFoundException::new);
-		return MenuResponseDto.fromEntity(menu);
+		return menuRepository.findMenuResponseDtoByMenuId(menuId);
 	}
 
 	@Override
 	public MenuResponseDto updateMenu(Integer menuId, MenuUpdateRequestDto menuUpdateRequestDto) {
-		Menu menu = menuRepository.findById(menuId)
-			.orElseThrow(MenuNotFoundException::new);
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
 		menu.update(menuUpdateRequestDto);
 
 		MenuImage menuImage = menuImageRepository.findByMenu(menu);

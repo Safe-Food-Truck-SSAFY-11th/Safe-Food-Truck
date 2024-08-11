@@ -35,7 +35,7 @@ public class OrderMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_menu_id")
-    private Integer orderMenuId;
+    private Integer id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "menu_id")

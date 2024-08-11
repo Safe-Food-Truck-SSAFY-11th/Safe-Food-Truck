@@ -8,7 +8,8 @@ import MakeLogo from "./MakeLogo";
 
 const ManageTruck = () => {
   const navigate = useNavigate();
-  const [truckImage, setTruckImage] = useState(''); 
+  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedTruckImage, setTruckImage] = useState('');
   const [showWarning, setShowWarning] = useState(false); // 모달 표시 상태 추가
 
   const {
@@ -45,24 +46,26 @@ const ManageTruck = () => {
   };
 
   useEffect(() => {
-    fetchTruckInfo();
-    setTruckImage(truckInfo.storeImageDto.savedUrl);
-    translate();
-  }, []);
+    const fetchData = async () => {
+      await fetchTruckInfo(); // 데이터를 가져오는 동안 기다림
+    };
+
+    fetchData(); // 함수 호출
+  }, [fetchTruckInfo]); // `fetchTruckInfo`가 변경될 때만 호출
 
   useEffect(() => {
-    fetchTruckInfo();
-    setTruckImage(truckInfo.storeImageDto.savedUrl);
-  }, [truckImage]);
-
-  const [selectedFile, setSelectedFile] = useState(null);
+    if (truckInfo && truckInfo.storeImageDto) {
+      setTruckImage(truckInfo.storeImageDto.savedUrl || imageIcon); // 기본 이미지로 설정
+    }
+    translate(); // 데이터 로드 후 번역 수행
+  }, [truckInfo]); // `truckInfo`가 업데이트될 때만 호출
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
 
     const reader = new FileReader();
     reader.onload = (event) => {
-        setTruckImage(event.target.result);
+      setTruckImage(event.target.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
@@ -123,7 +126,7 @@ const ManageTruck = () => {
   const closeMakeLog = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
     fetchTruckInfo();
-    setTruckImage(truckInfo.storeImageDto.savedUrl);
+    setSelectedFile(truckInfo.storeImageDto.savedUrl);
     window.location.reload();
   }
 
@@ -141,7 +144,7 @@ const ManageTruck = () => {
         <h1 className={styles.title}>푸드트럭 정보 수정</h1>
         <div className={styles.imageUpload}>
           <img
-            src={truckImage === 'empty' ? imageIcon : truckImage}
+            src={selectedTruckImage === 'empty' ? imageIcon : selectedTruckImage}
             alt="이미지 업로드"
             className={styles.uploadedImage}
           />

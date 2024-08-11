@@ -19,9 +19,9 @@
   }
   
   .orderTime {
-    font-size: 12px;
-    color: #888;
-    /* font-weight: bold; */ /* 뭐가 더 낫나 확인 */
+    font-size: 13px;
+    color: black;
+    font-weight: bold; 
   }
   
   .orderDetails {

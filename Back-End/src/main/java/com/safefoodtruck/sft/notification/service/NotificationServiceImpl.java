@@ -182,8 +182,11 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void changedNoticeNotify(String ownerEmail, Set<String> connectedEmailList) {
+        System.out.println("22222222222222222222 = " + connectedEmailList);
+
         for (String connectedEmail : connectedEmailList) {
             if (ownerEmail.equals(connectedEmail)) continue;
+            System.out.println("받을 이메일은 ==========" + connectedEmail);
             globalNotificationService.sendToClient(connectedEmail,
                 new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
         }

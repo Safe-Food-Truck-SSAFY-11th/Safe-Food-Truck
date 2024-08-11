@@ -1,4 +1,7 @@
 .menuList {
     display: flex;
     flex-direction: column;
+    
+    /* 전체 화면이 같은 색상으로 통일되게 높이 설정*/
+    height: 100vh;
   }

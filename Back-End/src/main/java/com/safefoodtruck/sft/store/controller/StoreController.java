@@ -237,7 +237,7 @@ public class StoreController {
 	}
 
 	@ExceptionHandler({NullListException.class})
-	public ResponseEntity<ErrorResponseDto> NullLIstException(Exception e) {
+	public ResponseEntity<ErrorResponseDto> handleNullListException(Exception e) {
 		ErrorResponseDto errorResponse = new ErrorResponseDto(BAD_REQUEST.value(), e.getMessage(),
 			LocalDateTime.now());
 		return ResponseEntity.status(BAD_REQUEST)

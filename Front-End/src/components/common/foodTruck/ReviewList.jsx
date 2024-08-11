@@ -21,8 +21,9 @@ function ReviewList({ reviews }) {
     checkReports();
   }, [reviews]);
 
+
   if (reviews.length === 0) {
-    return <p>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>;
+    return <p className={styles.reviewList}>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>;
   }
   
   return (
