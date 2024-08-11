@@ -143,28 +143,43 @@ const userStore = create((set, get) => ({
     }
   },
 
-  joinMembership: async () => {
+  joinMembership: async (navigate) => {
     try {
-      await axios.post('members/vip');
-      alert('멤버십 가입이 완료되었습니다!');
+      if(sessionStorage.getItem("role") === "vip_owner"){
+        alert('이미 멤버십에 가입하셨습니다!')
+      }else{
+        await axios.post('members/vip');
+        alert('멤버십 가입이 완료되었습니다!');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 가입 오류:', error);
     }
   },
 
-  extendMembership: async () => {
+  extendMembership: async (navigate) => {
     try {
-      await axios.patch('members/vip');
-      alert('멤버십 연장이 완료되었습니다!');
+      if(sessionStorage.getItem("role") !== "vip_owner"){
+        alert('멤버십을 먼저 가입해 주세요!')
+      }else{
+        await axios.patch('members/vip');
+        alert('멤버십 연장이 완료되었습니다!');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 연장 오류:', error);
     }
   },
 
-  deactivateMembership: async () => {
+  deactivateMembership: async (navigate) => {
     try {
-      await axios.patch('members/vip/deactivate');
-      alert('멤버십 탈퇴가 완료되었습니다');
+      if(sessionStorage.getItem("role") !== "vip_owner"){
+        alert('멤버십을 먼저 가입해 주세요!')
+      }else{
+        await axios.patch('members/vip/deactivate');
+        alert('멤버십 탈퇴가 완료되었습니다');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 탈퇴 오류: ', error);
     }

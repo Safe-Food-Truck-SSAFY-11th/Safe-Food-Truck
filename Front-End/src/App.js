@@ -39,16 +39,15 @@ function App() {
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
 
-      const eventSource = new EventSource(
-        `https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`
-      );
-
-      console.log("App.js 이벤트 소스 :");
-      console.log(eventSource);
+      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
       };
+
+      eventSource.addEventListener('connected', (event) => {
+        console.log(event.data)
+      });
 
       eventSource.addEventListener("customer", (event) => {
         console.log(event);
