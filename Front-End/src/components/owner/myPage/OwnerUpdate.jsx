@@ -140,6 +140,22 @@ const OwnerUpdate = () => {
     });
   };
 
+  const handleDeleteAcct = async () => {
+    const confirmed = window.confirm('정말 탈퇴하시겠습니까?');
+    if (confirmed) {
+        try {
+            const deleteUser = useUserStore.getState().deleteUser;
+            await deleteUser();
+            alert('탈퇴가 완료되었습니다.');
+            sessionStorage.clear();
+            window.location.href = '/login'; 
+        } catch (error) {
+            console.error('회원 탈퇴 오류:', error);
+            alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        }
+    }
+  };
+
   const handleGoBack = () => {
     navigate('/mypageOwner');
   }
@@ -209,6 +225,10 @@ const OwnerUpdate = () => {
           <button type="button" className={styles.cancelButton} onClick={handleGoBack}>취소하기</button>
         </div>
       </form>
+      <div className={styles.deleteAccountArea}>
+        <p>세이푸트를 떠나시겠어요?😥</p>
+        <a className={styles.deleteAcnt} onClick={handleDeleteAcct}>회원 탈퇴</a>
+      </div>
     </div>
   );
 };
