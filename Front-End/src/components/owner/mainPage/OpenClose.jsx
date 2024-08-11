@@ -53,7 +53,13 @@ const OpenClose = ({ onLiveEndClick }) => {
                 </span>{" "}
                 방송종료
               </button>
-              <button className={styles.closeButton} onClick={switchStatus}>
+              <button
+                className={styles.closeButton}
+                onClick={() => {
+                  switchStatus();
+                  handleLiveEndClick();
+                }}
+              >
                 <span role="img" aria-label="close" className={styles.icon}>
                   🏢
                 </span>{" "}

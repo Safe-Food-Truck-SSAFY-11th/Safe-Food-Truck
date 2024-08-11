@@ -60,39 +60,12 @@
   cursor: pointer;
 }
 
-.zoomControls {
-  position: absolute;
-  top: 25%;
-  right: 12%;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
-}
-
-.zoomIn,
-.zoomOut {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 5px 0;
-  cursor: pointer;
-  /* -webkit-tap-highlight-color: transparent; */
-}
-
-.zoomIn:hover,
-.zoomOut:hover {
-  background-color: #f0f0f0;
-}
-
 .resetControl {
   position: absolute;
-  bottom: 23%;
-  right: 12%;
-  z-index: 1;
+  bottom: -0.2em;
+  right: 0.1em;
+  z-index: 1000;
+  display: inline-block;
 }
 
 .resetBtn {
