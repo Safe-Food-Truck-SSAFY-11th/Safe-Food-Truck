@@ -13,18 +13,14 @@ import AreaWarning from "./AreaWarning";
 const PermitAreaCheck = () => {
   const [currLat, setCurrLat] = useState(36.3553601); // 기본값 설정
   const [currLon, setCurrLon] = useState(127.2983893); // 기본값 설정
-  const [currSido, setCurrSido] = useState("");
+  const currSidoRef = useRef("");
   const [mapCenterLat, setMapCenterLat] = useState();
   const [mapCenterLon, setMapCenterLon] = useState();
 
-  const {
-    filteredAreaList,
-    filterByRegion,
-    addCoord,
-    coordList,
-    isOpen,
-    openWarning,
-  } = usePermitAreaStore(); //허가구역
+  const [filteredAreaList, setFilteredAreaList] = useState([]);
+
+  const { permitAreaList, addCoord, coordList, isOpen, openWarning } =
+    usePermitAreaStore(); //허가구역
 
   const mapRef = useRef(null); // 지도 객체를 참조할 ref
   const currLocationRef = useRef([currLat, currLon]); // 트럭 현재 위치를 참조할 ref
@@ -32,6 +28,15 @@ const PermitAreaCheck = () => {
   const navigate = useNavigate();
 
   const { truckInfo, switchStatus, changeLocation } = useTruckStore();
+
+  //현재 위치의 시도를 기준으로 허가구역 필터링
+  const filterByRegion = (sido) => {
+    setFilteredAreaList(
+      permitAreaList.filter((area) => {
+        return area.시도명.includes(sido);
+      })
+    );
+  };
 
   //여기서 할래요 버튼 클릭
   const handleSelectClick = () => {
@@ -84,6 +89,10 @@ const PermitAreaCheck = () => {
           level: 7,
         };
         const map = new window.kakao.maps.Map(container, options);
+
+        const zoomControl = new window.kakao.maps.ZoomControl();
+        map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+
         mapRef.current = map; // 지도 객체를 ref에 저장
 
         // 마커 이미지 설정
@@ -108,9 +117,14 @@ const PermitAreaCheck = () => {
         // 현재 위치 시도 저장하기
         const geocoder = new window.kakao.maps.services.Geocoder();
         // 좌표 -> 주소로 바꾸는 콜백함수
-        const getAddress = (result, status) => {
+        const getAddress = async (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
-            setCurrSido(result[0].address.region_1depth_name);
+            currSidoRef.current = result[0].address.region_1depth_name;
+            console.log(currSidoRef.current);
+            //푸드트럭 허가구역 필터링 하기
+            if (filteredAreaList.length === 0) {
+              await filterByRegion(currSidoRef.current);
+            }
           }
         };
 
@@ -125,13 +139,6 @@ const PermitAreaCheck = () => {
             drawCircle(map, coordY, coordX); // 좌표가 준비된 후 원 그리기
           }
         };
-
-        //푸드트럭 허가구역 필터링 하기 (알단 하드코딩) -> currSido로 변경할 것
-        // const sido = "대전";
-        // 필터링된 리스트가 비어있을 때만 필터링
-        if (filteredAreaList.length === 0) {
-          filterByRegion(currSido);
-        }
 
         //현재 위치 좌표로 바꾸기
         geocoder.coord2Address(currLon, currLat, getAddress);
@@ -172,15 +179,7 @@ const PermitAreaCheck = () => {
     script.onerror = (err) => {
       console.error("카카오맵 스크립트를 로드하는 데 실패했습니다.");
     };
-  }, [
-    currLat,
-    currLon,
-    currSido,
-    filterByRegion,
-    addCoord,
-    // filteredAreaList,
-    // filteredAreaList.length,
-  ]);
+  }, [addCoord, filteredAreaList.length]);
 
   // 원을 지도에 그리는 함수
   const drawCircle = (map, lat, lon) => {
@@ -197,20 +196,6 @@ const PermitAreaCheck = () => {
 
     // 지도에 원을 표시
     circle.setMap(map);
-  };
-
-  // 줌 인 함수
-  const zoomIn = () => {
-    if (mapRef.current) {
-      mapRef.current.setLevel(mapRef.current.getLevel() - 1);
-    }
-  };
-
-  // 줌 아웃 함수
-  const zoomOut = () => {
-    if (mapRef.current) {
-      mapRef.current.setLevel(mapRef.current.getLevel() + 1);
-    }
   };
 
   // 현재 위치 이동 함수
@@ -269,17 +254,13 @@ const PermitAreaCheck = () => {
       <div className={styles.compSize}>
         <h3>오늘은 어디서 장사할까요? 🤔</h3>
         <div className={styles.permitAreaCheck}>
-          <div id="map" className={styles.map}></div>
-          <div className={styles.zoomControls}>
-            <button className={styles.zoomIn} onClick={zoomIn}>
-              +
-            </button>
-            <button className={styles.zoomOut} onClick={zoomOut}>
-              -
-            </button>
-          </div>
-          <div className={styles.resetControl}>
-            <MdMyLocation className={styles.resetBtn} onClick={resetLocation} />
+          <div id="map" className={styles.map}>
+            <div className={styles.resetControl}>
+              <MdMyLocation
+                className={styles.resetBtn}
+                onClick={resetLocation}
+              />
+            </div>
           </div>
         </div>
         <div className={styles.buttons}>
