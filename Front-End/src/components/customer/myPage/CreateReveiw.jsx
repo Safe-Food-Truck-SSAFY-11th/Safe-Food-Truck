@@ -16,14 +16,21 @@ const CreateReview = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setSelectedFiles(files);
 
-    files.forEach(file => {
+    // 새로 선택한 파일만 상태에 저장
+    const newImages = files.map(file => {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setReviewImages(prevState => [...prevState, event.target.result]);
-      };
-      reader.readAsDataURL(file);
+      return new Promise((resolve) => {
+        reader.onload = (event) => {
+          resolve(event.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newImages).then(images => {
+      setReviewImages(images);  // 새로 선택한 이미지만 상태에 저장
+      setSelectedFiles(files);  // 파일 상태도 업데이트
     });
   };
 
