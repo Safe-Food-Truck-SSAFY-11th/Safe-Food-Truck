@@ -125,6 +125,7 @@ const RegistOwner = ({ formData, onFormChange }) => {
         <label>비밀번호확인</label>
         <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePwdCheckChange} placeholder='영문, 숫자, 특수문자 조합 8-16자'/>
         {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+        {passwordCheckTouched && passwordMatch && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
