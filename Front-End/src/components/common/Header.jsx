@@ -89,7 +89,7 @@ const Header = () => {
                             <span role="img" aria-label="logout" className={styles.icon} onClick={handleLogout}>🔲</span>
                         </div>
                     </div>
-                    <SearchAddress />
+                    {/* <SearchAddress /> */}
                     <Notification show={showNotification} onClose={() => setNotification(false)} notifications={notifications} />
                 </header>
             )

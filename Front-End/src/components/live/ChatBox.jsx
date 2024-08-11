@@ -17,13 +17,14 @@ function ChatBox({ messages, ownerNickname, truckName }) {
       <div className={styles.messageList}>
         <div className={styles.chatInfo}>
           <p>
-            <span className={styles.infoGreen}>{ownerNickname}</span> 사장님이
+            <span className={styles.infoGreen}>{ownerNickname}</span>님이
             운영하는
           </p>
           <p>
-            <span className={styles.infoGreen}>{truckName}</span> 트럭의
+            <span className={styles.infoGreen}>{truckName}</span>의
             채팅방입니다
           </p>
+          <p style={{ fontSize: '1rem'}}> /ai 명령어를 사용해 00에게 물어보세요! </p>
         </div>
         {messages.map((msg, i) => (
           <div
