@@ -7,7 +7,6 @@ import com.safefoodtruck.sft.reply.dto.request.ReplyRegistRequestDto;
 import com.safefoodtruck.sft.reply.dto.response.ReplyResponseDto;
 import com.safefoodtruck.sft.reply.repository.ReplyRepository;
 import com.safefoodtruck.sft.review.domain.Review;
-import com.safefoodtruck.sft.review.exception.ReviewNotFoundException;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,8 +24,7 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	public ReplyResponseDto registReply(final ReplyRegistRequestDto replyRegistRequestDto) {
-		Review review = reviewRepository.findById(replyRegistRequestDto.reviewId()).orElseThrow(
-			ReviewNotFoundException::new);
+		Review review = reviewRepository.findByReviewId(replyRegistRequestDto.reviewId());
 
 		Reply reply = Reply.of(review, replyRegistRequestDto);
 

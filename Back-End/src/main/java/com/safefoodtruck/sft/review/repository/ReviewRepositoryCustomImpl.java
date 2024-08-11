@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.review.repository;
 
+import static com.querydsl.core.types.Projections.*;
 import static com.safefoodtruck.sft.reply.domain.QReply.*;
 import static com.safefoodtruck.sft.review.domain.QReview.*;
 import static com.safefoodtruck.sft.review.domain.QReviewImage.*;
@@ -9,9 +10,9 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.safefoodtruck.sft.reply.dto.response.ReplyResponseDto;
+import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.dto.ReviewImageDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
@@ -28,7 +29,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 	public ReviewListResponseDto findCustomerReviewsByEmail(String email) {
 
 		List<ReviewResponseDto> reviewResponses = queryFactory
-			.select(Projections.constructor(ReviewResponseDto.class,
+			.select(constructor(ReviewResponseDto.class,
 				review.id,
 				review.customer.email,
 				review.customer.nickname,
@@ -37,13 +38,13 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 				review.isVisible,
 				review.star,
 				review.content,
-				Projections.list(
-					Projections.constructor(ReviewImageDto.class,
+				list(
+					constructor(ReviewImageDto.class,
 						reviewImage.savedUrl,
 						reviewImage.savedPath
 					)
 				),
-				Projections.constructor(ReplyResponseDto.class,
+				constructor(ReplyResponseDto.class,
 					reply.id,
 					reply.review.id.as("reviewId"),
 					reply.content
@@ -66,7 +67,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 	public ReviewListResponseDto findStoreReviewsByStoreId(Integer storeId) {
 
 		List<ReviewResponseDto> reviewResponses = queryFactory
-			.select(Projections.constructor(ReviewResponseDto.class,
+			.select(constructor(ReviewResponseDto.class,
 				review.id,
 				review.customer.email,
 				review.customer.nickname,
@@ -75,13 +76,13 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 				review.isVisible,
 				review.star,
 				review.content,
-				Projections.list(
-					Projections.constructor(ReviewImageDto.class,
+				list(
+					constructor(ReviewImageDto.class,
 						reviewImage.savedUrl,
 						reviewImage.savedPath
 					)
 				),
-				Projections.constructor(ReplyResponseDto.class,
+				constructor(ReplyResponseDto.class,
 					reply.id,
 					reply.review.id.as("reviewId"),
 					reply.content
@@ -100,8 +101,17 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 			.build();
 	}
 
+	@Override
+	public Review findByReviewId(final Integer reviewId) {
+		return queryFactory.selectFrom(review)
+			.leftJoin(review.reply, reply)
+			.fetchJoin()
+			.where(review.id.eq(reviewId))
+			.distinct()
+			.fetchOne();
+	}
 
-@Override
+	@Override
 public Double findAverageStarByStoreId(Integer storeId) {
 	return queryFactory
 		.select(review.star.avg())
