@@ -57,12 +57,12 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
         String targetEmail = sendNotificationRequestDto.getTargetEmail();
         Member member = memberRepository.findByEmail(targetEmail).orElseThrow(
-            NotFoundMemberException::new);
+                NotFoundMemberException::new);
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(sendNotificationRequestDto.getInfo())
-            .build());
+                .member(member)
+                .info(sendNotificationRequestDto.getInfo())
+                .build());
     }
 
 
@@ -70,20 +70,20 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public List<SelectNotificationResponseDto> selectNotifications(String userEmail) {
         Member member = memberRepository.findByEmail(userEmail).orElseThrow(
-            NotFoundMemberException::new);
+                NotFoundMemberException::new);
         return member.getNotificationList().stream()
-            .map(notification -> {
-                SelectNotificationResponseDto dto = modelMapper.map(notification,
-                    SelectNotificationResponseDto.class);
-                dto.setEmail(notification.getMember().getEmail());
-                return dto;
-            }).toList();
+                .map(notification -> {
+                    SelectNotificationResponseDto dto = modelMapper.map(notification,
+                            SelectNotificationResponseDto.class);
+                    dto.setEmail(notification.getMember().getEmail());
+                    return dto;
+                }).toList();
     }
 
     @Override
     public void deleteNotification(Integer id, String userEmail) {
         Notification notification = notificationRepository.findById(id)
-            .orElseThrow(NotFoundNotificationException::new);
+                .orElseThrow(NotFoundNotificationException::new);
 
         if (!notification.getMember().getEmail().equals(userEmail)) {
             throw new NotSameUserException();
@@ -102,12 +102,12 @@ public class NotificationServiceImpl implements NotificationService {
             String info = storeName + " 푸드트럭이 오픈하였습니다.";
 
             notificationRepository.save(Notification.builder()
-                .member(member)
-                .info(info)
-                .build());
+                    .member(member)
+                    .info(info)
+                    .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new FavoriteNotificationDto(storeName), "open", CUSTOMER.getEventType());
+                    new FavoriteNotificationDto(storeName), "open", CUSTOMER.getEventType());
         }
     }
 
@@ -116,16 +116,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void acceptedSendNotify(String orderEmail, String storeName, Integer orderId) {
         Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+                NotFoundMemberException::new);
         String info = storeName + " 푸드트럭에서 주문을 수락하였습니다.";
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(info)
-            .build());
+                .member(member)
+                .info(info)
+                .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER.getEventType());
+                new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER.getEventType());
     }
 
     @Async
@@ -133,16 +133,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void rejectedSendNotify(String orderEmail, String storeName) {
         Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+                NotFoundMemberException::new);
         String info = storeName + " 푸드트럭에서 주문을 거절하였습니다.";
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(info)
-            .build());
+                .member(member)
+                .info(info)
+                .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new RejcetedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
+                new RejcetedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
     }
 
     @Async
@@ -150,16 +150,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void completedSendNotify(String orderEmail, String storeName) {
         Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+                NotFoundMemberException::new);
         String info = storeName + " 푸드트럭에서 조리를 완료하였습니다.";
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(info)
-            .build());
+                .member(member)
+                .info(info)
+                .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new CompletedNotificationDto(storeName), "completed", CUSTOMER.getEventType());
+                new CompletedNotificationDto(storeName), "completed", CUSTOMER.getEventType());
     }
 
     @Async
@@ -170,25 +170,22 @@ public class NotificationServiceImpl implements NotificationService {
         String info = "주문이 접수되었어요!";
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(info)
-            .build());
+                .member(member)
+                .info(info)
+                .build());
 
         globalNotificationService.sendToClient(ownerEmail,
-            new OrderedNotificationDto(), "ordered", OWNER.getEventType());
+                new OrderedNotificationDto(), "ordered", OWNER.getEventType());
     }
 
     @Async
     @Transactional
     @Override
     public void changedNoticeNotify(String ownerEmail, Set<String> connectedEmailList) {
-        System.out.println("22222222222222222222 = " + connectedEmailList);
-
         for (String connectedEmail : connectedEmailList) {
             if (ownerEmail.equals(connectedEmail)) continue;
-            System.out.println("받을 이메일은 ==========" + connectedEmail);
             globalNotificationService.sendToClient(connectedEmail,
-                new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
+                    new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
         }
     }
 
@@ -198,19 +195,19 @@ public class NotificationServiceImpl implements NotificationService {
     public void liveStartNotify(Integer storeId) {
         List<Favorites> favoriteList = favoritesRepository.findAllByStoreId(storeId);
         String storeName = storeRepository.findById(storeId)
-            .orElseThrow(StoreNotFoundException::new).getName();
+                .orElseThrow(StoreNotFoundException::new).getName();
         for (Favorites favorite : favoriteList) {
             Member member = favorite.getMember();
             String targetEmail = member.getEmail();
             String info = storeName + " 푸드트럭이 방송을 시작하였습니다.";
 
             notificationRepository.save(Notification.builder()
-                .member(member)
-                .info(info)
-                .build());
+                    .member(member)
+                    .info(info)
+                    .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new LiveStartNotificationDto(storeName, storeId), "live start", LIVE.getEventType());
+                    new LiveStartNotificationDto(storeName, storeId), "live start", LIVE.getEventType());
         }
     }
 
@@ -222,11 +219,11 @@ public class NotificationServiceImpl implements NotificationService {
         String info = "리뷰가 달렸어요!";
 
         notificationRepository.save(Notification.builder()
-            .member(member)
-            .info(info)
-            .build());
+                .member(member)
+                .info(info)
+                .build());
 
         globalNotificationService.sendToClient(ownerEmail,
-            new RegistReviewNotificationDto(storeId), "review", OWNER.getEventType());
+                new RegistReviewNotificationDto(storeId), "review", OWNER.getEventType());
     }
 }
