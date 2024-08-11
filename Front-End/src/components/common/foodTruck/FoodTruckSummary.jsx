@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./FoodTruckSummary.module.css";
 import axios from "axios";
 import useLiveStore from "store/live/useLiveStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NoLiveModal from "./NoLiveModal";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
@@ -10,6 +10,7 @@ import customerStore from "store/users/customer/customerStore";
 function FoodTruckSummary({ truck }) {
   const { isModalOpen, openModal } = useLiveStore();
   const navigate = useNavigate();
+  const { storeId } = useParams();
 
   const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -27,7 +28,7 @@ function FoodTruckSummary({ truck }) {
         openModal();
       } else {
         const token = response.data;
-        navigate(`/live/${sessionId}`);
+        navigate(`/live/${sessionId}`, { state: { token: token } });
         return response.data;
       }
     } catch (error) {
@@ -40,57 +41,48 @@ function FoodTruckSummary({ truck }) {
     isLive(truck.storeId);
   };
 
+  const [checkJJimTruck, setCheckJJimTruck] = useState(null);
+  const [favId, setFavId] = useState(null);
+  const { getJJimTruck } = customerStore();
   const { JJimTruck, unJJimTruck } = useFoodTruckStore();
-  const { getJJimTruck, myJJimTruck } = customerStore();
-  const [isJJimmed, setIsJJimmed] = useState(false);
-  const [favoriteId, setFavoriteId] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const checkJJimTruck = useCallback(async () => {
-    setLoading(true);
-    await getJJimTruck();
-
-    if (myJJimTruck && myJJimTruck.memberFavoriteList) {
-      const favoriteTruck = myJJimTruck.memberFavoriteList.find(
-        (favTruck) => favTruck.storeId === parseInt(truck.storeId, 10)
-      );
-
-      if (favoriteTruck) {
-        setIsJJimmed(true);
-        setFavoriteId(favoriteTruck.favoriteId);
-      } else {
-        setIsJJimmed(false);
-        setFavoriteId(null);
-      }
-    }
-    setLoading(false);
-  }, [getJJimTruck, myJJimTruck, truck.storeId]);
-
-  const handleJJimTruck = async () => {
-    setIsJJimmed((prev) => !prev);
-    try {
-      if (isJJimmed) {
-        await unJJimTruck(favoriteId);
-        alert(`${truck.name} 트럭이 찜 목록에서 제거되었습니다.`);
-      } else {
-        await JJimTruck(truck.storeId);
-        alert(`${truck.name} 트럭이 찜 목록에 추가되었습니다.`);
-      }
-      checkJJimTruck();
-    } catch (error) {
-      console.error("찜 등록/삭제 실패", error);
-      alert("찜 등록/삭제에 실패했습니다.");
-      setIsJJimmed((prev) => !prev);
-    }
-  };
 
   useEffect(() => {
-    checkJJimTruck();
-  }, [truck.storeId]);
+    const fetchJJimTruckStatus = async () => {
+      try {
+        const response = await getJJimTruck(storeId);
+        const favoriteId = response.favoriteId;
+        setFavId(favoriteId);
+        console.log("Fetched favoriteId:", favoriteId);
 
-  if (loading) {
-    return <div>찜 여부 체크중이에요...</div>;
-  }
+        if (favoriteId !== -1) {
+          setCheckJJimTruck(true);
+        } else {
+          setCheckJJimTruck(false);
+        }
+      } catch (error) {
+        console.error("Error fetching favoriteId:", error);
+        setCheckJJimTruck(false);
+      }
+    };
+
+    fetchJJimTruckStatus();
+  }, [getJJimTruck, storeId]);
+
+  const handleJJimClick = async () => {
+    try {
+      if (checkJJimTruck) {
+        await unJJimTruck(favId);
+        setCheckJJimTruck(false);
+      } else {
+        await JJimTruck(storeId);
+        setCheckJJimTruck(true);
+      }
+      // 버튼 클릭 후 새로고침
+      window.location.reload();
+    } catch (error) {
+      console.error("Error handling JJim action:", error);
+    }
+  };
 
   return (
     <header className={styles.header}>
@@ -108,10 +100,10 @@ function FoodTruckSummary({ truck }) {
         <h1>{truck.description}</h1>
         <div className={styles.buttonContainer}>
           <button
-            className={isJJimmed ? styles.unJJimButton : styles.jjimButton}
-            onClick={handleJJimTruck}
+            onClick={handleJJimClick}
+            className={styles.jjimButton} /* 찜 버튼에 클래스명 추가 */
           >
-            {isJJimmed ? "찜" : "찜"}
+            {checkJJimTruck ? "찜 삭제" : "찜 하기"}
           </button>
           <button className={styles.liveButton} onClick={handleLiveClick}>
             LIVE
