@@ -28,7 +28,7 @@ function FoodTruckSummary({ truck }) {
         openModal();
       } else {
         const token = response.data;
-        navigate(`/live/${sessionId}`, { state: { token: token } });
+        navigate(`/live/${sessionId}`);
         return response.data;
       }
     } catch (error) {
