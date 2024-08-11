@@ -88,12 +88,15 @@ const PermitAreaCheck = () => {
           center: new window.kakao.maps.LatLng(mapCenterLat, mapCenterLon),
           level: 7,
         };
-        const map = new window.kakao.maps.Map(container, options);
+        mapRef.current = new window.kakao.maps.Map(container, options);
 
         const zoomControl = new window.kakao.maps.ZoomControl();
-        map.addControl(zoomControl, window.kakao.maps.ControlPosition.RIGHT);
+        mapRef.current.addControl(
+          zoomControl,
+          window.kakao.maps.ControlPosition.RIGHT
+        );
 
-        mapRef.current = map; // 지도 객체를 ref에 저장
+        // mapRef.current = map; // 지도 객체를 ref에 저장
 
         // 마커 이미지 설정
         const imageSrc = mapMarker;
@@ -112,7 +115,7 @@ const PermitAreaCheck = () => {
           position: markerPosition,
           image: markerImage,
         });
-        marker.setMap(map);
+        marker.setMap(mapRef.current);
 
         // 현재 위치 시도 저장하기
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -120,7 +123,6 @@ const PermitAreaCheck = () => {
         const getAddress = async (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             currSidoRef.current = result[0].address.region_1depth_name;
-            console.log(currSidoRef.current);
             //푸드트럭 허가구역 필터링 하기
             if (filteredAreaList.length === 0) {
               await filterByRegion(currSidoRef.current);
@@ -136,7 +138,7 @@ const PermitAreaCheck = () => {
             coordX = result[0].x; //경도
             coordY = result[0].y; //위도
             addCoord(coordY, coordX); //좌표 리스트에 저장
-            drawCircle(map, coordY, coordX); // 좌표가 준비된 후 원 그리기
+            drawCircle(mapRef.current, coordY, coordX); // 좌표가 준비된 후 원 그리기
           }
         };
 
@@ -150,7 +152,7 @@ const PermitAreaCheck = () => {
           // 위도와 경도가 있는 경우 원 그리기
           if (위도 && 경도) {
             //위도 lat y, 경도 lon x
-            drawCircle(map, 위도, 경도);
+            drawCircle(mapRef.current, 위도, 경도);
             addCoord(위도, 경도);
           }
           // 위도와 경도가 없고 소재지도로명주소가 있는 경우
@@ -218,6 +220,23 @@ const PermitAreaCheck = () => {
     if (mapRef.current) {
       const moveLatLon = new window.kakao.maps.LatLng(currLat, currLon);
       mapRef.current.panTo(moveLatLon);
+
+      // 마커 이미지 설정
+      const imageSrc = mapMarker;
+      const imageSize = new window.kakao.maps.Size(50, 54);
+      const imageOption = { offset: new window.kakao.maps.Point(27, 54) };
+
+      // 현재 위치 표시
+      const markerImage = new window.kakao.maps.MarkerImage(
+        imageSrc,
+        imageSize,
+        imageOption
+      );
+      const marker = new window.kakao.maps.Marker({
+        position: currLocationRef.current,
+        image: markerImage,
+      });
+      marker.setMap(mapRef.current);
     }
   };
 
