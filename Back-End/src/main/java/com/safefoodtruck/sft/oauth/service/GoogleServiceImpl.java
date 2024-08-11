@@ -1,5 +1,7 @@
 package com.safefoodtruck.sft.oauth.service;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +35,8 @@ public class GoogleServiceImpl implements GoogleService {
     public GoogleMemberResponseDto getGoogleUser(String accessToken) {
         GoogleMemberResponseDto googleMemberResponseDto = getGoogleUserInfo(accessToken);
 
-        Member member = memberRepository.findByEmail(googleMemberResponseDto.getEmail()).get();
-        if (member != null) {
+        Optional<Member> member = memberRepository.findByEmail(googleMemberResponseDto.getEmail());
+        if (member.isPresent()) {
             MemberDto memberDto = mapper.map(member, MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);
             throw new AlreadySignUpException(token);
