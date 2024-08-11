@@ -11,9 +11,8 @@ const OwnerInfo = () => {
   const navigate = useNavigate();
   const { fetchUser } = userStore();
   const { truckInfo, fetchTruckInfo } = useTruckStore();
-  const { getFoodTruckLikes } = useFoodTruckStore();
+  const { likes, getFoodTruckLikes } = useFoodTruckStore();
   const [showManageModal, setShowManageModal] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
   const [userInfo, setUserInfo] = useState({});
 
   const imageUrl = userInfo?.memberImage?.savedUrl === 'empty' ? profile_img : userInfo?.memberImage?.savedUrl;
@@ -28,8 +27,7 @@ const OwnerInfo = () => {
   useEffect(() => {
     const fetchLikes = async () => {
       if (truckInfo.storeId) {
-        const likes = await getFoodTruckLikes(truckInfo.storeId);
-        setLikesCount(likes);
+        await getFoodTruckLikes(truckInfo.storeId);
       }
     };
     fetchLikes();
@@ -41,7 +39,7 @@ const OwnerInfo = () => {
       setUserInfo(data);
     };
     fetchUserData();
-  }, [fetchUser]);
+  }, [fetchUser, userInfo]);
 
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
@@ -83,35 +81,36 @@ const OwnerInfo = () => {
     <>
       <div className={styles.container}>
         <div className={styles.header}>
-          <div>
+          <div className={styles.imageContainer}>
             <img src={imageUrl} alt="Truck Owner" className={styles.image} />
-            <button className={styles.profileButton} onClick={handleUpdateClick}>
-              내 정보 수정
-            </button>
           </div>
           <div className={styles.info}>
-            <p>
-              반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
-              사장님!
-            </p>
-            <p className={styles.infoText}>
-              <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
-              손님 : <span className={styles.highlight}>{likesCount}</span> 명
-            </p>
-            <p className={styles.infoText}>
-              <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
-            </p>
-
-            <div className={styles.buttons}>
-              <button className={styles.button} onClick={handleTruckReviewClick}>트럭 리뷰 보기</button>
-              <button className={styles.button} onClick={handleTruckUpdateClick}>
-                트럭 정보 수정
-              </button>
-              <button className={styles.button} onClick={handleMenuManageClick}>
-                판매 메뉴 관리
-              </button>
+            <div className={styles.infoContent}>
+              <p className={styles.infoText}>
+                반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
+                사장님!
+              </p>
+              <p className={styles.infoText}>
+                <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
+                손님 : <span className={styles.highlight}>{likes?.favoriteCount || 0}</span> 명
+              </p>
+              <p className={styles.infoText}>
+                <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
+              </p>
             </div>
           </div>
+        </div>
+        <div className={styles.buttons}>
+          <button className={`${styles.profileButton} ${styles.button}`} onClick={handleUpdateClick}>
+            내 정보 수정
+          </button>
+          <button className={styles.button} onClick={handleTruckReviewClick}>리뷰 보기</button>
+          <button className={styles.button} onClick={handleTruckUpdateClick}>
+            트럭 관리
+          </button>
+          <button className={styles.button} onClick={handleMenuManageClick}>
+            메뉴 관리
+          </button>
         </div>
       </div>
       {showManageModal && <ManageStore modalClose={modalClose} />}
