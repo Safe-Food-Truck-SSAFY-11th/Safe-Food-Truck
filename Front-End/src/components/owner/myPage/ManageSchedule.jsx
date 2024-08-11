@@ -88,14 +88,14 @@ const ManageSchedule = () => {
           </button>
         ))}
       </div>
-      <h2><span className={styles.weekday}>{days[selectedDay]}요일</span>은 어디로 갈까요? 🛺</h2>
+      <h2 className={styles.header}><span className={styles.weekday}>{days[selectedDay]}요일</span>은 어디로 갈까요? 🛺</h2>
       <div className={styles.mapContainer}>
         <ScheduleMap
           onConfirm={handleMapConfirm}
           initialAddress={formData.address}
         />
       </div>
-      <form onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
           <label>주소</label>
           <input

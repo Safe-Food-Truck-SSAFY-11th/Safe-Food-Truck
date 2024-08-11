@@ -17,6 +17,7 @@ const useScheduleStore = create((set) => ({
         try {
             await axios.post('schedules', data);
             alert('스케줄 입력이 완료되었습니다');
+            window.location.reload(true);
         } catch (error) {
             console.error("스케줄 등록 실패: ", error);
         }
@@ -26,6 +27,7 @@ const useScheduleStore = create((set) => ({
         try {
             await axios.delete(`schedules/${scheduleId}`);
             alert('스케줄이 삭제되었습니다');
+            window.location.reload(true);
         } catch (error) {
             console.error("스케줄 삭제 실패: ", error);
         }

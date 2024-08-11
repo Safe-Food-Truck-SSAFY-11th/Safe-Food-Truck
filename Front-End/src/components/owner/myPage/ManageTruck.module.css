@@ -29,13 +29,20 @@
   display: none;
 }
 
-.imageButton {
-  background-color: #2ac311;
+.imageButton, .AiBtn{
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
+  padding: 2%;
+  margin: 2%;
+}
+
+.imageButton {
+  background-color: #2ac311;
+}
+
+.AiBtn {
+  background-color: violet;
 }
 
 .inputContainer {
@@ -47,50 +54,21 @@
 .inputContainer label {
   display: block;
   font-size: 14px;
+  font-weight: 100;
   margin-bottom: 5px;
   color: green;
 }
 
 .inputContainer input,
-.inputContainer select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
+.inputContainer select,
 .inputContainer textarea {
   width: 100%;
-  height: 100px;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  resize: none;
-}
-
-.menuContainer {
-  display: flex;
-  align-items: center;
-}
-
-.menuInput {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.menuButton {
-  background-color: #2ac311;
-  color: white;
   border: none;
   border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  margin-left: 10px;
+  box-sizing: border-box;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #E2EED0;
 }
 
 .daysContainer {
@@ -100,17 +78,19 @@
 
 .dayButton {
   background-color: #f8f8f8;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   width: 40px;
   text-align: center;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .activeDay {
   background-color: #2ac311;
   color: white;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .buttonContainer {
@@ -128,6 +108,7 @@
   cursor: pointer;
   flex: 1;
   margin-right: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .cancelButton {
@@ -138,60 +119,5 @@
   padding: 10px 20px;
   cursor: pointer;
   flex: 1;
-}
-
-.menuContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.menuItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: white;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.menuImage {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-}
-
-.menuDetails {
-  flex: 1;
-}
-
-.menuButtons {
-  display: flex;
-  gap: 10px;
-}
-
-.editButton {
-  background-color: #aff070;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.deleteButton {
-  background-color: #fb9256;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.addMenuButton {
-  background-color: #fff;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
