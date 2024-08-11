@@ -3,8 +3,6 @@ package com.safefoodtruck.sft.store.service;
 import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 import static com.safefoodtruck.sft.review.domain.QReview.*;
 
-import com.safefoodtruck.sft.store.dto.StoreImageDto;
-import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +22,7 @@ import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.domain.StoreImage;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
@@ -135,7 +134,8 @@ public class StoreServiceImpl implements StoreService {
 	public StoreInfoListResponseDto findOpenStores() {
 		List<Store> openStores = storeRepository.findAllOpenStores();
 
-		Map<Integer, Double> averageStarsMap = reviewRepository.findAverageStarsForAllStores().stream()
+		Map<Integer, Double> averageStarsMap = reviewRepository.findAverageStarsForAllStores()
+			.stream()
 			.collect(Collectors.toMap(
 				tuple -> tuple.get(review.order.store.id),
 				StoreServiceImpl::apply,
@@ -144,9 +144,9 @@ public class StoreServiceImpl implements StoreService {
 				}
 			));
 
-
 		List<StoreInfoResponseDto> storeInfoResponseDtos = openStores.stream()
-			.map(store -> StoreInfoResponseDto.fromEntity(store, averageStarsMap.getOrDefault(store.getId(), 0.0).intValue()))
+			.map(store -> StoreInfoResponseDto.fromEntity(store,
+				averageStarsMap.getOrDefault(store.getId(), 0.0).intValue()))
 			.toList();
 
 		return new StoreInfoListResponseDto(storeInfoResponseDtos.size(), storeInfoResponseDtos);
@@ -184,20 +184,22 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public String checkDuplicateSafetyLicenseNumber(final String safetyLicenseNumber) {
-		boolean exists = storeRepository.findStoreWithMenusAndImagesBySafetyLicenseNumber(safetyLicenseNumber)
+		boolean exists = storeRepository.findStoreWithMenusAndImagesBySafetyLicenseNumber(
+				safetyLicenseNumber)
 			.isPresent();
 		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
-	@Override
 	private Store findLoginStore() {
 		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(MemberInfo.getEmail())
+			.orElseThrow(StoreNotFoundException::new);
+	}
 
 	@Override
 	public void updateStoreAILogo(StoreAILogoRequestDto storeAILogoRequestDto) {
 		storeImageRepository.updateStoreImageByStoreId(storeAILogoRequestDto.storeId(),
-														storeAILogoRequestDto.savedUrl(),
-														storeAILogoRequestDto.savedPath());
+			storeAILogoRequestDto.savedUrl(),
+			storeAILogoRequestDto.savedPath());
 	}
 
 	private Store findStore(Integer storeId) {
@@ -206,7 +208,8 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	public Double findStoreAverageStar(Integer storeId) {
-		return Optional.ofNullable(reviewRepository.findAverageStarByStoreId(storeId)).orElse(0.0);
+		return Optional.ofNullable(reviewRepository.findAverageStarByStoreId(storeId))
+			.orElse(0.0);
 	}
 
 	private Member findLoginOwner() {
@@ -216,4 +219,5 @@ public class StoreServiceImpl implements StoreService {
 
 	private static Double apply(Tuple tuple) {
 		return tuple.get(review.star.avg());
-	}}
+	}
+}
