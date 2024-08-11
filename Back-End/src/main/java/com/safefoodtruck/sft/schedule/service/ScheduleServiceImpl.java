@@ -1,5 +1,9 @@
 package com.safefoodtruck.sft.schedule.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.schedule.domain.Schedule;
 import com.safefoodtruck.sft.schedule.dto.ScheduleDto;
@@ -10,10 +14,9 @@ import com.safefoodtruck.sft.schedule.exception.NotInsertedStoreException;
 import com.safefoodtruck.sft.schedule.repository.ScheduleRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Integer day = scheduleInsertRequestDto.getDay();
         if (day < 0 || day > 6) throw new InvalidRangeDayException();
 
-        Store store = storeRepository.findByOwnerEmail(ownerEmail)
+        Store store = storeRepository.findStoreWithMenusAndImagesByOwnerEmail(ownerEmail)
             .orElseThrow(NotInsertedStoreException::new);
         Schedule schedule = scheduleRepository.findByStoreAndDay(store,
             scheduleInsertRequestDto.getDay());
@@ -56,7 +59,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
             .orElseThrow(NotInsertedStoreException::new);
         Integer storeId = schedule.getStore().getId();
-        Integer loginStoreId = storeRepository.findByOwnerEmail(ownerEmail)
+        Integer loginStoreId = storeRepository.findStoreWithMenusAndImagesByOwnerEmail(ownerEmail)
             .orElseThrow(NotInsertedStoreException::new).getId();
 
         if (storeId != loginStoreId) {
