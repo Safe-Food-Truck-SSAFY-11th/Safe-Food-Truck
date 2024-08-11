@@ -88,11 +88,13 @@ const CustomerCart = () => {
       <h1>{nickname} 님의 결제예정 금액이에요!</h1>
       {cartItems.length > 0 ? (
         <>
+          <label>주문 메뉴 :</label>
           {cartItems.map((item, index) => (
+            
             <div key={item.menuId} className={styles.cartItem}>
               <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
               <div className={styles.details}>
-                <h3>{item.name}</h3>
+                <p>{item.name}</p>
                 <p>{item.price}원</p>
               </div>
               <div className={styles.quantityControl}>
