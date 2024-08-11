@@ -13,6 +13,7 @@ public interface MemberService {
     MemberSelectResponseDto selectMember(String email);
     String checkDuplicateEmail(String email);
     String checkDuplicateNickname(String nickname);
+    String checkDuplicatePhoneNumber(String phoneNumber);
     String checkDuplicateBusinessNumber(String businessNumber);
     void updateMember(MemberUpdateRequestDto memberUpdateRequestDto);
     void updateIsResign(String email);
