@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./MenuItem.module.css";
-import imageIcon from "assets/images/truck-img.png";
 
 const MenuItem = ({ menu, onEdit, onDelete }) => {
+  console.log(menu);
   return (
     <div className={styles.menuItem}>
       <img
         // src={menu.image || imageIcon}
-        src={imageIcon}
+        src={menu.menuImageDto.savedUrl}
         alt="메뉴 이미지"
         className={styles.menuImage}
       />

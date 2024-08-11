@@ -8,7 +8,7 @@ const UserVideoComponent = ({ streamManager }) => {
   // };
 
   return (
-    <div>
+    <>
       {streamManager !== undefined ? (
         <div className={styles.streamcomponent}>
           <OpenViduVideoComponent streamManager={streamManager} />
@@ -17,7 +17,7 @@ const UserVideoComponent = ({ streamManager }) => {
           </div> */}
         </div>
       ) : null}
-    </div>
+    </>
   );
 };
 

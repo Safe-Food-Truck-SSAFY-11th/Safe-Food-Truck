@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
@@ -33,7 +34,6 @@ import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
-import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.exception.OrderNotPreparingException;
 import com.safefoodtruck.sft.order.exception.UnAuthorizedOrderStatusUpdateException;
 import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
@@ -61,8 +61,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderRegistResponseDto registOrder(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email);
-		Store store = storeRepository.findById(orderRegistRequestDto.storeId())
+		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+		Store store = storeRepository.findStoreWithMenusAndImagesByStoreId(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 
 		Order order = Order.of(orderRegistRequestDto, customer);
@@ -204,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(readOnly = true)
 	@Override
 	public OrderDetailResponseDto findOrderDetail(Integer orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		Order order = orderRepository.findByOrderId(orderId);
 
 		return OrderDetailResponseDto.fromEntity(order);
 	}
@@ -290,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private Order getOrder(Integer orderId) {
-		return orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+		return orderRepository.findByOrderId(orderId);
 	}
 
 	private Store findLoginStore() {

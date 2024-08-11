@@ -1,7 +1,13 @@
 package com.safefoodtruck.sft.survey.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.safefoodtruck.sft.common.util.StoreType;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.survey.domain.Survey;
 import com.safefoodtruck.sft.survey.dto.InsertSurveysRequestDto;
@@ -9,11 +15,9 @@ import com.safefoodtruck.sft.survey.dto.SelectSurveysResponseDto;
 import com.safefoodtruck.sft.survey.exception.AlreadyRegisteredEmailException;
 import com.safefoodtruck.sft.survey.exception.UnSatisfyLengthException;
 import com.safefoodtruck.sft.survey.repository.SurveyRepository;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +38,8 @@ public class SurveyServiceImpl implements SurveyService {
             throw new UnSatisfyLengthException();
         }
 
-        Member member = memberRepository.findByEmail(userEmail);
+        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
+            NotFoundMemberException::new);;
         if (!member.getSurveyList().isEmpty()) {
             throw new AlreadyRegisteredEmailException();
         }

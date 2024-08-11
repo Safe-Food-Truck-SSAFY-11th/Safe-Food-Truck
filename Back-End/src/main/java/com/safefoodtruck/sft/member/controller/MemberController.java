@@ -1,31 +1,38 @@
 package com.safefoodtruck.sft.member.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
-import com.safefoodtruck.sft.common.util.MemberInfo;
-import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
-import com.safefoodtruck.sft.member.dto.response.MemberSelectResponseDto;
-import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
-import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
-import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
-import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
-import com.safefoodtruck.sft.member.exception.ResignedMemberException;
-import com.safefoodtruck.sft.member.service.MemberService;
-import com.safefoodtruck.sft.security.util.JwtUtil;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberSignUpRequestDto;
+import com.safefoodtruck.sft.member.dto.request.MemberUpdateRequestDto;
+import com.safefoodtruck.sft.member.dto.response.MemberSelectResponseDto;
+import com.safefoodtruck.sft.member.exception.MemberDuplicateException;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
+import com.safefoodtruck.sft.member.exception.ResignedMemberException;
+import com.safefoodtruck.sft.member.service.MemberService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/members")
 @RestController
@@ -33,7 +40,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
@@ -45,7 +51,7 @@ public class MemberController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> selectMember() {
+    public ResponseEntity<MemberSelectResponseDto> selectMember() {
         String userEmail = MemberInfo.getEmail();
         MemberSelectResponseDto memberSelectResponseDto = memberService.selectMember(userEmail);
 
@@ -61,7 +67,7 @@ public class MemberController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> isDuplicateEmail(@PathVariable("email") String email) {
+    public ResponseEntity<String> isDuplicateEmail(@PathVariable("email") String email) {
         String responseMessage = memberService.checkDuplicateEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
@@ -75,8 +81,22 @@ public class MemberController {
             content = @Content(mediaType = "application/json")
         )
     })
-    public ResponseEntity<?> isDuplicateNickname(@PathVariable("nickname") String nickname) {
+    public ResponseEntity<String> isDuplicateNickname(@PathVariable("nickname") String nickname) {
         String responseMessage = memberService.checkDuplicateNickname(nickname);
+        return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
+    }
+
+    @GetMapping("/duplication-business-number/{business-number}")
+    @Operation(summary = "사업자번호 중복확인", description = "회원가입시 사업자번호 중복체크에 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Duplicate: 중복 | Possible: 해당 사업자번호 사용가능",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<String> isDuplicateBusinessNumber(@PathVariable("business-number") String businessNumber) {
+        String responseMessage = memberService.checkDuplicateBusinessNumber(businessNumber);
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
@@ -244,7 +264,7 @@ public class MemberController {
 
     @ExceptionHandler({MemberDuplicateException.class, NotFoundMemberException.class,
         ResignedMemberException.class})
-    public ResponseEntity<?> memberDuplicateException(Exception e) throws JsonProcessingException {
+    public ResponseEntity<?> memberDuplicateException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponseDto(

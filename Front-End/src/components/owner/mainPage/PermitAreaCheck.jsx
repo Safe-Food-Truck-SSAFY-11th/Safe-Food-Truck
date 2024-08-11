@@ -14,6 +14,8 @@ const PermitAreaCheck = () => {
   const [currLat, setCurrLat] = useState(36.3553601); // 기본값 설정
   const [currLon, setCurrLon] = useState(127.2983893); // 기본값 설정
   const [currSido, setCurrSido] = useState("");
+  const [mapCenterLat, setMapCenterLat] = useState();
+  const [mapCenterLon, setMapCenterLon] = useState();
 
   const {
     filteredAreaList,
@@ -52,6 +54,9 @@ const PermitAreaCheck = () => {
       (position) => {
         setCurrLat(position.coords.latitude);
         setCurrLon(position.coords.longitude);
+        //지도 처음위치도 현재위치로
+        setMapCenterLat(position.coords.latitude);
+        setMapCenterLon(position.coords.longitude);
       },
       (error) => {
         console.error("Error occurred while retrieving location:", error);
@@ -75,7 +80,7 @@ const PermitAreaCheck = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById("map");
         const options = {
-          center: new window.kakao.maps.LatLng(currLat, currLon),
+          center: new window.kakao.maps.LatLng(mapCenterLat, mapCenterLon),
           level: 7,
         };
         const map = new window.kakao.maps.Map(container, options);
@@ -150,6 +155,17 @@ const PermitAreaCheck = () => {
             geocoder.addressSearch(소재지지번주소, getCoords);
           }
         });
+        // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록
+        window.kakao.maps.event.addListener(
+          mapRef.current,
+          "center_changed",
+          function () {
+            // 지도의 중심좌표를 얻어옵니다 지속적으로 갱신함
+            var latlng = mapRef.current.getCenter();
+            setMapCenterLat(latlng.getLat());
+            setMapCenterLon(latlng.getLng());
+          }
+        );
       });
     };
 

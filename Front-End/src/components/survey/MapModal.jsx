@@ -36,6 +36,22 @@ const MapModal = ({ onClose, onConfirm }) => {
               marker.setPosition(latlng);
             });
 
+            // 좌표 -> 주소
+            const getAddressFromCoords = (lat, lng, callback) => {
+              if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+                const geocoder = new window.kakao.maps.services.Geocoder();
+                const coord = new window.kakao.maps.LatLng(lat, lng);
+                geocoder.coord2Address(coord.getLng(), coord.getLat(), (result, status) => {
+                  if (status === window.kakao.maps.services.Status.OK) {
+                    const address = result[0].address.address_name;
+                    callback(address);
+                  }
+                });
+              } else {
+                console.error("Kakao Maps API가 아직 로드되지 않았습니다.");
+              }
+            };
+
             document.getElementById("confirmBtn").onclick = () => {
               const latlng = map.getCenter();
               getAddressFromCoords(
@@ -68,18 +84,6 @@ const MapModal = ({ onClose, onConfirm }) => {
       document.head.removeChild(script);
     };
   }, []);
-
-  // 좌표 -> 주소
-  const getAddressFromCoords = (lat, lng, callback) => {
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    const coord = new window.kakao.maps.LatLng(lat, lng);
-    geocoder.coord2Address(coord.getLng(), coord.getLat(), (result, status) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const address = result[0].address.address_name;
-        callback(address);
-      }
-    });
-  };
 
   return (
     <div className={styles.modal}>

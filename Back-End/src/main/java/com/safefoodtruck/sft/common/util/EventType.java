@@ -4,7 +4,8 @@ public enum EventType {
 
     CUSTOMER("customer"),
     OWNER("owner"),
-    NOTICE("notice");
+    NOTICE("notice"),
+    LIVE("live");
 
     private final String eventType;
 
