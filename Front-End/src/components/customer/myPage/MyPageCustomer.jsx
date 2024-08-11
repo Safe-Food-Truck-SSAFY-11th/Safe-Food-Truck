@@ -22,9 +22,9 @@ const MyPageCustomer = () => {
   // 내 정보 , 내가 찜한 트럭 가져오는 스토어 , 함수 호출
   const { 
     memberInfo, 
-    getMemberInfo, 
-    getJJimTruck, 
-    myJJimTruck,
+    getMemberInfo,
+    getJJimTrucks, 
+    myJJimTrucks,
     getSobiPattern,
     mySobiPattern, 
   } = customerStore(); 
@@ -37,7 +37,7 @@ const MyPageCustomer = () => {
     nowOrderId, 
     nowOrder,
   } = customerOrderStore();
-
+  
   // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
   const { getAllMyReview, myReviews } = useReviewStore(); 
   
@@ -50,10 +50,12 @@ const MyPageCustomer = () => {
   },[]);
   
   useEffect(() => {
+
     getMemberInfo();
-    getJJimTruck();
+    getJJimTrucks();
     getMyOrders();
     getSobiPattern();
+
   },[]);
 
   useEffect(() => {
@@ -82,7 +84,7 @@ const MyPageCustomer = () => {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'liked':
-        return <MyJjim memberInfo={memberInfo} jjimTrucks={myJJimTruck} />;
+        return <MyJjim memberInfo={memberInfo} jjimTrucks={myJJimTrucks} />;
       case 'review':
         return <MyReviewList memberInfo={memberInfo} myReviews={myReviews} />;
       case 'order':

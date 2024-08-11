@@ -36,33 +36,38 @@ function FoodTruckMenuDetail() {
     } else {
       cart = JSON.parse(cart);
     }
-
+  
     // 이미 장바구니에 물건이 담겨 있으면?
     if (cart.length !== 0) {
       const existingStoreId = cart[0].storeId;
-
-      if (existingStoreId !== storeId) {
+      
+      if (existingStoreId !== parseInt(storeId)) {
         setModalMessage('다른 푸드트럭의 메뉴는 한 번에 담을 수 없어요.');
         setIsModalOpen(true);
         return;
       }
     }
-
+  
     const existingItemIndex = cart.findIndex(cartItem => cartItem.menuId === item.menuId);
-
+  
     if (existingItemIndex !== -1) {
       cart[existingItemIndex].quantity += quantity;
     } else {
       cart.push(cartItem);
     }
-
+  
     const expirationDate = new Date();
     expirationDate.setMinutes(expirationDate.getMinutes() + 20);
-
+  
     Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
-
+  
+    // 장바구니에 물건이 추가되었음을 알리는 메시지 설정
+    setModalMessage('장바구니에 물건이 추가되었어요!');
+    setIsModalOpen(true);
+  
     console.log(cart);
   };
+  
 
   const handleBack = () => {
     navigate(-1);
@@ -97,7 +102,7 @@ function FoodTruckMenuDetail() {
       <p className={styles.descriptionTitle}>상세 설명이에요!</p>
       <p className={styles.description}>{item.description}</p>
       <button onClick={handleAddToCart} className={styles.addToCartButton}>
-        {formattedPrice} 장바구니에 담을게요!
+        {item.name} {quantity}개 장바구니에 담을게요!
       </button>
       <div className={styles.navigationButtons}>
         <button onClick={handleBack} className={styles.navButton}>뒤로가기</button>

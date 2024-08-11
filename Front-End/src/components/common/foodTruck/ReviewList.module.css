@@ -1,5 +1,11 @@
 .reviewList {
   display: flex;
+  background-color: #FFCC80;
   flex-direction: column;
   gap: 10px;
+  height: 100vh;
+}
+
+.reviewList p {
+  padding-top: 30px;
 }
