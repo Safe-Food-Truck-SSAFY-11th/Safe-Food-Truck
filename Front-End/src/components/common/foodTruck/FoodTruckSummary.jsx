@@ -27,7 +27,7 @@ function FoodTruckSummary({ truck }) {
         openModal();
       } else {
         const token = response.data;
-        navigate(`/live/${sessionId}`, { state: { token: token } });
+        navigate(`/live/${sessionId}`);
         return response.data;
       }
     } catch (error) {
@@ -78,8 +78,8 @@ function FoodTruckSummary({ truck }) {
       }
       checkJJimTruck();
     } catch (error) {
-      console.error('찜 등록/삭제 실패', error);
-      alert('찜 등록/삭제에 실패했습니다.');
+      console.error("찜 등록/삭제 실패", error);
+      alert("찜 등록/삭제에 실패했습니다.");
       setIsJJimmed((prev) => !prev);
     }
   };
@@ -102,13 +102,20 @@ function FoodTruckSummary({ truck }) {
         />
       )}
       <div className={styles.textContainer}>
-        <h1>{truck.name} ★ {truck.averageStar / 2}</h1>
+        <h1>
+          {truck.name} ★ {truck.averageStar / 2}
+        </h1>
         <h1>{truck.description}</h1>
         <div className={styles.buttonContainer}>
-          <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
-            {isJJimmed ? '찜': '찜'}
+          <button
+            className={isJJimmed ? styles.unJJimButton : styles.jjimButton}
+            onClick={handleJJimTruck}
+          >
+            {isJJimmed ? "찜" : "찜"}
           </button>
-          <button className={styles.liveButton} onClick={handleLiveClick}>LIVE</button>
+          <button className={styles.liveButton} onClick={handleLiveClick}>
+            LIVE
+          </button>
         </div>
       </div>
 

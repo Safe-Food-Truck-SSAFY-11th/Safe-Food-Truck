@@ -28,13 +28,15 @@ const Live = () => {
     openNoticeModal,
     setIsLiveFailed,
     isLiveFailed,
+    fetchTruckInfo,
+    truckInfo,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
   const navigate = useNavigate(); // useNavigate 사용
-  const { state } = useLocation(); // useLocation 사용
-  const { token } = state || {}; // token을 state에서 받아옴
+  // const { state } = useLocation(); // useLocation 사용
+  // const { token, reload } = state || {}; // token을 state에서 받아옴
   const [mySessionId, setMySessionId] = useState(storeId);
   const [myUserName, setMyUserName] = useState(
     sessionStorage.getItem("nickname")
@@ -46,21 +48,13 @@ const Live = () => {
   const [isChat, setIsChat] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const { truckInfo } = useTruckStore();
-  const { selectedTruck } = useFoodTruckStore();
-  const truckName =
-    role.indexOf("owner") !== -1 ? truckInfo.name : selectedTruck.name;
+  // const { truckInfo } = useTruckStore();
+  // const { selectedTruck } = useFoodTruckStore();
+  const truckName = truckInfo?.name;
   const [notice, setNotice] = useState(storeNotice);
 
   //트럭사진
-  const truckImg =
-    role.indexOf("owner") !== -1
-      ? truckInfo?.storeImageDto?.savedUrl === "empty"
-        ? truck_img
-        : truckInfo?.storeImageDto?.savedUrl
-      : selectedTruck?.storeImageDto?.savedUrl === "empty"
-      ? truck_img
-      : selectedTruck?.storeImageDto?.savedUrl;
+  const truckImg = truckInfo?.storeImageDto?.savedUrl === "empty";
 
   //방송 참여자 이메일 목록
   const members = useRef(new Set());
@@ -84,73 +78,109 @@ const Live = () => {
 
   //페이지 떠나려고 할 때 동작
   useEffect(() => {
-    window.addEventListener("beforeunload", onbeforeunload);
-    return () => {
-      window.removeEventListener("beforeunload", onbeforeunload);
-    };
-  }, []);
+    const handleBeforeUnload = async (event) => {
+      const navigationType = performance.getEntriesByType("navigation")[0].type;
 
-  //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
-  useEffect(() => {
-    if (role.indexOf("owner") !== -1) {
-      createSessionAndJoin(); // 퍼블리셔로 참여
-    } else if (role === "customer" && token) {
-      joinExistingSession(token); // 구독자로 참여
-    }
-  }, [role, token]);
+      if (navigationType === "reload") {
+        // 새로고침인 경우
+        console.log("새로고침 감지");
 
-  // 뒤로가기 동작 처리 -> onbeforeunload랑 합치기
-  useEffect(() => {
-    const handleGoBack = async () => {
-      if (session) {
         if (role.indexOf("customer") !== -1) {
-          await leaveSession(); // 고객인 경우 방송 세션 종료
+          // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+          await leaveSession();
+        }
+
+        return; // 아무 작업도 하지 않음
+      } else {
+        console.log("새로고침 아님");
+        // 새로고침이 아닌 경우
+        if (role.indexOf("customer") !== -1) {
+          // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+          leaveSession();
         } else if (role.indexOf("owner") !== -1) {
+          // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
           const res = window.confirm("방송을 종료하시겠습니까?");
           if (res) {
             await endLive(); // 방송 종료
-            navigate("/mainOwner"); // 사장님 메인페이지로 이동
           } else {
-            window.history.pushState(null, "", "");
+            event.preventDefault(); // 페이지 이탈을 막음
           }
         }
       }
     };
 
-    window.addEventListener("popstate", handleGoBack);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // // 컴포넌트 언마운트 시 이벤트 리스너 제거
-    // return () => {
-    //   window.removeEventListener("popstate", handleGoBack);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [role, session, navigate]);
+
+  // 뒤로가기 동작 처리
+  useEffect(() => {
+    const handlePopState = async (event) => {
+      if (session) {
+        if (role.indexOf("customer") !== -1) {
+          // 손님이 뒤로가기를 눌렀을 때 세션 나가기
+          await leaveSession();
+        } else if (role.indexOf("owner") !== -1) {
+          // 사장님이 뒤로가기를 눌렀을 때 방송 종료 확인
+          const res = window.confirm("방송을 종료하시겠습니까?");
+          if (res) {
+            await endLive(); // 방송 종료
+            navigate("/mainOwner");
+          } else {
+            window.history.pushState(null, "", window.location.href); // 뒤로가기를 취소하고 현재 페이지 유지
+          }
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [role, session, navigate]);
+
+  //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
+  useEffect(() => {
+    fetchTruckInfo(storeId); //트럭정보 로딩
+
+    // const getNewTokenAndJoin = async () => {
+    //   const newToken = await getToken();
+    //   console.log(newToken);
+    //   joinExistingSession(newToken); // 구독자로 참여
     // };
-  }, []);
 
-  //사장님 방송 종료 시 손님 페이지 이동 & 모달 켜기
+    if (role.indexOf("owner") !== -1) {
+      createSessionAndJoin(); // 퍼블리셔로 참여
+    } else if (role === "customer") {
+      joinExistingSession(); // 구독자로 참여
+    }
+  }, [role]);
+
+  //방송 종료 시 손님 페이지 이동 & 모달 켜기
   useEffect(() => {
     if (session) {
       session.on("sessionDisconnected", (event) => {
         console.log(event);
         if (event.reason === "forceDisconnectByServer") {
           if (role.indexOf("customer") !== -1) {
-            navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화
-            openModal();
+            navigate(`/foodTruckDetail/${storeId}`, { replace: true }); // 이동하면서, 뒤로가기 막음
+            openModal(); //모달 열기
           }
         }
       });
     }
   }, [session, navigate]);
 
-  //공지사항 가져오기
+  //트럭 정보, 공지사항 가져오기
   useEffect(() => {
     fetchNotice(storeId);
     setNotice(storeNotice);
     console.log(notice);
   }, [storeNotice]);
-
-  // 사용자가 페이지를 떠나려고 할 때 동작 (새로고침, 창 닫기)
-  const onbeforeunload = (event) => {
-    leaveSession();
-  };
 
   //세션 구독자 삭제
   const deleteSubscriber = (streamManager) => {
@@ -208,6 +238,7 @@ const Live = () => {
 
     try {
       const token = await getToken();
+      console.log(token);
       await newSession.connect(token, {
         clientData: myUserName,
         email: sessionStorage.getItem("email"),
@@ -237,7 +268,7 @@ const Live = () => {
   };
 
   //손님 - 존재하는 세션에 입장
-  const joinExistingSession = async (token) => {
+  const joinExistingSession = async () => {
     OV.current = new OpenVidu();
     const newSession = OV.current.initSession();
 
@@ -281,6 +312,8 @@ const Live = () => {
     });
 
     try {
+      const token = await getToken();
+      console.log(token);
       await newSession.connect(token, {
         clientData: myUserName,
         email: sessionStorage.getItem("email"),
@@ -449,7 +482,7 @@ const Live = () => {
           alert("방송 시작 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
           setIsLiveFailed(true);
           leaveSession();
-          // navigate("/mainOwner");
+          navigate("/mainOwner", { replace: true }); //뒤로가기 막기
         }
         return null;
       }
@@ -544,7 +577,7 @@ const Live = () => {
 
           {role.indexOf("owner") !== -1 ? (
             <div className={styles.ownerItems}>
-              <OpenClose onLiveEndClick={endLive} />
+              <OpenClose onLiveEndClick={endLive} isLive={true} />
               <JiguemOrder />
             </div>
           ) : null}
