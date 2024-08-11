@@ -13,7 +13,8 @@
 }
 
 .inputContainer {
-  margin-bottom: 10px;
+  width: 80%; /* 인풋 박스의 너비를 컨테이너 너비의 80%로 설정 */
+  margin-bottom: 15px;
   position: relative;
 }
 
@@ -64,6 +65,12 @@
   margin-left: 10px;
 }
 
+.duplicateButton:hover {
+  background-color: white;
+  color: #66B13B;
+  border: 2px solid #66B13B;
+}
+
 .hintText {
   font-size: 11px;
   color: green;
@@ -79,6 +86,7 @@
 .inputRow {
   display: flex;
   justify-content: space-between;
+  width: 80%; /* 인풋 박스의 너비를 컨테이너 너비의 80%로 설정 */
 }
 
 .inputRow .inputContainer {
@@ -101,33 +109,36 @@
 .buttonGroup {
   display: flex;
   justify-content: space-between;
+  width: 80%; /* 버튼 그룹의 너비를 컨테이너 너비의 80%로 설정 */
   margin-top: 20px;
 }
 
-.updateButton {
+.updateButton,
+.cancelButton {
+  flex: 1;
   background-color: #8BC34A;
   border: none;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin: 0 5px; /* 버튼 사이 간격 */
 }
 
 .updateButton:hover {
-  background-color: #7CB342;
+  background-color: white;
+  color: #8BC34A;
+  border: 2px solid #8BC34A;
 }
 
 .cancelButton {
   background-color: #FF7F50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .cancelButton:hover {
-  background-color: #FF6347;
+  background-color: white;
+  color: #FF7F50;
+  border: 2px solid #FF7F50;
 }
 
 .imageContainer {
@@ -148,6 +159,13 @@
   color: #4F8A10;
   position: relative;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* 이미지가 클릭 가능한 버튼처럼 보이도록 */
+}
+
+.inputTitle h1 {
+  font-size: 2rem;
+  text-align: center;
+  color: black;
 }
 
 .imagePlaceholder img {
@@ -158,13 +176,5 @@
 }
 
 .uploadButton {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: transparent;
-  color: #4F8A10;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
+  display: none; /* 이제 이미지를 클릭해 업로드할 수 있으므로 이 버튼은 숨깁니다. */
 }
