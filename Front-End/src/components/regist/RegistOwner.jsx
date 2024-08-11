@@ -170,7 +170,7 @@ const RegistOwner = ({ formData, onFormChange }) => {
           <button type="button" className={styles.duplicateButton} onClick={handleBusNumCheck}>사업자 번호 확인</button>
         </div>
         {bsNumValid === false && <p className={styles.errorText}>사업자 번호가 유효하지 않습니다</p>}
-        {bsNumValid === true && bsNumChecked == 'Duplicate' && <p className={styles.errorText}>중복된 사업자 번호입니다</p>}
+        {bsNumValid === true && bsNumChecked == 'Duplicate' && <p className={styles.errorText}>이미 등록된 사업자 번호입니다</p>}
         {bsNumValid === true && bsNumChecked == 'Possible' && <p className={styles.hintText}>유효한 사업자 번호입니다</p>}
       </div>
     </form>
