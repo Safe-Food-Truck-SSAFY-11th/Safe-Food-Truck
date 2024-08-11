@@ -29,6 +29,7 @@ import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
@@ -72,15 +73,17 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public void updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
+	public StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto) {
 		Store store = findLoginStore();
 		store.update(storeUpdateRequestDto);
 
 		StoreImage storeImage = storeImageRepository.findByStore(store);
 		storeImage.updateStoreImage(storeUpdateRequestDto.storeImageDto());
 
-		storeRepository.save(store);
+		Store savedStore = storeRepository.save(store);
 		storeImageRepository.save(storeImage);
+
+		return StoreUpdateResponseDto.fromEntity(savedStore);
 	}
 
 	@Override
@@ -126,11 +129,13 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public void updateStoreStatus() {
+	public Boolean updateStoreStatus() {
 		Store store = findLoginStore();
 		store.toggleOpenStatus();
-		if (store.getIsOpen().equals(Boolean.TRUE))
+		Boolean status = store.getIsOpen();
+		if (status.equals(Boolean.TRUE))
 			notificationService.favoriteSendNotify(store.getId(), store.getName());
+		return status;
 	}
 
 	@Override
