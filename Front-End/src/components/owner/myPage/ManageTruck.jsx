@@ -50,6 +50,11 @@ const ManageTruck = () => {
     translate();
   }, []);
 
+  useEffect(() => {
+    fetchTruckInfo();
+    setTruckImage(truckInfo.storeImageDto.savedUrl);
+  }, [truckImage]);
+
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
