@@ -86,7 +86,7 @@ const PermitAreaCheck = () => {
         const container = document.getElementById("map");
         const options = {
           center: new window.kakao.maps.LatLng(mapCenterLat, mapCenterLon),
-          level: 7,
+          level: 5,
         };
         mapRef.current = new window.kakao.maps.Map(container, options);
 
