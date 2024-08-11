@@ -32,7 +32,7 @@ const MenuRegist = () => {
 
     addMenu();
     closeRegist();
-    // window.location.reload();
+    window.location.reload();
   };
   const handleUpload = async () => {
       if (!selectedImage) {
