@@ -2,6 +2,24 @@ package com.safefoodtruck.sft.store.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
+import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
+import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.exception.NullListException;
+import com.safefoodtruck.sft.store.exception.StoreImageNotFoundException;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
+import com.safefoodtruck.sft.store.service.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.time.LocalDateTime;
 
 import org.springframework.http.MediaType;
@@ -227,4 +245,15 @@ public class StoreController {
 			.body(errorResponse);
 	}
 
+    @PatchMapping("/ai-logo")
+    @PreAuthorize("hasAnyRole('ROLE_vip_owner')")
+    @Operation(summary = "AI 로고 저장", description = "AI 로고 저장 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "AI 로고 저장에 성공하였습니다!",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<Void> updateStoreAILogo(@RequestBody StoreAILogoRequestDto storeAILogoRequestDto) {
+        storeService.updateStoreAILogo(storeAILogoRequestDto);
+        return new ResponseEntity<>(OK);
+    }
 }

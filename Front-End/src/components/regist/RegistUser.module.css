@@ -11,7 +11,8 @@
 
 .inputContainer label {
     display: block;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 100;
     margin-bottom: 5px;
     color: #008716;
 }
@@ -20,9 +21,11 @@
 .inputContainer select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 5px;
     box-sizing: border-box;
+    background-color: #E2EED0;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .emailContainer,
@@ -48,6 +51,7 @@
     padding: 5px 10px;
     cursor: pointer;
     margin-left: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .hintText {

@@ -2,6 +2,8 @@ package com.safefoodtruck.sft.store.service;
 
 import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 
+import com.safefoodtruck.sft.store.dto.StoreImageDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -202,6 +204,13 @@ public class StoreServiceImpl implements StoreService {
 		boolean exists = storeRepository.findStoreWithMenusAndImagesBySafetyLicenseNumber(safetyLicenseNumber)
 			.isPresent();
 		return exists ? DUPLICATE.get() : POSSIBLE.get();
+	}
+
+	@Override
+	public void updateStoreAILogo(StoreAILogoRequestDto storeAILogoRequestDto) {
+		storeImageRepository.updateStoreImageByStoreId(storeAILogoRequestDto.storeId(),
+														storeAILogoRequestDto.savedUrl(),
+														storeAILogoRequestDto.savedPath());
 	}
 
 	public Store findLoginStore() {
