@@ -2,36 +2,42 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10vw;
-    width: 90vw;
+    gap: 6%;
+    width: 100%;
 }
 
 .openButton {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: #EAFFC9;
-    padding: 10px 20px; 
+    padding: 3% 5%;
     border: none;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     font-size: 1rem; 
     color: #407223;
     cursor: pointer;
-    width: 40vw;
+    width: 47%;
+    gap: 5%;
 }
 
 .closeButton {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: #EAFFC9;
-    padding: 10px 20px; 
+    padding: 3% 5%;
     border: none;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     font-size: 1rem; 
     color: #407223;
     cursor: pointer;
-    width: 40vw;
+    width: 47%;
+    gap: 5%;
 }
 
 .closeButton:disabled {
@@ -41,6 +47,5 @@
 }
 
 .icon {
-    margin-right: 10px; 
     font-size: 1.8rem; 
 }

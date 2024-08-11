@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import userStore from 'store/users/userStore';
 import styles from './Membership.module.css';
 
+
 const Membership = () => {
     const navigate = useNavigate();
     const { joinMembership, extendMembership, deactivateMembership } = userStore();
@@ -9,21 +10,21 @@ const Membership = () => {
     const handleJoinClick = () => {
         const confirmed = window.confirm('가입하시겠습니까?');
         if (confirmed) {
-            joinMembership();
+            joinMembership(navigate);
         }
     };
 
     const handleExtendClick = () => {
         const confirmed = window.confirm('연장하시겠습니까?');
         if (confirmed) {
-            extendMembership();
+            extendMembership(navigate);
         }
     }
 
     const handleDeactivateClick = () => {
         const confirmed = window.confirm('정말 탈퇴하시겠습니까?');
         if (confirmed) {
-            deactivateMembership();
+            deactivateMembership(navigate);
         }
     }
 
