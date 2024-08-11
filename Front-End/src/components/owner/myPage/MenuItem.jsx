@@ -1,4 +1,5 @@
 import React from "react";
+import imageIcon from "assets/images/sft-logo.png";
 import styles from "./MenuItem.module.css";
 
 const MenuItem = ({ menu, onEdit, onDelete }) => {
@@ -6,8 +7,7 @@ const MenuItem = ({ menu, onEdit, onDelete }) => {
   return (
     <div className={styles.menuItem}>
       <img
-        // src={menu.image || imageIcon}
-        src={menu.menuImageDto.savedUrl}
+        src={menu.image !== "empty" ? menu.image : imageIcon}
         alt="메뉴 이미지"
         className={styles.menuImage}
       />
