@@ -13,6 +13,18 @@ const useReviewStore = create((set) => ({
     savedUrl: 'empty',
   },
 
+  initCurrentReview: () => {
+    set((state) => ({
+      currentReview: {
+        content: '',
+        is_visible: 1,
+        rating: 0,
+        savedPath: 'empty',
+        savedUrl: 'empty',
+      },
+    }));
+  },
+
   // 내가 작성한 리뷰 전체 조회
   getAllMyReview: async () => {
     try {
