@@ -55,40 +55,46 @@ const MenuUpdate = () => {
         Body: selectedImage,
     };
 
-     // 업로드할 파일 정보 설정
+     // 삭제할 파일 정보 설정
      const deleteParams = {
       Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,  // 버킷 이름 변경
       Key: menuForm.savedPath, // S3에 저장될 경로와 파일명
     };
 
-    // S3에 파일 삭제 후 업로드
     return new Promise((resolve, reject) => {
-      // 먼저 파일을 삭제
-      s3.deleteObject(deleteParams, (err, data) => {
-        console.log("삭제 파람즈 = ", deleteParams);
-
-        if (deleteParams.Key === "" || err) {
-          console.error('Error deleting file:');
-          reject(err);  // 삭제 실패 시 Promise reject
-        } else {
-          console.log('File deleted successfully. ETag:', data.ETag);
-
-          // 파일 삭제가 성공적으로 완료된 후, 파일 업로드 수행
-          s3.upload(uploadParams, (err, data) => {
-            if (err) {
-              console.error('Error uploading file:', err);
-              reject(err);  // 업로드 실패 시 Promise reject
-            } else {
-              console.log('File uploaded successfully. ETag:', data.ETag);
-              setMenuForm("savedUrl", data.Location);
-              setMenuForm("savedPath", data.Key);
-              // 업로드 완료 후 resolve 호출
-              resolve(data);
-            }
+      // 삭제 작업이 필요한 경우
+      if (menuForm.savedPath !== "empty" && deleteParams.Key !== "") {
+          s3.deleteObject(deleteParams, (err, data) => {
+              if (err) {
+                  console.error('Error deleting file:', err);
+                  return reject(err);  // 삭제 실패 시 Promise reject
+              } else {
+                  console.log('File deleted successfully. ETag:', data.ETag);
+                  // 삭제 후 업로드 작업 수행
+                  performUpload();
+              }
           });
-        }
-      });
-    });
+      } else {
+          // 삭제할 파일이 없으면 바로 업로드 작업 수행
+          performUpload();
+      }
+  
+      // 업로드 작업 함수 정의
+      function performUpload() {
+          s3.upload(uploadParams, (err, data) => {
+              if (err) {
+                  console.error('Error uploading file:', err);
+                  reject(err);  // 업로드 실패 시 Promise reject
+              } else {
+                  console.log('File uploaded successfully. ETag:', data.ETag);
+                  setMenuForm("savedUrl", data.Location);
+                  setMenuForm("savedPath", data.Key);
+                  // 업로드 완료 후 resolve 호출
+                  resolve(data);
+              }
+          });
+      }
+  });
 
 };
   
@@ -98,7 +104,7 @@ const MenuUpdate = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.imageSection}>
             <img
-              src={menuForm.image || imageIcon}
+              src={menuForm.image !== "empty" ? menuForm.image : imageIcon}
               className={styles.uploadedImage}
             />
             <input

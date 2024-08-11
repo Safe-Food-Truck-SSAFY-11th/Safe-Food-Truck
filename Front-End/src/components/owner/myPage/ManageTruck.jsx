@@ -50,6 +50,11 @@ const ManageTruck = () => {
     translate();
   }, []);
 
+  useEffect(() => {
+    fetchTruckInfo();
+    setTruckImage(truckInfo.storeImageDto.savedUrl);
+  }, [truckImage]);
+
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -117,6 +122,9 @@ const ManageTruck = () => {
 
   const closeMakeLog = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
+    fetchTruckInfo();
+    setTruckImage(truckInfo.storeImageDto.savedUrl);
+    window.location.reload();
   }
 
   const handleDeleteStore = () => {
@@ -224,7 +232,7 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
-      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult}/>}
+      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult} storeId={truckInfo.storeId}/>}
     </>
   );
 };

@@ -48,7 +48,6 @@ const MenuRegist = () => {
 
       const s3 = new AWS.S3();
 
-
       // 업로드할 파일 정보 설정
       const uploadParams = {
           Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
@@ -83,7 +82,7 @@ const MenuRegist = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.imageSection}>
             <img
-              src={menuForm.image || imageIcon}
+              src={menuForm.image !== "empty" ? menuForm.image : imageIcon}
               alt="이미지 업로드"
               className={styles.uploadedImage}
             />

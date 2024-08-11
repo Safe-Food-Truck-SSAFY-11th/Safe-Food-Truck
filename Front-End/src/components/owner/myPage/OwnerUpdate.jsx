@@ -8,7 +8,7 @@ import AWS from 'aws-sdk';
 const OwnerUpdate = () => {
   const navigate = useNavigate();
 
-  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser } = useUserStore();
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser, pwdValid, setPwdValid, passwordValidChk, passwordCheckTouched, setPasswordCheckTouched } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [form, setForm] = useState({});
   const [profileImage, setProfileImage] = useState(''); 
@@ -40,6 +40,10 @@ const OwnerUpdate = () => {
     setPasswordMatch(form.password === form.confirmPassword);
   }, [form.password, form.confirmPassword, setPasswordMatch]);
 
+  useEffect(() => {
+    handlePwdCheck(form.password);
+  }, [form.password])
+
   const handleChange = (e) => {
     const { name, value } = e.target;
   
@@ -53,6 +57,15 @@ const OwnerUpdate = () => {
     handleChange(e);
     setPasswordTouched();
   };
+
+  const handlePwdCheckChange = (e) => {
+    handleChange(e);
+    setPasswordCheckTouched();
+  }
+
+  const handlePwdCheck = (pwd) => {
+    setPwdValid(passwordValidChk(pwd));
+  }
 
   const handleNicknameChange = (e) => {
     handleChange(e);
@@ -71,7 +84,7 @@ const OwnerUpdate = () => {
     navigate('/mypageOwner');
   };
 
-  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch && pwdValid;
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -133,7 +146,7 @@ const OwnerUpdate = () => {
 
   return (
     <div className={styles.container}>
-      <h2>내 정보 수정</h2>
+      <h2 className={styles.title}>내 정보 수정</h2>
       <div className={styles.profileContainer} onClick={() => document.getElementById('profileImageInput').click()}>
         <img src={profileImage} alt="Profile" />
         <input type="file" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
@@ -145,13 +158,14 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호</label>
-          <input type="password" name="password" value={form.password} onChange={handleChange}/>
+          <input type="password" name="password" value={form.password} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자'/>
+          {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호확인</label>
-          <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handlePasswordChange} />
-          {passwordTouched && passwordMatch === true && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
-          {passwordTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+          <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handlePwdCheckChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
+          {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+          {passwordCheckTouched && passwordMatch && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
         </div>
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
@@ -184,7 +198,7 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>전화번호</label>
-          <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange}/>
+          <input type="number" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder='숫자만 입력하세요'/>
         </div>
         <div className={styles.inputContainer}>
           <label>사업자등록번호</label>

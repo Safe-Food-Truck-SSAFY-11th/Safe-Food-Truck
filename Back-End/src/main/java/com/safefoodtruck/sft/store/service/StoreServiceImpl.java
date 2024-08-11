@@ -3,6 +3,8 @@ package com.safefoodtruck.sft.store.service;
 import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 import static com.safefoodtruck.sft.review.domain.QReview.*;
 
+import com.safefoodtruck.sft.store.dto.StoreImageDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -187,9 +189,15 @@ public class StoreServiceImpl implements StoreService {
 		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
+	@Override
 	private Store findLoginStore() {
 		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(MemberInfo.getEmail())
-			.orElseThrow(StoreNotFoundException::new);
+
+	@Override
+	public void updateStoreAILogo(StoreAILogoRequestDto storeAILogoRequestDto) {
+		storeImageRepository.updateStoreImageByStoreId(storeAILogoRequestDto.storeId(),
+														storeAILogoRequestDto.savedUrl(),
+														storeAILogoRequestDto.savedPath());
 	}
 
 	private Store findStore(Integer storeId) {
