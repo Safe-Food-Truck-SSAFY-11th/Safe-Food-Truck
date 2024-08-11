@@ -2,20 +2,73 @@
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
-  text-align: left;
   margin-bottom: 20px;
+  width: 90%;
+  display: flex;
+  align-items: center;
 }
 
-.jjimButton {
-  padding: 10px 20px;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.header img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 텍스트를 왼쪽 정렬 */
+  flex: 1;
+}
+
+.textContainer h1,
+.textContainer h3,
+.textContainer p {
+  margin: 0;
+  font-size: 19px;
+  padding-bottom: 25px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   margin-top: 10px;
 }
 
-.jjimButton:hover {
+.jjimButton,
+.unJJimButton,
+.liveButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  flex: 1;
+  margin-right: 10px; /* 버튼 간격 */
+}
+
+.unJJimButton {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.jjimButton {
   background-color: #ff4757;
+  color: white;
+}
+
+.jjimButton:hover,
+.unJJimButton:hover {
+  background-color: #ff4757;
+}
+
+.liveButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.liveButton:hover {
+  background-color: #45a049;
 }

@@ -36,7 +36,7 @@ const RegistTruck = () => {
         }
     };
 
-    const { registForm, setRegistForm, setRegistImage, toggleRegistWorkingDay, categories, registTruck } = useTruckStore();
+    const { registForm, setRegistForm, setRegistImage, toggleRegistWorkingDay, categories, registTruck, valNumChecked, checkValNumber } = useTruckStore();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -71,6 +71,9 @@ const RegistTruck = () => {
             if (response.status === 200 && response.data.I2856.RESULT.CODE === "INFO-000") {
                 // 인허가 번호 검증 통과
                 setIsValNumOK(true);
+                // 인허가 번호 중복 검사
+                checkValNumber(valNum);
+                console.log(valNumChecked);
             } else {
                 // 인허가 번호 검증 실패
                 setIsValNumOK(false);
@@ -137,8 +140,8 @@ const RegistTruck = () => {
     };
 
     // 점포등록하지 않고 돌아가는 경우
-    // -> 경고문구 페이지로 이동
-    // *** 수정 예정 ***
+    // -> 로그아웃 후 로그인화면으로 이동
+    // 로그인 시도 시 메인페이지에서 점포등록 유도 모달 팝업
     const handleGoBack = () => {
         sessionStorage.clear();
         navigate('/login');
@@ -171,9 +174,12 @@ const RegistTruck = () => {
             </div>
             <div className={styles.inputContainer}>
                 <label>식약처인허가번호</label>
-                <input type="text" name="safetyLicenseNumber" value={registForm.safetyLicenseNumber} onChange={handleChange} />
-                <button type="button" className={styles.duplicateButton} onClick={handleValNumCheck}>인허가 번호 확인</button>
-                {isValNumOK === true && <p className={styles.hintText}>인허가 번호가 유효합니다.</p>}
+                <div className={styles.licenseNumContainer}>
+                    <input type="number" name="safetyLicenseNumber" value={registForm.safetyLicenseNumber} onChange={handleChange} className={styles.licenceNumInput} placeholder='숫자만 입력하세요'/>
+                    <button type="button" className={styles.duplicateButton} onClick={handleValNumCheck}>인허가 번호 확인</button>
+                </div>
+                {isValNumOK === true && valNumChecked == 'Possible' && <p className={styles.hintText}>인허가 번호가 유효합니다.</p>}
+                {isValNumOK === true && valNumChecked == 'Duplicate' &&<p className={styles.errorText}>이미 등록된 인허가 번호입니다.</p>}
                 {isValNumOK === false && <p className={styles.errorText}>인허가 번호가 유효하지 않습니다.</p>}
             </div>
             <div className={styles.inputContainer}>

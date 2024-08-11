@@ -1,6 +1,4 @@
 import { create } from "zustand";
-// import permitAreaListData from "assets/전국푸드트럭허가구역표준데이터.json";
-// import permitAreaListData from "assets/전국푸드트럭허가구역표준데이터1.json";
 import permitAreaListData from "assets/전국푸드트럭허가구역표준데이터2.json";
 
 const usePermitAreaStore = create((set) => ({
@@ -8,7 +6,6 @@ const usePermitAreaStore = create((set) => ({
   openWarning: () => set({ isOpen: true }),
   closeWarning: () => set({ isOpen: false }),
   permitAreaList: permitAreaListData.records, // 초기 상태에 데이터 설정
-  filteredAreaList: [], // 시군구명, 시도명으로 필터링된 데이터
   coordList: [],
   addCoord: (x, y) => {
     set((state) => {
@@ -26,14 +23,6 @@ const usePermitAreaStore = create((set) => ({
       }
       return state; // 중복일 경우 상태를 그대로 반환
     });
-  },
-  filterByRegion: (sido) => {
-    set((state) => ({
-      filteredAreaList: state.permitAreaList.filter((area) => {
-        const matchesSido = sido ? area.시도명.includes(sido) : true;
-        return matchesSido;
-      }),
-    }));
   },
 }));
 

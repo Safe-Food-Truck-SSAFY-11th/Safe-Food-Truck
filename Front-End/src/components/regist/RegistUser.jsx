@@ -3,7 +3,7 @@ import styles from './RegistUser.module.css';
 import useUserStore from 'store/users/userStore';
 
 const RegistUser = ({ formData, onFormChange }) => {
-  const { emailChecked, checkEmail, nicknameChecked, checkNickname, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched } = useUserStore();
+  const { emailValid, setEmailValid, emailValidChk, emailChecked, checkEmail, nicknameChecked, checkNickname, pwdValid, setPwdValid, passwordValidChk, passwordMatch, setPasswordMatch, emailTouched, setEmailTouched, nicknameTouched, setNicknameTouched, passwordTouched, setPasswordTouched, passwordCheckTouched, setPasswordCheckTouched, pnChecked, checkPN } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -17,6 +17,10 @@ const RegistUser = ({ formData, onFormChange }) => {
   useEffect(() => {
     setPasswordMatch(formData.password === formData.confirmPassword);
   }, [formData.password, formData.confirmPassword, setPasswordMatch]);
+
+  useEffect(() => {
+    handlePwdCheck(formData.password);
+  }, [formData.password]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,18 +37,33 @@ const RegistUser = ({ formData, onFormChange }) => {
     setPasswordTouched();
   }
 
+  const handlePwdCheckChange = (e) => {
+    handleChange(e);
+    setPasswordCheckTouched();
+  }
+
   const handleNicknameChange = (e) => {
     handleChange(e);
     setNicknameTouched();
   };
 
-  const handleEmailCheck = () => {
-    checkEmail(formData.email);
+  const handleEmailCheck = (email) => {
+    setEmailValid(emailValidChk(email));
+    checkEmail(email);
   };
+
+  const handlePwdCheck = (pwd) => {
+    setPwdValid(passwordValidChk(pwd));
+  }
 
   const handleNicknameCheck = () => {
     checkNickname(formData.nickname);
   };
+
+  const handlePNCheck = () => {
+    // 전화번호 중복 검사
+    checkPN(formData.phoneNumber);
+  }
 
   return (
     <form className={styles.form}>
@@ -52,19 +71,22 @@ const RegistUser = ({ formData, onFormChange }) => {
         <label>이메일</label>
         <div className={styles.emailContainer}>
           <input type="email" name="email" value={formData.email || ''} onChange={handleEmailChange} className={styles.emailInput} />
-          <button type="button" className={styles.duplicateButton} onClick={handleEmailCheck}>중복확인</button>
+          <button type="button" className={styles.duplicateButton} onClick={() => {handleEmailCheck(formData.email)}} >중복확인</button>
         </div>
-        {emailTouched && emailChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 이메일이에요</p>}
-        {emailTouched && emailChecked === 'Duplicate' && <p className={styles.errorText}>이미 사용 중인 이메일입니다</p>}
+        {emailTouched && !emailValid && emailChecked === 'Possible' && <p className={styles.errorText}>이메일 양식을 확인해주세요</p>}
+        {emailTouched && emailValid && emailChecked === 'Possible' && <p className={styles.hintText}>사용할 수 있는 이메일이에요</p>}
+        {emailTouched && emailValid && emailChecked === 'Duplicate' && <p className={styles.errorText}>이미 사용 중인 이메일입니다</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호</label>
-        <input type="password" name="password" value={formData.password || ''} onChange={handleChange} />
+        <input type="password" name="password" value={formData.password || ''} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
+        {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>비밀번호확인</label>
-        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePasswordChange} />
-        {passwordTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+        <input type="password" name="confirmPassword" value={formData.confirmPassword || ''} onChange={handlePwdCheckChange} placeholder='영문, 숫자, 특수문자 조합 8-16자'/>
+        {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+        {passwordCheckTouched && passwordMatch && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
       </div>
       <div className={styles.inputRow}>
         <div className={styles.inputContainer}>
@@ -97,7 +119,11 @@ const RegistUser = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
+        <div className={styles.emailContainer}>
+          <input type="number" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
+          <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
+        </div>
+        {pnChecked === 'Duplicate' && <p className={styles.errorText}>이미 사용 중인 전화번호입니다</p>}
       </div>
     </form>
   );

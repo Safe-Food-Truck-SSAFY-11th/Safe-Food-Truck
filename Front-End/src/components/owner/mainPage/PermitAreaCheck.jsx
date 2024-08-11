@@ -13,16 +13,14 @@ import AreaWarning from "./AreaWarning";
 const PermitAreaCheck = () => {
   const [currLat, setCurrLat] = useState(36.3553601); // 기본값 설정
   const [currLon, setCurrLon] = useState(127.2983893); // 기본값 설정
-  const [currSido, setCurrSido] = useState("");
+  const currSidoRef = useRef("");
+  const [mapCenterLat, setMapCenterLat] = useState();
+  const [mapCenterLon, setMapCenterLon] = useState();
 
-  const {
-    filteredAreaList,
-    filterByRegion,
-    addCoord,
-    coordList,
-    isOpen,
-    openWarning,
-  } = usePermitAreaStore(); //허가구역
+  const [filteredAreaList, setFilteredAreaList] = useState([]);
+
+  const { permitAreaList, addCoord, coordList, isOpen, openWarning } =
+    usePermitAreaStore(); //허가구역
 
   const mapRef = useRef(null); // 지도 객체를 참조할 ref
   const currLocationRef = useRef([currLat, currLon]); // 트럭 현재 위치를 참조할 ref
@@ -30,6 +28,15 @@ const PermitAreaCheck = () => {
   const navigate = useNavigate();
 
   const { truckInfo, switchStatus, changeLocation } = useTruckStore();
+
+  //현재 위치의 시도를 기준으로 허가구역 필터링
+  const filterByRegion = (sido) => {
+    setFilteredAreaList(
+      permitAreaList.filter((area) => {
+        return area.시도명.includes(sido);
+      })
+    );
+  };
 
   //여기서 할래요 버튼 클릭
   const handleSelectClick = () => {
@@ -52,6 +59,9 @@ const PermitAreaCheck = () => {
       (position) => {
         setCurrLat(position.coords.latitude);
         setCurrLon(position.coords.longitude);
+        //지도 처음위치도 현재위치로
+        setMapCenterLat(position.coords.latitude);
+        setMapCenterLon(position.coords.longitude);
       },
       (error) => {
         console.error("Error occurred while retrieving location:", error);
@@ -75,11 +85,18 @@ const PermitAreaCheck = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById("map");
         const options = {
-          center: new window.kakao.maps.LatLng(currLat, currLon),
-          level: 7,
+          center: new window.kakao.maps.LatLng(mapCenterLat, mapCenterLon),
+          level: 5,
         };
-        const map = new window.kakao.maps.Map(container, options);
-        mapRef.current = map; // 지도 객체를 ref에 저장
+        mapRef.current = new window.kakao.maps.Map(container, options);
+
+        const zoomControl = new window.kakao.maps.ZoomControl();
+        mapRef.current.addControl(
+          zoomControl,
+          window.kakao.maps.ControlPosition.RIGHT
+        );
+
+        // mapRef.current = map; // 지도 객체를 ref에 저장
 
         // 마커 이미지 설정
         const imageSrc = mapMarker;
@@ -98,14 +115,18 @@ const PermitAreaCheck = () => {
           position: markerPosition,
           image: markerImage,
         });
-        marker.setMap(map);
+        marker.setMap(mapRef.current);
 
         // 현재 위치 시도 저장하기
         const geocoder = new window.kakao.maps.services.Geocoder();
         // 좌표 -> 주소로 바꾸는 콜백함수
-        const getAddress = (result, status) => {
+        const getAddress = async (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
-            setCurrSido(result[0].address.region_1depth_name);
+            currSidoRef.current = result[0].address.region_1depth_name;
+            //푸드트럭 허가구역 필터링 하기
+            if (filteredAreaList.length === 0) {
+              await filterByRegion(currSidoRef.current);
+            }
           }
         };
 
@@ -117,16 +138,9 @@ const PermitAreaCheck = () => {
             coordX = result[0].x; //경도
             coordY = result[0].y; //위도
             addCoord(coordY, coordX); //좌표 리스트에 저장
-            drawCircle(map, coordY, coordX); // 좌표가 준비된 후 원 그리기
+            drawCircle(mapRef.current, coordY, coordX); // 좌표가 준비된 후 원 그리기
           }
         };
-
-        //푸드트럭 허가구역 필터링 하기 (알단 하드코딩) -> currSido로 변경할 것
-        // const sido = "대전";
-        // 필터링된 리스트가 비어있을 때만 필터링
-        if (filteredAreaList.length === 0) {
-          filterByRegion(currSido);
-        }
 
         //현재 위치 좌표로 바꾸기
         geocoder.coord2Address(currLon, currLat, getAddress);
@@ -138,7 +152,7 @@ const PermitAreaCheck = () => {
           // 위도와 경도가 있는 경우 원 그리기
           if (위도 && 경도) {
             //위도 lat y, 경도 lon x
-            drawCircle(map, 위도, 경도);
+            drawCircle(mapRef.current, 위도, 경도);
             addCoord(위도, 경도);
           }
           // 위도와 경도가 없고 소재지도로명주소가 있는 경우
@@ -150,21 +164,24 @@ const PermitAreaCheck = () => {
             geocoder.addressSearch(소재지지번주소, getCoords);
           }
         });
+        // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록
+        window.kakao.maps.event.addListener(
+          mapRef.current,
+          "center_changed",
+          function () {
+            // 지도의 중심좌표를 얻어옵니다 지속적으로 갱신함
+            var latlng = mapRef.current.getCenter();
+            setMapCenterLat(latlng.getLat());
+            setMapCenterLon(latlng.getLng());
+          }
+        );
       });
     };
 
     script.onerror = (err) => {
       console.error("카카오맵 스크립트를 로드하는 데 실패했습니다.");
     };
-  }, [
-    currLat,
-    currLon,
-    currSido,
-    filterByRegion,
-    addCoord,
-    // filteredAreaList,
-    // filteredAreaList.length,
-  ]);
+  }, [addCoord, filteredAreaList.length]);
 
   // 원을 지도에 그리는 함수
   const drawCircle = (map, lat, lon) => {
@@ -181,20 +198,6 @@ const PermitAreaCheck = () => {
 
     // 지도에 원을 표시
     circle.setMap(map);
-  };
-
-  // 줌 인 함수
-  const zoomIn = () => {
-    if (mapRef.current) {
-      mapRef.current.setLevel(mapRef.current.getLevel() - 1);
-    }
-  };
-
-  // 줌 아웃 함수
-  const zoomOut = () => {
-    if (mapRef.current) {
-      mapRef.current.setLevel(mapRef.current.getLevel() + 1);
-    }
   };
 
   // 현재 위치 이동 함수
@@ -217,6 +220,23 @@ const PermitAreaCheck = () => {
     if (mapRef.current) {
       const moveLatLon = new window.kakao.maps.LatLng(currLat, currLon);
       mapRef.current.panTo(moveLatLon);
+
+      // 마커 이미지 설정
+      const imageSrc = mapMarker;
+      const imageSize = new window.kakao.maps.Size(50, 54);
+      const imageOption = { offset: new window.kakao.maps.Point(27, 54) };
+
+      // 현재 위치 표시
+      const markerImage = new window.kakao.maps.MarkerImage(
+        imageSrc,
+        imageSize,
+        imageOption
+      );
+      const marker = new window.kakao.maps.Marker({
+        position: currLocationRef.current,
+        image: markerImage,
+      });
+      marker.setMap(mapRef.current);
     }
   };
 
@@ -253,17 +273,13 @@ const PermitAreaCheck = () => {
       <div className={styles.compSize}>
         <h3>오늘은 어디서 장사할까요? 🤔</h3>
         <div className={styles.permitAreaCheck}>
-          <div id="map" className={styles.map}></div>
-          <div className={styles.zoomControls}>
-            <button className={styles.zoomIn} onClick={zoomIn}>
-              +
-            </button>
-            <button className={styles.zoomOut} onClick={zoomOut}>
-              -
-            </button>
-          </div>
-          <div className={styles.resetControl}>
-            <MdMyLocation className={styles.resetBtn} onClick={resetLocation} />
+          <div id="map" className={styles.map}>
+            <div className={styles.resetControl}>
+              <MdMyLocation
+                className={styles.resetBtn}
+                onClick={resetLocation}
+              />
+            </div>
           </div>
         </div>
         <div className={styles.buttons}>

@@ -1,17 +1,6 @@
 package com.safefoodtruck.sft.oauth.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safefoodtruck.sft.member.domain.Member;
-import com.safefoodtruck.sft.member.dto.MemberDto;
-import com.safefoodtruck.sft.member.repository.MemberRepository;
-import com.safefoodtruck.sft.oauth.dto.KakaoMemberResponseDto;
-import com.safefoodtruck.sft.oauth.exception.AlreadySignUpException;
-import com.safefoodtruck.sft.security.util.JwtUtil;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.dto.MemberDto;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
+import com.safefoodtruck.sft.member.repository.MemberRepository;
+import com.safefoodtruck.sft.oauth.dto.KakaoMemberResponseDto;
+import com.safefoodtruck.sft.oauth.exception.AlreadySignUpException;
+import com.safefoodtruck.sft.security.util.JwtUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +46,8 @@ public class KakaoServiceImpl implements KakaoService {
         kakaoMemberResponseDto.setCode(code);
 
         //이미 가입한 유저라면
-        Member member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail());
+        Member member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail()).orElseThrow(
+            NotFoundMemberException::new);
         if (member != null) {
             MemberDto memberDto = mapper.map(member, MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);

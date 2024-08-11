@@ -1,22 +1,16 @@
 package com.safefoodtruck.sft.security;
 
-import com.safefoodtruck.sft.member.dto.MemberDto;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.safefoodtruck.sft.member.dto.MemberDto;
 
-@Getter
-@RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
-
-    private final MemberDto member;
+public record CustomUserDetails(MemberDto member) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -25,7 +19,7 @@ public class CustomUserDetails implements UserDetails {
         System.out.println(roles);
         return roles.stream()
             .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override

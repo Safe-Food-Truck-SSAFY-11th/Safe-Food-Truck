@@ -34,27 +34,27 @@ const useLiveStore = create((set) => ({
   isLiveFailed: false,
   setIsLiveFailed: (isLiveFailed) => set({ isLiveFailed: isLiveFailed }),
 
-  //현재 라이브 참여자 목록
-  members: new Set(), // 초기 상태로 Set 사용
+  // //현재 라이브 참여자 목록
+  // members: new Set(), // 초기 상태로 Set 사용
 
-  addMember: (email) =>
-    set((state) => {
-      // const newMembers = new Set(state.members); // 기존 Set 복사
-      // newMembers.add(email); // 새로운 멤버 추가
-      return { members: state.members.add(email) }; // 상태 업데이트
-    }),
+  // addMember: (email) =>
+  //   set((state) => {
+  //     // const newMembers = new Set(state.members); // 기존 Set 복사
+  //     // newMembers.add(email); // 새로운 멤버 추가
+  //     return { members: state.members?.add(email) }; // 상태 업데이트
+  //   }),
 
-  deleteMember: (email) =>
-    set((state) => {
-      // const newMembers = new Set(state.members); // 기존 Set 복사
-      // newMembers.delete(email); // 멤버 삭제
-      return { members: state.members.delete(email) }; // 상태 업데이트
-    }),
+  // deleteMember: (email) =>
+  //   set((state) => {
+  //     // const newMembers = new Set(state.members); // 기존 Set 복사
+  //     // newMembers.delete(email); // 멤버 삭제
+  //     return { members: state.members.delete(email) }; // 상태 업데이트
+  //   }),
 
-  resetMembers: () =>
-    set((state) => {
-      return { members: state.members.clear() }; // 셋 초기화
-    }),
+  // resetMembers: () =>
+  //   set((state) => {
+  //     return { members: state.members?.clear() }; // 셋 초기화
+  //   }),
 }));
 
 export default useLiveStore;

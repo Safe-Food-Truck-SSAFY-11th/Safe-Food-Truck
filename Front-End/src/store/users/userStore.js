@@ -48,10 +48,13 @@ const userStore = create((set, get) => ({
 
   emailChecked: null, // 이메일 확인 상태 (null, Possible, Duplicate)
   nicknameChecked: null, // 닉네임 확인 상태 (null, Possible, Duplicate)
+  pnChecked: null, // 전화번호 확인 상태 (null, Possible, Duplicate)
+  bsNumChecked: null, // 사업자번호 확인 상태 (null, Possible, Duplicate)
   passwordMatch: null, // 비밀번호 일치 여부 (null, true, false)
   emailTouched: false, // 이메일 입력 상태
   nicknameTouched: false, // 닉네임 입력 상태
   passwordTouched: false, // 비밀번호확인 입력 상태
+  passwordCheckTouched: false,
 
   checkEmail: async (email) => {
     try {
@@ -73,10 +76,49 @@ const userStore = create((set, get) => ({
     }
   },
 
+  checkPN: async (PN) => {
+    try {
+      const response = await axios.get(`members/duplication-phone-number/${PN}`);
+      set({ pnChecked: response.data });
+    } catch (error) {
+      console.error('전화번호 중복 확인 오류: ', error);
+    }
+  },
+
+  checkBsNumber: async (bsNum) => {
+    try {
+      const response = await axios.get(`members/duplication-business-number/${bsNum}`);
+      set({ bsNumChecked: response.data });
+    } catch (error) {
+      console.error('사업자번호 중복 확인 오류: ', error);
+    }
+  },
+
+  emailValid: null,
+  pwdValid: null,
+  setEmailValid: (valid) => set({ emailValid: valid}),
   setEmailTouched: () => set({ emailTouched: true }),
   setNicknameTouched: () => set({ nicknameTouched: true }),
+  setPwdValid: (valid) => set({ pwdValid: valid }),
   setPasswordTouched: () => set({ passwordTouched: true }),
+  setPasswordCheckTouched: () => set({ passwordCheckTouched: true }),
   setPasswordMatch: (match) => set({ passwordMatch: match }),
+
+  // 이메일 유효성 검사
+  emailValidChk: (email) => {
+    const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+    if(pattern.test(email) === false) { return false; }
+    else { return true; }
+  },
+
+  // 비밀번호 유효성 검사
+  passwordValidChk: (pwd) => {
+    const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/;
+
+    if(pattern.test(pwd) === false) { return false; }
+    else { return true; }
+  },
 
   updateUser: async (form) => {
     try {
@@ -101,28 +143,43 @@ const userStore = create((set, get) => ({
     }
   },
 
-  joinMembership: async () => {
+  joinMembership: async (navigate) => {
     try {
-      await axios.post('members/vip');
-      alert('멤버십 가입이 완료되었습니다!');
+      if(sessionStorage.getItem("role") === "vip_owner"){
+        alert('이미 멤버십에 가입하셨습니다!')
+      }else{
+        await axios.post('members/vip');
+        alert('멤버십 가입이 완료되었습니다!');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 가입 오류:', error);
     }
   },
 
-  extendMembership: async () => {
+  extendMembership: async (navigate) => {
     try {
-      await axios.patch('members/vip');
-      alert('멤버십 연장이 완료되었습니다!');
+      if(sessionStorage.getItem("role") !== "vip_owner"){
+        alert('멤버십을 먼저 가입해 주세요!')
+      }else{
+        await axios.patch('members/vip');
+        alert('멤버십 연장이 완료되었습니다!');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 연장 오류:', error);
     }
   },
 
-  deactivateMembership: async () => {
+  deactivateMembership: async (navigate) => {
     try {
-      await axios.patch('members/vip/deactivate');
-      alert('멤버십 탈퇴가 완료되었습니다');
+      if(sessionStorage.getItem("role") !== "vip_owner"){
+        alert('멤버십을 먼저 가입해 주세요!')
+      }else{
+        await axios.patch('members/vip/deactivate');
+        alert('멤버십 탈퇴가 완료되었습니다');
+        navigate(-1); // 뒤로 가기 실행
+      }
     } catch (error) {
       console.error('멤버십 탈퇴 오류: ', error);
     }
