@@ -13,23 +13,21 @@
   }
   
   .status {
-    font-size: 16px;
+    font-size: 13px;
     color: #FF7F50;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
   
   .orderTime {
     font-size: 13px;
     color: black;
-    font-weight: bold; 
+    /* font-weight: bold;  */
   }
   
-  .orderDetails {
-    font-size: 15px;
+  .orderDetails p {
+    font-size: 16px;
+    padding-top: 10px;
     text-align: center;
-    /* text-align: left; */
-    font-weight: bold;
-    line-height: 70px;
   }
   
   .noOrder {

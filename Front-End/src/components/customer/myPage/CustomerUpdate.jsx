@@ -10,7 +10,6 @@ const CustomerUpdate = () => {
   const navigate = useNavigate();
   const { memberInfo } = location.state || {}; // 전달된 상태에서 memberInfo를 가져옴
 
-
   const {
     form, setForm, modifyMemberInfo, getMemberInfo,
     passwordMatch, passwordTouched, setPasswordTouched,
@@ -153,19 +152,21 @@ const CustomerUpdate = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.container}>
+      <form onSubmit={handleSubmit} className={styles.container}>
+      <div className={styles.inputTitle}>
+        <h1>내 정보 수정</h1>
+     </div>
       <div className={styles.imageContainer}>
-        <div className={styles.imagePlaceholder}>
-          <img src={profileImage} alt="Profile" />
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            id="profileImageUpload"
-            onChange={handleFileChange}
-          />
-          <label htmlFor="profileImageUpload" className={styles.uploadButton}>수정</label>
-        </div>
+        <label htmlFor="profileImageUpload" className={styles.imagePlaceholder}>
+          <img src={profileImage} alt="Profile" className={styles.profileImage} />
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="profileImageUpload"
+          onChange={handleFileChange}
+        />
       </div>
       <div className={styles.inputContainer}>
         <label>이메일</label>

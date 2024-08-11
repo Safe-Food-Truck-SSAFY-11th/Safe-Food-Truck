@@ -5,7 +5,8 @@
     text-align: left;
   }
   
-  h3 {
+  .container h3 {
+    text-align: center;
     margin-bottom: 20px;
   }
   
@@ -45,6 +46,7 @@
   
   .orderDetails h4 {
     margin: 0;
+    text-align: center;
   }
   
   .orderDetails p {
@@ -58,10 +60,12 @@
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    border: 2px solid #8BC34A;
   }
   
   .reviewButton:hover {
-    background-color: #7CB342;
+    background-color: white;
+    color: #7CB342;
   }
   
   .container p {
