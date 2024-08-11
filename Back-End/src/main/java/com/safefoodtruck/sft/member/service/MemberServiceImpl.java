@@ -1,12 +1,13 @@
 package com.safefoodtruck.sft.member.service;
 
 import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
+import static com.safefoodtruck.sft.member.domain.LoginType.*;
+import static com.safefoodtruck.sft.member.domain.Membership.*;
 
 import java.time.LocalDate;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,171 +45,180 @@ public class MemberServiceImpl implements MemberService {
 
 	@Transactional
 	@Override
-	public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
-		if (signUpMethod.equals("common")) {
-			boolean exists = memberRepository.findByEmail(signUpMemberDto.getEmail()).isPresent();
-			if(exists) {
-				throw new MemberDuplicateException();
-			}
+	public String signUp(final MemberSignUpRequestDto signUpMemberDto, final String signUpMethod) {
+		if (COMMON.get().equals(signUpMethod) && memberRepository.existsByEmail(signUpMemberDto.getEmail())) {
+			throw new MemberDuplicateException();
 		}
 
-		String password = "EMPTY PASSWORD";
-		if (signUpMethod.equals("common")) {
-			password = passwordEncoder.encode(signUpMemberDto.getPassword());
-		} else if (signUpMethod.equals("kakao") || signUpMethod.equals("google")) {
-			password = signUpMethod;
-		}
-
-		signUpMemberDto.setPassword(password);
+		signUpMemberDto.setPassword(encodePassword(signUpMemberDto.getPassword(), signUpMethod));
 
 		Member savedMember = memberRepository.save(Member.signupBuilder()
 			.memberSignUpRequestDto(signUpMemberDto)
 			.build()
 		);
 
-		MemberImage memberImage = MemberImage.builder()
-			.member(savedMember)
-			.savedUrl(signUpMemberDto.getMemberImage().getSavedUrl())
-			.savedUrl(signUpMemberDto.getMemberImage().getSavedPath())
-			.build();
+		saveMemberImage(signUpMemberDto, savedMember);
 
-		memberImageRepository.save(memberImage);
-
-		MemberDto memberDto = mapper.map(savedMember, MemberDto.class);
-		return jwtUtil.createAccessToken(memberDto);
+		return jwtUtil.createAccessToken(mapper.map(savedMember, MemberDto.class));
 	}
 
 	@Override
-	public String login(MemberLoginRequestDto memberLoginRequestDto) {
-		String email = memberLoginRequestDto.getEmail();
-		String password = memberLoginRequestDto.getPassword();
+	public String login(final MemberLoginRequestDto memberLoginRequestDto) {
+		Member member = findMemberByEmail(memberLoginRequestDto.getEmail());
 
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
+		validateResignedMember(member);
+		validatePassword(memberLoginRequestDto.getPassword(), member.getPassword());
 
-		if (member.getIsResign() == 1) {
-			throw new ResignedMemberException();
-		}
-
-		if (!passwordEncoder.matches(password, member.getPassword())) {
-			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
-		}
-
-		MemberDto memberDto = mapper.map(member, MemberDto.class);
-		return jwtUtil.createAccessToken(memberDto);
+		return jwtUtil.createAccessToken(mapper.map(member, MemberDto.class));
 	}
 
 	@Override
-	public MemberSelectResponseDto selectMember(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
+	public MemberSelectResponseDto selectMember(final String email) {
+		Member member = findMemberByEmail(email);
+		MemberImageDto memberImageDto = mapper.map(memberImageRepository.findByMember(member), MemberImageDto.class);
 
-		MemberImage memberImage = memberImageRepository.findByMember(member);
-		MemberImageDto memberImageDto = mapper.map(memberImage, MemberImageDto.class);
+		MemberSelectResponseDto responseDto = mapper.map(member, MemberSelectResponseDto.class);
+		responseDto.setMemberImage(memberImageDto);
 
-		MemberSelectResponseDto memberSelectResponseDto = mapper.map(member,
-			MemberSelectResponseDto.class);
-		memberSelectResponseDto.setMemberImage(memberImageDto);
-		return memberSelectResponseDto;
+		return responseDto;
 	}
 
 	@Override
-	public String checkDuplicateEmail(String email) {
-		boolean exists = memberRepository.findByEmail(email).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+	public String checkDuplicateEmail(final String email) {
+		return checkDuplicate(memberRepository.existsByEmail(email));
 	}
 
 	@Override
-	public String checkDuplicateNickname(String nickname) {
-		boolean exists = memberRepository.findByNickname(nickname).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+	public String checkDuplicateNickname(final String nickname) {
+		return checkDuplicate(memberRepository.existsByNickname(nickname));
+	}
+
+	@Override
+	public String checkDuplicatePhoneNumber(final String phoneNumber) {
+		return checkDuplicate(memberRepository.existsByPhoneNumber(phoneNumber));
 	}
 
 	@Override
 	public String checkDuplicateBusinessNumber(final String businessNumber) {
-		boolean exists = memberRepository.findByBusinessNumber(businessNumber).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+		return checkDuplicate(memberRepository.existsByBusinessNumber(businessNumber));
 	}
 
 	@Override
-	public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
-		Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail())
-			.orElseThrow(NotFoundMemberException::new);
-		memberUpdateRequestDto.setPassword(
-			passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
+	public void updateMember(final MemberUpdateRequestDto memberUpdateRequestDto) {
+		Member member = findMemberByEmail(memberUpdateRequestDto.getEmail());
+		memberUpdateRequestDto.setPassword(passwordEncoder.encode(memberUpdateRequestDto.getPassword()));
 		member.updateMember(memberUpdateRequestDto);
 
 		MemberImage memberImage = memberImageRepository.findByMember(member);
 		memberImage.updateMemberImage(member, memberUpdateRequestDto.getMemberImage());
+
 		memberRepository.save(member);
 		memberImageRepository.save(memberImage);
 	}
 
 	@Override
-	public void updateIsResign(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
+	public void updateIsResign(final String email) {
+		Member member = findMemberByEmail(email);
 		member.resign();
 		memberRepository.save(member);
 	}
 
 	@Override
-	public void joinVip(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
-
-		if (member.getRole().equals("customer")) {
-			member.joinVip("vip_customer");
-		} else if (member.getRole().equals("owner")) {
-			member.joinVip("vip_owner");
-		}
+	public void joinVip(final String email) {
+		Member member = findMemberByEmail(email);
+		member.joinVip(resolveVipRole(member.getRole()));
 		memberRepository.save(member);
 	}
 
 	@Override
-	public void deactivateVip(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
-
-		if (member.getRole().equals("vip_customer")) {
-			member.deactivateVip("customer");
-		} else if (member.getRole().equals("vip_owner")) {
-			member.deactivateVip("owner");
-		}
+	public void deactivateVip(final String email) {
+		Member member = findMemberByEmail(email);
+		member.deactivateVip(resolveBaseRole(member.getRole()));
 		memberRepository.save(member);
 	}
 
 	@Override
-	public void extendVip(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
+	public void extendVip(final String email) {
+		Member member = findMemberByEmail(email);
 		member.extendVip();
 		memberRepository.save(member);
 	}
 
 	@Override
-	public String searchEmail(String name, LocalDate birth, String phoneNumber) {
+	public String searchEmail(final String name, final LocalDate birth, final String phoneNumber) {
 		Member member = memberRepository.findByNameAndBirthAndPhoneNumber(name, birth, phoneNumber)
 			.orElseThrow(NotFoundMemberException::new);
-
-		if (member == null) {
-			throw new NotFoundMemberException();
-		}
 		return member.getEmail();
 	}
 
 	@Override
-	public void searchPassword(String email, String name, LocalDate birth, String phoneNumber) {
-		Member member = memberRepository.findByEmailAndNameAndBirthAndPhoneNumber(email, name,
-			birth, phoneNumber).orElseThrow(NotFoundMemberException::new);
+	public void searchPassword(final String email, final String name, final LocalDate birth, final String phoneNumber) {
+		Member member = memberRepository.findByEmailAndNameAndBirthAndPhoneNumber(email, name, birth, phoneNumber)
+			.orElseThrow(NotFoundMemberException::new);
 
-		if (member == null) {
-			throw new NotFoundMemberException();
-		}
 		String randomPassword = randomPasswordService.generateRandomPassword();
 		member.updatePassword(passwordEncoder.encode(randomPassword));
-		memberRepository.save(member);
 
+		memberRepository.save(member);
 		emailService.sendEmailPassword(email, name, randomPassword);
+	}
+
+	private Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+	}
+
+	private void validateResignedMember(Member member) {
+		if (member.getIsResign() == 1) {
+			throw new ResignedMemberException();
+		}
+	}
+
+	private void validatePassword(String rawPassword, String encodedPassword) {
+		if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+		}
+	}
+
+	private String encodePassword(String password, String signUpMethod) {
+		if (COMMON.get().equals(signUpMethod)) {
+			return passwordEncoder.encode(password);
+		} else if (KAKAO.get().equals(signUpMethod) || GOOGLE.get().equals(signUpMethod)) {
+			return signUpMethod;
+		}
+		return "EMPTY PASSWORD";
+	}
+
+	private void saveMemberImage(MemberSignUpRequestDto signUpMemberDto, Member savedMember) {
+		MemberImage memberImage = MemberImage.builder()
+			.member(savedMember)
+			.savedUrl(signUpMemberDto.getMemberImage().getSavedUrl())
+			.savedPath(signUpMemberDto.getMemberImage().getSavedPath())
+			.build();
+
+		memberImageRepository.save(memberImage);
+	}
+
+	private String resolveVipRole(String role) {
+		if (CUSTOMER.get().equals(role)) {
+			return VIP_CUSTOMER.get();
+		}
+		if (OWNER.get().equals(role)) {
+			return VIP_OWNER.get();
+		}
+		return role;
+	}
+
+	private String resolveBaseRole(String role) {
+		if (VIP_CUSTOMER.get().equals(role)) {
+			return CUSTOMER.get();
+		}
+		if (VIP_OWNER.get().equals(role)) {
+			return OWNER.get();
+		}
+		return role;
+	}
+
+	private String checkDuplicate(boolean exists) {
+		return exists ? DUPLICATE.get() : POSSIBLE.get();
 	}
 }

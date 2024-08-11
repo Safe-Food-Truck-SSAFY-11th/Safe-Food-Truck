@@ -8,12 +8,13 @@ import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
+import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 
 public interface StoreService {
 
 	void registStore(StoreRegistRequestDto storeRegistRequestDto);
 
-	void updateStore(StoreUpdateRequestDto storeUpdateRequestDto);
+	StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto);
 
 	StoreFindResponseDto findMyStore();
 
@@ -23,7 +24,7 @@ public interface StoreService {
 
 	void deleteStore();
 
-	void updateStoreStatus();
+	Boolean updateStoreStatus();
 
 	boolean getStoreStatus();
 
