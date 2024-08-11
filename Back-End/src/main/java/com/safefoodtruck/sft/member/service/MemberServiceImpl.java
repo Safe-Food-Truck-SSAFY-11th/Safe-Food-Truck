@@ -44,10 +44,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Transactional
 	@Override
-	public String signUp(MemberSignUpRequestDto signUpMemberDto, String signUpMethod) {
+	public String signUp(final MemberSignUpRequestDto signUpMemberDto, final String signUpMethod) {
 		if (signUpMethod.equals("common")) {
 			boolean exists = memberRepository.findByEmail(signUpMemberDto.getEmail()).isPresent();
-			if(exists) {
+			if (exists) {
 				throw new MemberDuplicateException();
 			}
 		}
@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String login(MemberLoginRequestDto memberLoginRequestDto) {
+	public String login(final MemberLoginRequestDto memberLoginRequestDto) {
 		String email = memberLoginRequestDto.getEmail();
 		String password = memberLoginRequestDto.getPassword();
 
@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public MemberSelectResponseDto selectMember(String email) {
+	public MemberSelectResponseDto selectMember(final String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(NotFoundMemberException::new);
 
@@ -113,25 +113,28 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String checkDuplicateEmail(String email) {
-		boolean exists = memberRepository.findByEmail(email).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+	public String checkDuplicateEmail(final String email) {
+		return memberRepository.existsByEmail(email) ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	@Override
-	public String checkDuplicateNickname(String nickname) {
-		boolean exists = memberRepository.findByNickname(nickname).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+	public String checkDuplicateNickname(final String nickname) {
+		return memberRepository.existsByNickname(nickname) ? DUPLICATE.get() : POSSIBLE.get();
+	}
+
+	@Override
+	public String checkDuplicatePhoneNumber(final String phoneNumber) {
+		return memberRepository.existsByPhoneNumber(phoneNumber) ? DUPLICATE.get() : POSSIBLE.get();
 	}
 
 	@Override
 	public String checkDuplicateBusinessNumber(final String businessNumber) {
-		boolean exists = memberRepository.findByBusinessNumber(businessNumber).isPresent();
-		return exists ? DUPLICATE.get() : POSSIBLE.get();
+		return memberRepository.existsByBusinessNumber(businessNumber) ? DUPLICATE.get() :
+			POSSIBLE.get();
 	}
 
 	@Override
-	public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto) {
+	public void updateMember(final MemberUpdateRequestDto memberUpdateRequestDto) {
 		Member member = memberRepository.findByEmail(memberUpdateRequestDto.getEmail())
 			.orElseThrow(NotFoundMemberException::new);
 		memberUpdateRequestDto.setPassword(
@@ -145,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void updateIsResign(String email) {
+	public void updateIsResign(final String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(NotFoundMemberException::new);
 		member.resign();
@@ -153,7 +156,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void joinVip(String email) {
+	public void joinVip(final String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(NotFoundMemberException::new);
 
@@ -166,7 +169,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void deactivateVip(String email) {
+	public void deactivateVip(final String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(NotFoundMemberException::new);
 
@@ -179,7 +182,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void extendVip(String email) {
+	public void extendVip(final String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(NotFoundMemberException::new);
 		member.extendVip();
@@ -187,7 +190,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String searchEmail(String name, LocalDate birth, String phoneNumber) {
+	public String searchEmail(final String name, final LocalDate birth, final String phoneNumber) {
 		Member member = memberRepository.findByNameAndBirthAndPhoneNumber(name, birth, phoneNumber)
 			.orElseThrow(NotFoundMemberException::new);
 
@@ -198,7 +201,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void searchPassword(String email, String name, LocalDate birth, String phoneNumber) {
+	public void searchPassword(final String email, final String name, final LocalDate birth, final String phoneNumber) {
 		Member member = memberRepository.findByEmailAndNameAndBirthAndPhoneNumber(email, name,
 			birth, phoneNumber).orElseThrow(NotFoundMemberException::new);
 
