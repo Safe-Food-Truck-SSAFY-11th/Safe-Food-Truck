@@ -35,7 +35,7 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
           <ul>
             {scheduleList.map((schedule, index) => (
               <li key={index}>
-                <strong>{daysOfWeek[schedule.day - 1]}:</strong> {schedule.address}
+                <strong>{daysOfWeek[schedule.day]}:</strong> {schedule.address}
                 <br/>
                 <span>상세 주소 : {schedule.addAddress}</span>
                 <hr/>
