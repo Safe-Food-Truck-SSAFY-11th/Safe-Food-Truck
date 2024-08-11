@@ -28,7 +28,7 @@ function FoodTruckSummary({ truck }) {
         openModal();
       } else {
         const token = response.data;
-        navigate(`/live/${sessionId}`, { state: { token: token } });
+        navigate(`/live/${sessionId}`);
         return response.data;
       }
     } catch (error) {
@@ -105,7 +105,10 @@ function FoodTruckSummary({ truck }) {
           >
             {checkJJimTruck ? "찜 삭제" : "찜 하기"}
           </button>
-          <button className={styles.liveButton} onClick={handleLiveClick}>
+          <button
+            className={styles.liveButton}
+            onClick={handleLiveClick}
+          >
             LIVE
           </button>
         </div>
