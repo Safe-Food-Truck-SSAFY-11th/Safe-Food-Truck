@@ -40,12 +40,12 @@ const CreateReview = () => {
 
     const s3 = new AWS.S3();
     const uploadPromises = selectedFiles.map(file => {
+      const memberEmail = sessionStorage.getItem("email");
       const uploadParams = {
         Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-        Key: `members/${memberInfo.email}/${file.name}`,
+        Key: `members/${memberEmail}/orders/reviews/${orderId}/${file.name}`,
         Body: file,
       };
-
       return new Promise((resolve, reject) => {
         s3.upload(uploadParams, (err, data) => {
           if (err) {
