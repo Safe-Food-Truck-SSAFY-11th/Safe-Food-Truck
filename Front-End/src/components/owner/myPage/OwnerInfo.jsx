@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./OwnerInfo.module.css";
 import userStore from "store/users/userStore";
 import useTruckStore from "store/users/owner/truckStore";
@@ -9,11 +9,13 @@ import ManageStore from "./ManageStore";
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { fetchUser } = userStore();
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { likes, getFoodTruckLikes } = useFoodTruckStore();
   const [showManageModal, setShowManageModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const imageUrl = userInfo?.memberImage?.savedUrl === 'empty' ? profile_img : userInfo?.memberImage?.savedUrl;
 
@@ -37,9 +39,10 @@ const OwnerInfo = () => {
     const fetchUserData = async () => {
       const data = await fetchUser();
       setUserInfo(data);
+      setIsLoading(false);
     };
     fetchUserData();
-  }, [fetchUser, userInfo]);
+  }, [fetchUser, location.state?.updated]);
 
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
@@ -76,6 +79,10 @@ const OwnerInfo = () => {
   };
 
   const formattedIncome = weeklyIncome ? getDayString(weeklyIncome) : "";
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

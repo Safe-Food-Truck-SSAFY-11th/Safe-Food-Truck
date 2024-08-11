@@ -81,7 +81,7 @@ const OwnerUpdate = () => {
     await handleUpload();
     await updateUser(form);
     alert('정보가 성공적으로 업데이트되었습니다.');
-    navigate('/mypageOwner');
+    navigate('/mypageOwner', { state: { updated: true } });
   };
 
   const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch && pwdValid;
