@@ -1,6 +1,5 @@
 package com.safefoodtruck.sft.review.service;
 
-import com.safefoodtruck.sft.store.domain.Store;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -61,20 +60,18 @@ public class ReviewServiceImpl implements ReviewService {
 		String ownerEmail = store.getOwner().getEmail();
 		Integer storeId = store.getId();
 		notificationService.registReviewNotify(ownerEmail, storeId);
-		return ReviewResponseDto.fromEntity(savedReview, null);  // 등록 시점에는 reply가 없으므로 null을 전달
+		return ReviewResponseDto.fromEntity(savedReview, null);
 	}
 
 	@Override
 	public ReviewListResponseDto findCustomerReviews() {
 		String email = MemberInfo.getEmail();
-		List<Review> customerReviews = reviewRepository.findByCustomerEmail(email);
-		return createReviewListResponseDto(customerReviews);
+		return reviewRepository.findCustomerReviewsByEmail(email);
 	}
 
 	@Override
 	public ReviewListResponseDto findStoreReviews(final Integer storeId) {
-		List<Review> storeReviews = reviewRepository.findByStoreId(storeId);
-		return createReviewListResponseDto(storeReviews);
+		return reviewRepository.findStoreReviewsByStoreId(storeId);
 	}
 
 	@Override

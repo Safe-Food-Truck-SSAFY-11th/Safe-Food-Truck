@@ -1,6 +1,7 @@
 package com.safefoodtruck.sft.store.service;
 
 import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
+import static com.safefoodtruck.sft.review.domain.QReview.*;
 
 import com.safefoodtruck.sft.store.dto.StoreImageDto;
 import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
@@ -12,11 +13,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.querydsl.core.Tuple;
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
-import com.safefoodtruck.sft.menu.domain.Menu;
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
 import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.notification.service.NotificationService;
@@ -32,7 +33,6 @@ import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
-import com.safefoodtruck.sft.store.exception.NullListException;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreImageRepository;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
@@ -54,24 +54,20 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public void registStore(StoreRegistRequestDto storeRegistRequestDto) {
-		String email = MemberInfo.getEmail();
-		Member owner = memberRepository.findByEmail(email)
-			.orElseThrow(NotFoundMemberException::new);
+		Member owner = findLoginOwner();
 		Store store = Store.of(owner, storeRegistRequestDto);
-
 		store.setOwner(owner);
 		Store savedStore = storeRepository.save(store);
 
-		if (storeRegistRequestDto.storeImageDto() != null) {
-			StoreImage storeImage = StoreImage.builder()
-				.store(savedStore)
-				.savedUrl(storeRegistRequestDto.storeImageDto().savedUrl())
-				.savedPath(storeRegistRequestDto.storeImageDto().savedPath())
-				.build();
-
-			StoreImage savedStoreImage = storeImageRepository.save(storeImage);
-			savedStoreImage.setStore(store);
-		}
+		Optional.ofNullable(storeRegistRequestDto.storeImageDto())
+			.ifPresent(storeImageDto -> {
+				StoreImage storeImage = StoreImage.builder()
+					.store(savedStore)
+					.savedUrl(storeImageDto.savedUrl())
+					.savedPath(storeImageDto.savedPath())
+					.build();
+				storeImageRepository.save(storeImage);
+			});
 	}
 
 	@Override
@@ -79,54 +75,43 @@ public class StoreServiceImpl implements StoreService {
 		Store store = findLoginStore();
 		store.update(storeUpdateRequestDto);
 
-		StoreImage storeImage = storeImageRepository.findByStore(store);
-		storeImage.updateStoreImage(storeUpdateRequestDto.storeImageDto());
+		Optional.ofNullable(storeImageRepository.findByStore(store))
+			.ifPresent(storeImage -> {
+				storeImage.updateStoreImage(storeUpdateRequestDto.storeImageDto());
+				storeImageRepository.save(storeImage);
+			});
 
-		Store savedStore = storeRepository.save(store);
-		storeImageRepository.save(storeImage);
-
-		return StoreUpdateResponseDto.fromEntity(savedStore);
+		return StoreUpdateResponseDto.fromEntity(storeRepository.save(store));
 	}
 
 	@Override
 	public StoreFindResponseDto findMyStore() {
 		Store store = findLoginStore();
 		Integer averageStar = findStoreAverageStar(store.getId()).intValue();
-
 		return StoreFindResponseDto.fromEntity(store, averageStar);
 	}
 
 	@Override
 	public StoreFindResponseDto findStoreById(Integer storeId) {
-		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+		Store store = findStore(storeId);
 		Integer averageStar = findStoreAverageStar(storeId).intValue();
 		return StoreFindResponseDto.fromEntity(store, averageStar);
 	}
 
 	@Override
 	public MenuListResponseDto findStoreMenus(Integer storeId) {
-		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
-		List<Menu> menuList = store.getMenuList();
-
-		List<MenuResponseDto> menuResponseDtos = menuList.stream()
+		Store store = findStore(storeId);
+		List<MenuResponseDto> menuResponseDtos = store.getMenuList().stream()
 			.map(MenuResponseDto::fromEntity)
 			.toList();
 
-		return MenuListResponseDto.builder()
-			.count(menuResponseDtos.size())
-			.menuResponseDtos(menuResponseDtos)
-			.build();
+		return new MenuListResponseDto(menuResponseDtos.size(), menuResponseDtos);
 	}
 
 	@Override
 	public void deleteStore() {
-		String email = MemberInfo.getEmail();
-		Optional<Integer> storeIdByOwnerEmail = storeRepository.findStoreIdByOwnerEmail(email);
-		if (storeIdByOwnerEmail.isEmpty()) {
-			throw new StoreNotFoundException();
-		}
-
-		int storeId = storeIdByOwnerEmail.get();
+		Integer storeId = storeRepository.findStoreIdByOwnerEmail(MemberInfo.getEmail())
+			.orElseThrow(StoreNotFoundException::new);
 		storeRepository.deleteById(storeId);
 	}
 
@@ -135,41 +120,40 @@ public class StoreServiceImpl implements StoreService {
 		Store store = findLoginStore();
 		store.toggleOpenStatus();
 		Boolean status = store.getIsOpen();
-		if (status.equals(Boolean.TRUE))
+		if (Boolean.TRUE.equals(status)) {
 			notificationService.favoriteSendNotify(store.getId(), store.getName());
+		}
 		return status;
 	}
 
 	@Override
 	public boolean getStoreStatus() {
-		Store store = findLoginStore();
-		return store.getIsOpen();
+		return findLoginStore().getIsOpen();
 	}
 
 	@Override
 	public StoreInfoListResponseDto findOpenStores() {
 		List<Store> openStores = storeRepository.findAllOpenStores();
 
-		List<Object[]> averageStarsData = reviewRepository.findAverageStarsForAllStores();
-		Map<Integer, Double> averageStarsMap = averageStarsData.stream()
-			.collect(Collectors.toMap(data -> (Integer)data[0], data -> (Double)data[1]));
+		Map<Integer, Double> averageStarsMap = reviewRepository.findAverageStarsForAllStores().stream()
+			.collect(Collectors.toMap(
+				tuple -> tuple.get(review.order.store.id),
+				StoreServiceImpl::apply,
+				(existing, replacement) -> {
+					throw new IllegalStateException("중복 키 발생 : " + existing);
+				}
+			));
+
 
 		List<StoreInfoResponseDto> storeInfoResponseDtos = openStores.stream()
-			.map(openStore -> {
-				Double averageStar = averageStarsMap.getOrDefault(openStore.getId(), 0.0);
-				return StoreInfoResponseDto.fromEntity(openStore, averageStar.intValue());
-			})
+			.map(store -> StoreInfoResponseDto.fromEntity(store, averageStarsMap.getOrDefault(store.getId(), 0.0).intValue()))
 			.toList();
 
-		return StoreInfoListResponseDto.builder()
-			.count(storeInfoResponseDtos.size())
-			.storeInfoResponseDtos(storeInfoResponseDtos)
-			.build();
+		return new StoreInfoListResponseDto(storeInfoResponseDtos.size(), storeInfoResponseDtos);
 	}
 
 	@Override
-	public void updateStoreLocation(
-		StoreLocationRequestDto storeLocationRequestDto) {
+	public void updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto) {
 		Store store = findLoginStore();
 		store.updateStoreLocation(storeLocationRequestDto);
 		storeRepository.save(store);
@@ -177,14 +161,13 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public void updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
-		if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
-			throw new NullListException();
-		}
+		// if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
+		// 	throw new NullListException();
+		// }
 		Store store = findLoginStore();
-		String ownerEmail = store.getOwner().getEmail();
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
-		notificationService.changedNoticeNotify(ownerEmail, storeNoticeRegistRequestDto.connectedEmailList());
+		// notificationService.changedNoticeNotify(store.getOwner().getEmail(), storeNoticeRegistRequestDto.connectedEmailList());
 	}
 
 	@Override
@@ -207,25 +190,30 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	private Store findLoginStore() {
+		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(MemberInfo.getEmail())
+
+	@Override
 	public void updateStoreAILogo(StoreAILogoRequestDto storeAILogoRequestDto) {
 		storeImageRepository.updateStoreImageByStoreId(storeAILogoRequestDto.storeId(),
 														storeAILogoRequestDto.savedUrl(),
 														storeAILogoRequestDto.savedPath());
 	}
 
-	public Store findLoginStore() {
-		String email = MemberInfo.getEmail();
-		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(email)
-			.orElseThrow(StoreNotFoundException::new);
-	}
-
-	public Store findStore(Integer storeId) {
+	private Store findStore(Integer storeId) {
 		return storeRepository.findStoreWithMenusAndImagesByStoreId(storeId)
 			.orElseThrow(StoreNotFoundException::new);
 	}
 
 	public Double findStoreAverageStar(Integer storeId) {
-		Double averageStar = reviewRepository.findAverageStarByStoreId(storeId);
-		return (averageStar != null) ? averageStar : 0.0;
+		return Optional.ofNullable(reviewRepository.findAverageStarByStoreId(storeId)).orElse(0.0);
 	}
-}
+
+	private Member findLoginOwner() {
+		return memberRepository.findByEmail(MemberInfo.getEmail())
+			.orElseThrow(NotFoundMemberException::new);
+	}
+
+	private static Double apply(Tuple tuple) {
+		return tuple.get(review.star.avg());
+	}}
