@@ -39,7 +39,7 @@ const OpenClose = ({ onLiveEndClick }) => {
       case true: // 영업중
         if (isLive) {
           return (
-            <>
+            <div className={styles.openCloseContainer}>
               <button
                 className={styles.openButton}
                 onClick={handleLiveEndClick}
@@ -65,7 +65,7 @@ const OpenClose = ({ onLiveEndClick }) => {
                 </span>{" "}
                 영업종료
               </button>
-            </>
+            </div>
           );
         } else {
           return (

@@ -25,7 +25,6 @@ import com.safefoodtruck.sft.order.domain.OrderMenu;
 import com.safefoodtruck.sft.order.dto.request.OrderMenuRequestDto;
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
-import com.safefoodtruck.sft.order.dto.response.CustomerOrderResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryDto;
@@ -178,18 +177,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public CustomerOrderListResponseDto findCustomerOrderList() {
 		String email = MemberInfo.getEmail();
-		List<Order> orders = orderRepository.findByCustomerEmail(email);
+		return orderRepository.findCustomerOrdersByEmail(email);
 
-		List<CustomerOrderResponseDto> customerOrderResponseDtos = orders.stream()
-			.map(order -> {
-				List<Menu> menus = order.getOrderMenuList().stream()
-					.map(OrderMenu::getMenu)
-					.toList();
-				return CustomerOrderResponseDto.fromEntity(order, menus);
-			})
-			.toList();
-
-		return CustomerOrderListResponseDto.fromEntity(customerOrderResponseDtos);
 	}
 
 	@Transactional(readOnly = true)
@@ -295,6 +284,6 @@ public class OrderServiceImpl implements OrderService {
 
 	private Store findLoginStore() {
 		String email = MemberInfo.getEmail();
-		return storeRepository.findByOwnerEmail(email).orElseThrow(StoreNotFoundException::new);
+		return storeRepository.findStoreWithMenusAndImagesByOwnerEmail(email).orElseThrow(StoreNotFoundException::new);
 	}
 }

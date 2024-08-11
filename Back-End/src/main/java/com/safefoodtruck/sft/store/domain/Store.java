@@ -7,7 +7,6 @@ import static jakarta.persistence.FetchType.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,6 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -104,7 +104,7 @@ public class Store {
     private String notice;
 
     @Setter
-    @OneToOne(mappedBy = "store", fetch = LAZY, cascade = ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "store", cascade = ALL, orphanRemoval = true)
     private StoreImage storeImage;
 
     @OneToMany(mappedBy = "store",fetch = LAZY, cascade = ALL, orphanRemoval = true)
