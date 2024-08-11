@@ -2,6 +2,8 @@ package com.safefoodtruck.sft.member.repository;
 
 import static com.safefoodtruck.sft.member.domain.QMember.*;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.dsl.StringPath;
@@ -14,6 +16,14 @@ import lombok.RequiredArgsConstructor;
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
 	private final JPAQueryFactory jpaQueryFactory;
+
+	public String findEmailByNameAndBirthAndPhoneNumber(final String name, final LocalDate birth, final String phoneNumber) {
+		return jpaQueryFactory.select(member.email)
+			.from(member)
+			.where(member.name.eq(name)
+				.and(member.birth.eq(birth).and(member.phoneNumber.eq(phoneNumber))))
+			.fetchOne();
+	}
 
 	@Override
 	public boolean existsByEmail(final String email) {

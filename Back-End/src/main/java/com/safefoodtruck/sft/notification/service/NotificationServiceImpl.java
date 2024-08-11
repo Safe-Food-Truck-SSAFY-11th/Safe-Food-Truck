@@ -2,8 +2,6 @@ package com.safefoodtruck.sft.notification.service;
 
 import static com.safefoodtruck.sft.common.util.EventType.*;
 
-import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
-import com.safefoodtruck.sft.store.repository.StoreRepository;
 import java.util.List;
 import java.util.Set;
 

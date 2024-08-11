@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.dto.MemberDto;
-import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.oauth.dto.KakaoMemberResponseDto;
 import com.safefoodtruck.sft.oauth.exception.AlreadySignUpException;
@@ -46,8 +45,7 @@ public class KakaoServiceImpl implements KakaoService {
         kakaoMemberResponseDto.setCode(code);
 
         //이미 가입한 유저라면
-        Member member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail()).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail()).get();
         if (member != null) {
             MemberDto memberDto = mapper.map(member, MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);

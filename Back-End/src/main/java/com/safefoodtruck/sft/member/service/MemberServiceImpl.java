@@ -146,9 +146,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public String searchEmail(final String name, final LocalDate birth, final String phoneNumber) {
-		Member member = memberRepository.findByNameAndBirthAndPhoneNumber(name, birth, phoneNumber)
-			.orElseThrow(NotFoundMemberException::new);
-		return member.getEmail();
+		return memberRepository.findEmailByNameAndBirthAndPhoneNumber(name, birth, phoneNumber);
 	}
 
 	@Override
