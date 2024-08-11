@@ -3,9 +3,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 100vh; 
+    background-color: #E0F7D4;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-y: scroll;
 }
 
 .contentContainer {
@@ -23,17 +26,21 @@
     display: none; /* 크롬, 사파리, 엣지에서 스크롤바 숨김 */
 }
 
+.title {
+    margin-top: 5vh;
+}
+
 .profileContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 100px;
+    width: 23vw;
+    height: 15vh;
     background-color: #F8F8F8;
     border-radius: 50%;
     margin: 20px 0;
-    cursor: pointer;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .profileContainer img {
@@ -42,46 +49,49 @@
     border-radius: 50%;
 }
 
-.profileContainer p {
-    margin: 0;
-    color: #707070;
-    font-size: 14px;
-}
-
-form {
+.form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 90%;
+    width: 80%;
     max-width: 500px;
 }
 
 .inputContainer {
     width: 100%;
-    margin-bottom: 15px;
-    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
 }
 
-label {
+.inputContainer label {
     display: block;
+    font-size: 16px;
+    font-weight: 100;
     margin-bottom: 5px;
-    color: #333;
+    color: #FF9639;
 }
 
-input,
-select {
-    width: calc(100% - 20px);
+.inputContainer input,
+.inputContainer select {
+    width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #FFEDDD;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .hintText {
+    text-align: left;
+    font-size: 12px;
     color: green;
     margin-top: 5px;
 }
 
 .errorText {
+    text-align: left;
+    font-size: 12px;
     color: red;
     margin-top: 5px;
 }
@@ -90,6 +100,7 @@ select {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 5vw;
 }
 
 .nicknameContainer,
@@ -112,15 +123,16 @@ select {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .buttons {
     display: flex;
     justify-content: space-between;
-    width: 80%;
-    max-width: 400px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    width: 100%;
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+    gap: 5vw;
 }
 
 .submitButton {
@@ -132,6 +144,7 @@ select {
     cursor: pointer;
     flex: 1;
     margin-right: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .submitButton:disabled {
@@ -148,4 +161,5 @@ select {
     padding: 10px 20px;
     cursor: pointer;
     flex: 1;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }

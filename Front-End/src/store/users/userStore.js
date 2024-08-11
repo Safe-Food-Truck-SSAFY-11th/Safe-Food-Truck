@@ -48,6 +48,8 @@ const userStore = create((set, get) => ({
 
   emailChecked: null, // 이메일 확인 상태 (null, Possible, Duplicate)
   nicknameChecked: null, // 닉네임 확인 상태 (null, Possible, Duplicate)
+  pnChecked: null, // 전화번호 확인 상태 (null, Possible, Duplicate)
+  bsNumChecked: null, // 사업자번호 확인 상태 (null, Possible, Duplicate)
   passwordMatch: null, // 비밀번호 일치 여부 (null, true, false)
   emailTouched: false, // 이메일 입력 상태
   nicknameTouched: false, // 닉네임 입력 상태
@@ -71,6 +73,24 @@ const userStore = create((set, get) => ({
     } catch (error) {
       console.error('닉네임 중복 확인 오류:', error);
       set({ nicknameChecked: false });
+    }
+  },
+
+  checkPN: async (PN) => {
+    try {
+      const response = await axios.get(`members/duplication-phone-number/${PN}`);
+      set({ pnChecked: response.data });
+    } catch (error) {
+      console.error('전화번호 중복 확인 오류: ', error);
+    }
+  },
+
+  checkBsNumber: async (bsNum) => {
+    try {
+      const response = await axios.get(`members/duplication-business-number/${bsNum}`);
+      set({ bsNumChecked: response.data });
+    } catch (error) {
+      console.error('사업자번호 중복 확인 오류: ', error);
     }
   },
 
