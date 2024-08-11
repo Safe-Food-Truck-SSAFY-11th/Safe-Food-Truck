@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,6 @@ import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
 import com.safefoodtruck.sft.order.exception.OrderNotPreparingException;
 import com.safefoodtruck.sft.order.exception.UnAuthorizedOrderStatusUpdateException;
-import com.safefoodtruck.sft.order.repository.OrderMenuRepository;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
@@ -52,9 +52,9 @@ public class OrderServiceImpl implements OrderService {
 	private final MemberRepository memberRepository;
 	private final StoreRepository storeRepository;
 	private final OrderRepository orderRepository;
-	private final OrderMenuRepository orderMenuRepository;
 	private final MenuRepository menuRepository;
 	private final NotificationService notificationService;
+	private final JdbcTemplate jdbcTemplate;
 
 	@Transactional
 	@Override
@@ -72,7 +72,16 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderMenuRequestDto> menuList = orderRegistRequestDto.menuList();
 		List<OrderMenu> orderMenuList = createOrderMenus(savedOrder, menuList);
 
-		orderMenuRepository.saveAll(orderMenuList);
+		String sql = "INSERT INTO order_menu (menu_id, order_id, count) VALUES (?, ?, ?)";
+		List<Object[]> batchArgs = orderMenuList.stream()
+			.map(orderMenu -> new Object[]{
+				orderMenu.getMenu().getId(),
+				orderMenu.getOrder().getId(),
+				orderMenu.getCount()
+			})
+			.toList();
+
+		jdbcTemplate.batchUpdate(sql, batchArgs);
 		savedOrder.calculateAmount();
 
 		notificationService.orderedSendNotify(store.getOwner().getEmail());
