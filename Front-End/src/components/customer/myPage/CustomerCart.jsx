@@ -1,33 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import styles from './CustomerCart.module.css';
-import { useNavigate , useLocation } from 'react-router-dom';
-import axiosInstance from 'utils/axiosInstance';
-import customerOrderStore from 'store/orders/customerOrderStore';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import styles from "./CustomerCart.module.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "utils/axiosInstance";
+import customerOrderStore from "store/orders/customerOrderStore";
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [request, setRequest] = useState('');
+  const [request, setRequest] = useState("");
+  const [isEmpty, setIsEmpty] = useState(true);
   const navigate = useNavigate();
 
   const location = useLocation();
 
-  const { storeId } = location.state || {}; // storeId가 없으면 undefined
+  // const { storeId } = location.state || {}; // storeId가 없으면 undefined
+  const [storeId, setStoreId] = useState(location.state || {});
 
-  const { setNowOrderId , nowOrderId } = customerOrderStore();
+  const { setNowOrderId, nowOrderId } = customerOrderStore();
 
-  const nickname = sessionStorage.getItem('nickname');
+  const nickname = sessionStorage.getItem("nickname");
 
   useEffect(() => {
-    const cart = Cookies.get('cart');
-    if (cart && storeId) { // storeId가 있을 때만 장바구니 정보를 가져옴
+    const cart = Cookies.get("cart");
+    if (cart) {
+      setIsEmpty(false);
+      if (!storeId) {
+        //카트는 담겨있는데 storeId 없는 경우
+        setStoreId(JSON.parse(Cookies.get("cart"))[0].storeId);
+      }
+      // storeId가 있을 때만 장바구니 정보를 가져옴
       setCartItems(JSON.parse(cart));
     }
   }, [storeId]);
 
   const updateCartInCookies = (updatedItems) => {
     setCartItems(updatedItems);
-    Cookies.set('cart', JSON.stringify(updatedItems), { expires: 1 / 72 });
+    Cookies.set("cart", JSON.stringify(updatedItems), { expires: 1 / 72 });
+    if (cartItems.length === 0) {
+      setIsEmpty(true);
+    }
   };
 
   const handleIncrease = (index) => {
@@ -50,36 +61,36 @@ const CustomerCart = () => {
     const payload = {
       storeId: storeId,
       request: request,
-      menuList: cartItems.map(item => ({
+      menuList: cartItems.map((item) => ({
         menuId: item.menuId,
-        count: item.quantity
-      }))
+        count: item.quantity,
+      })),
     };
-    
+
     try {
-     const response =  await axiosInstance.post('orders', payload);
-      alert('주문이 완료되었습니다!');
+      const response = await axiosInstance.post("orders", payload);
+      alert("주문이 완료되었습니다!");
 
       const nowOrder = response.data;
 
       setNowOrderId(nowOrder.orderId);
 
-      Cookies.remove('cart');
+      Cookies.remove("cart");
 
-      navigate('/mypageCustomer');
-
+      navigate("/mypageCustomer");
     } catch (error) {
+      console.error("결제 실패:", error);
 
-      console.error('결제 실패:', error);
-
-      alert('결제에 실패했습니다.');
-
+      alert("결제에 실패했습니다.");
     }
   };
 
-  const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalAmount = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
-  if (!storeId || !cartItems.length) {
+  if (isEmpty || !cartItems.length) {
     return (
       <div className={styles.emptyCartMessage}>
         <p>장바구니에 담긴 상품이 없어요 🤣</p>
@@ -94,7 +105,11 @@ const CustomerCart = () => {
         <label>주문 메뉴 :</label>
         {cartItems.map((item, index) => (
           <div key={item.menuId} className={styles.cartItem}>
-            <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
+            <img
+              src={item.menuImageDto.savedUrl}
+              alt={item.name}
+              className={styles.image}
+            />
             <div className={styles.details}>
               <p>{item.name}</p>
               <p>{item.price}원</p>
