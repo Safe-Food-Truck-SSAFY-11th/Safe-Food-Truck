@@ -52,7 +52,7 @@ function ReviewItem({ review, isReported }) {
           <h4>{review.nickname} 님 ★ {review.star / 2}</h4>
         </div>
           <p>{review.content}</p>
-        <hr className={styles.seperator}/>
+        <hr />
         {review.replyResponseDto && (
           <div className={styles.replyContent}>
             <strong>사장님 답글 :</strong>
