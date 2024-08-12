@@ -1,7 +1,9 @@
 .menuList {
-    display: flex;
-    flex-direction: column;
-    
-    /* 전체 화면이 같은 색상으로 통일되게 높이 설정*/
-    height: 100vh;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 각 메뉴 아이템 사이의 간격 추가 */
+  background-color: #FEC87F; /* 배경색 설정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함하여 전체 너비를 계산 */
+  overflow-y: hidden; /* 스크롤바를 숨기기 */
+  height: auto; /* 높이를 자동으로 설정하여 내용에 맞게 조정 */
+}

@@ -47,7 +47,7 @@ function MainCustomer() {
     <>
       <Header />
       <SurveyArea />
-      <hr />
+      <hr className={styles.hr}/>
       <h3 className={styles.h3}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
       <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
 

@@ -6,6 +6,7 @@ import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import useUserStore from 'store/users/userStore';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -15,6 +16,7 @@ function ReviewItem({ review }) {
   const [revImg, setRevImg] = useState([]);
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { submitReply } = useOwnerReviewStore();
+  const { getLoginedRole } = useUserStore();
 
   useEffect(() => {
     const fetchData = () => {
@@ -62,6 +64,10 @@ function ReviewItem({ review }) {
   };
 
   const handleAIBtnClick = async () => {
+    if (getLoginedRole() !== 'vip_owner') {
+      alert('멤버십에 가입한 사장님만 이용할 수 있어요!');
+      return;
+    }
     setIsLoading(true); // 로딩 상태를 true로 설정
     // name, offDay, storeType, description, menuListResponseDto. review.content
     const aiText = await onwerReplyAI(truckInfo.name, truckInfo.offDay, truckInfo.storeType, truckInfo.description, truckInfo.menuListResponseDto, review.content);

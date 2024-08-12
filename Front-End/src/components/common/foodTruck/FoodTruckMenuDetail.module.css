@@ -7,7 +7,7 @@
   border-radius: 10px;
   width: 90%;
   /* height */
-  margin: 0 auto; /* 화면 중앙 정렬 */
+  /* margin: 0 auto; 화면 중앙 정렬 */
   /* height: 100vh; */
 }
 
@@ -27,7 +27,7 @@
   width: 180px;
   height: 180px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 5px;
   margin: 20px 0;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .descriptionTitle {  
-  padding-right: 190px;
+  /* text-align: left; */
   padding-bottom: 10px;
 }
 

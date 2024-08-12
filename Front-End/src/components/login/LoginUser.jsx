@@ -7,7 +7,7 @@ import googleLogo from 'assets/images/icon_google.png';
 import useUserStore from 'store/users/userStore';
 
 const LoginUser = () => {
-    const { isGuest, setGuest, setOwner, loginUser, fetchUser } = useUserStore();
+    const { isGuest, setGuest, setOwner, loginUser, fetchUser, getLoginedToken } = useUserStore();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,7 +15,7 @@ const LoginUser = () => {
     useEffect(() => {
         // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
         setOwner();
-        const token = sessionStorage.getItem('token');
+        const token = getLoginedToken();
         // 토큰 보유 여부에 따른 리디렉션
         if (token) {
             fetchUser().then((user) => {

@@ -7,17 +7,17 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
+.container h3 {
   margin-bottom: 10px;
   color: black;
 }
 
-p {
+.container p {
   margin: 5px 0;
   font-size: 1.1em;
 }
 
-strong {
+.container strong {
   color: #FF4500;
 }
 

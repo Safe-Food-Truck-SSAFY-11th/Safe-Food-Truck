@@ -1,10 +1,5 @@
 package com.safefoodtruck.sft.review.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
@@ -13,9 +8,6 @@ import com.safefoodtruck.sft.notification.service.NotificationService;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.exception.OrderNotFoundException;
 import com.safefoodtruck.sft.order.repository.OrderRepository;
-import com.safefoodtruck.sft.reply.domain.Reply;
-import com.safefoodtruck.sft.reply.dto.response.ReplyResponseDto;
-import com.safefoodtruck.sft.reply.repository.ReplyRepository;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.domain.ReviewImage;
 import com.safefoodtruck.sft.review.dto.request.ReviewRegistRequestDto;
@@ -24,9 +16,10 @@ import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
 import com.safefoodtruck.sft.review.repository.ReviewImageRepository;
 import com.safefoodtruck.sft.review.repository.ReviewRepository;
 import com.safefoodtruck.sft.store.domain.Store;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -37,14 +30,13 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
 	private final OrderRepository orderRepository;
-	private final ReplyRepository replyRepository;
 	private final ReviewImageRepository reviewImageRepository;
 	private final NotificationService notificationService;
 
 	@Override
 	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);;
+		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
 		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
 			OrderNotFoundException::new);
 
@@ -60,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
 		String ownerEmail = store.getOwner().getEmail();
 		Integer storeId = store.getId();
 		notificationService.registReviewNotify(ownerEmail, storeId);
-		return ReviewResponseDto.fromEntity(savedReview, null);
+		return ReviewResponseDto.fromEntity(savedReview);
 	}
 
 	@Override
@@ -83,20 +75,5 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public void deleteReview(final Integer reviewId) {
 		reviewRepository.deleteById(reviewId);
-	}
-
-	private ReviewListResponseDto createReviewListResponseDto(List<Review> reviews) {
-		List<ReviewResponseDto> reviewList = reviews.stream()
-			.map(review -> {
-				Reply reply = replyRepository.findByReviewId(review.getId());
-				ReplyResponseDto replyDto = (reply != null) ? ReplyResponseDto.fromEntity(reply) : null;
-				return ReviewResponseDto.fromEntity(review, replyDto);
-			})
-			.toList();
-
-		return ReviewListResponseDto.builder()
-			.count(reviews.size())
-			.reviewList(reviewList)
-			.build();
 	}
 }
