@@ -3,7 +3,8 @@ package com.safefoodtruck.sft.common.util;
 public enum EventType {
 
     CUSTOMER("customer"),
-    OWNER("owner"),
+    CREATE_ORDER("createOrder"),
+    CREATE_REVIEW("createReview"),
     NOTICE("notice"),
     LIVE("live");
 

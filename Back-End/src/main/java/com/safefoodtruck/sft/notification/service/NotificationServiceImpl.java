@@ -173,18 +173,7 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(ownerEmail,
-            new OrderedNotificationDto(), "ordered", OWNER.getEventType());
-    }
-
-    @Async
-    @Transactional
-    @Override
-    public void changedNoticeNotify(String ownerEmail, Set<String> connectedEmailList) {
-        for (String connectedEmail : connectedEmailList) {
-            if (ownerEmail.equals(connectedEmail)) continue;
-            globalNotificationService.sendToClient(connectedEmail,
-                new ChangeNoticeNotificationDto(), "changed", NOTICE.getEventType());
-        }
+            new OrderedNotificationDto(), "ordered", CREATE_ORDER.getEventType());
     }
 
     @Async
@@ -222,6 +211,6 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(ownerEmail,
-            new RegistReviewNotificationDto(storeId), "review", OWNER.getEventType());
+            new RegistReviewNotificationDto(storeId), "review", CREATE_REVIEW.getEventType());
     }
 }
