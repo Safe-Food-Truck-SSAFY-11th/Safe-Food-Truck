@@ -6,7 +6,7 @@ spring:
     include: key
 
   datasource:
-    url: jdbc:mysql://i11b102.p.ssafy.io:${dbport}/dawoon
+    url: jdbc:mysql://i11b102.p.ssafy.io:${dbport}/safefoodtruck
     username: root
     password: ${mysqlpassword}
     driver-class-name: com.mysql.cj.jdbc.Driver
