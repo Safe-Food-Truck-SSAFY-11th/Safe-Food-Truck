@@ -33,10 +33,13 @@ import PrivateRoute from "components/common/PrivateRoute";
 import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
 
+import useEventStore from "store/eventStore";
+
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const {getLoginedEmail} = useUserStore();
+  const { setOwnerOrderNotice, setOwnerOrderNoticeMessage } = useEventStore();
 
   useEffect(() => {
     const loginedEmail = getLoginedEmail();
@@ -55,7 +58,8 @@ function App() {
         console.log(event.data)
       });
 
-      eventSource.addEventListener("customer", (event) => {
+      // (손님) 주문 수락, 주문 거절, 조리 완료
+      eventSource.addEventListener("customerOrder", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
         console.log(data);
@@ -69,7 +73,46 @@ function App() {
         }, 3000);
       });
 
-      eventSource.addEventListener("owner", (event) => {
+      // (손님) 찜한 가게 오픈
+      eventSource.addEventListener("open", (event) => {
+        // try catch문을 안넣으면 에러 발생 ㅜㅜ
+        try {
+          console.log(event);
+          const data = JSON.parse(event.data);
+          console.log(data);
+      
+          setNotificationMessage(data.message);
+          setShowNotification(true);
+      
+          // 2초 후에 알림 메시지를 숨김
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 3000);
+        } catch (error) {
+          console.error("Error parsing data:", error);
+        }
+      });
+
+      // 사장님 주문 생성 
+      eventSource.addEventListener("createOrder", (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+        setOwnerOrderNoticeMessage(data.message);
+        setOwnerOrderNotice(true);
+
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+          setOwnerOrderNotice(false);
+        }, 3000);
+      });
+
+      //사장님 리뷰 생성
+      eventSource.addEventListener("createReview", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
         console.log(data);
