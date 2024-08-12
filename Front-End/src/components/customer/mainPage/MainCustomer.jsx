@@ -6,6 +6,7 @@ import Header from "../../common/Header";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import SurveyArea from "./SurveyArea";
 import styles from "./MainCustomer.module.css";
+import BroadCastList from "./BroadCastList";
 
 function MainCustomer() {
   const [view, setView] = useState('map');
@@ -46,7 +47,7 @@ function MainCustomer() {
   return (
     <>
       <Header />
-      <SurveyArea />
+      <BroadCastList />
       <hr />
       <h3 className={styles.h3mainpage}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
       <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
@@ -78,6 +79,7 @@ function MainCustomer() {
           <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
         )
       )}
+      <SurveyArea />
     </>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
-import SearchAddress from './SearchAddress';
 import Notification from '../customer/mainPage/Notification';
 
 const Header = () => {
