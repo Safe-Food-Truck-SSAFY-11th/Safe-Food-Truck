@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderRegistResponseDto registOrder(final OrderRegistRequestDto orderRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+		Member customer = memberRepository.findByEmail(email);
 		Store store = storeRepository.findStoreWithMenusAndImagesByStoreId(orderRegistRequestDto.storeId())
 			.orElseThrow(StoreNotFoundException::new);
 

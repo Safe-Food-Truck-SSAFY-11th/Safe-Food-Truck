@@ -1,18 +1,5 @@
 package com.safefoodtruck.sft.oauth.service;
 
-import java.util.Optional;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +9,18 @@ import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.oauth.dto.KakaoMemberResponseDto;
 import com.safefoodtruck.sft.oauth.exception.AlreadySignUpException;
 import com.safefoodtruck.sft.security.util.JwtUtil;
-
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +37,7 @@ public class KakaoServiceImpl implements KakaoService {
     private final JwtUtil jwtUtil;
     private final ModelMapper mapper;
 
+    @Transactional
     @Override
     public KakaoMemberResponseDto getKakaoUser(String code) {
         String kakaoAccessToken = getAccessToken(code);
@@ -47,8 +45,8 @@ public class KakaoServiceImpl implements KakaoService {
         kakaoMemberResponseDto.setCode(code);
 
         //이미 가입한 유저라면
-        Optional<Member> member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail());
-        if (member.isPresent()) {
+        Member member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail());
+        if (member != null) {
             MemberDto memberDto = mapper.map(member, MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);
             throw new AlreadySignUpException(token);

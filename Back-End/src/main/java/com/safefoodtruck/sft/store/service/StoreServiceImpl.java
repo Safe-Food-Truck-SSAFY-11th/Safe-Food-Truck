@@ -213,8 +213,7 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	private Member findLoginOwner() {
-		return memberRepository.findByEmail(MemberInfo.getEmail())
-			.orElseThrow(NotFoundMemberException::new);
+		return memberRepository.findByEmail(MemberInfo.getEmail());
 	}
 
 	private static Double apply(Tuple tuple) {

@@ -36,7 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public ReviewResponseDto registReview(final ReviewRegistRequestDto reviewRegistRequestDto) {
 		String email = MemberInfo.getEmail();
-		Member customer = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+		Member customer = memberRepository.findByEmail(email);
 		Order order = orderRepository.findById(reviewRegistRequestDto.orderId()).orElseThrow(
 			OrderNotFoundException::new);
 

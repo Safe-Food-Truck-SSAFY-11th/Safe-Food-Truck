@@ -29,8 +29,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportInsertResponseDto insertReport(String userEmail,
         ReportInsertRequestDto reportInsertRequestDto) {
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
-            NotFoundMemberException::new);;
+        Member member = memberRepository.findByEmail(userEmail);
         Review review = reviewRepository.findById(reportInsertRequestDto.getReviewId())
             .orElseThrow(NotFoundReviewException::new);
 
@@ -44,7 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ReportSelectResponseDto selectReport(String userEmail, Integer reviewId) {
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(NotFoundMemberException::new);;
+        Member member = memberRepository.findByEmail(userEmail);
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(NotFoundReviewException::new);
         Report report = reportRepository.findByReviewAndMember(review, member);

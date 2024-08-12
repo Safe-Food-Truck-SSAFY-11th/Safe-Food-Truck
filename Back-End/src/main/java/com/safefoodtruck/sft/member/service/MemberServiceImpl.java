@@ -1,16 +1,14 @@
 package com.safefoodtruck.sft.member.service;
 
-import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
-import static com.safefoodtruck.sft.member.domain.LoginType.*;
-import static com.safefoodtruck.sft.member.domain.Membership.*;
-
-import java.time.LocalDate;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.safefoodtruck.sft.common.message.ValidationMessage.DUPLICATE;
+import static com.safefoodtruck.sft.common.message.ValidationMessage.POSSIBLE;
+import static com.safefoodtruck.sft.member.domain.LoginType.COMMON;
+import static com.safefoodtruck.sft.member.domain.LoginType.GOOGLE;
+import static com.safefoodtruck.sft.member.domain.LoginType.KAKAO;
+import static com.safefoodtruck.sft.member.domain.Membership.CUSTOMER;
+import static com.safefoodtruck.sft.member.domain.Membership.OWNER;
+import static com.safefoodtruck.sft.member.domain.Membership.VIP_CUSTOMER;
+import static com.safefoodtruck.sft.member.domain.Membership.VIP_OWNER;
 
 import com.safefoodtruck.sft.common.service.EmailService;
 import com.safefoodtruck.sft.common.service.RandomPasswordService;
@@ -28,8 +26,14 @@ import com.safefoodtruck.sft.member.exception.ResignedMemberException;
 import com.safefoodtruck.sft.member.repository.MemberImageRepository;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.security.util.JwtUtil;
-
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,9 +66,14 @@ public class MemberServiceImpl implements MemberService {
 		return jwtUtil.createAccessToken(mapper.map(savedMember, MemberDto.class));
 	}
 
+	@Transactional
 	@Override
 	public String login(final MemberLoginRequestDto memberLoginRequestDto) {
 		Member member = findMemberByEmail(memberLoginRequestDto.getEmail());
+
+		if(member == null) {
+			throw new UsernameNotFoundException("아이디가 존재하지 않습니다.");
+		}
 
 		validateResignedMember(member);
 		validatePassword(memberLoginRequestDto.getPassword(), member.getPassword());
@@ -162,7 +171,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	private Member findMemberByEmail(String email) {
-		return memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+		return memberRepository.findByEmail(email);
 	}
 
 	private void validateResignedMember(Member member) {
@@ -178,9 +187,9 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	private String encodePassword(String password, String signUpMethod) {
-		if (COMMON.get().equals(signUpMethod)) {
+		if (signUpMethod.equals(COMMON.get())) {
 			return passwordEncoder.encode(password);
-		} else if (KAKAO.get().equals(signUpMethod) || GOOGLE.get().equals(signUpMethod)) {
+		} else if (signUpMethod.equals(KAKAO.get()) || signUpMethod.equals(GOOGLE.get())) {
 			return signUpMethod;
 		}
 		return "EMPTY PASSWORD";
@@ -197,20 +206,20 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	private String resolveVipRole(String role) {
-		if (CUSTOMER.get().equals(role)) {
+		if (role.equals(CUSTOMER.get())) {
 			return VIP_CUSTOMER.get();
 		}
-		if (OWNER.get().equals(role)) {
+		if (role.equals(OWNER.get())) {
 			return VIP_OWNER.get();
 		}
 		return role;
 	}
 
 	private String resolveBaseRole(String role) {
-		if (VIP_CUSTOMER.get().equals(role)) {
+		if (role.equals(VIP_CUSTOMER.get())) {
 			return CUSTOMER.get();
 		}
-		if (VIP_OWNER.get().equals(role)) {
+		if (role.equals(VIP_OWNER.get())) {
 			return OWNER.get();
 		}
 		return role;

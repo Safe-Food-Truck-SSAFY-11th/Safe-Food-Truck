@@ -38,8 +38,7 @@ public class SurveyServiceImpl implements SurveyService {
             throw new UnSatisfyLengthException();
         }
 
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
-            NotFoundMemberException::new);;
+        Member member = memberRepository.findByEmail(userEmail);
         if (!member.getSurveyList().isEmpty()) {
             throw new AlreadyRegisteredEmailException();
         }

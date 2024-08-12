@@ -1,15 +1,9 @@
 package com.safefoodtruck.sft.notification.service;
 
-import static com.safefoodtruck.sft.common.util.EventType.*;
-
-import java.util.List;
-import java.util.Set;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.safefoodtruck.sft.common.util.EventType.CUSTOMER;
+import static com.safefoodtruck.sft.common.util.EventType.LIVE;
+import static com.safefoodtruck.sft.common.util.EventType.NOTICE;
+import static com.safefoodtruck.sft.common.util.EventType.OWNER;
 
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
@@ -23,7 +17,6 @@ import com.safefoodtruck.sft.globalnotification.dto.RegistReviewNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.RejcetedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.service.GlobalNotificationService;
 import com.safefoodtruck.sft.member.domain.Member;
-import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.notification.domain.Notification;
 import com.safefoodtruck.sft.notification.dto.SelectNotificationResponseDto;
@@ -33,9 +26,15 @@ import com.safefoodtruck.sft.notification.exception.NotSameUserException;
 import com.safefoodtruck.sft.notification.repository.NotificationRepository;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
         String targetEmail = sendNotificationRequestDto.getTargetEmail();
-        Member member = memberRepository.findByEmail(targetEmail).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(targetEmail);
 
         notificationRepository.save(Notification.builder()
             .member(member)
@@ -67,8 +65,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public List<SelectNotificationResponseDto> selectNotifications(String userEmail) {
-        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(userEmail);
         return member.getNotificationList().stream()
             .map(notification -> {
                 SelectNotificationResponseDto dto = modelMapper.map(notification,
@@ -113,8 +110,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void acceptedSendNotify(String orderEmail, String storeName, Integer orderId) {
-        Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(orderEmail);
         String info = storeName + " 푸드트럭에서 주문을 수락하였습니다.";
 
         notificationRepository.save(Notification.builder()
@@ -130,8 +126,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void rejectedSendNotify(String orderEmail, String storeName) {
-        Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(orderEmail);
         String info = storeName + " 푸드트럭에서 주문을 거절하였습니다.";
 
         notificationRepository.save(Notification.builder()
@@ -147,8 +142,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void completedSendNotify(String orderEmail, String storeName) {
-        Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
-            NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(orderEmail);
         String info = storeName + " 푸드트럭에서 조리를 완료하였습니다.";
 
         notificationRepository.save(Notification.builder()
@@ -164,7 +158,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void orderedSendNotify(String ownerEmail) {
-        Member member = memberRepository.findByEmail(ownerEmail).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(ownerEmail);
         String info = "주문이 접수되었어요!";
 
         notificationRepository.save(Notification.builder()
@@ -213,7 +207,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     @Override
     public void registReviewNotify(String ownerEmail, Integer storeId) {
-        Member member = memberRepository.findByEmail(ownerEmail).orElseThrow();
+        Member member = memberRepository.findByEmail(ownerEmail);
         String info = "리뷰가 달렸어요!";
 
         notificationRepository.save(Notification.builder()

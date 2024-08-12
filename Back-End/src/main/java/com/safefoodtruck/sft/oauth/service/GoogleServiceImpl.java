@@ -35,8 +35,8 @@ public class GoogleServiceImpl implements GoogleService {
     public GoogleMemberResponseDto getGoogleUser(String accessToken) {
         GoogleMemberResponseDto googleMemberResponseDto = getGoogleUserInfo(accessToken);
 
-        Optional<Member> member = memberRepository.findByEmail(googleMemberResponseDto.getEmail());
-        if (member.isPresent()) {
+        Member member = memberRepository.findByEmail(googleMemberResponseDto.getEmail());
+        if (member != null) {
             MemberDto memberDto = mapper.map(member, MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);
             throw new AlreadySignUpException(token);
