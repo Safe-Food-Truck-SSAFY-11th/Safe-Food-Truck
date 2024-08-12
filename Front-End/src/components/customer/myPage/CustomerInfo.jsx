@@ -39,13 +39,13 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo ,pastOrders  }) => {
             className={`${styles.actionButton} ${activeButton === 'liked' ? styles.active : ''}`}
             onClick={() => onSelect('liked', 'liked')}
           >
-            찜한 푸드트럭
+            찜 푸드트럭
           </button>
           <button
             className={`${styles.actionButton} ${activeButton === 'review' ? styles.active : ''}`}
             onClick={() => onSelect('review', 'review')}
           >
-            작성한 리뷰
+            리뷰
           </button>
           <button
             className={`${styles.actionButton} ${activeButton === 'order' ? styles.active : ''}`}

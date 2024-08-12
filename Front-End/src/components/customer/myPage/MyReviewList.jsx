@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MyReviewItem from './MyReviewItem';
 import DeleteReview from './DeleteReview';
 import DeleteComplete from './DeleteComplete';
-import styles from './MyReview.module.css';
+import styles from './MyReviewList.module.css';
 import useReviewStore from 'store/reviews/useReviewStore';
 
 const MyReviewList = ({ memberInfo }) => {

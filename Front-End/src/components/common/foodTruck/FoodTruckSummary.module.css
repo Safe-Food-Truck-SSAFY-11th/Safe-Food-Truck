@@ -1,9 +1,10 @@
 .header {
+  
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
   margin-bottom: 20px;
-  width: 90%;
+  width: 100%;
   display: flex;
   align-items: center;
 }
@@ -12,7 +13,7 @@
   width: 150px;
   height: 150px;
   border-radius: 10px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
 
 .textContainer {
@@ -32,7 +33,7 @@
 
 .buttonContainer {
   display: flex;
-  gap: 10px; /* 버튼 간격을 추가 */
+  gap: 5px; /* 버튼 간격을 추가 */
   margin-top: 10px;
 }
 
@@ -53,23 +54,26 @@
 }
 
 .jjimButton {
-  background-color: red; 
+  width: 88px;
+  height: 40px;
+  background-color: #ed377d; 
   color: white; 
+  border: 2px solid #ed377d;
 }
 
 .jjimButton:hover {
   background-color: white; 
-  color: red; 
-  border: 2px solid red; 
+  color: #ed377d; 
 }
 
 .liveButton {
   background-color: #4caf50;
   color: white; 
+  border: 2px solid #4caf50; 
 }
 
 .liveButton:hover {
   background-color: white; 
   color: #4caf50; 
-  border: 2px solid #4caf50; 
+  
 }

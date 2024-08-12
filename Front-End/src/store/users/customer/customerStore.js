@@ -45,6 +45,7 @@ const customerStore = create((set, get) => ({
   checkEmail: () => set({ emailChecked: true }),
   setEmailTouched: () => set({ emailTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
+  
   checkNickname: async (nickname) => {
     try {
       const response = await axiosInstance.get(`members/duplication-nickname/${nickname}`);

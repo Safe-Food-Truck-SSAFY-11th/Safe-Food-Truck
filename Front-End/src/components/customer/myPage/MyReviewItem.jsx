@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './MyReview.module.css';
+import styles from './MyReviewItem.module.css';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -25,7 +25,7 @@ const MyReviewItem = ({ review, onDelete }) => {
                 <img src={review.reviewImageDtos[0].savedUrl} alt="review-single" className={styles.reviewImage} />
               </div>
             ) : (
-              <Slider {...settings}>
+              <Slider {...settings} className={styles.reviewImageCarousel}>
                 {review.reviewImageDtos.map((img, index) => (
                   img.savedUrl !== 'empty' && (
                     <div key={index}>
@@ -35,7 +35,9 @@ const MyReviewItem = ({ review, onDelete }) => {
                 ))}
               </Slider>
             )
-          ) : null}
+          ) : (
+            <div className={styles.noImage}>리뷰 사진 없음</div>
+          )}
         </div>
         <span><button className={styles.deleteButton} reviewId={review.id} onClick={onDelete}>✖</button></span>
       </div>
