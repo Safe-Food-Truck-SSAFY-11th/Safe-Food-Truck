@@ -260,7 +260,7 @@ const SurveyView = () => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [surveyResult, setSurveyResult] = useState([]);
+  const [surveyResult, setSurveyResult] = useState(null);
 
   useEffect(() => {
     if (selectedRegion) {
@@ -300,7 +300,7 @@ const SurveyView = () => {
   return (
     <div className={styles.container}>
       <h2>지역 선택</h2>
-      <div>
+      <div className={styles.areaContainer}>
         <label>광역시/도: </label>
         <select
           value={selectedRegion}
@@ -315,7 +315,7 @@ const SurveyView = () => {
         </select>
       </div>
       {selectedRegion && (
-        <div>
+        <div className={styles.areaContainer}>
           <label>시군구: </label>
           <select
             value={selectedCity}
@@ -331,7 +331,7 @@ const SurveyView = () => {
         </div>
       )}
       {selectedCity && (
-        <div>
+        <div className={styles.areaContainer}>
           <label>읍면동: </label>
           <select
             value={selectedDistrict}
@@ -347,24 +347,28 @@ const SurveyView = () => {
         </div>
       )}
       {selectedDistrict && (
-        <div>
+        <div className={styles.areaContainer}>
           <label>선택된 지역: </label>
           <span>
             {selectedRegion} {selectedCity} {selectedDistrict}
           </span>
         </div>
       )}
-      <button onClick={handleConfirm}>확인하기</button>
+      <button className={styles.button} onClick={handleConfirm}>확인하기</button>
 
-      {surveyResult.length > 0 ? (
-        <div>
-          <h3>설문 결과:</h3>
-          <div style={{ height: "500px" }}>
-            <MyResponsiveBar data={surveyResult} />
-          </div>
+      {surveyResult !== null && (
+        <div className={styles.areaContainer}>
+          {surveyResult.length > 0 ? (
+            <>
+              <h3>설문 결과:</h3>
+              <div style={{ height: "500px" }}>
+                <MyResponsiveBar data={surveyResult} />
+              </div>
+            </>
+          ) : (
+            <div>아직 수요조사 수집 중이에요 😅</div>
+          )}
         </div>
-      ) : (
-        <div>아직 수요조사 수집 중이에요 😅</div>
       )}
     </div>
   );

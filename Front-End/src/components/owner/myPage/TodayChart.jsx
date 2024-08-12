@@ -85,7 +85,7 @@ const TodayChart = ({ weeklySales }) => {
 
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.chartSummary}>
         <p>
           오늘의 매출은 <strong>{todaySales.totalAmount}</strong>원 이에요
         </p>
