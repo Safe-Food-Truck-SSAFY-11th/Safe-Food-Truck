@@ -110,6 +110,12 @@ const userStore = create((set, get) => ({
     return loginedEmail;
   },
 
+  //현재 세션스토리지에 저장된 role을 가져옴
+  getLoginedRole: () => {
+    const loginedRole = sessionStorage.getItem("role");
+    return loginedRole;
+  },
+
   // 이메일 유효성 검사
   emailValidChk: (email) => {
     const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;

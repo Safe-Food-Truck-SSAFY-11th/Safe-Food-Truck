@@ -29,6 +29,9 @@ import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 import ManageSchedule from "components/owner/myPage/ManageSchedule";
 import useUserStore from 'store/users/userStore';
+import PrivateRoute from "components/common/PrivateRoute";
+import CustomerRoute from "components/common/CustomerRoute";
+import OwnerRoute from "components/common/OwnerRoute";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
@@ -135,34 +138,177 @@ function App() {
         <div className="notification">{notificationMessage}</div>
       )}
       <Routes>
-        <Route path="/" element={<Waiting />} />
-        <Route path="/login" element={<LoginUser />} />
-        <Route path="/regist" element={<Regist />} />
-        <Route path="/socialRegist" element={<SocialRegist />} />
-        <Route path="/registTruck" element={<RegistTruck />} />
-        <Route path="/mainOwner" element={<MainOwner />} />
-        <Route path="/mainCustomer" element={<MainCustomer />} />
-        <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
-        <Route path="/mypageCustomer" element={<MyPageCustomer />} />
-        <Route path="/customerUpdate" element={<CustomerUpdate />} />
-        <Route path="/createReview/:orderId" element={<CreateReview />} />
-        <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
-        <Route path="/cart" element={<CustomerCart />} />
-        <Route path="/menuDetail/:menuId" element={<FoodTruckMenuDetail />} />
-        <Route path="/mypageOwner" element={<MyPageOwner />} />
-        <Route path="/ownerUpdate" element={<OwnerUpdate />} />
-        <Route path="/manageTruck" element={<ManageTruck />} />
-        <Route path="/manageMenu" element={<ManageMenu />} />
-        <Route path="/chating" element={<Chating />} />
-        <Route path="/ownerReview" element={<OwnerReview />} />
-        <Route path="/social-redirection" element={<SocialRedirection />} />
-        <Route path="/findId" element={<FindId />} />
-        <Route path="/findPassword" element={<FindPassword />} />
-        <Route path="/survey" element={<Survey />} />
-        <Route path="/membership" element={<Membership />} />
-        <Route path="/live/:storeId" element={<Live />} />
-        <Route path="/manageSchedule" element={<ManageSchedule />} />
-      </Routes>
+      <Route path="/" element={<Waiting />} />
+      <Route path="/login" element={<LoginUser />} />
+      <Route path="/regist" element={<Regist />} />
+      <Route path="/socialRegist" element={<SocialRegist />} />
+      <Route path="/social-redirection" element={<SocialRedirection />} />
+      <Route path="/findId" element={<FindId />} />
+      <Route path="/findPassword" element={<FindPassword />} />
+    
+
+      {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
+      <Route
+        path="/survey"
+        element={
+          <CustomerRoute>
+            <Survey />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/membership"
+        element={
+          <PrivateRoute>
+            <Membership />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/registTruck"
+        element={
+          <OwnerRoute>
+            <RegistTruck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mainOwner"
+        element={
+          <OwnerRoute>
+            <MainOwner />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mainCustomer"
+        element={
+          <CustomerRoute>
+            <MainCustomer />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/permitAreaCheck"
+        element={
+          <OwnerRoute>
+            <PermitAreaCheck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mypageCustomer"
+        element={
+          <CustomerRoute>
+            <MyPageCustomer />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/customerUpdate"
+        element={
+          <CustomerRoute>
+            <CustomerUpdate />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/createReview/:orderId"
+        element={
+          <CustomerRoute>
+            <CreateReview />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/foodTruckDetail/:storeId"
+        element={
+          <CustomerRoute>
+            <FoodTruckDetail />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/cart"
+        element={
+          <CustomerRoute>
+            <CustomerCart />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/menuDetail/:menuId"
+        element={
+          <PrivateRoute>
+            <FoodTruckMenuDetail />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/mypageOwner"
+        element={
+          <OwnerRoute>
+            <MyPageOwner />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/ownerUpdate"
+        element={
+          <OwnerRoute>
+            <OwnerUpdate />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/manageTruck"
+        element={
+          <OwnerRoute>
+            <ManageTruck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/manageMenu"
+        element={
+          <OwnerRoute>
+            <ManageMenu />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/chating"
+        element={
+          <PrivateRoute>
+            <Chating />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/ownerReview"
+        element={
+          <OwnerRoute>
+            <OwnerReview />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/live/:storeId"
+        element={
+          <PrivateRoute>
+            <Live />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/manageSchedule"
+        element={
+          <OwnerRoute>
+            <ManageSchedule />
+          </OwnerRoute>
+        }
+      />
+    </Routes>
     </div>
   );
 }
