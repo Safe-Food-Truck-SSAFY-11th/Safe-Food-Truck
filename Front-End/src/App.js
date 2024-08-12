@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import Waiting from "./components/common/Waiting";
 import LoginUser from "./components/login/LoginUser";
@@ -32,6 +32,7 @@ import useUserStore from 'store/users/userStore';
 import PrivateRoute from "components/common/PrivateRoute";
 import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
+import Footer from "components/common/Footer";
 
 import useEventStore from "store/eventStore";
 
@@ -40,6 +41,8 @@ function App() {
   const [notificationMessage, setNotificationMessage] = useState("");
   const {getLoginedEmail} = useUserStore();
   const { setOwnerOrderNotice, setOwnerOrderNoticeMessage } = useEventStore();
+  const [userType, setUserType] = useState(sessionStorage.getItem("role"));
+
 
   useEffect(() => {
     const loginedEmail = getLoginedEmail();
@@ -80,10 +83,10 @@ function App() {
           console.log(event);
           const data = JSON.parse(event.data);
           console.log(data);
-      
+
           setNotificationMessage(data.message);
           setShowNotification(true);
-      
+
           // 2초 후에 알림 메시지를 숨김
           setTimeout(() => {
             setShowNotification(false);
@@ -93,7 +96,7 @@ function App() {
         }
       });
 
-      // 사장님 주문 생성 
+      // 사장님 주문 생성
       eventSource.addEventListener("createOrder", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
@@ -188,7 +191,7 @@ function App() {
       <Route path="/social-redirection" element={<SocialRedirection />} />
       <Route path="/findId" element={<FindId />} />
       <Route path="/findPassword" element={<FindPassword />} />
-    
+
 
       {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
       <Route
@@ -352,8 +355,21 @@ function App() {
         }
       />
     </Routes>
+        <FooterWrapper userType={userType} />
+
     </div>
   );
+}
+
+function FooterWrapper(userType) {
+  const location = useLocation();
+  const hideFooterPaths = ["/", "/login", "/regist", "/socialRegist"]; // 푸터를 숨기고 싶은 경로
+
+  if (hideFooterPaths.includes(location.pathname)) {
+    return null; // 푸터를 렌더링하지 않음
+  }
+
+  return <Footer role={userType} />;
 }
 
 export default App;
