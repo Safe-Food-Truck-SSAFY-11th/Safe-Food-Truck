@@ -46,7 +46,7 @@ const SobiPatternPie = ({ memberInfo, mySobiPattern }) => {
   return (
     <div className={styles.backgroundColor}>
       <div className={styles.container}>
-        <h3>{memberInfo.nickname}님이 자주 만난 푸드트럭이에요!</h3>
+        <h3 className={styles.h3sobi}>{memberInfo.nickname}님이 자주 만난 푸드트럭이에요!</h3>
         <p>이번주에 푸드트럭에 총 <strong>{data.totalSpent.toLocaleString()}원</strong> 썼어요!</p>
         <p>가장 많이 먹은 음식은 <strong>{data.mostEaten}</strong>입니다!</p>
         <div className={styles.chartContainer}>

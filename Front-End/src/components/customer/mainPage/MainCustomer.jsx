@@ -48,9 +48,8 @@ function MainCustomer() {
       <Header />
       <SurveyArea />
       <hr />
-      <h3 className={styles.h3}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
+      <h3 className={styles.h3mainpage}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
       <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
-
       <div className={styles.buttons}>
         <button
           onClick={() => setView("map")}
