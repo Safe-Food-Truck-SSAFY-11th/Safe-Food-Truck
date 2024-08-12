@@ -1,24 +1,4 @@
 .container {
-  width: 80%;
-  margin: auto;
-  /* background-color: #ffd27f; */
-  /* border-top: 2px solid #000000; */
-}
-
-.broadcastList {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  /* background-color: #ffd27f; 배경색을 이미지와 맞춤 */
-  padding: 20px;
-  border-top: 2px solid #000000; /* 상단 테두리 추가 */
-}
-
-.slide {
-  padding: 10px;
-  /* background-color: #ffd27f; */
-}
-
-.slider {
-  /* background-color: #ffd27f; */
+  padding: 5% 5% 5% 5%;
+  width: 100%;
 }

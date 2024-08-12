@@ -1,12 +1,20 @@
 package com.safefoodtruck.sft.openvidu.controller;
 
+import com.safefoodtruck.sft.redis.dto.OpenviduDto;
+import io.openvidu.java.client.OpenVidu;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,7 +62,13 @@ public class OpenviduController {
 	) {
 		String openviduToken = openviduService.connectSession(sessionId, params);
 		RedisDto.builder().build();
-		redisService.setValue(RedisDto.builder().key(sessionId).value("on").build());
+		String getValue = redisService.getValue(sessionId);
+		Integer viewers = 0;
+		if (getValue != null) {
+			viewers = Integer.parseInt(getValue) + 1;
+		}
+		getValue = viewers.toString();
+		redisService.setValue(RedisDto.builder().key(sessionId).value(getValue).build());
 		return new ResponseEntity<>(openviduToken, HttpStatus.OK);
 	}
 
@@ -64,7 +78,7 @@ public class OpenviduController {
 		@RequestBody(required = false) Map<String, Object> params
 	) {
 		openviduService.closeSession(sessionId, params);
-		redisService.setValue(RedisDto.builder().key(sessionId).value("off").build());
+		redisService.deleteValue(RedisDto.builder().key(sessionId).build());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -79,5 +93,15 @@ public class OpenviduController {
 					LocalDateTime.now()
 				)
 			);
+	}
+
+	@PostMapping("/get-live-list")
+	public ResponseEntity<ArrayList<OpenviduDto>> getLiveList()
+        throws OpenViduJavaClientException, OpenViduHttpException {
+		ArrayList<OpenviduDto> liveList = redisService.getLiveList();
+		for(OpenviduDto openviduDto : liveList) {
+			log.info("OpenviduDto: " + openviduDto.key() + ": " + openviduDto.value());
+		}
+		return new ResponseEntity<>(liveList, HttpStatus.OK);
 	}
 }
