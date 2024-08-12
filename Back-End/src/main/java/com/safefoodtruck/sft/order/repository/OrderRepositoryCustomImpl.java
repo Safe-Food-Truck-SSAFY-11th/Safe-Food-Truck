@@ -14,7 +14,6 @@ import static com.safefoodtruck.sft.store.domain.QStoreImage.storeImage;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.safefoodtruck.sft.menu.dto.response.MenuResponseDto;
 import com.safefoodtruck.sft.order.domain.Order;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderByStoreSummaryDto;
 import com.safefoodtruck.sft.order.dto.response.CustomerOrderListResponseDto;
@@ -56,25 +55,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 			.fetch();
 
 		List<CustomerOrderResponseDto> customerOrderResponseDtos = orders.stream()
-			.map(this::mapOrderToCustomerOrderResponseDto)
+			.map(CustomerOrderResponseDto::fromEntity)
 			.toList();
 
 		return CustomerOrderListResponseDto.fromEntity(customerOrderResponseDtos);
-	}
-
-	private CustomerOrderResponseDto mapOrderToCustomerOrderResponseDto(Order order) {
-		List<MenuResponseDto> menuResponseDtos = order.getOrderMenuList().stream()
-			.map(orderMenu -> MenuResponseDto.fromEntity(orderMenu.getMenu()))
-			.toList();
-
-		return CustomerOrderResponseDto.builder()
-			.orderId(order.getId())
-			.storeId(order.getStore().getId())
-			.storeName(order.getStore().getName())
-			.status(order.getStatus())
-			.amount(order.getAmount())
-			.menuResponseDtos(menuResponseDtos)
-			.build();
 	}
 
 	@Override
