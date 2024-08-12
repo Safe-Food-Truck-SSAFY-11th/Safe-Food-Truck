@@ -9,12 +9,12 @@
 
   /* iOS에서 부드러운 스크롤을 위한 설정 */
   -webkit-overflow-scrolling: touch; 
-  gap: 10px;
+  gap: 3%;
   background-color: #ffd27f;
-  padding: 10px;
+  padding: 5%;
   border-top: 2px solid #FB9256;
   border-bottom: 2px solid #FB9256;
-  scroll-behavior: smooth; 
+  scroll-behavior: smooth;
 }
 
 .foodFilter::-webkit-scrollbar {
@@ -23,15 +23,15 @@
 }
 
 .filterButton {
-  margin-left: 8px;
+  width: 23vw;
   /* 각 버튼이 수평으로 정렬되도록 설정 */
   flex: 0 0 auto; 
   /* 버튼이 스크롤 시 스냅되는 지점 */
-  scroll-snap-align: start; 
+  scroll-snap-align: center; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 3% 0% 3% 0%;
   border: none;
   background-color: #ffa500;
   color: white;
@@ -48,5 +48,5 @@
 }
 
 .icon {
-  font-size: 24px;
+  font-size: 1.5rem;
 }
