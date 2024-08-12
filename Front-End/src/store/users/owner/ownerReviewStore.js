@@ -7,7 +7,7 @@ const useOwnerReviewStore = create(() => ({
     getReviewList: async (storeId) => {
         try {
             const response = await axios.get(`reviews/${storeId}`);
-            return response.data.reviewList;
+            return response.data.reviewResponseDtos;
         } catch (error) {
             console.error("리뷰 조회 실패", error);
         }
