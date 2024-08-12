@@ -12,7 +12,7 @@ const SocialRegist = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { method } = location.state || {};
-    const { isGuest, setGuest, setOwner, fetchUser, registerUser, nicknameChecked } = useUserStore();
+    const { isGuest, setGuest, setOwner, fetchUser, registerUser, nicknameChecked, pnChecked } = useUserStore();
     const [profileImage, setProfileImage] = useState(img_upload);
     const [formData, setFormData] = useState({
         email: sessionStorage.getItem('email'),
@@ -58,7 +58,7 @@ const SocialRegist = () => {
 
     };
 
-    const isFormValid = nicknameChecked === 'Possible' && (isGuest || formData.bsNumValid);
+    const isFormValid = nicknameChecked === 'Possible' && pnChecked === 'Possible' && (isGuest || formData.bsNumValid);
 
     const [selectedFile, setSelectedFile] = useState(null);
 

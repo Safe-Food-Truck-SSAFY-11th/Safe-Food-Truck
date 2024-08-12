@@ -10,7 +10,7 @@ import img_upload from 'assets/images/img_upload.png';
 
 const Regist = () => {
     const navigate = useNavigate();
-    const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailValid, emailChecked, nicknameChecked, passwordMatch, pwdValid } = useUserStore();
+    const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailValid, emailChecked, nicknameChecked, passwordMatch, pwdValid, pnChecked } = useUserStore();
     const [profileImage, setProfileImage] = useState(img_upload);
     const [formData, setFormData] = useState({
         email: '',
@@ -56,7 +56,7 @@ const Regist = () => {
         }
     };
 
-    const isFormValid = emailValid && emailChecked === 'Possible' && nicknameChecked === 'Possible' && pwdValid && passwordMatch && (isGuest || formData.bsNumValid);
+    const isFormValid = emailValid && emailChecked === 'Possible' && nicknameChecked === 'Possible' && pwdValid && passwordMatch && pnChecked === 'Possible' && (isGuest || formData.bsNumValid);
 
     const [selectedFile, setSelectedFile] = useState(null);
 
