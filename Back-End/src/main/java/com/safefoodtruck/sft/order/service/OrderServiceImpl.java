@@ -152,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
 		if (savedOrder.getStatus().equals(REJECTED.get())) {
 			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
 			String orderStoreName = savedOrder.getStore().getName();
-			notificationService.rejectedSendNotify(orderCustomerEmail, orderStoreName);
+			notificationService.rejectedSendNotify(orderCustomerEmail, orderStoreName, orderId);
 		}
 		return savedOrder.getStatus();
 	}
@@ -168,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
 		if (savedOrder.getCookingStatus().equals(COMPLETED.get())) {
 			String orderCustomerEmail = savedOrder.getCustomer().getEmail();
 			String orderStoreName = savedOrder.getStore().getName();
-			notificationService.completedSendNotify(orderCustomerEmail, orderStoreName);
+			notificationService.completedSendNotify(orderCustomerEmail, orderStoreName, orderId);
 		}
 		return savedOrder.getCookingStatus();
 	}

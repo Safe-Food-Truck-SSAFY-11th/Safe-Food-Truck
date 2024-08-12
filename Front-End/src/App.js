@@ -28,13 +28,22 @@ import Survey from "components/survey/Survey";
 import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 import ManageSchedule from "components/owner/myPage/ManageSchedule";
+import useUserStore from 'store/users/userStore';
+import PrivateRoute from "components/common/PrivateRoute";
+import CustomerRoute from "components/common/CustomerRoute";
+import OwnerRoute from "components/common/OwnerRoute";
+
+import useEventStore from "store/eventStore";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [email, setEmail] = useState(sessionStorage.getItem("email") || "");
+  const {getLoginedEmail} = useUserStore();
+  const { setOwnerOrderNotice, setOwnerOrderNoticeMessage } = useEventStore();
 
   useEffect(() => {
+    const loginedEmail = getLoginedEmail();
+
     // SSE 연결 설정 함수
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
@@ -49,7 +58,8 @@ function App() {
         console.log(event.data)
       });
 
-      eventSource.addEventListener("customer", (event) => {
+      // (손님) 주문 수락, 주문 거절, 조리 완료
+      eventSource.addEventListener("customerOrder", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
         console.log(data);
@@ -63,7 +73,46 @@ function App() {
         }, 3000);
       });
 
-      eventSource.addEventListener("owner", (event) => {
+      // (손님) 찜한 가게 오픈
+      eventSource.addEventListener("open", (event) => {
+        // try catch문을 안넣으면 에러 발생 ㅜㅜ
+        try {
+          console.log(event);
+          const data = JSON.parse(event.data);
+          console.log(data);
+      
+          setNotificationMessage(data.message);
+          setShowNotification(true);
+      
+          // 2초 후에 알림 메시지를 숨김
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 3000);
+        } catch (error) {
+          console.error("Error parsing data:", error);
+        }
+      });
+
+      // 사장님 주문 생성 
+      eventSource.addEventListener("createOrder", (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        setNotificationMessage(data.message);
+        setShowNotification(true);
+        setOwnerOrderNoticeMessage(data.message);
+        setOwnerOrderNotice(true);
+
+        // 2초 후에 알림 메시지를 숨김
+        setTimeout(() => {
+          setShowNotification(false);
+          setOwnerOrderNotice(false);
+        }, 3000);
+      });
+
+      //사장님 리뷰 생성
+      eventSource.addEventListener("createReview", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
         console.log(data);
@@ -119,27 +168,12 @@ function App() {
     };
 
     // 최초 로드 시 이메일이 있으면 SSE 연결 설정
-    const cleanup = setupSSEConnection(email);
-
-    // 세션 스토리지의 변화를 감지하여 새로운 이메일을 읽어들임
-    const onStorageChange = (event) => {
-      console.log("EVENT = ", event);
-      if (event.key === "email") {
-        const newEmail = event.newValue;
-        setEmail(newEmail);
-        if (cleanup) cleanup(); // 이전 SSE 연결 닫기
-        setupSSEConnection(newEmail);
-      }
-    };
-
-    // 세션 스토리지의 변화를 감지
-    window.addEventListener("storage", onStorageChange);
+    const cleanup = setupSSEConnection(loginedEmail);
 
     return () => {
       if (cleanup) cleanup(); // 컴포넌트가 언마운트될 때 SSE 연결 닫기
-      window.removeEventListener("storage", onStorageChange);
     };
-  }, [email]);
+  }, [getLoginedEmail()]);
 
   return (
     <div className="App">
@@ -147,34 +181,177 @@ function App() {
         <div className="notification">{notificationMessage}</div>
       )}
       <Routes>
-        <Route path="/" element={<Waiting />} />
-        <Route path="/login" element={<LoginUser />} />
-        <Route path="/regist" element={<Regist />} />
-        <Route path="/socialRegist" element={<SocialRegist />} />
-        <Route path="/registTruck" element={<RegistTruck />} />
-        <Route path="/mainOwner" element={<MainOwner />} />
-        <Route path="/mainCustomer" element={<MainCustomer />} />
-        <Route path="/permitAreaCheck" element={<PermitAreaCheck />} />
-        <Route path="/mypageCustomer" element={<MyPageCustomer />} />
-        <Route path="/customerUpdate" element={<CustomerUpdate />} />
-        <Route path="/createReview/:orderId" element={<CreateReview />} />
-        <Route path="/foodTruckDetail/:storeId" element={<FoodTruckDetail />} />
-        <Route path="/cart" element={<CustomerCart />} />
-        <Route path="/menuDetail/:menuId" element={<FoodTruckMenuDetail />} />
-        <Route path="/mypageOwner" element={<MyPageOwner />} />
-        <Route path="/ownerUpdate" element={<OwnerUpdate />} />
-        <Route path="/manageTruck" element={<ManageTruck />} />
-        <Route path="/manageMenu" element={<ManageMenu />} />
-        <Route path="/chating" element={<Chating />} />
-        <Route path="/ownerReview" element={<OwnerReview />} />
-        <Route path="/social-redirection" element={<SocialRedirection />} />
-        <Route path="/findId" element={<FindId />} />
-        <Route path="/findPassword" element={<FindPassword />} />
-        <Route path="/survey" element={<Survey />} />
-        <Route path="/membership" element={<Membership />} />
-        <Route path="/live/:storeId" element={<Live />} />
-        <Route path="/manageSchedule" element={<ManageSchedule />} />
-      </Routes>
+      <Route path="/" element={<Waiting />} />
+      <Route path="/login" element={<LoginUser />} />
+      <Route path="/regist" element={<Regist />} />
+      <Route path="/socialRegist" element={<SocialRegist />} />
+      <Route path="/social-redirection" element={<SocialRedirection />} />
+      <Route path="/findId" element={<FindId />} />
+      <Route path="/findPassword" element={<FindPassword />} />
+    
+
+      {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
+      <Route
+        path="/survey"
+        element={
+          <CustomerRoute>
+            <Survey />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/membership"
+        element={
+          <PrivateRoute>
+            <Membership />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/registTruck"
+        element={
+          <OwnerRoute>
+            <RegistTruck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mainOwner"
+        element={
+          <OwnerRoute>
+            <MainOwner />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mainCustomer"
+        element={
+          <CustomerRoute>
+            <MainCustomer />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/permitAreaCheck"
+        element={
+          <OwnerRoute>
+            <PermitAreaCheck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/mypageCustomer"
+        element={
+          <CustomerRoute>
+            <MyPageCustomer />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/customerUpdate"
+        element={
+          <CustomerRoute>
+            <CustomerUpdate />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/createReview/:orderId"
+        element={
+          <CustomerRoute>
+            <CreateReview />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/foodTruckDetail/:storeId"
+        element={
+          <CustomerRoute>
+            <FoodTruckDetail />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/cart"
+        element={
+          <CustomerRoute>
+            <CustomerCart />
+          </CustomerRoute>
+        }
+      />
+      <Route
+        path="/menuDetail/:menuId"
+        element={
+          <PrivateRoute>
+            <FoodTruckMenuDetail />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/mypageOwner"
+        element={
+          <OwnerRoute>
+            <MyPageOwner />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/ownerUpdate"
+        element={
+          <OwnerRoute>
+            <OwnerUpdate />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/manageTruck"
+        element={
+          <OwnerRoute>
+            <ManageTruck />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/manageMenu"
+        element={
+          <OwnerRoute>
+            <ManageMenu />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/chating"
+        element={
+          <PrivateRoute>
+            <Chating />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/ownerReview"
+        element={
+          <OwnerRoute>
+            <OwnerReview />
+          </OwnerRoute>
+        }
+      />
+      <Route
+        path="/live/:storeId"
+        element={
+          <PrivateRoute>
+            <Live />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/manageSchedule"
+        element={
+          <OwnerRoute>
+            <ManageSchedule />
+          </OwnerRoute>
+        }
+      />
+    </Routes>
     </div>
   );
 }

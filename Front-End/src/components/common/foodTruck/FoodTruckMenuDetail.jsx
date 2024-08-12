@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import Modal from './CartAlertModal'; // 모달 컴포넌트 임포트
+import CartAlertModal from './CartAlertModal'; // 모달 컴포넌트 임포트
 import styles from './FoodTruckMenuDetail.module.css';
 
 function FoodTruckMenuDetail() {
@@ -110,7 +110,7 @@ function FoodTruckMenuDetail() {
       </div>
       
       {/* 모달 컴포넌트 추가 */}
-      <Modal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
+      <CartAlertModal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
     </div>
   );
 }

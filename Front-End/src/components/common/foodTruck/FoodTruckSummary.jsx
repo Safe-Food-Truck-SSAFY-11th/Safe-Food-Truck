@@ -103,7 +103,7 @@ function FoodTruckSummary({ truck }) {
             onClick={handleJJimClick}
             className={styles.jjimButton} /* 찜 버튼에 클래스명 추가 */
           >
-            {checkJJimTruck ? "찜 삭제" : "찜 하기"}
+            {checkJJimTruck ? "찜" : "찜"}
           </button>
           <button
             className={styles.liveButton}

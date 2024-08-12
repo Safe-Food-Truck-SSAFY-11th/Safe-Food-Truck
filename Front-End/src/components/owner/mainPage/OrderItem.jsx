@@ -56,23 +56,37 @@ const OrderItem = ({ order }) => {
 
     const renderMenus = () => {
         if (order.orderMenuListResponseDto.orderMenuResponseDtos.length > 1) {
-            return `${order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} 외 ${order.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}개`;
+            return (
+            <span>
+                <span className={styles.orderMenu}>
+                    {order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개
+                </span>
+                <span>
+                &nbsp;외&nbsp;{order.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}개
+                </span>
+            </span>
+            )
+        } else {
+            return (
+                <span className={styles.orderMenu}>
+                    {order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개
+                </span>
+            )
         }
-        return order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName;
-    };
+    }
 
     return (
         <div className={`${styles.orderItem} ${styles[status]}`}>
             <div className={styles.header}>
                 <span className={styles.statusText}>{status === 'new' ? '새로운 주문' : status === 'inProgress' ? '주문 진행 중' : status === 'completed' ? '주문 완료' : '주문 거절'}</span>
-                <span className={styles.orderTime}>주문한 시간 : {order.orderTime}</span>
+                <span className={styles.orderTime}>주문 시간 : <br/>{order.orderTime.replace('T', ' ')}</span>
             </div>
-            <p className={styles.menus}>{renderMenus()} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개</p>
+            <p className={styles.menus}>{renderMenus()}</p>
             <div className={styles.footer}>
                 <div>
                     {order.orderId && <p className={styles.orderNumber}>주문번호 {order.orderId}</p>}
                 </div>
-                {order.completeTime && <p className={styles.completeTime}>주문 완료 : {order.completeTime}</p>}
+                {order.completeTime && <p className={styles.completeTime}>주문 완료 : <br/>{order.completeTime.replace('T', ' ')}</p>}
                 {renderButtons()}
             </div>
         </div>

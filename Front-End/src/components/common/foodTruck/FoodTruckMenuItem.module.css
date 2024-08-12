@@ -6,24 +6,30 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 10px 0;
+  transition: background-color 0.3s ease; /* 호버 시 부드러운 배경색 변화 */
+}
+
+.menuItem:hover {
+  background-color: #f9f9f9; /* 호버 시 약간 밝은 배경색 */
 }
 
 .imageContainer {
   padding-left: 10px;
   flex-shrink: 0;
-  margin-right: 15px; /* 이미지와 텍스트 사이에 약간의 간격 추가 */
+  margin-right: 15px; 
 }
 
 .image {
-  width: 70px; /* 이미지 너비를 70px로 설정 */
-  height: 70px; /* 이미지 높이를 70px로 설정 */
+  width: 70px; 
+  height: 70px; 
   object-fit: cover;
-  border-radius: 5px; /* 이미지의 모서리를 둥글게 설정 */
+  border-radius: 5px; 
+  border: 2px solid #f0ad4e;
 }
 
 .placeholder {
-  width: 70px; /* 이미지 너비와 동일하게 설정 */
-  height: 70px; /* 이미지 높이와 동일하게 설정 */
+  width: 70px; 
+  height: 70px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,32 +42,23 @@
 
 .details {
   display: flex;
-
   flex-direction: column;
-
-  flex: 3;
+  flex: 1; /* 세부사항이 가능한 많이 공간을 차지하도록 설정 */
 }
 
 .details h3 {
   font-size: 18px;
-
   padding-left: 18px;
-
   padding-bottom: 3px;
+  margin: 0; /* 기본 여백 제거 */
 }
 
 .details span {
   padding-left: 18px;
-
   font-size: 14px;
   padding-bottom: 3px;
-
-  /* 줄바꿈 없이 한 줄로 유지 */
-  white-space: nowrap;
-
-   /* 넘치는 텍스트는 숨김 */ 
-  overflow: hidden;
-
-  /* 넘치는 부분을 생략 부호(...)로 표시 */
-  text-overflow: ellipsis; 
+  white-space: nowrap; /* 줄바꿈 없이 한 줄로 유지 */
+  overflow: hidden; /* 넘치는 텍스트는 숨김 */ 
+  text-overflow: ellipsis; /* 넘치는 부분을 생략 부호(...)로 표시 */
+  color: #666; /* 텍스트 색상 설정 */
 }

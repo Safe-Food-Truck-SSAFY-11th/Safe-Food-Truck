@@ -11,10 +11,9 @@ public interface NotificationService {
     void deleteNotification(Integer id, String userEmail);
     void favoriteSendNotify(Integer storeId, String storeName);
     void acceptedSendNotify(String orderEmail, String storeName, Integer orderId);
-    void rejectedSendNotify(String orderEmail, String storeName);
-    void completedSendNotify(String orderEmail, String storeName);
+    void rejectedSendNotify(String orderEmail, String storeName, Integer orderId);
+    void completedSendNotify(String orderEmail, String storeName, Integer orderId);
     void orderedSendNotify(String ownerEmail);
-    void changedNoticeNotify(String ownerEmail, Set<String> connectedEmailList);
     void liveStartNotify(Integer storeId);
     void registReviewNotify(String ownerEmail, Integer storeId);
 }

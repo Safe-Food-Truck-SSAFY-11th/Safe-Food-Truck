@@ -161,13 +161,9 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public void updateStoreNotice(StoreNoticeRegistRequestDto storeNoticeRegistRequestDto) {
-		// if (storeNoticeRegistRequestDto.connectedEmailList() == null) {
-		// 	throw new NullListException();
-		// }
 		Store store = findLoginStore();
 		store.updateNotice(storeNoticeRegistRequestDto.notice());
 		storeRepository.save(store);
-		// notificationService.changedNoticeNotify(store.getOwner().getEmail(), storeNoticeRegistRequestDto.connectedEmailList());
 	}
 
 	@Override

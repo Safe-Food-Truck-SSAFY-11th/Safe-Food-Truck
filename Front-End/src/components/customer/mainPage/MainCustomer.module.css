@@ -32,6 +32,6 @@
     color: white; /* 선택된 버튼 텍스트 색상 */
   }
   
-  hr {
+  .hr {
     border: 1px solid #FB9256;
   }

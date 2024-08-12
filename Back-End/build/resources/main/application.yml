@@ -4,6 +4,7 @@ server:
 spring:
   profiles:
     include: key
+
   datasource:
     url: jdbc:mysql://i11b102.p.ssafy.io:${dbport}/safefoodtruck
     username: root
@@ -11,6 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -21,6 +23,7 @@ spring:
       mail.smtp.connectiontimeout: 1000
       mail.starttls.enable: true
       mail.smtp.auth: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,6 +34,12 @@ spring:
         format_sql: false
         use_sql_comments: false
     open-in-view: false
+
+  data:
+    redis:
+      host: i11b102.p.ssafy.io
+      port: 6379
+      password: ${redispassword}
 
 springdoc:
   swagger-ui:
