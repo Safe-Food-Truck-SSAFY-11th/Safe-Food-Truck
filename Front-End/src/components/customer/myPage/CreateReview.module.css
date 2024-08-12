@@ -3,16 +3,16 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #FEC87F;
+  background-color: #fec87f;
   padding: 20px;
   /* border-radius: 10px; */
   margin: auto;
-  height: 100vh; 
+  height: 100vh;
   max-width: 393px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.imageUpload{
+.imageUpload {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,7 +32,6 @@
 p {
   text-align: left;
   font-size: 18px;
-  font-weight: bold;
   margin: 10px 0;
 }
 
@@ -52,7 +51,8 @@ p {
   color: #ffd700;
 }
 
-.input, .textarea {
+.input,
+.textarea {
   display: block;
   width: calc(100% - 40px);
   margin: 10px 0;
@@ -80,7 +80,8 @@ p {
   margin-top: 20px;
 }
 
-.submitButton, .backButton {
+.submitButton,
+.backButton {
   background-color: #d8eab7;
   border: none;
   padding: 10px 20px;
@@ -94,6 +95,7 @@ p {
   background-color: #ff6b6b;
 }
 
-.submitButton:hover, .backButton:hover {
+.submitButton:hover,
+.backButton:hover {
   opacity: 0.8;
 }
