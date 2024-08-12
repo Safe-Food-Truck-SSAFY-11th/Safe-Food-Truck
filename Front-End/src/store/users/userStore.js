@@ -104,6 +104,18 @@ const userStore = create((set, get) => ({
   setPasswordCheckTouched: () => set({ passwordCheckTouched: true }),
   setPasswordMatch: (match) => set({ passwordMatch: match }),
 
+  //현재 세션스토리지에 저장된 이메일을 가져옴
+  getLoginedEmail: () => {
+    const loginedEmail = sessionStorage.getItem("email");
+    return loginedEmail;
+  },
+
+  //현재 세션스토리지에 저장된 role을 가져옴
+  getLoginedRole: () => {
+    const loginedRole = sessionStorage.getItem("role");
+    return loginedRole;
+  },
+
   // 이메일 유효성 검사
   emailValidChk: (email) => {
     const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;

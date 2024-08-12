@@ -5,12 +5,14 @@ import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
 import AWS from 'aws-sdk';
 import MakeLogo from "./MakeLogo";
+import useUserStore from 'store/users/userStore';
 
 const ManageTruck = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedTruckImage, setTruckImage] = useState('');
   const [showWarning, setShowWarning] = useState(false); // 모달 표시 상태 추가
+  const { getLoginedRole } = useUserStore();
 
   const {
     updateForm,
@@ -120,6 +122,10 @@ const ManageTruck = () => {
 
   const handleAILogo = (e) => {
     e.preventDefault();
+    if (getLoginedRole() !== 'vip_owner') {
+      alert('멤버십에 가입한 사장님만 이용할 수 있어요!');
+      return;
+    }
     setShowWarning(true); // 모달 표시 상태를 true로 설정
   }
 
