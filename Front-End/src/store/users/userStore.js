@@ -104,6 +104,12 @@ const userStore = create((set, get) => ({
   setPasswordCheckTouched: () => set({ passwordCheckTouched: true }),
   setPasswordMatch: (match) => set({ passwordMatch: match }),
 
+  //현재 세션스토리지에 저장된 role을 가져옴
+  getLoginedToken: () => {
+    const loginedRole = sessionStorage.getItem("token");
+    return loginedRole;
+  },
+
   //현재 세션스토리지에 저장된 이메일을 가져옴
   getLoginedEmail: () => {
     const loginedEmail = sessionStorage.getItem("email");

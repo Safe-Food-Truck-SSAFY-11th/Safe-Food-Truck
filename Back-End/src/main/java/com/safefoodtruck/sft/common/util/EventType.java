@@ -2,9 +2,10 @@ package com.safefoodtruck.sft.common.util;
 
 public enum EventType {
 
-    CUSTOMER("customer"),
-    OWNER("owner"),
-    NOTICE("notice"),
+    CUSTOMER_ORDER("customerOrder"),
+    OPEN("open"),
+    CREATE_ORDER("createOrder"),
+    CREATE_REVIEW("createReview"),
     LIVE("live");
 
     private final String eventType;
