@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import Waiting from "./components/common/Waiting";
 import LoginUser from "./components/login/LoginUser";
@@ -28,25 +28,29 @@ import Survey from "components/survey/Survey";
 import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 import ManageSchedule from "components/owner/myPage/ManageSchedule";
+import Footer from "components/common/Footer";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [email, setEmail] = useState(sessionStorage.getItem("email") || "");
+  const [userType, setUserType] = useState(sessionStorage.getItem("role"));
 
   useEffect(() => {
     // SSE 연결 설정 함수
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
 
-      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
+      const eventSource = new EventSource(
+        `https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`
+      );
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
       };
 
-      eventSource.addEventListener('connected', (event) => {
-        console.log(event.data)
+      eventSource.addEventListener("connected", (event) => {
+        console.log(event.data);
       });
 
       eventSource.addEventListener("customer", (event) => {
@@ -175,8 +179,20 @@ function App() {
         <Route path="/live/:storeId" element={<Live />} />
         <Route path="/manageSchedule" element={<ManageSchedule />} />
       </Routes>
+      <FooterWrapper userType={userType} />
     </div>
   );
+}
+
+function FooterWrapper(userType) {
+  const location = useLocation();
+  const hideFooterPaths = ["/", "/login", "/regist", "/socialRegist"]; // 푸터를 숨기고 싶은 경로
+
+  if (hideFooterPaths.includes(location.pathname)) {
+    return null; // 푸터를 렌더링하지 않음
+  }
+
+  return <Footer role={userType} />;
 }
 
 export default App;
