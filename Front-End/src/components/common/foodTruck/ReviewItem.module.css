@@ -7,6 +7,7 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+  margin-bottom: 20px;
 }
 
 .reviewImageCarousel {
@@ -19,18 +20,11 @@
   width: 350px; /* 사진의 너비를 350px로 고정 */
   height: 190px; /* 사진의 높이를 190px로 고정 */
   /* object-fit: cover; 사진이 컨테이너를 가득 채우도록 설정 */
-  border-radius: 10px;
+  border-radius: 5px;
   object-fit: contain;
 }
 
 
-.reviewHeader {
-  padding-left: 3px;
-}
-
-.reviewHeader p {
-  padding-left: 5px;
-}
 
 
 .separator {
@@ -46,8 +40,8 @@
 
 .reviewContent p {
   color: black;
-  padding-left: 10px;
-  font-size: 15px;
+  padding-left: 2px;
+  font-size: 13px;
   text-align: left;
   margin: 5px 0 0;
 }
@@ -74,7 +68,7 @@
 
 .reviewHeader h4 {
   font-size: 15px;
-  padding-left: 7px;
+  padding-left: 2px;
   margin: 0;
 }
 
