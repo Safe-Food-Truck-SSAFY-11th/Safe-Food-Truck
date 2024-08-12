@@ -22,7 +22,7 @@ const OrderNow = ({ memberInfo, nowOrder }) => {
         return { message: '준비 완료 됬어요!', color: 'green' };
       }
       else if (nowOrder.cookingStatus === 'waiting' || nowOrder.cookingStatus === 'preparing') {
-        return { message: '메뉴를 준비중이에요!', color: 'black' };
+        return { message: '메뉴를 준비중이에요!', color: '#FF7F50' };
       }
     }
     else if (nowOrder.status === 'rejected') {

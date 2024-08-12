@@ -54,24 +54,28 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
       ) : (
         <ul>
           {myJJimTrucks.map((truck, index) => (
-            <li
-              key={index}
-              className={styles.truckItem}
-              onClick={() => handleTruckClick(truck.storeId)}
-            >
-              {truck.storeImageDto && truck.storeImageDto.savedUrl ? (
-                <img src={truck.storeImageDto.savedUrl} alt={truck.name} />
-              ) : (
-                <p>사진 없음</p>
-              )}
-              <h3>{truck.name}</h3>
-              <p>{truck.storeType}</p>
-              <p>
-                {truck.isOpen
-                  ? `${truck.name} 트럭은 현재 영업중이에요!`
-                  : `${truck.name} 트럭은 오늘 쉬어요😂`}
-              </p>
-            </li>
+           <li
+           key={index}
+           className={styles.truckItem}
+           onClick={() => handleTruckClick(truck.storeId)}
+         >
+           <div className={styles.truckContent}>
+             {truck.storeImageDto && truck.storeImageDto.savedUrl ? (
+               <img src={truck.storeImageDto.savedUrl} alt={truck.name} className={styles.truckImage} />
+             ) : (
+               <p>사진 없음</p>
+             )}
+             <div className={styles.truckDetails}>
+               <h3>{truck.name}</h3>
+               <p>{truck.storeType}</p>
+               <p>
+                 {truck.isOpen
+                   ? `${truck.name} 트럭은 현재 영업중이에요!`
+                   : `${truck.name} 트럭은 오늘 쉬어요😂`}
+               </p>
+             </div>
+           </div>
+         </li>
           ))}
         </ul>
       )}

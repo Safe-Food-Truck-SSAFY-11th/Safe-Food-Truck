@@ -1,17 +1,21 @@
 .cartContainer {
-  background-color: #F5A623;
+  background-color: #ffcc80;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   height: 100vh;
   margin: 20px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  width: 90%; /* 컨테이너 너비를 고정 */
 }
 
-h1 {
-  font-size: 1.2em;
-  margin-bottom: 20px;
-  color: #fff;
+.cartContainer h1 {
+  font-size: 1.1em;
+  color: black;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cartItem {
@@ -19,14 +23,16 @@ h1 {
   align-items: center;
   background-color: #fff;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  justify-content: space-between;
 }
 
 .image {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin-right: 10px;
 }
 
@@ -35,17 +41,11 @@ h1 {
   text-align: left;
 }
 
-h3 {
-  margin: 0;
-  font-size: 1em;
-}
-
-p {
+.details p {
   margin: 5px 0 0;
-  font-size: 20px;
-  
+  font-size: 1em;
+  color: #333;
   text-align: center;
-  color: #555;
 }
 
 .quantityControl {
@@ -53,36 +53,52 @@ p {
   align-items: center;
 }
 
+.quantityControl span {
+  padding-bottom: 10px;
+}
+
+.cartContainer label {
+  text-align: left;
+}
+
 .quantityControl button {
-  background-color: #F5A623;
-  border: none;
-  color: #fff;
-  width: 30px;
-  height: 30px;
+  background-color: #fff;
+  border: 1px solid #333;
+  color: #333;
+  width: 25px;
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 5px;
-  font-size: 1.2em;
+  font-size: 1em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .quantityControl span {
   margin: 0 10px;
   font-size: 1em;
+  color: #333;
 }
 
 .checkoutButton {
-  background-color: #fff;
-  color: #F5A623;
-  border: none;
+  background-color: #f46a45;
+  color: white;
+  border: 2px solid #f0ad4e;
+  border-radius: 5px;
   padding: 10px 20px;
   width: 100%;
-  border-radius: 5px;
   font-size: 1em;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
   text-align: center;
+  margin-top: 20px;
+}
+
+.checkoutButton:hover {
+  background-color: white;
+  color: #f46a45;
 }
 
 .details p {
@@ -91,4 +107,17 @@ p {
 
 .quantityControl span {
   padding-top: 10px;
+}
+
+.emptyCartMessage {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: black;
+  margin-top: 20px;
+}
+
+.emptyCartMessage p {
+  text-align: center;
 }

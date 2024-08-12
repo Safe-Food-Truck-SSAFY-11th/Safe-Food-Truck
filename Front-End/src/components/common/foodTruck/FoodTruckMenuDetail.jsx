@@ -62,7 +62,7 @@ function FoodTruckMenuDetail() {
     Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
   
     // 장바구니에 물건이 추가되었음을 알리는 메시지 설정
-    setModalMessage('장바구니에 물건이 추가되었어요!');
+    setModalMessage('장바구니에 메뉴가 추가되었어요!');
     setIsModalOpen(true);
   
     console.log(cart);

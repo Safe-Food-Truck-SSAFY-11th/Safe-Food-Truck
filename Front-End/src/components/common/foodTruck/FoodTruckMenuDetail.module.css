@@ -5,7 +5,8 @@
   padding: 20px;
   background-color: #ffcc80; /* 배경색 설정 */
   border-radius: 10px;
-  width: 280px;
+  width: 90%;
+  /* height */
   margin: 0 auto; /* 화면 중앙 정렬 */
   /* height: 100vh; */
 }
@@ -68,8 +69,8 @@
 }
 
 .descriptionTitle {  
-  padding-right: 125px;
-  margin-bottom: 10px;
+  padding-right: 190px;
+  padding-bottom: 10px;
 }
 
 
