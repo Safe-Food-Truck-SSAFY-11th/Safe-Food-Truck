@@ -2,8 +2,8 @@ package com.safefoodtruck.sft.notification.service;
 
 import static com.safefoodtruck.sft.common.util.EventType.*;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.scheduling.annotation.Async;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.globalnotification.dto.AcceptedNotificationDto;
-import com.safefoodtruck.sft.globalnotification.dto.ChangeNoticeNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.CompletedNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.FavoriteNotificationDto;
 import com.safefoodtruck.sft.globalnotification.dto.LiveStartNotificationDto;
@@ -51,6 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final FavoritesRepository favoritesRepository;
     private final StoreRepository storeRepository;
 
+    @Transactional
     @Override
     public void sendNotification(SendNotificationRequestDto sendNotificationRequestDto) {
         String targetEmail = sendNotificationRequestDto.getTargetEmail();
@@ -70,6 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
         Member member = memberRepository.findByEmail(userEmail).orElseThrow(
             NotFoundMemberException::new);
         return member.getNotificationList().stream()
+            .sorted(Comparator.comparing(Notification::getTimestamp).reversed())
             .map(notification -> {
                 SelectNotificationResponseDto dto = modelMapper.map(notification,
                     SelectNotificationResponseDto.class);
