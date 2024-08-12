@@ -88,7 +88,7 @@ const MyPageCustomer = () => {
       case 'review':
         return <MyReviewList memberInfo={memberInfo} myReviews={myReviews} />;
       case 'order':
-        return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} />;
+        return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} myReviews={myReviews} />;
       default:
         return <SobiPattern memberInfo={memberInfo} mySobiPattern={mySobiPattern} />;
     }
