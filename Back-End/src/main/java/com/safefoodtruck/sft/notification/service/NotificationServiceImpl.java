@@ -105,7 +105,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new FavoriteNotificationDto(storeName), "open", CUSTOMER.getEventType());
+                new FavoriteNotificationDto(storeName, storeId), "open", OPEN.getEventType());
         }
     }
 
@@ -123,13 +123,13 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER.getEventType());
+            new AcceptedNotificationDto(storeName, orderId), "accepted", CUSTOMER_ORDER.getEventType());
     }
 
     @Async
     @Transactional
     @Override
-    public void rejectedSendNotify(String orderEmail, String storeName) {
+    public void rejectedSendNotify(String orderEmail, String storeName, Integer orderId) {
         Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
             NotFoundMemberException::new);
         String info = storeName + " 푸드트럭에서 주문을 거절하였습니다.";
@@ -140,13 +140,13 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new RejcetedNotificationDto(storeName), "rejected", CUSTOMER.getEventType());
+            new RejcetedNotificationDto(storeName, orderId), "rejected", CUSTOMER_ORDER.getEventType());
     }
 
     @Async
     @Transactional
     @Override
-    public void completedSendNotify(String orderEmail, String storeName) {
+    public void completedSendNotify(String orderEmail, String storeName, Integer orderId) {
         Member member = memberRepository.findByEmail(orderEmail).orElseThrow(
             NotFoundMemberException::new);
         String info = storeName + " 푸드트럭에서 조리를 완료하였습니다.";
@@ -157,7 +157,7 @@ public class NotificationServiceImpl implements NotificationService {
             .build());
 
         globalNotificationService.sendToClient(orderEmail,
-            new CompletedNotificationDto(storeName), "completed", CUSTOMER.getEventType());
+            new CompletedNotificationDto(storeName, orderId), "completed", CUSTOMER_ORDER.getEventType());
     }
 
     @Async
