@@ -60,9 +60,9 @@ const OrderItem = ({ order }) => {
             <span>
                 <span className={styles.orderMenu}>
                     {order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개
-                </span>&nbsp;외&nbsp;
-                <span className={styles.orderMenu}>
-                    {order.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}개
+                </span>
+                <span>
+                &nbsp;외&nbsp;{order.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}개
                 </span>
             </span>
             )
