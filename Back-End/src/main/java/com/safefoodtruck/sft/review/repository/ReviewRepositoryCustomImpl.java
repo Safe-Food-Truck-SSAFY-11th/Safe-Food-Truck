@@ -1,13 +1,8 @@
 package com.safefoodtruck.sft.review.repository;
 
-import static com.querydsl.core.types.Projections.*;
-import static com.safefoodtruck.sft.reply.domain.QReply.*;
-import static com.safefoodtruck.sft.review.domain.QReview.*;
-import static com.safefoodtruck.sft.review.domain.QReviewImage.*;
-
-import java.util.List;
-
-import org.springframework.stereotype.Repository;
+import static com.safefoodtruck.sft.reply.domain.QReply.reply;
+import static com.safefoodtruck.sft.review.domain.QReview.review;
+import static com.safefoodtruck.sft.review.domain.QReviewImage.reviewImage;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,8 +11,9 @@ import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.dto.ReviewImageDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewListResponseDto;
 import com.safefoodtruck.sft.review.dto.response.ReviewResponseDto;
-
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,35 +23,36 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
 	@Override
 	public ReviewListResponseDto findCustomerReviewsByEmail(String email) {
+		return buildReviewListResponse(
+			queryFactory
+				.select(review)
+				.from(review)
+				.leftJoin(review.reviewImages, reviewImage)
+				.leftJoin(review.reply, reply)
+				.where(review.customer.email.eq(email))
+				.distinct()
+				.fetch()
+		);
+	}
 
-		List<ReviewResponseDto> reviewResponses = queryFactory
-			.select(constructor(ReviewResponseDto.class,
-				review.id,
-				review.customer.email,
-				review.customer.nickname,
-				review.order.id.as("orderId"),
-				review.order.store.id.as("storeId"),
-				review.isVisible,
-				review.star,
-				review.content,
-				list(
-					constructor(ReviewImageDto.class,
-						reviewImage.savedUrl,
-						reviewImage.savedPath
-					)
-				),
-				constructor(ReplyResponseDto.class,
-					reply.id,
-					reply.review.id.as("reviewId"),
-					reply.content
-				)
-			))
-			.from(review)
-			.leftJoin(review.reviewImages, reviewImage)
-			.leftJoin(review.reply, reply)
-			.where(review.customer.email.eq(email))
-			.distinct()
-			.fetch();
+	@Override
+	public ReviewListResponseDto findStoreReviewsByStoreId(Integer storeId) {
+		return buildReviewListResponse(
+			queryFactory
+				.select(review)
+				.from(review)
+				.leftJoin(review.reviewImages, reviewImage)
+				.leftJoin(review.reply, reply)
+				.where(review.order.store.id.eq(storeId))
+				.distinct()
+				.fetch()
+		);
+	}
+
+	private ReviewListResponseDto buildReviewListResponse(List<Review> reviews) {
+		List<ReviewResponseDto> reviewResponses = reviews.stream()
+			.map(this::mapToReviewResponseDto)
+			.toList();
 
 		return ReviewListResponseDto.builder()
 			.count(reviewResponses.size())
@@ -63,42 +60,37 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 			.build();
 	}
 
-	@Override
-	public ReviewListResponseDto findStoreReviewsByStoreId(Integer storeId) {
-
-		List<ReviewResponseDto> reviewResponses = queryFactory
-			.select(constructor(ReviewResponseDto.class,
-				review.id,
-				review.customer.email,
-				review.customer.nickname,
-				review.order.id.as("orderId"),
-				review.order.store.id.as("storeId"),
-				review.isVisible,
-				review.star,
-				review.content,
-				list(
-					constructor(ReviewImageDto.class,
-						reviewImage.savedUrl,
-						reviewImage.savedPath
-					)
-				),
-				constructor(ReplyResponseDto.class,
-					reply.id,
-					reply.review.id.as("reviewId"),
-					reply.content
-				)
-			))
-			.from(review)
-			.leftJoin(review.reviewImages, reviewImage)
-			.leftJoin(review.reply, reply)
-			.where(review.order.store.id.eq(storeId))
-			.distinct()
-			.fetch();
-
-		return ReviewListResponseDto.builder()
-			.count(reviewResponses.size())
-			.reviewList(reviewResponses)
+	private ReviewResponseDto mapToReviewResponseDto(Review review) {
+		return ReviewResponseDto.builder()
+			.id(review.getId())
+			.email(review.getCustomer().getEmail())
+			.nickname(review.getCustomer().getNickname())
+			.orderId(review.getOrder().getId())
+			.storeId(review.getOrder().getStore().getId())
+			.isVisible(review.getIsVisible())
+			.star(review.getStar())
+			.content(review.getContent())
+			.reviewImageDtos(mapToReviewImageDtos(review))
+			.replyResponseDto(mapToReplyResponseDto(review))
 			.build();
+	}
+
+	private List<ReviewImageDto> mapToReviewImageDtos(Review review) {
+		return review.getReviewImages().stream()
+			.map(img -> ReviewImageDto.builder()
+				.savedUrl(img.getSavedUrl())
+				.savedPath(img.getSavedPath())
+				.build())
+			.toList();
+	}
+
+	private ReplyResponseDto mapToReplyResponseDto(Review review) {
+		return review.getReply() != null ?
+			ReplyResponseDto.builder()
+				.id(review.getReply().getId())
+				.reviewId(review.getId())
+				.content(review.getReply().getContent())
+				.build() : null;
 	}
 
 	@Override
@@ -112,20 +104,20 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 	}
 
 	@Override
-public Double findAverageStarByStoreId(Integer storeId) {
-	return queryFactory
-		.select(review.star.avg())
-		.from(review)
-		.where(review.order.store.id.eq(storeId))
-		.fetchOne();
-}
+	public Double findAverageStarByStoreId(Integer storeId) {
+		return queryFactory
+			.select(review.star.avg())
+			.from(review)
+			.where(review.order.store.id.eq(storeId))
+			.fetchOne();
+	}
 
-@Override
-public List<Tuple> findAverageStarsForAllStores() {
-	return queryFactory
-		.select(review.order.store.id, review.star.avg())
-		.from(review)
-		.groupBy(review.order.store.id)
-		.fetch();
-}
+	@Override
+	public List<Tuple> findAverageStarsForAllStores() {
+		return queryFactory
+			.select(review.order.store.id, review.star.avg())
+			.from(review)
+			.groupBy(review.order.store.id)
+			.fetch();
+	}
 }
