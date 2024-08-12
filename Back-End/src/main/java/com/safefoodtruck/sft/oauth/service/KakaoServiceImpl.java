@@ -49,7 +49,7 @@ public class KakaoServiceImpl implements KakaoService {
         //이미 가입한 유저라면
         Optional<Member> member = memberRepository.findByEmail(kakaoMemberResponseDto.getEmail());
         if (member.isPresent()) {
-            MemberDto memberDto = mapper.map(member, MemberDto.class);
+            MemberDto memberDto = mapper.map(member.get(), MemberDto.class);
             String token = jwtUtil.createAccessToken(memberDto);
             throw new AlreadySignUpException(token);
         }
