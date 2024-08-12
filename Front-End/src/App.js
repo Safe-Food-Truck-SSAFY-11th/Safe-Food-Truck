@@ -28,13 +28,16 @@ import Survey from "components/survey/Survey";
 import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 import ManageSchedule from "components/owner/myPage/ManageSchedule";
+import useUserStore from 'store/users/userStore';
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [email, setEmail] = useState(sessionStorage.getItem("email") || "");
+  const {getLoginedEmail} = useUserStore();
 
   useEffect(() => {
+    const loginedEmail = getLoginedEmail();
+
     // SSE 연결 설정 함수
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
@@ -119,27 +122,12 @@ function App() {
     };
 
     // 최초 로드 시 이메일이 있으면 SSE 연결 설정
-    const cleanup = setupSSEConnection(email);
-
-    // 세션 스토리지의 변화를 감지하여 새로운 이메일을 읽어들임
-    const onStorageChange = (event) => {
-      console.log("EVENT = ", event);
-      if (event.key === "email") {
-        const newEmail = event.newValue;
-        setEmail(newEmail);
-        if (cleanup) cleanup(); // 이전 SSE 연결 닫기
-        setupSSEConnection(newEmail);
-      }
-    };
-
-    // 세션 스토리지의 변화를 감지
-    window.addEventListener("storage", onStorageChange);
+    const cleanup = setupSSEConnection(loginedEmail);
 
     return () => {
       if (cleanup) cleanup(); // 컴포넌트가 언마운트될 때 SSE 연결 닫기
-      window.removeEventListener("storage", onStorageChange);
     };
-  }, [email]);
+  }, [getLoginedEmail()]);
 
   return (
     <div className="App">
