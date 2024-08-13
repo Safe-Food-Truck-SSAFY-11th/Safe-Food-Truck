@@ -76,9 +76,22 @@ const Live = () => {
 
   const OV = useRef();
 
+  //처음 스크롤 맨위로 올리기
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
+
   //페이지 떠나려고 할 때 동작
   useEffect(() => {
     const handleBeforeUnload = async (event) => {
+      // console.log("페이지 떠나는 이벤트", event);
+      // const confirmationMessage =
+      //   "이 페이지를 떠나시겠습니까? 방송이 종료됩니다.";
+      // event.returnValue = confirmationMessage; // 브라우저 호환성을 위해 설정
+      // return confirmationMessage;
+
+      console.log("페이지 떠남");
+
       const navigationType = performance.getEntriesByType("navigation")[0].type;
 
       if (navigationType === "reload") {
@@ -119,6 +132,7 @@ const Live = () => {
   // 뒤로가기 동작 처리
   useEffect(() => {
     const handlePopState = async (event) => {
+      console.log("뒤로가기");
       if (session) {
         if (role.indexOf("customer") !== -1) {
           // 손님이 뒤로가기를 눌렀을 때 세션 나가기
@@ -363,7 +377,7 @@ const Live = () => {
     //   session.unpublish(publisher);
     // }
     // session.disconnect();
-    
+
     try {
       const response = await axios.post(
         APPLICATION_SERVER_URL + "api/sessions/" + storeId + "/close",
@@ -380,7 +394,7 @@ const Live = () => {
       throw error;
     }
   };
-  
+
   //채팅창 열고 닫기
   const toggleChat = () => {
     setIsChat(!isChat);
@@ -498,35 +512,6 @@ const Live = () => {
     <div className={styles.container}>
       {session !== undefined ? (
         <div className={styles.session}>
-          <div className={styles.sessionHeader}>
-            {role.indexOf("customer") !== -1 ? (
-              <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
-                id="buttonLeaveSession"
-                onClick={leaveSession}
-              >
-                나가기
-              </button>
-            ) : null}
-
-            <button
-              className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
-              id="buttonChat"
-              onClick={toggleChat}
-            >
-              {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
-            </button>
-
-            {role.indexOf("owner") !== -1 ? (
-              <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
-                id="noticeRegist"
-                onClick={openNoticeModal}
-              >
-                공지사항 작성
-              </button>
-            ) : null}
-          </div>
           {mainStreamManager.current !== undefined ? (
             <div className={styles.mainVideo}>
               <UserVideoComponent streamManager={mainStreamManager.current} />
@@ -535,6 +520,22 @@ const Live = () => {
 
           {isChat ? (
             <div className={styles.chatContainer}>
+              {role.indexOf("owner") !== -1 ? (
+                <button
+                  className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+                  id="noticeRegist"
+                  onClick={openNoticeModal}
+                >
+                  공지사항 작성
+                </button>
+              ) : null}
+              <button
+                className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+                id="buttonChat"
+                onClick={toggleChat}
+              >
+                {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
+              </button>
               {notice === "" ? null : (
                 <div className={styles.noticeBox}>
                   <div>
@@ -574,6 +575,18 @@ const Live = () => {
               </div>
             </div>
           ) : null}
+
+          <div className={styles.sessionHeader}>
+            {role.indexOf("customer") !== -1 ? (
+              <button
+                className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
+                id="buttonLeaveSession"
+                onClick={leaveSession}
+              >
+                나가기
+              </button>
+            ) : null}
+          </div>
 
           {role.indexOf("owner") !== -1 ? (
             <div className={styles.ownerItems}>
