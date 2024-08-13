@@ -358,12 +358,12 @@ const Live = () => {
 
     //방송 참여자 초기화
     resetMembers();
-    console.log(members.current);
-    if (session) {
-      session.unpublish(publisher);
-    }
-    session.disconnect();
-
+    // console.log(members.current);
+    // if (session) {
+    //   session.unpublish(publisher);
+    // }
+    // session.disconnect();
+    
     try {
       const response = await axios.post(
         APPLICATION_SERVER_URL + "api/sessions/" + storeId + "/close",
@@ -380,7 +380,7 @@ const Live = () => {
       throw error;
     }
   };
-
+  
   //채팅창 열고 닫기
   const toggleChat = () => {
     setIsChat(!isChat);
