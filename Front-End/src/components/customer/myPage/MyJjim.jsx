@@ -63,12 +63,16 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
            onClick={() => handleTruckClick(truck.storeId)}
          >
            <div className={styles.truckContent}>
-             {truck.storeImageDto && truck.storeImageDto.savedUrl !== 'empty' ? (
-               <img src={truck.storeImageDto.savedUrl} alt={truck.name} className={styles.truckImage} />
+             {truck.storeImageDto.savedUrl === 'empty' || " " ? (
+               <img 
+               src={defaultImage} 
+               alt="디폴트 이미지" 
+               className={styles.truckImage}
+                />
              ) : (
               <img
-              src={defaultImage}
-              alt="디폴트 이미지"
+              src={truck.storeImageDto.savedUrl} 
+              alt={truck.name} 
               className={styles.truckImage}
             />
              )}
