@@ -9,9 +9,20 @@ function BroadCastList() {
   const [items, setItems] = useState([]); // 초기 상태 설정
   const { ownerLiveStratFlag, setOwnerLiveStratFlag } = useEventStore();
   const { ownerLiveEndFlag, setOwnerLiveEndFlag } = useEventStore();
+
   useEffect(() => {
-    getLiveList();
-  }, [ownerLiveStratFlag, ownerLiveEndFlag]); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+    if (ownerLiveStratFlag) {
+      getLiveList();
+      setOwnerLiveStratFlag(false);
+    }
+  }, [ownerLiveStratFlag]); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+
+  useEffect(() => {
+    if (ownerLiveEndFlag) {
+      getLiveList();
+      setOwnerLiveEndFlag(false);
+    }
+  }, [ownerLiveEndFlag])
   console.log("items: ", items);
   const settings = {
     infinite: false,
