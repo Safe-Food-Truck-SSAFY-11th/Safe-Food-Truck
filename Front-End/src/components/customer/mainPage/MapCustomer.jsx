@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MapCustomer.module.css';
-import markerImage from 'assets/images/ft_marker.png'; // 이미지 경로 import
+import markerImage from 'assets/images/ft_marker.png'; 
+import defaultImage from 'assets/images/truck-img.png';
+import boonsik from 'assets/images/foodImage/boonsik.png';
+import chicken from 'assets/images/foodImage/chicken.png';
+import crepe from 'assets/images/foodImage/crepe.png';
+import cupRice from 'assets/images/foodImage/cupRice.png';
+import drink from 'assets/images/foodImage/drink.png';
+import fish from 'assets/images/foodImage/fish.png';
+import iceCream from 'assets/images/foodImage/iceCream.png';
+import kkochi from 'assets/images/foodImage/kkochi.png';
+import panCake from 'assets/images/foodImage/panCake.png';
+import pizza from 'assets/images/foodImage/pizza.png';
+import steak from 'assets/images/foodImage/steak.png';
+import tako from 'assets/images/foodImage/tako.png';
+
 
 function MapCustomer({ openFoodTrucks, userLocation, selectedType }) {
   const navigate = useNavigate();
@@ -65,41 +79,108 @@ function MapCustomer({ openFoodTrucks, userLocation, selectedType }) {
   const addMarker = (truck) => {
     const latitude = truck.latitude;
     const longitude = truck.longitude;
-
+  
     if (isNaN(latitude) || isNaN(longitude)) {
       console.error('Invalid latitude or longitude for location:', truck);
       return;
     }
-
+  
     const markerPosition = new window.kakao.maps.LatLng(latitude, longitude);
+  
+    const getMarkerImage = (storeType) => {
+      switch (storeType) {
+        case '분식':
+          return boonsik; 
+        case '치킨':
+          return chicken;
+        case '꼬치':
+          return kkochi; 
+        case '아이스크림':
+          return iceCream; 
+        case '호떡':
+          return panCake; 
+        case '타코야끼':
+          return tako; 
+        case '음료':
+          return drink; 
+        case '붕어빵':
+          return fish; 
+        case '피자':
+          return pizza; 
+        case '스테이크':
+          return steak; 
+        case '컵밥':
+          return cupRice; 
+        case '크레페':
+          return crepe; 
+        default:
+          return markerImage; // 기본 마커 이미지 경로
+      }
+    };
 
-    const markerImageSize = new window.kakao.maps.Size(45, 45);
+    const markerImageSrc = getMarkerImage(truck.storeType);
+  
+    const markerImageSize = new window.kakao.maps.Size(35, 35);
     const markerImageOptions = {
       offset: new window.kakao.maps.Point(22.5, 45),
     };
-
+  
     const markerImageObj = new window.kakao.maps.MarkerImage(
-      markerImage,
+      markerImageSrc, // 조건에 따라 설정된 마커 이미지 경로
       markerImageSize,
       markerImageOptions
     );
-
+  
     const marker = new window.kakao.maps.Marker({
       position: markerPosition,
       image: markerImageObj,
     });
+  
+    const overlayContent = document.createElement('div');
+    overlayContent.style = `
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      padding: 10px; 
+      background-color: white; 
+      border-radius: 5px; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);`;
 
-    const infowindow = new window.kakao.maps.InfoWindow({
-      content: `<div>${truck.name}</div>`,
+    const img = document.createElement('img');
+    img.src = truck.storeImageDto?.savedUrl === 'empty' || truck.storeImageDto?.savedUrl.trim() === "" ? defaultImage : truck.storeImageDto?.savedUrl;
+    img.alt = truck.name;
+    img.style = "width: 40px; height: 40px; object-fit: cover; border-radius: 5px; margin-right: 10px;";
+
+    const textDiv = document.createElement('div');
+    const title = document.createElement('div');
+    title.style = "font-weight: bold; font-size: 14px;";
+    title.textContent = truck.name;
+    const star = document.createElement('div');
+    star.style = "font-size: 12px; color: #666;";
+    star.textContent = `★ ${truck.averageStar / 2}`;
+
+    textDiv.appendChild(title);
+    textDiv.appendChild(star);
+
+    overlayContent.appendChild(img);
+    overlayContent.appendChild(textDiv);
+  
+    const overlay = new window.kakao.maps.CustomOverlay({
+      content: overlayContent,
+      position: markerPosition,
+      yAnchor: 1.8,
+      zIndex: 3, 
     });
-
-    setMarkers((prevMarkers) => [...prevMarkers, { marker, infowindow }]);
-
+  
+    setMarkers((prevMarkers) => [...prevMarkers, { marker, overlay }]);
+  
     marker.setMap(map);
 
-    infowindow.open(map, marker);
-
     window.kakao.maps.event.addListener(marker, 'click', function () {
+      overlay.setMap(map);
+    });
+
+    overlayContent.addEventListener('click', function () {
       navigate(`/foodtruckDetail/${truck.storeId}`);
     });
   };
@@ -117,9 +198,9 @@ function MapCustomer({ openFoodTrucks, userLocation, selectedType }) {
   };
 
   const filterAndAddMarkers = () => {
-    markers.forEach(({ marker, infowindow }) => {
+    markers.forEach(({ marker, overlay }) => {
       marker.setMap(null);
-      infowindow.close();
+      overlay.setMap(null);
     });
     setMarkers([]);
 
