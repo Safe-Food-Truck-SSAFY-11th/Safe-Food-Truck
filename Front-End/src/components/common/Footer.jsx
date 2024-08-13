@@ -101,7 +101,7 @@ const Footer = () => {
         >
           <TbHome
             size="35"
-            color={activeIcon === "home" ? "#e2eed0" : "black"}
+            color={activeIcon === "home" ? "#b6d4b7" : "black"}
           />
         </Link>
         <Link
@@ -111,7 +111,7 @@ const Footer = () => {
         >
           <RxPerson
             size="34"
-            color={activeIcon === "mypage" ? "#e2eed0" : "black"}
+            color={activeIcon === "mypage" ? "#b6d4b7" : "black"}
             strokeWidth="0.4"
           />
         </Link>
@@ -122,7 +122,7 @@ const Footer = () => {
         >
           <TbMessage2Star
             size="35"
-            color={activeIcon === "review" ? "#e2eed0" : "black"}
+            color={activeIcon === "review" ? "#b6d4b7" : "black"}
           />
         </Link>
         <div
@@ -133,7 +133,7 @@ const Footer = () => {
         >
           <LuSettings
             size="35"
-            color={activeIcon === "settings" ? "#e2eed0" : "black"}
+            color={activeIcon === "settings" ? "#b6d4b7" : "black"}
           />
           {isDropdownOpen && (
             <div className={styles.dropdown}>
