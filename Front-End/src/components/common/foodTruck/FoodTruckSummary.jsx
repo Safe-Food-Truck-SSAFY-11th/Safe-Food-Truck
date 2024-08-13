@@ -3,13 +3,11 @@ import styles from "./FoodTruckSummary.module.css";
 import axios from "axios";
 import useLiveStore from "store/live/useLiveStore";
 import { useNavigate, useParams } from "react-router-dom";
-import NoLiveModal from "./NoLiveModal";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
 import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
-  const { isModalOpen, openModal } = useLiveStore();
   const navigate = useNavigate();
   const { storeId } = useParams();
 
@@ -26,7 +24,6 @@ function FoodTruckSummary({ truck }) {
       );
 
       if (response.status === 204) {
-        openModal();
       } else {
         const token = response.data;
         navigate(`/live/${sessionId}`);
@@ -47,39 +44,38 @@ function FoodTruckSummary({ truck }) {
   const { getJJimTruck } = customerStore();
   const { JJimTruck, unJJimTruck } = useFoodTruckStore();
 
-  useEffect(() => {
-    const fetchJJimTruckStatus = async () => {
-      try {
-        const response = await getJJimTruck(storeId);
-        const favoriteId = response.favoriteId;
-        setFavId(favoriteId);
-        console.log("Fetched favoriteId:", favoriteId);
+  const fetchJJimTruckStatus = async () => {
+    try {
+      const response = await getJJimTruck(storeId);
+      const favoriteId = response.favoriteId;
+      setFavId(favoriteId);
+      console.log("Fetched favoriteId:", response);
 
-        if (favoriteId !== -1) {
-          setCheckJJimTruck(true);
-        } else {
-          setCheckJJimTruck(false);
-        }
-      } catch (error) {
-        console.error("Error fetching favoriteId:", error);
+      if (favoriteId !== -1) {
+        setCheckJJimTruck(true);
+      } else {
         setCheckJJimTruck(false);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching favoriteId:", error);
+      setCheckJJimTruck(false);
+    }
+  };
 
+  useEffect(() => {
     fetchJJimTruckStatus();
-  }, [getJJimTruck, storeId]);
+  }, []);
 
   const handleJJimClick = async () => {
     try {
       if (checkJJimTruck) {
         await unJJimTruck(favId);
-        setCheckJJimTruck(false);
+        // setCheckJJimTruck(false);
       } else {
         await JJimTruck(storeId);
-        setCheckJJimTruck(true);
+        // setCheckJJimTruck(true);
       }
-      // 버튼 클릭 후 새로고침
-      window.location.reload();
+      await fetchJJimTruckStatus();
     } catch (error) {
       console.error("Error handling JJim action:", error);
     }
@@ -87,23 +83,32 @@ function FoodTruckSummary({ truck }) {
 
   return (
     <header className={styles.header}>
-      <img
+        <img
         src={truck.storeImageDto?.savedUrl === 'empty' || " " ? defaultImage : truck.storeImageDto.savedUrl}
-        alt={`${truck.name} 이미지`}
-        className={styles.truckImage}
-      />
+          alt={`${truck.name} 이미지`}
+          className={styles.truckImage}
+        />
       <div className={styles.textContainer}>
         <h1>
           {truck.name} ★ {truck.averageStar / 2}
         </h1>
         <h1>{truck.description}</h1>
         <div className={styles.buttonContainer}>
+          {checkJJimTruck ? (
           <button
             onClick={handleJJimClick}
-            className={styles.jjimButton} /* 찜 버튼에 클래스명 추가 */
+            className={styles.jjimButtonInActive} // checkJJim이 true일 때 적용할 스타일 클래스
           >
-            {checkJJimTruck ? "찜" : "찜"}
+            찜 삭제
           </button>
+        ) : (
+          <button
+            onClick={handleJJimClick}
+            className={styles.jjimButtonActive} // checkJJim이 false일 때 적용할 스타일 클래스
+          >
+            찜 하기
+          </button>
+        )}
           <button
             className={styles.liveButton}
             onClick={handleLiveClick}
