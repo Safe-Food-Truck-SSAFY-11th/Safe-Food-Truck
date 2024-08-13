@@ -1,22 +1,15 @@
 package com.safefoodtruck.sft.order.service;
 
-import static com.safefoodtruck.sft.order.domain.OrderStatus.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.ACCEPTED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.COMPLETED;
+import static com.safefoodtruck.sft.order.domain.OrderStatus.REJECTED;
 
 import com.safefoodtruck.sft.common.util.MemberInfo;
 import com.safefoodtruck.sft.member.domain.Member;
 import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.menu.domain.Menu;
+import com.safefoodtruck.sft.menu.domain.MenuType;
 import com.safefoodtruck.sft.menu.exception.MenuNotFoundException;
 import com.safefoodtruck.sft.menu.repository.MenuRepository;
 import com.safefoodtruck.sft.notification.service.NotificationService;
@@ -40,9 +33,16 @@ import com.safefoodtruck.sft.order.repository.OrderRepository;
 import com.safefoodtruck.sft.store.domain.Store;
 import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -112,17 +112,28 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private String createOrderTitle(List<OrderMenuRequestDto> menuList) {
-		String orderTitle = menuList.stream()
-			.map(menuRequestDto -> menuRepository.findById(menuRequestDto.menuId())
-				.orElseThrow(MenuNotFoundException::new).getName())
-			.collect(Collectors.joining(", "));
+		StringBuilder orderTitleBuilder = new StringBuilder();
+
+		String firstMenuName = menuRepository.findById(menuList.get(0).menuId())
+			.orElseThrow(MenuNotFoundException::new).getName();
+		Integer firstMenuCount = menuList.get(0).count();
+
+		String unit = MenuType.getUnitByMenuName(firstMenuName);
+
+		orderTitleBuilder.append(firstMenuName)
+			.append(" ")
+			.append(firstMenuCount)
+			.append(unit);
 
 		if (menuList.size() > 1) {
-			orderTitle = orderTitle.split(", ")[0] + " 외 " + (menuList.size() - 1) + "개";
+			orderTitleBuilder.append(" 외 ")
+				.append(menuList.size() - 1)
+				.append("개");
 		}
 
-		return orderTitle;
+		return orderTitleBuilder.toString();
 	}
+
 
 	@Transactional
 	@Override
