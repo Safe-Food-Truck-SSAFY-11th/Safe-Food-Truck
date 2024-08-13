@@ -3,7 +3,6 @@ import imageIcon from "assets/images/sft-logo.png";
 import styles from "./MenuItem.module.css";
 
 const MenuItem = ({ menu, onEdit, onDelete }) => {
-  console.log(menu);
   return (
     <div className={styles.menuItem}>
       <img

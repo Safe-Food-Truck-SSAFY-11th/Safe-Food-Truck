@@ -6,15 +6,15 @@
   border-radius: 8px; /* 모서리 둥글게 */
   padding: 20px; /* 내부 여백 */
   margin: 10px 0; /* 항목 간 간격 */
-  width: 80%;
+  width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .menuImage {
-  width: 60px; /* 이미지 너비 */
-  height: 60px; /* 이미지 높이 */
-  border-radius: 4px; /* 이미지 모서리 둥글게 */
-  margin-right: 16px; /* 이미지와 텍스트 간 간격 */
+  width: 30%; 
+  height: auto; 
+  border-radius: 4px; 
+  margin-right: 16px; 
 }
 
 .menuDetails {
