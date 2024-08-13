@@ -5,12 +5,16 @@ import logo from 'assets/images/sft-logo.png';
 import kakaoLogo from 'assets/images/icon_kakao.png';
 import googleLogo from 'assets/images/icon_google.png';
 import useUserStore from 'store/users/userStore';
+import FindId from './FindId';
+import FindPassword from './FindPassword';
 
 const LoginUser = () => {
     const { isGuest, setGuest, setOwner, loginUser, fetchUser, getLoginedToken } = useUserStore();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isFindIdOpen, setIsFindIdOpen] = useState(false);
+    const [isFindPwdOpen, setIsFindPwdOpen] = useState(false);
 
     useEffect(() => {
         // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
@@ -68,12 +72,12 @@ const LoginUser = () => {
 
     // 아이디 찾기
     const handleFindId = () => {
-        navigate('/findId');
+        setIsFindIdOpen(true);
     };
 
     // 비밀번호 찾기
     const handleFindPassword = () => {
-        navigate('/findPassword');
+        setIsFindPwdOpen(true);
     };
 
     return (
@@ -116,6 +120,8 @@ const LoginUser = () => {
                 </div>
             </div>
             <p className={styles.footerText}>safe-food-truck</p>
+            {isFindIdOpen && <FindId closeFunc={setIsFindIdOpen}/>}
+            {isFindPwdOpen && <FindPassword closeFunc={setIsFindPwdOpen}/>}
         </div>
     );
 };
