@@ -184,177 +184,180 @@ function App() {
       {showNotification && (
         <div className="notification">{notificationMessage}</div>
       )}
-      <Routes>
-        <Route path="/" element={<Waiting />} />
-        <Route path="/login" element={<LoginUser />} />
-        <Route path="/regist" element={<Regist />} />
-        <Route path="/socialRegist" element={<SocialRegist />} />
-        <Route path="/social-redirection" element={<SocialRedirection />} />
-        <Route path="/findId" element={<FindId />} />
-        <Route path="/findPassword" element={<FindPassword />} />
+      <ContentWrapper>
+        <Routes>
+          <Route path="/" element={<Waiting />} />
+          <Route path="/login" element={<LoginUser />} />
+          <Route path="/regist" element={<Regist />} />
+          <Route path="/socialRegist" element={<SocialRegist />} />
+          <Route path="/social-redirection" element={<SocialRedirection />} />
+          <Route path="/findId" element={<FindId />} />
+          <Route path="/findPassword" element={<FindPassword />} />
 
-        {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
-        <Route
-          path="/survey"
-          element={
-            <CustomerRoute>
-              <Survey />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/membership"
-          element={
-            <PrivateRoute>
-              <Membership />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/registTruck"
-          element={
-            <OwnerRoute>
-              <RegistTruck />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/mainOwner"
-          element={
-            <OwnerRoute>
-              <MainOwner />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/mainCustomer"
-          element={
-            <CustomerRoute>
-              <MainCustomer />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/permitAreaCheck"
-          element={
-            <OwnerRoute>
-              <PermitAreaCheck />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/mypageCustomer"
-          element={
-            <CustomerRoute>
-              <MyPageCustomer />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/customerUpdate"
-          element={
-            <CustomerRoute>
-              <CustomerUpdate />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/createReview/:orderId"
-          element={
-            <CustomerRoute>
-              <CreateReview />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/foodTruckDetail/:storeId"
-          element={
-            <CustomerRoute>
-              <FoodTruckDetail />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <CustomerRoute>
-              <CustomerCart />
-            </CustomerRoute>
-          }
-        />
-        <Route
-          path="/menuDetail/:menuId"
-          element={
-            <PrivateRoute>
-              <FoodTruckMenuDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/mypageOwner"
-          element={
-            <OwnerRoute>
-              <MyPageOwner />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/ownerUpdate"
-          element={
-            <OwnerRoute>
-              <OwnerUpdate />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/manageTruck"
-          element={
-            <OwnerRoute>
-              <ManageTruck />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/manageMenu"
-          element={
-            <OwnerRoute>
-              <ManageMenu />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/chating"
-          element={
-            <PrivateRoute>
-              <Chating />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/ownerReview"
-          element={
-            <OwnerRoute>
-              <OwnerReview />
-            </OwnerRoute>
-          }
-        />
-        <Route
-          path="/live/:storeId"
-          element={
-            <PrivateRoute>
-              <Live />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/manageSchedule"
-          element={
-            <OwnerRoute>
-              <ManageSchedule />
-            </OwnerRoute>
-          }
-        />
-      </Routes>
+          {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
+          <Route
+            path="/survey"
+            element={
+              <CustomerRoute>
+                <Survey />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/membership"
+            element={
+              <PrivateRoute>
+                <Membership />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/registTruck"
+            element={
+              <OwnerRoute>
+                <RegistTruck />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/mainOwner"
+            element={
+              <OwnerRoute>
+                <MainOwner />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/mainCustomer"
+            element={
+              <CustomerRoute>
+                <MainCustomer />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/permitAreaCheck"
+            element={
+              <OwnerRoute>
+                <PermitAreaCheck />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/mypageCustomer"
+            element={
+              <CustomerRoute>
+                <MyPageCustomer />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/customerUpdate"
+            element={
+              <CustomerRoute>
+                <CustomerUpdate />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/createReview/:orderId"
+            element={
+              <CustomerRoute>
+                <CreateReview />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/foodTruckDetail/:storeId"
+            element={
+              <CustomerRoute>
+                <FoodTruckDetail />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <CustomerRoute>
+                <CustomerCart />
+              </CustomerRoute>
+            }
+          />
+          <Route
+            path="/menuDetail/:menuId"
+            element={
+              <PrivateRoute>
+                <FoodTruckMenuDetail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/mypageOwner"
+            element={
+              <OwnerRoute>
+                <MyPageOwner />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/ownerUpdate"
+            element={
+              <OwnerRoute>
+                <OwnerUpdate />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/manageTruck"
+            element={
+              <OwnerRoute>
+                <ManageTruck />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/manageMenu"
+            element={
+              <OwnerRoute>
+                <ManageMenu />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/chating"
+            element={
+              <PrivateRoute>
+                <Chating />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ownerReview"
+            element={
+              <OwnerRoute>
+                <OwnerReview />
+              </OwnerRoute>
+            }
+          />
+          <Route
+            path="/live/:storeId"
+            element={
+              <PrivateRoute>
+                <Live />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/manageSchedule"
+            element={
+              <OwnerRoute>
+                <ManageSchedule />
+              </OwnerRoute>
+            }
+          />
+        </Routes>
+      </ContentWrapper>
+
       <FooterWrapper userType={userType} />
     </div>
   );
@@ -368,6 +371,8 @@ function FooterWrapper(userType) {
     "/regist",
     "/socialRegist",
     "/social-redirection",
+    "/findId",
+    "/findPassword",
   ]; // 푸터를 숨기고 싶은 경로
 
   if (hideFooterPaths.includes(location.pathname)) {
@@ -375,6 +380,22 @@ function FooterWrapper(userType) {
   }
 
   return <Footer role={userType} />;
+}
+
+function ContentWrapper({ children }) {
+  const location = useLocation();
+  const hideFooterPaths = [
+    "/",
+    "/login",
+    "/regist",
+    "/socialRegist",
+    "/social-redirection",
+    "/findId",
+    "/findPassword",
+  ]; // 푸터를 숨기고 싶은 경로
+  const footerHeight = hideFooterPaths.includes(location.pathname) ? 0 : "69px"; // 푸터 높이 설정
+
+  return <div style={{ paddingBottom: footerHeight }}>{children}</div>;
 }
 
 export default App;
