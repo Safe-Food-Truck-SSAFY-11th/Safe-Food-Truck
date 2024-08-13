@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.notification.service;
 
 import static com.safefoodtruck.sft.common.util.EventType.*;
 
+import com.safefoodtruck.sft.globalnotification.dto.LiveEndNotificationDto;
 import java.util.Comparator;
 import java.util.List;
 
@@ -195,7 +196,21 @@ public class NotificationServiceImpl implements NotificationService {
                 .build());
 
             globalNotificationService.sendToClient(targetEmail,
-                new LiveStartNotificationDto(storeName, storeId), "live start", LIVE.getEventType());
+                new LiveStartNotificationDto(storeName, storeId), "live start", LIVE_START.getEventType());
+        }
+    }
+
+    @Override
+    public void liveEndNotify(Integer storeId) {
+        List<Favorites> favoriteList = favoritesRepository.findAllByStoreId(storeId);
+        String storeName = storeRepository.findById(storeId)
+            .orElseThrow(StoreNotFoundException::new).getName();
+        for (Favorites favorite : favoriteList) {
+            Member member = favorite.getMember();
+            String targetEmail = member.getEmail();
+
+            globalNotificationService.sendToClient(targetEmail,
+                new LiveEndNotificationDto(storeName, storeId), "live end", LIVE_END.getEventType());
         }
     }
 
