@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NoLiveModal from "./NoLiveModal";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
-import defaultImage from "assets/images/truck-img.png"; // 여기에 디폴트 이미지 경로를 임포트하세요
+import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
   const { isModalOpen, openModal } = useLiveStore();
