@@ -79,6 +79,8 @@ function MainCustomer() {
           <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
         )
       )}
+
+      <SurveyArea />
     </div>
   );
 }
