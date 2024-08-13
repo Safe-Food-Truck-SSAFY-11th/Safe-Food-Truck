@@ -50,7 +50,7 @@ const userStore = create((set, get) => ({
   nicknameChecked: null, // 닉네임 확인 상태 (null, Possible, Duplicate)
   pnChecked: null, // 전화번호 확인 상태 (null, Possible, Duplicate)
   bsNumChecked: null, // 사업자번호 확인 상태 (null, Possible, Duplicate)
-  passwordMatch: null, // 비밀번호 일치 여부 (null, true, false)
+  passwordMatch: false, // 비밀번호 일치 여부 (null, true, false)
   emailTouched: false, // 이메일 입력 상태
   nicknameTouched: false, // 닉네임 입력 상태
   passwordTouched: false, // 비밀번호확인 입력 상태
@@ -95,7 +95,7 @@ const userStore = create((set, get) => ({
   },
 
   emailValid: null,
-  pwdValid: null,
+  pwdValid: false,
   setEmailValid: (valid) => set({ emailValid: valid}),
   setEmailTouched: () => set({ emailTouched: true }),
   setNicknameTouched: () => set({ nicknameTouched: true }),
