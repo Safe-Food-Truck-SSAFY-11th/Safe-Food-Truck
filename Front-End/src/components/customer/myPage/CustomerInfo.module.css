@@ -1,21 +1,31 @@
 .container {
-  background-color: #FEC87F;
+  background-color: #FEC87F; /* 외부 배경색 유지 */
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  flex-direction: column; /* 세로 방향 정렬 */
+}
+
+.contentWrapper {
+  background-color: white; /* 흰색 배경 추가 */
   padding: 20px;
   border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  width: 100%;
+  text-align: center; /* 모든 텍스트 가운데 정렬 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .profileSection {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .profileImage {
-  width: 100px; /* 이미지 크기를 적절히 조절하세요 */
+  width: 100px;
   height: 100px;
   border-radius: 50%;
   margin-bottom: 10px;
@@ -26,7 +36,6 @@
   border: none;
   color: white;
   font-size: 10px;
-  margin-top: 2px;
   padding: 10px 10px;
   border-radius: 5px;
   cursor: pointer;
@@ -36,35 +45,31 @@
 .profileButton:hover {
   background-color: white;
   color: #FF6347;
-  /* border: 2px solid #FF6347; */
 }
 
 .infoSection {
-  flex: 1;
-  padding-left: 20px;
-  text-align: left;
-  
+  margin-top: 10px;
 }
 
 .infoSection h2 {
   font-size: 21px;
-  padding-bottom: 13px ;
+  margin-bottom: 10px;
 }
 
 .infoSection p {
-  font-size: 13px;
-  padding-bottom: 5px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .buttons {
-  padding-top: 9px;
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  justify-content: space-evenly;
+  margin-top: 15px;
 }
 
 .actionButton {
-  width: 75px;
+  width: 80px;
   height: 39px;
   background-color: #FF7F50;
   border: none;
@@ -73,14 +78,12 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 10px;
-  white-space: nowrap;
   border: 2px solid #FF6347;
 }
 
 .actionButton:hover {
   background-color: white;
   color: #FF6347;
-  /* border: 0.5px solid #FF6347; */
 }
 
 .actionButton.active {
