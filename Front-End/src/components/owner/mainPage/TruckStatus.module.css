@@ -46,16 +46,17 @@
   width: 65%;
   display: flex;
   flex-direction: column;
-  color: #407223; /* 기본 텍스트 색상 */
-  font-size: 0.9rem; /* 폰트 크기 작게 조정 */
+  color: #407223; 
+  font-size: 0.9rem; 
+  text-align: center;
 }
 
 .inputText {
-  color: #5bb527; /* 변경 텍스트 색상 */
+  color: #5bb527; 
   font-size: 1rem;
 }
 .inputTextStoreName{
-  color: #48a8c0; /* 변경 텍스트 색상 */
+  color: #48a8c0; 
   font-size: 1.5rem;
 }
 

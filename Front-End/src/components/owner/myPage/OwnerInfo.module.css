@@ -1,5 +1,5 @@
 .container {
-  background-color: #e2f2d9;
+  background-color: #eaffc9;
   padding: 4%;
   border-radius: 10px;
   width: 90%;
@@ -14,7 +14,7 @@
   border-radius: 10px;
   width: 100%;
   text-align: center; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .profileSection {
