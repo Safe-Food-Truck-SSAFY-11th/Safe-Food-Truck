@@ -43,17 +43,17 @@ function BroadCastList() {
 
   return (
     <div className={styles.container}>
+      {items && items.length > 0 ? (
       <Slider {...settings}>
-        {items && items.length > 0 ? (
-          items.map((item, index) => (
+          {items.map((item, index) => (
             <div key={index}>
               <BroadCastItem storeInfo={item.storeInfo} />
             </div>
-          ))
+          ))}
+          </Slider>
         ) : (
-          <div>Loading...</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
-        )}
-      </Slider>
+          <div style={{textAlign:'center'}}>현재 방송중인 푸드트럭이 없습니다.</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
+      )}
     </div>
   );
 }
