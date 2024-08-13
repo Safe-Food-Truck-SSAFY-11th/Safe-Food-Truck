@@ -15,5 +15,6 @@ public interface NotificationService {
     void completedSendNotify(String orderEmail, String storeName, Integer orderId);
     void orderedSendNotify(String ownerEmail);
     void liveStartNotify(Integer storeId);
+    void liveEndNotify(Integer storeId);
     void registReviewNotify(String ownerEmail, Integer storeId);
 }
