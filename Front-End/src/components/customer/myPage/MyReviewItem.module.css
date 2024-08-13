@@ -1,27 +1,27 @@
 .reviewCard {
-  background-color: white;
+  background-color: #FEC87F;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
   padding: 10px;
   width: 100%;
-  height: 300px; /* 리뷰 카드의 고정된 높이 */
+  height: 400px; /* 리뷰 카드의 고정된 높이 */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .reviewContent {
+  position: relative;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
+  height: 65%;
+  width: 100%;
 }
 
 .reviewImages {
-  width: 200px;
-  height: 150px;
-  margin-right: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 1vh 9.5vw 0 9.5vw;
+  display: flex;
+  justify-content: center;
 }
 
 .reviewImage {
@@ -29,7 +29,6 @@
   height: 100%;
   object-fit: cover; /* 이미지가 컨테이너를 채우도록 함 */
   border-radius: 5px;
-  overflow: hidden; /* 필요시, 컨테이너를 넘어가는 부분 숨김 */
 }
 
 .slick-slide img {
@@ -40,54 +39,50 @@
 }
 
 .reviewText {
-  flex-grow: 1;
-  margin-top: 10px;
+  height: 30%;
+  padding: 0 1vw 1vh 1vw;
 }
 
-.reviewText h4 {
-  font-size: 18px;
-  margin-bottom: 5px;
+.reviewAuthor {
+  font-size: 1.25rem;
 }
-
-.reviewText p {
-  font-size: 14px;
-  margin-bottom: 5px;
+.reviewContentBox{
+  padding: 2% 0 0 1.5%;
   word-break: break-word; /* 길게 이어지는 단어를 줄바꿈 처리 */
+  font-size: 0.9rem;
 }
-
+.hrBox{
+  height: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .hrLine {
-  border: 0;
-  border-top: 1px solid #FF4500;
-  margin: 10px 0;
+  border: 0px;
+  border-top: 1px solid #ffffff;
 }
 
 .noImage {
+  width: 100%;
+  height: 100%;
+  padding: 1vh 9.5vw 0 9.5vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 150px; /* 이미지 영역의 높이와 동일하게 설정 */
-  color: black;
-  font-size: 14px;
-  border-radius: 5px;
 }
 
 .deleteButton {
+  position: absolute;
+  right: 0px;
   background: none;
   border: none;
-  font-size: 1.5em;
+  font-size: 0.95rem;
   color: #FF6347;
   cursor: pointer;
 }
 
 .deleteButton:hover {
   color: #FF4500;
-}
-
-.reviewImageCarousel {
-  width: 200px;  /* 슬라이더의 크기와 이미지 컨테이너 크기를 맞춤 */
-  height: 150px;
-  margin-bottom: 10px;
 }
 
 .slick-prev, .slick-next {
