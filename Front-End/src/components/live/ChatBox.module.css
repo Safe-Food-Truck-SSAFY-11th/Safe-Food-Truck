@@ -7,12 +7,14 @@
 }
 
 .messageList {
-  overflow-y: auto;
-  padding: 10px;
+  padding: 4% 4% 4% 4%;
   display: flex;
   flex-direction: column;
   min-width: 300px; /* 최소 너비 */
   height: 100%;
+
+  overflow-y: auto; /* 내부에서만 스크롤 발생 */
+  max-height: 400px; /* 스크롤이 필요한 경우를 위한 최대 높이 설정 */
 }
 
 .message {

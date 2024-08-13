@@ -54,7 +54,10 @@ const Live = () => {
   const [notice, setNotice] = useState(storeNotice);
 
   //트럭사진
-  const truckImg = truckInfo?.storeImageDto?.savedUrl === "empty";
+  const truckImg =
+    truckInfo?.storeImageDto?.savedUrl === "empty"
+      ? truck_img
+      : truckInfo?.storeImageDto?.savedUrl;
 
   //방송 참여자 이메일 목록
   const members = useRef(new Set());
@@ -396,7 +399,11 @@ const Live = () => {
   };
 
   //채팅창 열고 닫기
-  const toggleChat = () => {
+  const toggleChat = (from) => {
+    if (from === "inputBox" && isChat) {
+      //채팅창 열려있는 상태에서 눌러도 반응X
+      return;
+    }
     setIsChat(!isChat);
   };
 
@@ -518,8 +525,14 @@ const Live = () => {
             </div>
           ) : null}
 
-          {isChat ? (
-            <div className={styles.chatContainer}>
+          <div
+            className={`${styles.chatContainer} ${
+              isChat
+                ? styles.chatContainerExpanded
+                : styles.chatContainerCollapsed
+            }`}
+          >
+            <div className={styles.buttons}>
               {role.indexOf("owner") !== -1 ? (
                 <button
                   className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
@@ -530,51 +543,56 @@ const Live = () => {
                 </button>
               ) : null}
               <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+                className={styles.closeButton}
                 id="buttonChat"
                 onClick={toggleChat}
               >
-                {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
+                {isChat ? "×" : ""}
               </button>
-              {notice === "" ? null : (
-                <div className={styles.noticeBox}>
-                  <div>
-                    <img
-                      className={styles.truckImg}
-                      src={truckImg}
-                      alt="트럭이미지"
-                    />
-                  </div>
-
-                  <div className={styles.noticeInfo}>
-                    <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
-                    <div className={styles.noticeContent}>{notice}</div>
-                  </div>
-                </div>
-              )}
-
-              <ChatBox
-                messages={messages}
-                ownerNickname={ownerNickname}
-                truckName={truckName}
-              />
-              <div className={styles.chatInputBox}>
-                <form onSubmit={sendMessage} className={styles.messageForm}>
-                  <input
-                    type="text"
-                    className={styles.messageInput}
-                    value={message}
-                    onChange={handleMessageChange}
-                    placeholder="채팅을 입력하세요"
-                    maxLength={200}
-                  />
-                  <button type="submit" className={styles.sendButton}>
-                    전송
-                  </button>
-                </form>
-              </div>
             </div>
-          ) : null}
+            {notice === "" ? null : (
+              <div className={styles.noticeBox}>
+                <div>
+                  <img
+                    className={styles.truckImg}
+                    src={truckImg}
+                    alt="트럭이미지"
+                  />
+                </div>
+
+                <div className={styles.noticeInfo}>
+                  <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
+                  <div className={styles.noticeContent}>{notice}</div>
+                </div>
+              </div>
+            )}
+
+            <ChatBox
+              messages={messages}
+              ownerNickname={ownerNickname}
+              truckName={truckName}
+            />
+            <div
+              className={styles.chatInputBox}
+              onClick={() => {
+                toggleChat("inputBox");
+              }}
+            >
+              <form onSubmit={sendMessage} className={styles.messageForm}>
+                <input
+                  type="text"
+                  className={styles.messageInput}
+                  value={message}
+                  onChange={handleMessageChange}
+                  placeholder="채팅을 입력하세요"
+                  maxLength={200}
+                />
+                <button type="submit" className={styles.sendButton}>
+                  전송
+                </button>
+              </form>
+            </div>
+          </div>
 
           <div className={styles.sessionHeader}>
             {role.indexOf("customer") !== -1 ? (
