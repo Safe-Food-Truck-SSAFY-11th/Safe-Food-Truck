@@ -40,7 +40,15 @@ function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const { getLoginedEmail } = useUserStore();
-  const { ownerOrderNotice, setOwnerOrderNotice, setOwnerOrderNoticeMessage, setOwnerLiveStratFlag, setOwnerLiveEndFlag, ownerLiveStratFlag, ownerLiveEndFlag } = useEventStore();
+  const {
+    ownerOrderNotice,
+    setOwnerOrderNotice,
+    setOwnerOrderNoticeMessage,
+    setOwnerLiveStratFlag,
+    setOwnerLiveEndFlag,
+    ownerLiveStratFlag,
+    ownerLiveEndFlag,
+  } = useEventStore();
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
 
   useEffect(() => {
@@ -401,6 +409,7 @@ function ContentWrapper({ children }) {
     "/social-redirection",
     "/findId",
     "/findPassword",
+    "/survey",
   ]; // 푸터를 숨기고 싶은 경로
   const footerHeight = hideFooterPaths.includes(location.pathname) ? 0 : "69px"; // 푸터 높이 설정
 
