@@ -8,6 +8,7 @@ import customerStore from "store/users/customer/customerStore";
 import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
+  const { isModalOpen, openModal } = useLiveStore();
   const navigate = useNavigate();
   const { storeId } = useParams();
 
@@ -24,6 +25,7 @@ function FoodTruckSummary({ truck }) {
       );
 
       if (response.status === 204) {
+        openModal();
       } else {
         const token = response.data;
         navigate(`/live/${sessionId}`);
@@ -70,10 +72,8 @@ function FoodTruckSummary({ truck }) {
     try {
       if (checkJJimTruck) {
         await unJJimTruck(favId);
-        // setCheckJJimTruck(false);
       } else {
         await JJimTruck(storeId);
-        // setCheckJJimTruck(true);
       }
       await fetchJJimTruckStatus();
     } catch (error) {
