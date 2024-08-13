@@ -10,6 +10,7 @@ import com.safefoodtruck.sft.order.dto.response.OrderDetailResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderRegistResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.dto.response.OwnerOrderListResponseDto;
+import com.safefoodtruck.sft.order.dto.response.CustomerPreparingOrderListResponseDto;
 import com.safefoodtruck.sft.order.dto.response.WeeklyCustomerOrderSummaryResponseDto;
 import com.safefoodtruck.sft.order.exception.AlreadyCompletedOrderException;
 import com.safefoodtruck.sft.order.exception.AlreadyProcessedOrderException;
@@ -124,6 +125,25 @@ public class OrderController {
     public ResponseEntity<CustomerOrderListResponseDto> findCustomerOrderList() {
         CustomerOrderListResponseDto customerOrderList = orderService.findCustomerOrderList();
         return new ResponseEntity<>(customerOrderList, OK);
+    }
+    @GetMapping("customers/preparing")
+    @PreAuthorize("hasAnyRole('ROLE_customer', 'ROLE_vip_customer')")
+    @Operation(summary = "진행 중인 주문 목록 조회(손님)", description = "진행 중인 주문 목록을 조회할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "진행 중인 주문 목록 조회에 성공하였습니다!",
+            content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error Message 로 전달함",
+            content = @Content(mediaType = "application/json")
+        )
+    })
+    public ResponseEntity<CustomerPreparingOrderListResponseDto> find() {
+        CustomerPreparingOrderListResponseDto acceptedPreparingOrders = orderService.findAcceptedPreparingOrders();
+        return new ResponseEntity<>(acceptedPreparingOrders, OK);
     }
 
     @GetMapping("/customers/pattern")

@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.order.repository;
 
+import com.safefoodtruck.sft.order.dto.response.CustomerPreparingOrderListResponseDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface OrderRepositoryCustom {
 	List<Order> findOrdersByStoreOwnerEmailAndOrderTimeBetween(String email, LocalDateTime start, LocalDateTime end);
 	CustomerOrderListResponseDto findCustomerOrdersByEmail(String email);
 	WeeklyCustomerOrderSummaryResponseDto findWeeklyCustomerOrderSummary(String email, LocalDateTime weekAgo);
+	CustomerPreparingOrderListResponseDto findAcceptedPreparingOrders(String email);
 }
