@@ -11,7 +11,7 @@ const MyReviewList = ({ memberInfo }) => {
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-
+  console.log(myReviews)
   // 삭제 모달 열기
   const openDeleteModal = (reviewId, orderId) => {
     setSelectedReviewId(reviewId);
@@ -42,8 +42,8 @@ const MyReviewList = ({ memberInfo }) => {
     getAllMyReview();
   }, []);
 
-  const myReviewList = myReviews.reviewList || [];
-
+  const myReviewList = myReviews.reviewResponseDtos || [];
+  
   return (
     <div className={styles.container}>
       {myReviewList.length === 0 ? (

@@ -3,8 +3,6 @@
   padding: 20px;
   border-radius: 10px;
   text-align: left;
-  min-height: 100vh; /* 화면 전체를 채우도록 최소 높이를 100vh로 설정 */
-  box-sizing: border-box; /* 패딩을 포함한 전체 너비/높이 계산 */
 }
 
 .container h3 {
@@ -72,7 +70,14 @@
 
 .container p {
   text-align: center;
-  /* color: red; */
+}
+
+
+.reviewButton:disabled {
+background-color: #9e9e9e;
+color: white;
+cursor: not-allowed;
+border: 2px solid #9e9e9e;
 }
 
 .noOrderPast {
