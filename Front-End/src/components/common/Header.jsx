@@ -53,8 +53,6 @@ const Header = () => {
     navigate(-1);
   };
 
-  const isMyPage = location.pathname.startsWith("/mypage");
-
   // 로그인 유저 role에 따른 렌더링 변경
   const renderHeader = () => {
     if (role.indexOf("customer") !== -1) {
@@ -64,21 +62,16 @@ const Header = () => {
             <div className={styles.leftSection}>
               {" "}
               <div className={styles.icon} onClick={handleGoBack}>
-                <IoIosArrowBack size="25" color="gray" />
+                <IoIosArrowBack size="25" color="black" />
               </div>
             </div>
             <div className={styles.centerSection}>세이푸트</div>
             <div className={styles.rightSection}>
               <div className={styles.icon} onClick={handleLogout}>
-                <FiLogOut size="25" color="gray" />
+                <FiLogOut size="25" color="black" />
               </div>
             </div>
           </div>
-          <Notification
-            show={showNotification}
-            onClose={() => setNotification(false)}
-            notifications={notifications}
-          />
         </header>
       );
     } else {
@@ -88,7 +81,7 @@ const Header = () => {
           <div className={styles.topSection}>
             <div className={styles.leftSection}>
               <div className={styles.icon} onClick={handleGoBack}>
-                <IoIosArrowBack size="25" color="gray" />
+                <IoIosArrowBack size="25" color="black" />
               </div>
             </div>
 
@@ -96,15 +89,10 @@ const Header = () => {
 
             <div className={styles.rightSection}>
               <div className={styles.icon} onClick={handleLogout}>
-                <FiLogOut size="25" color="gray" />
+                <FiLogOut size="25" color="black" />
               </div>
             </div>
           </div>
-          <Notification
-            show={showNotification}
-            onClose={() => setNotification(false)}
-            notifications={notifications}
-          />
         </header>
       );
     }

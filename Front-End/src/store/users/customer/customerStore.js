@@ -35,6 +35,8 @@ const customerStore = create((set, get) => ({
   // 내 소비패턴 객체 추가
   mySobiPattern: null,
 
+  myNotification: [],
+
 
   setForm: (name, value) => {
     const updatedForm = { ...get().form, [name]: value };
@@ -73,6 +75,23 @@ const customerStore = create((set, get) => ({
 
     }
   },
+
+
+  // 알림 가져오는 함수
+  getNotification: async () => {
+    try {
+
+      const response = await axiosInstance.get('notifications')
+
+      set({ myNotification : response.data});
+  
+    } catch (error) {
+
+      console.error('못 가져옴' , error);
+
+    }
+  },
+
 
   // 회원 정보 수정하는 함수
   modifyMemberInfo: async (updateData) => { 
