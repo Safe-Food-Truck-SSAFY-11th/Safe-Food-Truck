@@ -6,6 +6,14 @@ const useEventStore = create((set, get) => ({
     ownerOrderNoticeMessage: null,
     setOwnerOrderNotice: (ownerOrderNotice) => set({ ownerOrderNotice }),
     setOwnerOrderNoticeMessage: (ownerOrderNoticeMessage) => set({ ownerOrderNoticeMessage }),
+    
+    // 방송 시작
+    ownerLiveStratFlag: false,
+    setOwnerLiveStratFlag: (ownerLiveStratFlag) => set({ownerLiveStratFlag}),
+
+    // 방송 종료
+    ownerLiveEndFlag: false,
+    setOwnerLiveEndFlag: (ownerLiveEndFlag) => set({ownerLiveEndFlag}),
 }));
 
 export default useEventStore;

@@ -3,13 +3,15 @@ import Slider from 'react-slick';
 import BroadCastItem from './BroadCastItem';
 import styles from './BroadCastList.module.css';
 import axiosInstance from 'utils/axiosInstance';
+import useEventStore from "store/eventStore";
 
 function BroadCastList() {
   const [items, setItems] = useState([]); // 초기 상태 설정
-
+  const { ownerLiveStratFlag, setOwnerLiveStratFlag } = useEventStore();
+  const { ownerLiveEndFlag, setOwnerLiveEndFlag } = useEventStore();
   useEffect(() => {
     getLiveList();
-  }, []); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+  }, [ownerLiveStratFlag, ownerLiveEndFlag]); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
   console.log("items: ", items);
   const settings = {
     infinite: false,
