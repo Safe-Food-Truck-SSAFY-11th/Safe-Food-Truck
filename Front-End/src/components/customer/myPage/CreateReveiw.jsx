@@ -168,6 +168,7 @@ const CreateReview = () => {
         onChange={(e) => updateCurrentReview('content', e.target.value)}
         placeholder="리뷰 내용"
         className={styles.textarea}
+        maxLength={100}
       />
 
       <div className={styles.checkboxContainer}>
