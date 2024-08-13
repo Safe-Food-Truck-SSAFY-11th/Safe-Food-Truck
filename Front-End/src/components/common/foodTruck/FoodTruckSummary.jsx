@@ -112,8 +112,6 @@ function FoodTruckSummary({ truck }) {
           </button>
         </div>
       </div>
-
-      {isModalOpen && <NoLiveModal />}
     </header>
   );
 }
