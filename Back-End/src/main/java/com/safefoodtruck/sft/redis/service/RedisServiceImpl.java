@@ -1,6 +1,8 @@
 package com.safefoodtruck.sft.redis.service;
 
 import com.safefoodtruck.sft.redis.dto.OpenviduDto;
+import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
+import com.safefoodtruck.sft.store.service.StoreService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisServiceImpl implements RedisService {
 
 	private final RedisTemplate<String, Object> redisTemplate;
+    private final StoreService storeService;
 
     @Override
     public void setValue(RedisDto redisDto) {
@@ -49,9 +52,10 @@ public class RedisServiceImpl implements RedisService {
             for (String key : keys) {
                 // 각 키에 대해 값을 조회
                 Integer value = Integer.parseInt((String) redisTemplate.opsForValue().get(key));
+                StoreFindResponseDto storeInfo = storeService.findStoreById(Integer.parseInt(key));
                 // RedisDto 객체로 리스트에 추가
                 if (value != null) {
-                    redisDtos.add(new OpenviduDto(key, value));
+                    redisDtos.add(new OpenviduDto(key, value, storeInfo));
                 }
             }
             // 값(value)을 기준으로 내림차순 정렬
