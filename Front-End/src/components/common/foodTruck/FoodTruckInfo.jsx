@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './FoodTruckInfo.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
+import defaultImage from 'assets/images/truck-img.png'; 
 
 function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
   const { getFoodTruckLikes, likes } = useFoodTruckStore();
@@ -18,14 +19,18 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
       <div className={styles.section}>
         <h3>푸드트럭 사진</h3>
         <hr/>
-        {truck.storeImageDto?.savedUrl ? (
+        {truck.storeImageDto?.savedUrl && truck.storeImageDto.savedUrl !== 'empty' ? (
           <img
             src={truck.storeImageDto.savedUrl}
             alt={truck.name}
             className={styles.truckImage}
           />
         ) : (
-          <p>이미지 없음</p>
+          <img
+            src={defaultImage}
+            alt="디폴트 이미지"
+            className={styles.truckImage}
+          />
         )}
       </div>
       <div className={styles.section}>

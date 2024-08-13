@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import NoLiveModal from "./NoLiveModal";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
+import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
   const { isModalOpen, openModal } = useLiveStore();
@@ -86,13 +87,11 @@ function FoodTruckSummary({ truck }) {
 
   return (
     <header className={styles.header}>
-      {truck.storeImageDto?.savedUrl && (
-        <img
-          src={truck.storeImageDto.savedUrl}
-          alt={`${truck.name} 이미지`}
-          className={styles.truckImage}
-        />
-      )}
+      <img
+        src={truck.storeImageDto?.savedUrl === 'empty' || " " ? defaultImage : truck.storeImageDto.savedUrl}
+        alt={`${truck.name} 이미지`}
+        className={styles.truckImage}
+      />
       <div className={styles.textContainer}>
         <h1>
           {truck.name} ★ {truck.averageStar / 2}
@@ -113,8 +112,6 @@ function FoodTruckSummary({ truck }) {
           </button>
         </div>
       </div>
-
-      {isModalOpen && <NoLiveModal />}
     </header>
   );
 }
