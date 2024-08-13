@@ -19,8 +19,8 @@ const Star = ({ filled, half }) => (
 );
 
 const StarRating = ({ maxStars = 5, onRatingChange }) => {
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
+  const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(5);
 
   const bind = useDrag(({ movement: [mx], memo = rating }) => {
     const newRating = Math.min(maxStars, Math.max(0, Math.round((memo + mx / 24) * 2) / 2));
