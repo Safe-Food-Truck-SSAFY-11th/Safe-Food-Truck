@@ -9,7 +9,7 @@ import styles from "./FoodTruckDetail.module.css";
 import NoLiveModal from "./NoLiveModal";
 import useLiveStore from "store/live/useLiveStore";
 import customerOrderStore from "store/orders/customerOrderStore";
-
+import Header from 'components/common/Header';
 function FoodTruckDetail() {
   //모달창
   const { isModalOpen } = useLiveStore();
@@ -75,9 +75,10 @@ function FoodTruckDetail() {
   }
 
   return (
+    <div>
+    <Header/>
     <div className={styles.foodTruckDetail}>
       <FoodTruckSummary truck={selectedTruck} />
-
       <div className={styles.nav}>
         <button
           onClick={() => setView("menu")}
@@ -106,6 +107,7 @@ function FoodTruckDetail() {
       </div>
 
       {isModalOpen && <NoLiveModal />}
+    </div>
     </div>
   );
 }
