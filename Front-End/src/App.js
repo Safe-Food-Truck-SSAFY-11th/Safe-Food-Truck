@@ -423,7 +423,8 @@ function ContentWrapper({ children }) {
     "/findId",
     "/findPassword",
     "/survey",
-  ]; // 푸터를 숨기고 싶은 경로
+    "/permitAreaCheck",
+  ]; // 푸터를 숨기고 싶은 경로 or 화면 스크롤 안생기고 싶은 경로
   const footerHeight = hideFooterPaths.includes(location.pathname) ? 0 : "69px"; // 푸터 높이 설정
 
   return <div style={{ paddingBottom: footerHeight }}>{children}</div>;

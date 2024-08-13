@@ -9,6 +9,7 @@ import useTruckStore from "store/users/owner/truckStore";
 import { MdMyLocation } from "react-icons/md";
 import usePermitAreaStore from "store/trucks/usePermitAreaStore";
 import AreaWarning from "./AreaWarning";
+import Header from "components/common/Header";
 
 const PermitAreaCheck = () => {
   const [currLat, setCurrLat] = useState(36.3553601); // 기본값 설정
@@ -273,6 +274,7 @@ const PermitAreaCheck = () => {
 
   return (
     <>
+      <Header />
       <div className={styles.compSize}>
         <h3>오늘은 어디서 장사할까요? 🤔</h3>
         <div className={styles.permitAreaCheck}>

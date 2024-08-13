@@ -1,5 +1,5 @@
 .compSize {
-  height: 100vh;
+  height: calc(100vh - 135px);
   width: 100%;
   display: flex;
   flex-direction: column;
