@@ -8,6 +8,7 @@ const customerOrderStore = create(
       pastOrders: [],
       nowOrder: null,
       nowOrderId: null,
+      orderNow: null,
 
       setNowOrderId: (orderId) => set({ nowOrderId: orderId }),
 
@@ -26,11 +27,23 @@ const customerOrderStore = create(
         try {
           const response = await axiosInstance.get(`orders/${orderId}`);
           set({ nowOrder: response.data });
-          console.log(response.data);
         } catch (error) {
           console.error('주문 상세조회에 실패 했습니다', error);
         }
       },
+      
+      // 지금 진행중인 주문 조회
+      getNowOrder: async () => {
+        try {
+          const response = await axiosInstance.get('orders/customers/preparing');
+          set({ orderNow : response.data });
+        } catch (error) {
+          console.error('지금 진행 주문 가져오기 실패' , error);
+        }
+      }
+
+
+
     }),
     {
       name: 'customer-order-store', // 로컬 스토리지에 저장할 키 이름
