@@ -9,9 +9,20 @@ function BroadCastList() {
   const [items, setItems] = useState([]); // 초기 상태 설정
   const { ownerLiveStratFlag, setOwnerLiveStratFlag } = useEventStore();
   const { ownerLiveEndFlag, setOwnerLiveEndFlag } = useEventStore();
+
   useEffect(() => {
-    getLiveList();
-  }, [ownerLiveStratFlag, ownerLiveEndFlag]); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+    if (ownerLiveStratFlag) {
+      getLiveList();
+      setOwnerLiveStratFlag(false);
+    }
+  }, [ownerLiveStratFlag]); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+
+  useEffect(() => {
+    if (ownerLiveEndFlag) {
+      getLiveList();
+      setOwnerLiveEndFlag(false);
+    }
+  }, [ownerLiveEndFlag])
   console.log("items: ", items);
   const settings = {
     infinite: false,
@@ -32,17 +43,17 @@ function BroadCastList() {
 
   return (
     <div className={styles.container}>
+      {items && items.length > 0 ? (
       <Slider {...settings}>
-        {items && items.length > 0 ? (
-          items.map((item, index) => (
+          {items.map((item, index) => (
             <div key={index}>
               <BroadCastItem storeInfo={item.storeInfo} />
             </div>
-          ))
+          ))}
+          </Slider>
         ) : (
-          <div>Loading...</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
-        )}
-      </Slider>
+          <div style={{textAlign:'center'}}>현재 방송중인 푸드트럭이 없습니다.</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
+      )}
     </div>
   );
 }

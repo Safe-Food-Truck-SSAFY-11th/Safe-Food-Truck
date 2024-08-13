@@ -106,7 +106,7 @@ function App() {
         setNotificationMessage(data.message);
         setShowNotification(true);
         setOwnerOrderNoticeMessage(data.message);
-        setOwnerOrderNotice(!ownerOrderNotice);
+        setOwnerOrderNotice(true);
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
@@ -152,8 +152,7 @@ function App() {
 
         setNotificationMessage(data.message);
         setShowNotification(true);
-        setOwnerLiveStratFlag(!ownerLiveStratFlag);
-
+        setOwnerLiveStratFlag(true);
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
@@ -167,7 +166,7 @@ function App() {
         const data = JSON.parse(event.data);
         console.log(data);
 
-        setOwnerLiveEndFlag(!ownerLiveEndFlag);
+        setOwnerLiveEndFlag(true);
       });
 
       eventSource.onerror = (error) => {
