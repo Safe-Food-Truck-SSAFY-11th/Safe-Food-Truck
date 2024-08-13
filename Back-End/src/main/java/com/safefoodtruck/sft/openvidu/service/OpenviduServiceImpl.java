@@ -102,6 +102,7 @@ public class OpenviduServiceImpl implements OpenviduService {
                 log.info("disconnect token: " + connection.getToken());
                 session.forceDisconnect(connection);
             }
+            notificationService.liveEndNotify(Integer.parseInt(sessionId));
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new OpenviduException(e.getMessage());
         }
