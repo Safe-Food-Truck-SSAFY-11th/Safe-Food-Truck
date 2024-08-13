@@ -59,14 +59,14 @@ const CustomerCart = () => {
 
   const handleCheckout = async () => {
     const payload = {
-      storeId: storeId,
+      storeId: storeId.storeId,
       request: request,
       menuList: cartItems.map((item) => ({
         menuId: item.menuId,
         count: item.quantity,
       })),
     };
-
+  
     try {
       const response = await axiosInstance.post("orders", payload);
       alert("주문이 완료되었습니다!");
