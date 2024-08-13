@@ -4,6 +4,9 @@ import useReviewStore from '../../../store/reviews/useReviewStore';
 import StarRating from './StarRating';
 import styles from './CreateReview.module.css';
 import AWS from 'aws-sdk';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const CreateReview = () => {
   const { orderId } = useParams();
@@ -107,15 +110,38 @@ const CreateReview = () => {
   };
 
   const handleCheckboxChange = (e) => {
-    updateCurrentReview('is_visible', e.target.checked ? 1 : 0);
+    updateCurrentReview('is_visible', e.target.checked ? 0 : 1);
+  };
+
+  const settings = {
+    slide: 'div',
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.imageUpload} onClick={() => document.getElementById('imageUpload').click()}>
-        {reviewImages.map((image, index) => (
-          <img className={styles.img} key={index} src={image} alt="이미지 업로드" />
-        ))}
+      <div className={styles.reviewImages} onClick={() => document.getElementById('imageUpload').click()}>
+        {reviewImages.length > 0  ? (
+          reviewImages.length === 1 ? (
+            <div>
+              <img src={reviewImages[0]} alt="review-single" className={styles.reviewImage} />
+            </div>
+          ) : (
+            <Slider {...settings}>
+              {reviewImages.map((img, index) => (
+                img.savedUrl !== 'empty' && (
+                  <div key={index}>
+                    <img src={img} alt={`review-${index}`} className={styles.reviewImage} />
+                  </div>
+                )
+              ))}
+            </Slider>
+          )
+        ) : <div className={styles.imageUpload}>image</div>}
         <input
           id="imageUpload"
           type="file"
@@ -124,7 +150,6 @@ const CreateReview = () => {
           style={{ display: 'none' }}
           onChange={handleImageUpload}
         />
-        <div className={styles.imagePlaceholder}>image</div>
       </div>
 
       <p>음식은 어떠셨나요?</p>
@@ -149,8 +174,9 @@ const CreateReview = () => {
         <label>
           <input
             type="checkbox"
-            checked={currentReview.is_visible === 1}
+            checked={currentReview.is_visible === 0}
             onChange={handleCheckboxChange}
+            value={currentReview.is_visible}
           />
           사장님에게만 보이게
         </label>
