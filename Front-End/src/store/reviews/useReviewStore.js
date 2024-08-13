@@ -8,7 +8,7 @@ const useReviewStore = create((set) => ({
   currentReview: {
     content: '',
     is_visible: 1,
-    rating: 0,
+    rating: 10,
     savedPath: 'empty',
     savedUrl: 'empty',
   },
@@ -18,7 +18,7 @@ const useReviewStore = create((set) => ({
       currentReview: {
         content: '',
         is_visible: 1,
-        rating: 0,
+        rating: 10,
         savedPath: 'empty',
         savedUrl: 'empty',
       },
@@ -45,7 +45,7 @@ const useReviewStore = create((set) => ({
         currentReview: {
           content: '',
           is_visible: 1,
-          rating: 0,
+          rating: 10,
           savedPath: 'empty',
           savedUrl: 'empty',
         },

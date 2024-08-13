@@ -89,7 +89,7 @@ function FoodTruckList({ openFoodTrucks, userLocation, selectedType }) {
           />
         ))
       ) : (
-        <p>현재 근처에 영업중인 푸드트럭이 없어요😂</p>
+        <p className={styles.noOpenTruck}>현재 근처에 영업중인 푸드트럭이 없어요😂</p>
       )}
     </div>
   );

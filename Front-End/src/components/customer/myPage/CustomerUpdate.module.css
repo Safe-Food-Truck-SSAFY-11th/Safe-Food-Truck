@@ -113,6 +113,7 @@
 }
 
 .updateButton,
+.validUpdateButton,
 .cancelButton {
   flex: 1;
   background-color: #8BC34A;
@@ -124,10 +125,16 @@
   margin: 0 5px; /* 버튼 사이 간격 */
 }
 
-.updateButton:hover {
+.validUpdateButton:hover {
   background-color: white;
   color: #8BC34A;
   border: 2px solid #8BC34A;
+}
+
+.updateButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+   cursor: not-allowed;
 }
 
 .cancelButton {

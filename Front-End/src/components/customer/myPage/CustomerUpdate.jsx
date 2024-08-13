@@ -236,7 +236,15 @@ const CustomerUpdate = () => {
           {(pnChecked === 'Duplicate' && form.phoneNumber !== initialPN) && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
         </div>
         <div className={styles.buttonGroup}>
-          <button type="submit" className={styles.updateButton} disabled={!isFormValid}>수정하기</button>
+        {!isFormValid ? (
+        <button type="submit" className={styles.updateButton} disabled>
+          수정하기
+        </button>
+      ) : (
+        <button type="submit" className={styles.validUpdateButton}>
+          수정하기
+        </button>
+      )}
           <button type="button" className={styles.cancelButton} onClick={() => navigate(-1)}>돌아가기</button>
         </div>
         <div className={styles.deleteAccountArea}>
