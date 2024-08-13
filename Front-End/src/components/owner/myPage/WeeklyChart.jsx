@@ -126,17 +126,17 @@ const WeeklyChart = ({ weeklySales }) => {
     <div className={styles.container}>
       <div className={styles.chartSummary}>
         <p>
-          주간 매출은 <strong>{totalWeeklySales}</strong>원 이에요
+          주간 매출은 <strong>{totalWeeklySales.toLocaleString()}</strong>원 이에요
         </p>
         <p>
-          <strong>{totalOrders}</strong>개의 주문을 받았어요
+          <strong>{totalOrders}</strong>개의 메뉴를 팔았어요
         </p>
       </div>
-      <div className={styles.weeklyMenu}>
+      <div className={styles.chartSummary}>
         <h3>이번주 팔린 메뉴</h3>
         <Pie data={weeklyPieData} options={pieChartOptions} />
       </div>
-      <div>
+      <div className={styles.chartSummary}>
         <h3>이번주 매출</h3>
         <Line data={weeklyLineData} />
       </div>

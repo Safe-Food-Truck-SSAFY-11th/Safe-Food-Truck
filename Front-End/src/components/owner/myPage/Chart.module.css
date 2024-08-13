@@ -8,6 +8,8 @@
   flex-direction: column;
   align-items: center;
   gap: 3vh;
+  border: 2px solid #2AC311;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .container p {
@@ -35,4 +37,13 @@
 
 .areaContainer {
   width: 100%;
+}
+
+.chartSummary {
+  width: 100%;
+  text-align: center;
+}
+
+.chartSummary strong {
+  color: #ff5100;
 }

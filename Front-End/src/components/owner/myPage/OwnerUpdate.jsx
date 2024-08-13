@@ -8,11 +8,12 @@ import AWS from 'aws-sdk';
 const OwnerUpdate = () => {
   const navigate = useNavigate();
 
-  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser, pwdValid, setPwdValid, passwordValidChk, passwordCheckTouched, setPasswordCheckTouched } = useUserStore();
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser, pwdValid, setPwdValid, passwordValidChk, passwordCheckTouched, setPasswordCheckTouched, pnChecked, checkPN } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [form, setForm] = useState({});
-  const [profileImage, setProfileImage] = useState(''); 
+  const [profileImage, setProfileImage] = useState('');
   const [initialNickname, setInitialNickname] = useState('');
+  const [initialPN, setInitialPN] = useState('');
 
   useEffect(() => {
     const today = new Date();
@@ -20,12 +21,13 @@ const OwnerUpdate = () => {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setMaxDate(`${yyyy}-${mm}-${dd}`);
-    
+
     const fetchData = async () => {
       try {
         const user = await fetchUser();
         setForm(user);
         setInitialNickname(user.nickname);
+        setInitialPN(user.phoneNumber);
         const imageUrl = user?.memberImage?.savedUrl === 'empty' ? profile_img : user?.memberImage?.savedUrl;
         setProfileImage(imageUrl);
       } catch (error) {
@@ -46,9 +48,9 @@ const OwnerUpdate = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     setForm({
-     ...form,
+      ...form,
       [name]: value,
     });
   }
@@ -84,7 +86,7 @@ const OwnerUpdate = () => {
     navigate('/mypageOwner', { state: { updated: true } });
   };
 
-  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch && pwdValid;
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch && pwdValid && (pnChecked === 'Possible' || form.phoneNumber === initialPN);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -93,30 +95,30 @@ const OwnerUpdate = () => {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-        setProfileImage(event.target.result);
+      setProfileImage(event.target.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleUpload = async () => {
     if (!selectedFile) {
-        return;
+      return;
     }
 
     // AWS S3 설정
     AWS.config.update({
-        accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
-        secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
-        region: `${process.env.REACT_APP_AWS_REGION}`,
+      accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+      secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+      region: `${process.env.REACT_APP_AWS_REGION}`,
     });
 
     const s3 = new AWS.S3();
 
     // 업로드할 파일 정보 설정
     const uploadParams = {
-        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-        Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
-        Body: selectedFile,
+      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+      Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+      Body: selectedFile,
     };
 
     // S3에 파일 업로드
@@ -140,19 +142,24 @@ const OwnerUpdate = () => {
     });
   };
 
+  const handlePNCheck = () => {
+    // 전화번호 중복 검사
+    checkPN(form.phoneNumber);
+  }
+
   const handleDeleteAcct = async () => {
     const confirmed = window.confirm('정말 탈퇴하시겠습니까?');
     if (confirmed) {
-        try {
-            const deleteUser = useUserStore.getState().deleteUser;
-            await deleteUser();
-            alert('탈퇴가 완료되었습니다.');
-            sessionStorage.clear();
-            window.location.href = '/login'; 
-        } catch (error) {
-            console.error('회원 탈퇴 오류:', error);
-            alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        }
+      try {
+        const deleteUser = useUserStore.getState().deleteUser;
+        await deleteUser();
+        alert('탈퇴가 완료되었습니다.');
+        sessionStorage.clear();
+        window.location.href = '/login';
+      } catch (error) {
+        console.error('회원 탈퇴 오류:', error);
+        alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
     }
   };
 
@@ -174,7 +181,7 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호</label>
-          <input type="password" name="password" value={form.password} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자'/>
+          <input type="password" name="password" value={form.password} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
           {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
         </div>
         <div className={styles.inputContainer}>
@@ -214,7 +221,12 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>전화번호</label>
-          <input type="number" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder='숫자만 입력하세요'/>
+          <div className={styles.emailContainer}>
+            <input type="number" name="phoneNumber" value={form.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요' />
+            <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
+          </div>
+          {pnChecked === 'Possible' && <p className={styles.hintText}>사용 가능한 전화번호입니다</p>}
+          {(pnChecked === 'Duplicate' && form.phoneNumber !== initialPN) && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
         </div>
         <div className={styles.inputContainer}>
           <label>사업자등록번호</label>
