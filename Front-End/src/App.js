@@ -40,7 +40,7 @@ function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const { getLoginedEmail } = useUserStore();
-  const { setOwnerOrderNotice, setOwnerOrderNoticeMessage } = useEventStore();
+  const { ownerOrderNotice, setOwnerOrderNotice, setOwnerOrderNoticeMessage, setOwnerLiveStratFlag, setOwnerLiveEndFlag, ownerLiveStratFlag, ownerLiveEndFlag } = useEventStore();
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
 
   useEffect(() => {
@@ -78,7 +78,7 @@ function App() {
       });
 
       // (손님) 찜한 가게 오픈
-      eventSource.addEventListener("open", (event) => {
+      eventSource.addEventListener("storeOpen", (event) => {
         // try catch문을 안넣으면 에러 발생 ㅜㅜ
         try {
           console.log(event);
@@ -106,12 +106,11 @@ function App() {
         setNotificationMessage(data.message);
         setShowNotification(true);
         setOwnerOrderNoticeMessage(data.message);
-        setOwnerOrderNotice(true);
+        setOwnerOrderNotice(!ownerOrderNotice);
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
-          setOwnerOrderNotice(false);
         }, 3000);
       });
 
@@ -146,18 +145,29 @@ function App() {
       });
 
       //방송시작 알림
-      eventSource.addEventListener("live", (event) => {
+      eventSource.addEventListener("liveStart", (event) => {
         console.log(event);
         const data = JSON.parse(event.data);
         console.log(data);
 
         setNotificationMessage(data.message);
         setShowNotification(true);
+        setOwnerLiveStratFlag(!ownerLiveStratFlag);
+
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
         }, 3000);
+      });
+
+      //방송종료 알림
+      eventSource.addEventListener("liveEnd", (event) => {
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        setOwnerLiveEndFlag(!ownerLiveEndFlag);
       });
 
       eventSource.onerror = (error) => {
