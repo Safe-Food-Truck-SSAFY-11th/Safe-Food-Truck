@@ -6,7 +6,7 @@
   padding: 10px;
   margin: 10px 0;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   width: 100%; /* 고정된 너비 설정 */
   height: 100px; /* 고정된 높이 설정 */
   box-sizing: border-box; /* 패딩을 포함한 전체 크기를 설정 */
