@@ -87,37 +87,26 @@ const OwnerInfo = () => {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.imageContainer}>
+        <div className={styles.contentWrapper}>
+          <div className={styles.profileSection}>
             <img src={imageUrl} alt="Truck Owner" className={styles.image} />
+            <button className={`${styles.profileButton} ${styles.button}`} onClick={handleUpdateClick}>
+              내 정보 수정
+            </button>
           </div>
-          <div className={styles.info}>
-            <div className={styles.infoContent}>
-              <p className={styles.infoText}>
-                반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
-                사장님!
-              </p>
-              <p className={styles.infoText}>
-                <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
-                손님 : <span className={styles.highlight}>{likes?.favoriteCount || 0}</span> 명
-              </p>
-              <p className={styles.infoText}>
-                <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
-              </p>
-            </div>
+          <div className={styles.infoContent}>
+            <p className={`${styles.headText} ${styles.infoText}`}>
+              반갑습니다 <span className={styles.highlight}>{ownerName}</span>{" "}
+              사장님!
+            </p>
+            <p className={styles.infoText}>
+              <span className={styles.highlight}>{truckName}</span> 트럭을 찜❤️한
+              손님 : <span className={styles.highlight}>{likes?.favoriteCount || 0}</span> 명
+            </p>
+            <p className={styles.infoText}>
+              <span className={styles.highlight}>{formattedIncome}</span>요일에 열어요
+            </p>
           </div>
-        </div>
-        <div className={styles.buttons}>
-          <button className={`${styles.profileButton} ${styles.button}`} onClick={handleUpdateClick}>
-            내 정보 수정
-          </button>
-          <button className={styles.button} onClick={handleTruckReviewClick}>리뷰 보기</button>
-          <button className={styles.button} onClick={handleTruckUpdateClick}>
-            트럭 관리
-          </button>
-          <button className={styles.button} onClick={handleMenuManageClick}>
-            메뉴 관리
-          </button>
         </div>
       </div>
       {showManageModal && <ManageStore modalClose={modalClose} />}

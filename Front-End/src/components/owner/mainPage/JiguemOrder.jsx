@@ -9,11 +9,15 @@ import useEventStore from 'store/eventStore';
 const JiguemOrder = () => {
     const { truckInfo } = useTruckStore();
     const { nowOrderList, getOrderList } = useOrderStore();
-    const { ownerOrderNotice } = useEventStore();
+    const { ownerOrderNotice, setOwnerOrderNotice } = useEventStore();
 
     useEffect(() => {
-        getOrderList();
-    }, [getOrderList, ownerOrderNotice]);
+        if (ownerOrderNotice) {
+            getOrderList();
+            setOwnerOrderNotice(false);
+        }
+        
+    }, [ownerOrderNotice]);
 
     // 상태 우선순위 정의
     const getStatusPriority = (order) => {
