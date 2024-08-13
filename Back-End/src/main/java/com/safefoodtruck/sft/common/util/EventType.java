@@ -7,7 +7,7 @@ public enum EventType {
     CREATE_ORDER("createOrder"),
     CREATE_REVIEW("createReview"),
     LIVE_START("liveStart"),
-    LIVE_END("livedEnd");
+    LIVE_END("liveEnd");
 
     private final String eventType;
 
