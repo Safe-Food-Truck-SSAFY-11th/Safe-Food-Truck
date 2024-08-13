@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FoodTruckItem from './FoodTruckItem';
 import styles from './FoodTruckList.module.css';
 import axios from 'axios';
+import defaultImage from 'assets/images/truck-img.png'
 
 function FoodTruckList({ openFoodTrucks, userLocation, selectedType }) {
   const trucks = openFoodTrucks.storeInfoResponseDtos || [];
@@ -83,7 +84,7 @@ function FoodTruckList({ openFoodTrucks, userLocation, selectedType }) {
             category={truck.menuCategory}
             address={truck.address}
             distance={truck.distance}
-            imageUrl={truck.storeImageDto?.savedUrl} // 이미지 URL 전달
+            imageUrl={truck.storeImageDto?.savedUrl === 'empty' || " " ? defaultImage : truck.storeImageDto.savedUrl } // 이미지 URL 전달
             onClick={() => navigate(`/foodtruckDetail/${truck.storeId}`)} // 클릭 시 디테일 페이지로 이동
           />
         ))

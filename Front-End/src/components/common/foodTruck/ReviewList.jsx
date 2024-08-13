@@ -23,10 +23,15 @@ function ReviewList({ reviews }) {
 
 
   if (reviews.length === 0) {
-    return <p className={styles.reviewList}>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>;
+    return(
+   <div className={styles.container}>
+     <p className={styles.noReviewList}>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>
+   </div>
+    )  
   }
   
   return (
+   <div className={styles.container}>
     <div className={styles.reviewList}>
       {reviews.map((review) => (
         <ReviewItem
@@ -36,6 +41,7 @@ function ReviewList({ reviews }) {
         />
       ))}
     </div>
+  </div>
   );
 }
 
