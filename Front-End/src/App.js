@@ -400,6 +400,7 @@ function FooterWrapper(userType) {
 }
 
 function ContentWrapper({ children }) {
+  //푸터높이만큼 패딩 넣어줌
   const location = useLocation();
   const hideFooterPaths = [
     "/",
@@ -411,6 +412,7 @@ function ContentWrapper({ children }) {
     "/findPassword",
     "/survey",
     "/permitAreaCheck",
+    "/mainCustomer",
   ]; // 푸터를 숨기고 싶은 경로 or 화면 스크롤 안생기고 싶은 경로
   const footerHeight = hideFooterPaths.includes(location.pathname) ? 0 : "69px"; // 푸터 높이 설정
 
