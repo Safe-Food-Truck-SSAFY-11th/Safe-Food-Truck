@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import BroadCastItem from './BroadCastItem';
 import styles from './BroadCastList.module.css';
+import axiosInstance from 'utils/axiosInstance';
 
 function BroadCastList() {
-  const items = [1, 2, 3, 4, 5, 6]; // 예시 데이터
+  const [items, setItems] = useState([]); // 초기 상태 설정
 
+  useEffect(() => {
+    getLiveList();
+  }, []); // 빈 배열을 의존성으로 설정하여 처음 마운트될 때만 호출되도록 설정
+  console.log("items: ", items);
   const settings = {
     infinite: false,
     speed: 1000,
@@ -13,14 +18,28 @@ function BroadCastList() {
     slidesToScroll: 1
   };
 
+  const getLiveList = async() => {
+    try {
+      const response = await axiosInstance.post("/sessions/get-live-list");
+      setItems(response.data); // 상태를 업데이트
+      console.log("방송 리스트: ", response.data);
+    } catch (error) {
+      console.error("방송 리스트를 가져오는 중 오류 발생:", error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Slider {...settings}>
-        {items.map((item, index) => (
-          <div key={index}>
-            <BroadCastItem />
-          </div>
-        ))}
+        {items && items.length > 0 ? (
+          items.map((item, index) => (
+            <div key={index}>
+              <BroadCastItem storeInfo={item.storeInfo} />
+            </div>
+          ))
+        ) : (
+          <div>Loading...</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
+        )}
       </Slider>
     </div>
   );

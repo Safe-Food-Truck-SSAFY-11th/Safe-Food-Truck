@@ -47,9 +47,9 @@ function MainCustomer() {
   return (
     <div className={styles.container}>
       <Header />
-      <SurveyArea />
+      <BroadCastList/>
       <hr className={styles.hr}/>
-      <h3 className={styles.h3}> 반가워요 {nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
+      <h3 className={styles.h3mainpage}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
       <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
       <div className={styles.buttons}>
         <button

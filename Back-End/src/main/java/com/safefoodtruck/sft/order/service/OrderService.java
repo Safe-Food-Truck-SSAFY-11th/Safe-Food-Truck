@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.order.service;
 
+import com.safefoodtruck.sft.order.dto.response.CustomerPreparingOrderListResponseDto;
 import java.util.List;
 
 import com.safefoodtruck.sft.order.dto.request.OrderRegistRequestDto;
@@ -17,6 +18,7 @@ public interface OrderService {
     String completeOrder(Integer orderId);
     CustomerOrderListResponseDto findCustomerOrderList();
     OwnerOrderListResponseDto findStoreOrderList();
+    CustomerPreparingOrderListResponseDto findAcceptedPreparingOrders();
     OrderDetailResponseDto findOrderDetail(Integer orderId);
     List<OrderSummaryResponseDto> getWeeklyOrderSummary();
     WeeklyCustomerOrderSummaryResponseDto getWeeklyCustomerOrderSummary();
