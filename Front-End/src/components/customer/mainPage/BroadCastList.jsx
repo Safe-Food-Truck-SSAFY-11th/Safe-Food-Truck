@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import BroadCastItem from './BroadCastItem';
 import styles from './BroadCastList.module.css';
 import axiosInstance from 'utils/axiosInstance';
-import useEventStore from "store/eventStore";
+import { useEventStore } from "store/eventStore";
 
 function BroadCastList() {
   const [items, setItems] = useState([]); // 초기 상태 설정

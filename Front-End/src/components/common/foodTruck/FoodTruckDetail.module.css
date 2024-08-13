@@ -5,26 +5,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffcc80; /* 배경 색상 */
-  padding: 15px; /* 패딩을 조정하여 더 작은 화면에 맞춤 */
+  background-color: #ffcc80; 
+  padding: 15px; 
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%; /* 화면 너비에 맞게 조정 (양쪽에 약간의 여유 공간 확보) */
-  max-width: 412px; 
-  /* margin: 15px auto; */
+  width: 100%; 
   height: 100%; 
 }
 
 .nav {
   width: 100%;
   display: flex;
-  justify-content: space-between; /* 버튼 간격 수정 */
+  justify-content: space-between;
 }
 
 .nav button {
   background: none;
   border: none;
-  padding: 8px 16px; /* 패딩을 줄여서 작은 화면에 맞춤 */
+  padding: 8px 16px;
   cursor: pointer;
   font-size: 18px; /* 폰트 크기를 줄여 작은 화면에 맞춤 */
   margin: 0 20px; /* 버튼 사이의 간격 줄이기 */

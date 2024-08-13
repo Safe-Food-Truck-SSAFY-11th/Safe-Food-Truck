@@ -34,21 +34,29 @@ import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
 import Footer from "components/common/Footer";
 
-import useEventStore from "store/eventStore";
+import { useEventStore, useCustomerEventStore } from 'store/eventStore';
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const { getLoginedEmail } = useUserStore();
-  const {
-    ownerOrderNotice,
-    setOwnerOrderNotice,
-    setOwnerOrderNoticeMessage,
-    setOwnerLiveStratFlag,
-    setOwnerLiveEndFlag,
-    ownerLiveStratFlag,
+  
+  const { 
+    ownerOrderNotice, 
+    setOwnerOrderNotice, 
+    setOwnerOrderNoticeMessage, 
+    setOwnerLiveStratFlag, 
+    setOwnerLiveEndFlag, 
+    ownerLiveStratFlag, 
     ownerLiveEndFlag,
   } = useEventStore();
+  
+  const { 
+    setCustomerOrderNotice, 
+    setCustomerOrderNoticeMessage, 
+    setCustomerOrderDetail,
+} = useCustomerEventStore();
+
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
 
   useEffect(() => {
@@ -78,6 +86,9 @@ function App() {
 
         setNotificationMessage(data.message);
         setShowNotification(true);
+        setCustomerOrderNoticeMessage(data.message);
+        setCustomerOrderNotice(true);
+        setCustomerOrderDetail(data);
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
@@ -95,6 +106,8 @@ function App() {
 
           setNotificationMessage(data.message);
           setShowNotification(true);
+          setCustomerOrderNoticeMessage(data.message);
+          setCustomerOrderNotice(true);
 
           // 2초 후에 알림 메시지를 숨김
           setTimeout(() => {

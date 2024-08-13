@@ -16,5 +16,14 @@ const useEventStore = create((set, get) => ({
     setOwnerLiveEndFlag: (ownerLiveEndFlag) => set({ownerLiveEndFlag}),
 }));
 
-export default useEventStore;
+const useCustomerEventStore = create((set, get) => ({
+    // 손님 주문 했을때
+    customerOrderNotice: false,
+    customerOrderNoticeMessage: null,
+    customerOrderDetail: null,
+    setCustomerOrderNotice: (customerOrderNotice) => set({ customerOrderNotice }),
+    setCustomerOrderNoticeMessage: (customerOrderNoticeMessage) => set({ customerOrderNoticeMessage }),
+    setCustomerOrderDetail: (customerOrderDetail) => set ({customerOrderDetail}),
+}));
 
+export { useEventStore, useCustomerEventStore };
