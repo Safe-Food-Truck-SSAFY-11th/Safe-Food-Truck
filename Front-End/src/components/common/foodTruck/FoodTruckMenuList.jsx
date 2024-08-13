@@ -12,7 +12,11 @@ function FoodTruckMenuList({ menus , storeId }) {
 
   // 가져온 데이터에 메뉴가 담긴게 없다면 트럭에 등록된 메뉴 없음을 리턴
   if (menuItems.length === 0) {
-    return <div>아직 트럭에 등록된 메뉴가 없어요! 🤣</div>
+    return (
+  <div className={styles.container}>
+    <div className={styles.noMenuList}>아직 트럭에 등록된 메뉴가 없어요! 🤣</div>
+  </div>
+    )
   }
 
   // menuItems에 들어있는 요소들을 반복문 돌면서 렌더링 함

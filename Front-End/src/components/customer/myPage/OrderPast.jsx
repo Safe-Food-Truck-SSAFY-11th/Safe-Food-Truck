@@ -3,28 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import styles from './OrderPast.module.css';
 import useReviewStore from 'store/reviews/useReviewStore';
 
-const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
+const OrderPast = ({ memberInfo, pastOrders }) => {
   const navigate = useNavigate();
   const { initCurrentReview } = useReviewStore();
-
-  const orders = pastOrders.customerOrderResponseDtos;
-  const reviews = myReviews.reviewList;
-
-  // 이미 작성된 리뷰의 orderId 리스트를 추출
-  const reviewedOrderIds = reviews.map(review => review.orderId);
 
   // 컴포넌트가 처음 마운트될 때만 상태 초기화
   useEffect(() => {
     initCurrentReview();
   }, [initCurrentReview]); // initCurrentReview를 의존성 배열에 추가
-  
-  // 과거 주문 내역을 역순으로 정렬
-  const results = [...orders].reverse();
+
+  // pastOrders 또는 customerOrderResponseDtos가 undefined인 경우 대비
+  const results = pastOrders?.customerOrderResponseDtos ? [...pastOrders.customerOrderResponseDtos].reverse() : [];
 
   const handleReviewButtonClick = (orderId) => {
     navigate(`/createReview/${orderId}`, { state: { memberInfo } });
-  };  
-  
+  };
+
   return (
     <div className={styles.container}>
       {results.length > 0 ? (
@@ -49,7 +43,6 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
                 <button
                   className={styles.reviewButton}
                   onClick={() => handleReviewButtonClick(order.orderId)}
-                  disabled={reviewedOrderIds.includes(order.orderId)} // 리뷰가 이미 작성된 주문이라면 버튼 비활성화
                 >
                   리뷰 쓰기
                 </button>
@@ -59,7 +52,7 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
         </>
       ) : (
         <div className={styles.noOrderPast}>
-        <p>{memberInfo.nickname} 님의 구매 내역이 없습니다 😅</p>
+          <p>{memberInfo.nickname} 님의 구매 내역이 없습니다 😅</p>
         </div>
       )}
     </div>

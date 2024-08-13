@@ -18,7 +18,7 @@
 .nav {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* 버튼 간격 수정 */
 }
 
 .nav button {
