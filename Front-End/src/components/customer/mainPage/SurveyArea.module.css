@@ -11,16 +11,14 @@
 
 .title {
   width: 100%;
-  font-weight: bold;
   font-size: 0.85em;
-} 
+}
 
 .surveyBtn button {
   border-radius: 10px;
   border: 2px solid #fec674;
   background-color: white;
   color: #fec674;
-  font-weight: bold;
   font-size: 1.5rem;
   vertical-align: middle;
   padding: 10px 20px 10px 20px;

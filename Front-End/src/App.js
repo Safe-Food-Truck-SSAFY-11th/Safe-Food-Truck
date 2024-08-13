@@ -28,7 +28,7 @@ import Survey from "components/survey/Survey";
 import Membership from "components/common/Membership";
 import Live from "components/live/Live";
 import ManageSchedule from "components/owner/myPage/ManageSchedule";
-import useUserStore from 'store/users/userStore';
+import useUserStore from "store/users/userStore";
 import PrivateRoute from "components/common/PrivateRoute";
 import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
@@ -39,10 +39,9 @@ import useEventStore from "store/eventStore";
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const {getLoginedEmail} = useUserStore();
+  const { getLoginedEmail } = useUserStore();
   const { setOwnerOrderNotice, setOwnerOrderNoticeMessage } = useEventStore();
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
-
 
   useEffect(() => {
     const loginedEmail = getLoginedEmail();
@@ -51,14 +50,16 @@ function App() {
     const setupSSEConnection = (userEmail) => {
       if (!userEmail) return;
 
-      const eventSource = new EventSource(`https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`);
+      const eventSource = new EventSource(
+        `https://i11b102.p.ssafy.io/api/global-notification/subscribe/${userEmail}`
+      );
 
       eventSource.onopen = () => {
         console.log("SSE connection opened");
       };
 
-      eventSource.addEventListener('connected', (event) => {
-        console.log(event.data)
+      eventSource.addEventListener("connected", (event) => {
+        console.log(event.data);
       });
 
       // (손님) 주문 수락, 주문 거절, 조리 완료
@@ -184,186 +185,190 @@ function App() {
         <div className="notification">{notificationMessage}</div>
       )}
       <Routes>
-      <Route path="/" element={<Waiting />} />
-      <Route path="/login" element={<LoginUser />} />
-      <Route path="/regist" element={<Regist />} />
-      <Route path="/socialRegist" element={<SocialRegist />} />
-      <Route path="/social-redirection" element={<SocialRedirection />} />
-      <Route path="/findId" element={<FindId />} />
-      <Route path="/findPassword" element={<FindPassword />} />
+        <Route path="/" element={<Waiting />} />
+        <Route path="/login" element={<LoginUser />} />
+        <Route path="/regist" element={<Regist />} />
+        <Route path="/socialRegist" element={<SocialRegist />} />
+        <Route path="/social-redirection" element={<SocialRedirection />} />
+        <Route path="/findId" element={<FindId />} />
+        <Route path="/findPassword" element={<FindPassword />} />
 
-
-      {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
-      <Route
-        path="/survey"
-        element={
-          <CustomerRoute>
-            <Survey />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/membership"
-        element={
-          <PrivateRoute>
-            <Membership />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/registTruck"
-        element={
-          <OwnerRoute>
-            <RegistTruck />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/mainOwner"
-        element={
-          <OwnerRoute>
-            <MainOwner />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/mainCustomer"
-        element={
-          <CustomerRoute>
-            <MainCustomer />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/permitAreaCheck"
-        element={
-          <OwnerRoute>
-            <PermitAreaCheck />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/mypageCustomer"
-        element={
-          <CustomerRoute>
-            <MyPageCustomer />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/customerUpdate"
-        element={
-          <CustomerRoute>
-            <CustomerUpdate />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/createReview/:orderId"
-        element={
-          <CustomerRoute>
-            <CreateReview />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/foodTruckDetail/:storeId"
-        element={
-          <CustomerRoute>
-            <FoodTruckDetail />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/cart"
-        element={
-          <CustomerRoute>
-            <CustomerCart />
-          </CustomerRoute>
-        }
-      />
-      <Route
-        path="/menuDetail/:menuId"
-        element={
-          <PrivateRoute>
-            <FoodTruckMenuDetail />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/mypageOwner"
-        element={
-          <OwnerRoute>
-            <MyPageOwner />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/ownerUpdate"
-        element={
-          <OwnerRoute>
-            <OwnerUpdate />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/manageTruck"
-        element={
-          <OwnerRoute>
-            <ManageTruck />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/manageMenu"
-        element={
-          <OwnerRoute>
-            <ManageMenu />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/chating"
-        element={
-          <PrivateRoute>
-            <Chating />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/ownerReview"
-        element={
-          <OwnerRoute>
-            <OwnerReview />
-          </OwnerRoute>
-        }
-      />
-      <Route
-        path="/live/:storeId"
-        element={
-          <PrivateRoute>
-            <Live />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/manageSchedule"
-        element={
-          <OwnerRoute>
-            <ManageSchedule />
-          </OwnerRoute>
-        }
-      />
-    </Routes>
-        <FooterWrapper userType={userType} />
-
+        {/* 아래 부터는 회원 또는 손님, 사장님으로 접근 제한 */}
+        <Route
+          path="/survey"
+          element={
+            <CustomerRoute>
+              <Survey />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/membership"
+          element={
+            <PrivateRoute>
+              <Membership />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/registTruck"
+          element={
+            <OwnerRoute>
+              <RegistTruck />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/mainOwner"
+          element={
+            <OwnerRoute>
+              <MainOwner />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/mainCustomer"
+          element={
+            <CustomerRoute>
+              <MainCustomer />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/permitAreaCheck"
+          element={
+            <OwnerRoute>
+              <PermitAreaCheck />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/mypageCustomer"
+          element={
+            <CustomerRoute>
+              <MyPageCustomer />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/customerUpdate"
+          element={
+            <CustomerRoute>
+              <CustomerUpdate />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/createReview/:orderId"
+          element={
+            <CustomerRoute>
+              <CreateReview />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/foodTruckDetail/:storeId"
+          element={
+            <CustomerRoute>
+              <FoodTruckDetail />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <CustomerRoute>
+              <CustomerCart />
+            </CustomerRoute>
+          }
+        />
+        <Route
+          path="/menuDetail/:menuId"
+          element={
+            <PrivateRoute>
+              <FoodTruckMenuDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mypageOwner"
+          element={
+            <OwnerRoute>
+              <MyPageOwner />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/ownerUpdate"
+          element={
+            <OwnerRoute>
+              <OwnerUpdate />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/manageTruck"
+          element={
+            <OwnerRoute>
+              <ManageTruck />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/manageMenu"
+          element={
+            <OwnerRoute>
+              <ManageMenu />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/chating"
+          element={
+            <PrivateRoute>
+              <Chating />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/ownerReview"
+          element={
+            <OwnerRoute>
+              <OwnerReview />
+            </OwnerRoute>
+          }
+        />
+        <Route
+          path="/live/:storeId"
+          element={
+            <PrivateRoute>
+              <Live />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manageSchedule"
+          element={
+            <OwnerRoute>
+              <ManageSchedule />
+            </OwnerRoute>
+          }
+        />
+      </Routes>
+      <FooterWrapper userType={userType} />
     </div>
   );
 }
 
 function FooterWrapper(userType) {
   const location = useLocation();
-  const hideFooterPaths = ["/", "/login", "/regist", "/socialRegist"]; // 푸터를 숨기고 싶은 경로
+  const hideFooterPaths = [
+    "/",
+    "/login",
+    "/regist",
+    "/socialRegist",
+    "/social-redirection",
+  ]; // 푸터를 숨기고 싶은 경로
 
   if (hideFooterPaths.includes(location.pathname)) {
     return null; // 푸터를 렌더링하지 않음
