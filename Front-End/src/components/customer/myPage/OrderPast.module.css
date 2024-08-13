@@ -1,81 +1,87 @@
 .container {
-    background-color: #FEC87F;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: left;
-  }
-  
-  .container h3 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .orderCard {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 10px;
-  }
-  
-  .orderContent {
-    padding-left: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  background-color: #FEC87F;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  min-height: 100vh; /* 화면 전체를 채우도록 최소 높이를 100vh로 설정 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비/높이 계산 */
+}
 
-  .orderContent h4 {
-    font-size: 20px;
-  }
+.container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-  .orderContent p {
-    font-size: 15px;
-  }
-  
-  .foodImage {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
-  
-  .orderDetails {
-    flex: 1;
-    margin-left: 10px;
-  }
-  
-  .orderDetails h4 {
-    margin: 0;
-    text-align: center;
-  }
-  
-  .orderDetails p {
-    margin: 5px 0;
-  }
-  
-  .reviewButton {
-    background-color: #8BC34A;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 2px solid #8BC34A;
-  }
-  
-  .reviewButton:hover {
-    background-color: white;
-    color: #7CB342;
-  }
-  
-  .container p {
-    text-align: center;
-  }
+.orderCard {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 10px;
+}
 
-  
-.reviewButton:disabled {
-  background-color: #9e9e9e;
+.orderContent {
+  padding-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.orderContent h4 {
+  font-size: 20px;
+}
+
+.orderContent p {
+  font-size: 15px;
+}
+
+.foodImage {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.orderDetails {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.orderDetails h4 {
+  margin: 0;
+  text-align: center;
+}
+
+.orderDetails p {
+  margin: 5px 0;
+}
+
+.reviewButton {
+  background-color: #8BC34A;
+  border: none;
   color: white;
-  cursor: not-allowed;
-  border: 2px solid #9e9e9e;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid #8BC34A;
+}
+
+.reviewButton:hover {
+  background-color: white;
+  color: #7CB342;
+}
+
+.container p {
+  text-align: center;
+  /* color: red; */
+}
+
+.noOrderPast {
+  text-align: center;
+  font-size: 1.1em;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin-top: 20px;
 }

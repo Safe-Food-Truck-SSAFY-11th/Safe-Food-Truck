@@ -42,14 +42,12 @@ const MyReviewList = ({ memberInfo }) => {
     getAllMyReview();
   }, []);
 
-
-
   const myReviewList = myReviews.reviewList || [];
 
   return (
     <div className={styles.container}>
       {myReviewList.length === 0 ? (
-        <p className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</p>
+        <div className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</div>
       ) : (
         <>
           <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>

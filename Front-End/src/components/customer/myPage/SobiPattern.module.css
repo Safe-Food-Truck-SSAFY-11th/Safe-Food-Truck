@@ -24,3 +24,15 @@
 .chartContainer {
   margin-top: 20px;
 }
+
+.noData {
+  text-align: center;
+  font-size: 1.1em;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin-top: 20px;
+}
+

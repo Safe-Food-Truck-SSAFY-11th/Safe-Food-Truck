@@ -45,11 +45,11 @@ function MainCustomer() {
   };
 
   return (
-    <>
+    <div className={styles.container}>
       <Header />
       <SurveyArea />
       <hr className={styles.hr}/>
-      <h3 className={styles.h3}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
+      <h3 className={styles.h3}> 반가워요 {nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
       <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
       <div className={styles.buttons}>
         <button
@@ -79,8 +79,7 @@ function MainCustomer() {
           <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
         )
       )}
-      <SurveyArea />
-    </>
+    </div>
   );
 }
 
