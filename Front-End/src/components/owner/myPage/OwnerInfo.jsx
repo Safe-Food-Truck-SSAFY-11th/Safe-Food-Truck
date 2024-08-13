@@ -6,6 +6,7 @@ import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import profile_img from "assets/images/profile_image.png"
 import ManageStore from "./ManageStore";
+import crownImage from '../../../assets/images/crown.png';
 
 const OwnerInfo = () => {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ const OwnerInfo = () => {
   const [showManageModal, setShowManageModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const { getLoginedRole } = userStore(); 
+
+  const [isCrown, setIsCrown] = useState(false);
 
   const imageUrl = userInfo?.memberImage?.savedUrl === 'empty' ? profile_img : userInfo?.memberImage?.savedUrl;
 
@@ -43,6 +47,15 @@ const OwnerInfo = () => {
     };
     fetchUserData();
   }, [fetchUser, location.state?.updated]);
+
+  useEffect(()=>{
+    var tempRole = getLoginedRole();
+    if(tempRole === "vip_owner"){
+      setIsCrown(true);
+    }else{
+      setIsCrown(false);
+    }
+  },[getLoginedRole()]);
 
   const handleUpdateClick = () => {
     navigate("/ownerUpdate");
@@ -89,7 +102,12 @@ const OwnerInfo = () => {
       <div className={styles.container}>
         <div className={styles.contentWrapper}>
           <div className={styles.profileSection}>
-            <img src={imageUrl} alt="Truck Owner" className={styles.image} />
+            <div className={styles.ownerprofileImageBox}>
+              <div className={styles.ownerprofileImageBox2}>
+                <img src={imageUrl} alt="Truck Owner" className={styles.image} />
+              </div>
+              {isCrown && <img src={crownImage} alt="Crown" className={styles.crown} />}
+            </div>
             <button className={`${styles.profileButton} ${styles.button}`} onClick={handleUpdateClick}>
               내 정보 수정
             </button>
