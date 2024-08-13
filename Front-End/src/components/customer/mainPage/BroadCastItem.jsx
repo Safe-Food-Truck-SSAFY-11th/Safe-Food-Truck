@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './BroadCastItem.module.css';
-import axiosInstance from 'utils/axiosInstance';
 
-function BroadCastItem() {
-  useEffect(()=>{
-    getLiveList()
-  }, []);
-  const getLiveList = async () => {
-    const response = await axiosInstance.get("");
-  }
+function BroadCastItem({ storeInfo }) {
+  console.log("이미지: ", storeInfo.storeImageDto.savedUrl);
   return (
-    <div className={styles.broadcastItem}>
-      <div className={styles.imagePlaceholder}>
-        가나다라
+    <div>
+      <div className={styles.broadcastItem}>
+        <div className={styles.imageWrapper}>
+          <div className={styles.imagePlaceholder}>
+            <img src={storeInfo.storeImageDto.savedUrl} alt="store" />
+          </div>
+        </div>
+        <a className={styles.liveListName}>{storeInfo.name}</a>
       </div>
     </div>
   );
