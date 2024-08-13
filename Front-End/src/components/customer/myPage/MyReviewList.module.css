@@ -3,5 +3,22 @@
     padding: 20px;
     border-radius: 10px;
     text-align: left;
-    height: 100%;
+    min-height: 100vh; /* 화면 전체를 채우도록 최소 높이를 100vh로 설정 */
+    box-sizing: border-box; /* 패딩을 포함한 전체 너비/높이 계산 */
+}
+
+.noReview {
+    text-align: center;
+    font-size: 1.1em;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    margin-top: 20px;
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 20px;
 }

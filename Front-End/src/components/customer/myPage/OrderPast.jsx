@@ -58,7 +58,9 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
           ))}
         </>
       ) : (
+        <div className={styles.noOrderPast}>
         <p>{memberInfo.nickname} 님의 구매 내역이 없습니다 😅</p>
+        </div>
       )}
     </div>
   );

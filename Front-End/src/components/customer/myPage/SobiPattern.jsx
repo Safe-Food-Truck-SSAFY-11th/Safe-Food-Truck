@@ -61,7 +61,9 @@ const SobiPatternPie = ({ memberInfo, mySobiPattern }) => {
             </p>
           </>
         ) : (
-          <div>소비패턴을 분석할 데이터가 부족해요 😅</div>
+          <div className={styles.noDataContainer}>
+          <div className={styles.noData}>소비패턴을 분석할 데이터가 부족해요 😅</div>
+          </div>
         )}
 
         <div className={styles.chartContainer}>
