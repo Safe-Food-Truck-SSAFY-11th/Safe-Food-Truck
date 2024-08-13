@@ -34,7 +34,7 @@
 .truckItem img {
   width: 80px;
   height: 80px;
-  object-fit: cover;
+  object-fit: contain; /* 이미지를 잘리지 않게 비율에 맞춰 조절 */
   border-radius: 5px;
   margin-right: 20px; /* 이미지와 텍스트 사이의 간격을 조정 */
 }

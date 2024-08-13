@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MyJjim.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
+import defaultImage from 'assets/images/truck-img.png'
 
 const MyJjim = ({ memberInfo, jjimTrucks }) => {
   const memberFavoriteList = jjimTrucks.memberFavoriteList || [];
@@ -62,10 +63,14 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
            onClick={() => handleTruckClick(truck.storeId)}
          >
            <div className={styles.truckContent}>
-             {truck.storeImageDto && truck.storeImageDto.savedUrl ? (
+             {truck.storeImageDto && truck.storeImageDto.savedUrl !== 'empty' ? (
                <img src={truck.storeImageDto.savedUrl} alt={truck.name} className={styles.truckImage} />
              ) : (
-               <p>사진 없음</p>
+              <img
+              src={defaultImage}
+              alt="디폴트 이미지"
+              className={styles.truckImage}
+            />
              )}
              <div className={styles.truckDetails}>
                <h3>{truck.name}</h3>
