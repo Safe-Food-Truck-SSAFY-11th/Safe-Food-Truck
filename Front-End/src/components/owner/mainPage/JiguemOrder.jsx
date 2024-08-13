@@ -12,11 +12,14 @@ const JiguemOrder = () => {
     const { ownerOrderNotice, setOwnerOrderNotice } = useEventStore();
 
     useEffect(() => {
+        getOrderList();
+    }, []);
+
+    useEffect(() => {
         if (ownerOrderNotice) {
             getOrderList();
             setOwnerOrderNotice(false);
         }
-        
     }, [ownerOrderNotice]);
 
     // 상태 우선순위 정의

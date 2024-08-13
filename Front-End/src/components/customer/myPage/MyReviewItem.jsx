@@ -25,7 +25,7 @@ const MyReviewItem = ({ review, onDelete }) => {
                 <img src={review.reviewImageDtos[0].savedUrl} alt="review-single" className={styles.reviewImage} />
               </div>
             ) : (
-              <Slider {...settings} className={styles.reviewImageCarousel}>
+              <Slider {...settings}>
                 {review.reviewImageDtos.map((img, index) => (
                   img.savedUrl !== 'empty' && (
                     <div key={index}>
@@ -36,15 +36,26 @@ const MyReviewItem = ({ review, onDelete }) => {
               </Slider>
             )
           ) : (
-            <div className={styles.noImage}>리뷰 사진 없음</div>
+            <div className={styles.noImage}>리뷰 사진이 없어요!</div>
           )}
         </div>
-        <span><button className={styles.deleteButton} reviewId={review.id} onClick={onDelete}>✖</button></span>
+        <span><button className={styles.deleteButton} reviewId={review.id} onClick={onDelete}>삭제</button></span>
+      </div>
+      <div className={styles.hrBox}>
+        <hr className={styles.hrLine}/>
       </div>
       <div className={styles.reviewText}>
-        <hr className={styles.hrLine}/>
-        <h4>{review.nickname} 님 ★ {review.star / 2}</h4>
-        <p>{review.content}</p>
+        <h4 className={styles.reviewAuthor}>
+          {review.nickname}님{" "}
+          {Array.from({ length: 5 }).map((_, index) => (
+            <span key={index}>
+              {index < Math.floor(review.star / 2) ? '⭐' : '★ '}
+            </span>
+          ))}
+        </h4>
+        <div className={styles.reviewContentBox}>
+          <p>{review.content}</p>
+        </div>
       </div>
     </div>
   );

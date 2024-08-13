@@ -9,21 +9,24 @@
 .surveyContainer {
   background-color: #ffcc66;
   width: 95vw;
-  height: 90vh;
-  margin-top: 1vh;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: calc(98vh - 135px);
+  margin-top: 1vh;
+  margin-bottom: 1vh;
 }
 
 .userName {
   color: #db5000;
 }
 
-.surveyTitle {
+/* .surveyTitle {
   margin-top: 10vw;
-}
+} */
 
 .btnContainer {
   margin: 5vw;
