@@ -4,7 +4,7 @@ import styles from './JiguemOrder.module.css';
 import barcodeImg from '../../../assets/images/barcode.png';
 import useTruckStore from "store/users/owner/truckStore";
 import useOrderStore from 'store/users/owner/orderStore';
-import useEventStore from 'store/eventStore';
+import { useEventStore } from 'store/eventStore';
 
 const JiguemOrder = () => {
     const { truckInfo } = useTruckStore();

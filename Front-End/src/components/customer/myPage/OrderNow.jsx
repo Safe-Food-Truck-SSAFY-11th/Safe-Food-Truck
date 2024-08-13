@@ -1,8 +1,39 @@
-import React from 'react';
+import React , { useEffect } from 'react';
 import styles from './OrderNow.module.css';
+import { useCustomerEventStore } from 'store/eventStore';
+import customerOrderStore from 'store/orders/customerOrderStore'
 
-const OrderNow = ({ memberInfo, nowOrder }) => {
-  if (!nowOrder) {
+
+const OrderNow = ({ memberInfo, orderNow }) => {
+  
+  const { nowOrder , getOrderDetails } = customerOrderStore();
+
+  const { customerOrderNotice, setCustomerOrderNotice, customerOrderDetail } = useCustomerEventStore();
+
+  const recentOrders = orderNow.customerPreparingOrderResponseDtos;
+  const recentOrder = recentOrders[recentOrders.length-1]
+  
+  console.log(recentOrder)
+
+  console.log(recentOrders)
+
+  console.log(customerOrderDetail)
+
+  console.log(customerOrderNotice)
+
+  useEffect(() => {
+    getOrderDetails(recentOrder.orderId); 
+  }, []);
+  
+  useEffect(() => {
+    if (customerOrderNotice) {
+      getOrderDetails(nowOrder.orderId);
+      setCustomerOrderNotice(false);
+    }
+    
+  }, [customerOrderNotice]);
+
+  if (!orderNow) {
     return (
       <div className={styles.container}>
         <div className={styles.noOrder}>
@@ -46,14 +77,11 @@ const OrderNow = ({ memberInfo, nowOrder }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.status} style={{ color: color }}>{message}</span>
-        <span className={styles.orderTime}>주문 시간 : {formatOrderTime(nowOrder.orderTime)}</span>
+        <span className={styles.orderTime}>주문 시간 : {formatOrderTime(recentOrder.orderTime)}</span>
       </div>
       <div className={styles.orderDetails}>
         <p>
-          {nowOrder.orderMenuListResponseDto.orderMenuResponseDtos[0]?.menuName} 
-          {nowOrder.orderMenuListResponseDto.orderMenuResponseDtos.length > 1 &&
-            ` 외 ${nowOrder.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}건`}
-          &nbsp; {nowOrder.orderMenuListResponseDto.orderMenuResponseDtos[0]?.count}개
+          {recentOrder.orderTitle} 
         </p>       
       </div>
     </div>
