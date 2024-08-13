@@ -36,3 +36,12 @@
 .areaContainer {
   width: 100%;
 }
+
+.chartSummary {
+  width: 100%;
+  text-align: center;
+}
+
+.chartSummary strong {
+  color: #ff5100;
+}
