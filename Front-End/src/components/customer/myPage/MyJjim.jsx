@@ -50,7 +50,9 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
         <h3>{memberInfo.nickname} 님이 찜한 푸드트럭이에요!</h3>
       )}
       {myJJimTrucks.length === 0 ? (
+        <div className={styles.noJJimTruck}>
         <p>{memberInfo.nickname} 님이 찜한 푸드트럭이 없어요 😅</p>
+        </div>
       ) : (
         <ul>
           {myJJimTrucks.map((truck, index) => (
