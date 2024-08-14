@@ -34,6 +34,10 @@ import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
 import Footer from "components/common/Footer";
 
+import useSound from 'use-sound';
+import ownerBell from "assets/audios/ownerOrder.mp3"
+import alertBell from "assets/audios/customer.mp3"
+
 import { useEventStore, useCustomerEventStore } from 'store/eventStore';
 
 function App() {
@@ -58,6 +62,9 @@ function App() {
 } = useCustomerEventStore();
 
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
+
+  const [ownerSoundPlay] = useSound(ownerBell);
+  const [soundPlay] = useSound(alertBell);
 
   useEffect(() => {
     const loginedEmail = getLoginedEmail();
@@ -89,6 +96,8 @@ function App() {
         setCustomerOrderNoticeMessage(data.message);
         setCustomerOrderNotice(true);
         setCustomerOrderDetail(data);
+        // 알림 소리 재생
+        soundPlay();
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
@@ -128,6 +137,8 @@ function App() {
         setShowNotification(true);
         setOwnerOrderNoticeMessage(data.message);
         setOwnerOrderNotice(true);
+        // 주문 알림 소리 재생
+        ownerSoundPlay();
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
@@ -143,6 +154,8 @@ function App() {
 
         setNotificationMessage(data.message);
         setShowNotification(true);
+        // 알림 소리 재생
+        soundPlay();
 
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
