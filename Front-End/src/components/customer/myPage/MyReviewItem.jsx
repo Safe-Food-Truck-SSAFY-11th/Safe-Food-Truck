@@ -8,7 +8,7 @@ const MyReviewItem = ({ review, onDelete }) => {
 
   const settings = {
     slide: 'div',
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
