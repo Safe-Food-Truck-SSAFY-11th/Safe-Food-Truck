@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./Footer.module.css";
 import Notification from "components/customer/mainPage/Notification";
 import { TbHome, TbMessage2Star } from "react-icons/tb";
-import { IoNotificationsOutline, IoCartOutline } from "react-icons/io5";
-import { GoPerson } from "react-icons/go";
-import { PiListStar } from "react-icons/pi";
 import { LuSettings } from "react-icons/lu";
 import { RxPerson } from "react-icons/rx";
-import { BsPerson } from "react-icons/bs";
-import { BsCart4 } from "react-icons/bs";
 import { PiShoppingCartBold } from "react-icons/pi";
-import { TbBell } from "react-icons/tb";
 import { BiBell } from "react-icons/bi";
 
 const Footer = () => {
@@ -19,6 +13,7 @@ const Footer = () => {
   const [role, setRole] = useState(sessionStorage.getItem("role"));
   const [showNotification, setNotification] = useState(false);
   const [activeIcon, setActiveIcon] = useState(""); // 현재 클릭된 아이콘을 저장
+  const location = useLocation();
 
   const handleNotificationClick = () => {
     setNotification(!showNotification);
@@ -49,7 +44,11 @@ const Footer = () => {
           >
             <TbHome
               size="35"
-              color={activeIcon === "home" ? "#ffcc66" : "black"}
+              color={
+                activeIcon === "home" && location.pathname === "/mainCustomer"
+                  ? "#ffcc66"
+                  : "black"
+              }
             />
           </Link>
           <div className={styles.menuItem} onClick={handleNotificationClick}>
@@ -65,7 +64,11 @@ const Footer = () => {
           >
             <PiShoppingCartBold
               size="34"
-              color={activeIcon === "cart" ? "#ffcc66" : "black"}
+              color={
+                activeIcon === "cart" && location.pathname === "/cart"
+                  ? "#ffcc66"
+                  : "black"
+              }
             />
           </Link>
           <Link
@@ -75,7 +78,12 @@ const Footer = () => {
           >
             <RxPerson
               size="34"
-              color={activeIcon === "mypage" ? "#ffcc66" : "black"}
+              color={
+                activeIcon === "mypage" &&
+                location.pathname === "/mypageCustomer"
+                  ? "#ffcc66"
+                  : "black"
+              }
               strokeWidth="0.4"
             />
           </Link>
@@ -101,7 +109,11 @@ const Footer = () => {
         >
           <TbHome
             size="35"
-            color={activeIcon === "home" ? "#b6d4b7" : "black"}
+            color={
+              activeIcon === "home" && location.pathname === "/mainOwner"
+                ? "#b6d4b7"
+                : "black"
+            }
           />
         </Link>
         <Link
@@ -111,7 +123,11 @@ const Footer = () => {
         >
           <RxPerson
             size="34"
-            color={activeIcon === "mypage" ? "#b6d4b7" : "black"}
+            color={
+              activeIcon === "mypage" && location.pathname === "/mypageOwner"
+                ? "#b6d4b7"
+                : "black"
+            }
             strokeWidth="0.4"
           />
         </Link>
@@ -122,7 +138,11 @@ const Footer = () => {
         >
           <TbMessage2Star
             size="35"
-            color={activeIcon === "review" ? "#b6d4b7" : "black"}
+            color={
+              activeIcon === "review" && location.pathname === "/ownerReview"
+                ? "#b6d4b7"
+                : "black"
+            }
           />
         </Link>
         <div
