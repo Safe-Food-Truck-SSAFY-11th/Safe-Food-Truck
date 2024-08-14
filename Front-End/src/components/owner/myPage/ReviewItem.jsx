@@ -31,13 +31,10 @@ function ReviewItem({ review }) {
     let stars = '';
     for (let i = 0; i < 5; i++) {
       if (rating >= 2) {
-        stars += '★';
+        stars += '⭐';
         rating -= 2;
-      } else if (rating === 1) {
-        stars += '☆';
-        rating -= 1;
       } else {
-        stars += ' ';
+        stars += '★ ';
       }
     }
     return stars;
