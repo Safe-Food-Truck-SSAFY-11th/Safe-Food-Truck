@@ -10,6 +10,9 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
   const orders = pastOrders.customerOrderResponseDtos;
   const reviews = myReviews.reviewResponseDtos;
   
+  // status가 accepted인 주문만 필터링
+  const acceptedOrders = orders.filter(order => order.status === 'accepted');
+  
   // 이미 작성된 리뷰의 orderId 리스트를 추출
   const reviewedOrderIds = reviews?.map(review => review.orderId);
   
@@ -19,7 +22,7 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
   }, [initCurrentReview]); // initCurrentReview를 의존성 배열에 추가
   
   // 과거 주문 내역을 역순으로 정렬
-  const results = [...orders].reverse();
+  const results = [...acceptedOrders].reverse();
 
   const handleReviewButtonClick = (orderId) => {
     navigate(`/createReview/${orderId}`, { state: { memberInfo } });
