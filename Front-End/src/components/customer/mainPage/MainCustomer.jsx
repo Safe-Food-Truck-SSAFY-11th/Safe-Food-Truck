@@ -9,11 +9,11 @@ import styles from "./MainCustomer.module.css";
 import BroadCastList from "./BroadCastList";
 
 function MainCustomer() {
-  const [view, setView] = useState('map');
-  const [selectedType, setSelectedType] = useState('all');
+  const [view, setView] = useState("map");
+  const [selectedType, setSelectedType] = useState("all");
 
   const { openFoodTrucks, getOpenFoodTruck } = useFoodTruckStore();
-  const nickname = sessionStorage.getItem('nickname');
+  const nickname = sessionStorage.getItem("nickname");
   const [userLocation, setUserLocation] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,12 +28,12 @@ function MainCustomer() {
           setLoading(false);
         },
         (error) => {
-          console.error('Error fetching user location:', error);
+          console.error("Error fetching user location:", error);
           setLoading(false);
         }
       );
     } else {
-      console.error('Geolocation is not supported by this browser.');
+      console.error("Geolocation is not supported by this browser.");
       setLoading(false);
     }
 
@@ -47,40 +47,53 @@ function MainCustomer() {
   return (
     <div className={styles.container}>
       <Header />
-      <BroadCastList/>
-      <hr className={styles.hr}/>
-      <h3 className={styles.h3mainpage}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
-      <div className={styles.buttons}>
-        <button
-          onClick={() => setView("map")}
-          className={`${styles.button} ${
-            view === "map" ? styles.selected : ""
-          }`}
-        >
-          푸드트럭 지도
-        </button>
-        <button
-          onClick={() => setView("list")}
-          className={`${styles.button} ${
-            view === "list" ? styles.selected : ""
-          }`}
-        >
-          푸드트럭 목록
-        </button>
-      </div>
-      <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
+      <div className={styles.scrollableContent}>
+        <BroadCastList />
+        <hr className={styles.hr} />
+        <h3 className={styles.h3mainpage}>
+          {nickname}님!🖐 오늘 푸드트럭 어때요?
+        </h3>
+        <FoodFilter
+          selectedType={selectedType}
+          onSelectType={handleSelectType}
+        />
+        <div className={styles.buttons}>
+          <button
+            onClick={() => setView("map")}
+            className={`${styles.button} ${
+              view === "map" ? styles.selected : ""
+            }`}
+          >
+            푸드트럭 지도
+          </button>
+          <button
+            onClick={() => setView("list")}
+            className={`${styles.button} ${
+              view === "list" ? styles.selected : ""
+            }`}
+          >
+            푸드트럭 목록
+          </button>
+        </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        view === 'map' ? (
-          <MapCustomer openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : view === "map" ? (
+          <MapCustomer
+            openFoodTrucks={openFoodTrucks}
+            userLocation={userLocation}
+            selectedType={selectedType}
+          />
         ) : (
-          <FoodTruckList openFoodTrucks={openFoodTrucks} userLocation={userLocation} selectedType={selectedType} />
-        )
-      )}
+          <FoodTruckList
+            openFoodTrucks={openFoodTrucks}
+            userLocation={userLocation}
+            selectedType={selectedType}
+          />
+        )}
 
-      <SurveyArea />
+        <SurveyArea />
+      </div>
     </div>
   );
 }
