@@ -10,11 +10,12 @@
   /* iOS에서 부드러운 스크롤을 위한 설정 */
   -webkit-overflow-scrolling: touch; 
   gap: 3%;
-  background-color: #ffd27f;
+  /* background-color: #ffd27f; */
   padding: 5%;
-  border-top: 2px solid #FB9256;
-  border-bottom: 2px solid #FB9256;
+  /* border-top: 2px solid #FB9256; */
+  /* border-bottom: 2px solid #FB9256; */
   scroll-behavior: smooth;
+  
 }
 
 .foodFilter::-webkit-scrollbar {
@@ -33,16 +34,17 @@
   align-items: center;
   padding: 3% 0% 3% 0%;
   border: none;
-  background-color: #ffa500;
-  color: white;
+  background-color: white;
+  color: #ffa500;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ffa500;
 }
 
 .filterButton.selected {
-  background-color: white;
-  color: #ffa500;
+  background-color: #ffa500;
+  color: black;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border: solid #FB9256;
 }

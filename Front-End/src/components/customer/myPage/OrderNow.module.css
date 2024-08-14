@@ -1,12 +1,21 @@
 .container {
-    border: 2px solid #FF7F50;
     height: 99px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #FFF;
+    /* padding: 10px; */
+    border-radius: 10px;
+    background-color: #FEC87F;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 15px;
   }
   
+.contentWrapper {
+  /* padding-top: ; */
+  padding: 10px;
+  margin: 15px;
+  border-radius: 5px;
+  border: 2px solid #FF7F50;
+  background-color: white;
+}
+
   .header {
     display: flex;
     justify-content: space-between;

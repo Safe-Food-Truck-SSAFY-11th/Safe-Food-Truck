@@ -46,7 +46,7 @@ const MyPageCustomer = () => {
     // 지금 진행중인 주문 목록 가져오는 함수
     getNowOrder,
     // 위에 함수로 가져올 객체
-    orderNow,
+    joonbiOrders,
   } = customerOrderStore();
   
   // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
@@ -131,7 +131,7 @@ const MyPageCustomer = () => {
     <div>
       <Header />
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} pastOrders={pastOrders} memberInfo={memberInfo} />
-      <OrderNow memberInfo={memberInfo} orderNow={orderNow} />
+      <OrderNow memberInfo={memberInfo} joonbiOrders={joonbiOrders} />
       {renderSelectedComponent()}
       <button onClick={handleDeleteAcct}>탈퇴하기</button>
     </div>
