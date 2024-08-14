@@ -1,7 +1,7 @@
 import styles from './OrderItem.module.css';
 import useOrderStore from 'store/users/owner/orderStore';
 
-const OrderItem = ({ order }) => {
+const OrderItem = ({ order, onClick }) => {
     const { acceptOrder, rejectOrder, completeCooking } = useOrderStore();
 
     let status;
@@ -19,15 +19,18 @@ const OrderItem = ({ order }) => {
         status = 'rejected';
     }
 
-    const handleAcceptBtn = async () => {
+    const handleAcceptBtn = async (e) => {
+        e.stopPropagation(); 
         await acceptOrder(order.orderId);
     }
 
-    const handleRejectBtn = async () => {
+    const handleRejectBtn = async (e) => {
+        e.stopPropagation(); 
         await rejectOrder(order.orderId);
     }
 
-    const handleCompleteCooking = async () => {
+    const handleCompleteCooking = async (e) => {
+        e.stopPropagation(); 
         await completeCooking(order.orderId);
     }
 
@@ -76,7 +79,7 @@ const OrderItem = ({ order }) => {
     }
 
     return (
-        <div className={`${styles.orderItem} ${styles[status]}`}>
+        <div className={`${styles.orderItem} ${styles[status]}`} onClick={onClick}>
             <div className={styles.header}>
                 <span className={styles.statusText}>{status === 'new' ? '새로운 주문' : status === 'inProgress' ? '주문 진행 중' : status === 'completed' ? '주문 완료' : '주문 거절'}</span>
                 <span className={styles.orderTime}>주문 시간 : <br/>{order.orderTime.replace('T', ' ')}</span>
