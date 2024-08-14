@@ -42,7 +42,7 @@ const SalesChart = () => {
             activeTab === "today" ? styles.activeButton : ""
           }`}
         >
-          오늘의 매출
+          오늘 매출
         </button>
         <button
           onClick={() => setActiveTab("weekly")}
