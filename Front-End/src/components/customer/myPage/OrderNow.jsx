@@ -11,7 +11,6 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
   const recentOrders = joonbiOrders
     ? []
     : joonbiOrders.customerPreparingOrderResponseDtos;
-  console.log("리센트 오더스!!!!!!!!!", recentOrders);
   const recentOrder =
     recentOrders.length > 0 ? recentOrders[recentOrders.length - 1] : null;
 
@@ -50,7 +49,7 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
   useEffect(() => {
     if (recentOrder) {
       getOrderDetails(recentOrder.orderId);
-    } else if (!recentOrder) {
+    } else if (!recentOrder && completeOrder.length !== 0) {
       getOrderDetails(completeOrder.orderId);
     }
   }, [recentOrder, getOrderDetails]);
