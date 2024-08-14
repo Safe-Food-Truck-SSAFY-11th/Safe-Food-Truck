@@ -50,9 +50,11 @@ function MainCustomer() {
       <div className={styles.scrollableContent}>
         <BroadCastList />
         <hr className={styles.hr} />
+        <div className={styles.background}>
         <h3 className={styles.h3mainpage}>
           {nickname}님!🖐 오늘 푸드트럭 어때요?
         </h3>
+        </div>
         <div className={styles.buttons}>
           <button
             onClick={() => setView("map")}

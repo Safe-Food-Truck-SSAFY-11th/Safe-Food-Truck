@@ -12,6 +12,7 @@
 }
 
 .h3mainpage {
+  margin-top: 3%;
   text-align: center;
   padding: 3% 5% 3% 5%;
 }
@@ -47,5 +48,15 @@
   }
   
   .hr {
+    margin: 0 auto;
+    width: 90%;
     border: 1px solid #FB9256;
+  }
+
+  .background {
+    border-radius: 10px;
+    margin: 0 auto;
+    width: 90%;
+    background-color: #ffcc80;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
