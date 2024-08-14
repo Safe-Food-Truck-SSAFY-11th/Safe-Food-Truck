@@ -39,7 +39,7 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
       return { message: "주문을 확인하고 있어요!", color: "#FF7F50" };
     } else if (order.status === "accepted") {
       if (order.cookingStatus === "completed") {
-        return { message: "준비 완료 됬어요!", color: "green" };
+        return { message: "준비 완료 됐어요!", color: "green" };
       } else if (
         order.cookingStatus === "waiting" ||
         order.cookingStatus === "preparing"

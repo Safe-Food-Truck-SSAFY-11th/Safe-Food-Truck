@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import CartAlertModal from './CartAlertModal'; // 모달 컴포넌트 임포트
 import styles from './FoodTruckMenuDetail.module.css';
+import defaultImage from 'assets/images/foodImage/all.png'
 
 function FoodTruckMenuDetail() {
   const location = useLocation();
@@ -87,13 +88,16 @@ function FoodTruckMenuDetail() {
   }).format(item.price * quantity);
 
   return (
+    <div className={styles.container}>
     <div className={styles.menuDetail}>
       <h2 className={styles.title}>{item.name}</h2>
-      {item.menuImageDto ? (
-        <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
-      ) : (
-        <div className={styles.placeholder}>이미지 없음</div>
-      )}
+      <img 
+          src={(item.menuImageDto?.savedUrl === 'empty' || item.menuImageDto?.savedUrl.trim() === "") 
+            ? defaultImage 
+            : item.menuImageDto?.savedUrl} 
+          alt={item.name} 
+          className={styles.image} 
+        />
       <div className={styles.quantityControl}>
         <button onClick={handleDecrease} className={styles.button}>-</button>
         <span className={styles.quantity}>{quantity}</span>
@@ -111,6 +115,7 @@ function FoodTruckMenuDetail() {
       
       {/* 모달 컴포넌트 추가 */}
       <CartAlertModal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
+    </div>
     </div>
   );
 }
