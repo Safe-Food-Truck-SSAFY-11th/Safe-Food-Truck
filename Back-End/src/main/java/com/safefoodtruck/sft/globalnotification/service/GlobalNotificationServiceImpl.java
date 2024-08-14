@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.globalnotification.service;
 
 import com.safefoodtruck.sft.globalnotification.repository.EmitterRepository;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -10,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class GlobalNotificationServiceImpl implements GlobalNotificationService {
 
-    private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
+    private static final Long DEFAULT_TIMEOUT = 1000L * 60 * 60; //1시간
 
     private final EmitterRepository emitterRepository;
 
@@ -23,27 +24,35 @@ public class GlobalNotificationServiceImpl implements GlobalNotificationService 
 
     @Override
     public void sendToClient(String email, Object data, String comment, String eventName) {
-        SseEmitter emitter = emitterRepository.get(email);
-        if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event()
-                    .id(email)
-                    .name(eventName)
-                    .data(data)
-                    .comment(comment));
-            } catch (IOException e) {
-                emitterRepository.deleteById(email);
-                emitter.completeWithError(e);
+        List<SseEmitter> emitterList = emitterRepository.get(email);
+        if (emitterList == null) return;
+        for (SseEmitter emitter : emitterList) {
+            if (emitter != null) {
+                try {
+                    emitter.send(SseEmitter.event()
+                        .id(email)
+                        .name(eventName)
+                        .data(data)
+                        .comment(comment));
+                } catch (IOException e) {
+                    emitterRepository.delete(email, emitter);
+                    emitter.completeWithError(e);
+                }
             }
         }
+
     }
 
     @Override
     public SseEmitter createEmitter(String email) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         emitterRepository.save(email, emitter);
-        emitter.onCompletion(() -> emitterRepository.deleteById(email));
-        emitter.onTimeout(() -> emitterRepository.deleteById(email));
+        emitter.onCompletion(() -> {
+            emitterRepository.delete(email, emitter); // 완료된 Emitter 삭제
+        });
+        emitter.onTimeout(() -> {
+            emitterRepository.delete(email, emitter); // 완료된 Emitter 삭제
+        });
         return emitter;
     }
 
