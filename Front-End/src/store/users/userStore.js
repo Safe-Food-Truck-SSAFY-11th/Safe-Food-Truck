@@ -201,6 +201,15 @@ const userStore = create((set, get) => ({
     } catch (error) {
       console.error('멤버십 탈퇴 오류: ', error);
     }
+  },
+
+  checkMembershipExpiration: async () => {
+    try {
+      const response = await axios.get('members/vip');
+      return response.data.remainingVipPeriod;
+    } catch (error) {
+      console.error('멤버십 남은기간 조회 오류: ', error);
+    }
   }
 
 }));

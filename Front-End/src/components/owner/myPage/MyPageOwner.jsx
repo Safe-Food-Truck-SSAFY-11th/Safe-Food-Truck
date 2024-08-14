@@ -8,11 +8,11 @@ import useUserStore from 'store/users/userStore';
 const MyPageOwner = () => {
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
-
+  
+  const token = sessionStorage.getItem('token');
+  const role = sessionStorage.getItem('role');
+ 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role');
-
     if (!token || role.indexOf('owner') == -1) {
       alert('접근 권한이 없습니다.');
       navigate('/login');
@@ -59,8 +59,8 @@ const MyPageOwner = () => {
       <OwnerInfo />
       <SalesChart />
       <div style={membershipStyle}>
-        <p>멤버십에 가입하실래요?</p>
-        <a style={memberJoin} onClick={handleMembershipBtn}>멤버십 가입</a>
+        {role.indexOf('vip') === -1 ? <p>멤버십에 가입하실래요?</p> : <p>멤버십을 연장하실래요?</p>}
+        {role.indexOf('vip') === -1 ? <a style={memberJoin} onClick={handleMembershipBtn}>멤버십 가입</a> : <a style={memberJoin} onClick={handleMembershipBtn}>멤버십 관리</a>}
       </div>
     </div>
   );
