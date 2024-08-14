@@ -3,9 +3,12 @@ import styles from "./ChatBox.module.css";
 
 function ChatBox({ messages, ownerNickname, truckName }) {
   const messageEndRef = useRef(null);
+  const messageListRef = useRef(null);
 
   const scrollToBottom = () => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollHeight = messageListRef.current.scrollHeight;
+    messageListRef.current.scrollTop = scrollHeight;
   };
 
   useEffect(() => {
@@ -14,17 +17,19 @@ function ChatBox({ messages, ownerNickname, truckName }) {
 
   return (
     <div className={styles.chatBox}>
-      <div className={styles.messageList}>
+      <div className={styles.messageList} ref={messageListRef}>
         <div className={styles.chatInfo}>
           <p>
             <span className={styles.infoGreen}>{ownerNickname}</span>님이
             운영하는
           </p>
           <p>
-            <span className={styles.infoGreen}>{truckName}</span>의
-            채팅방입니다
+            <span className={styles.infoGreen}>{truckName}</span>의 채팅방입니다
           </p>
-          <p style={{ fontSize: '1rem'}}> /ai 명령어를 사용해 00에게 물어보세요! </p>
+          <p style={{ fontSize: "1rem" }}>
+            {" "}
+            /ai 명령어를 사용해 00에게 물어보세요!{" "}
+          </p>
         </div>
         {messages.map((msg, i) => (
           <div
