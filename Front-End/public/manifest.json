@@ -47,34 +47,9 @@
       "src": "./icons/apple-touch-icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png"
-    },
-    {
-      "src": "./icons/mstile-70x70.png",
-      "sizes": "70x70",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/mstile-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/mstile-150x150.png",
-      "sizes": "150x150",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/mstile-310x150.png",
-      "sizes": "310x150",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/mstile-310x310.png",
-      "sizes": "310x310",
-      "type": "image/png"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
