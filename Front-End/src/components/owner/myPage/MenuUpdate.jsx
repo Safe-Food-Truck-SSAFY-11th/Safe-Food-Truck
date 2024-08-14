@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styles from "./MenuUpdate.module.css";
 import useMenuStore from "store/users/owner/menuStore";
-import imageIcon from "assets/images/sft-logo.png";
+import imageIcon from "assets/images/foodImage/all.png";
 import { useState } from 'react';
 import AWS from 'aws-sdk';
 import useTruckStore from "store/users/owner/truckStore";
@@ -137,7 +137,7 @@ const MenuUpdate = () => {
             <div className={styles.inputContainer}>
               <label>가격</label>
               <input
-                type="text"
+                type="number"
                 name="price"
                 value={menuForm.price}
                 onChange={handleChange}
