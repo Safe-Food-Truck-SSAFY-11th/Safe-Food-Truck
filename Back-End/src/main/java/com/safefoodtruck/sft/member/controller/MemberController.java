@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.member.controller;
 
+import com.safefoodtruck.sft.member.dto.response.RemainingVipPeriodResponseDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -193,6 +194,20 @@ public class MemberController {
         String userEmail = MemberInfo.getEmail();
         memberService.updateIsResign(userEmail);
         return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료!!");
+    }
+
+    @GetMapping("/vip")
+    @Operation(summary = "멤버십 남은기간 조회", description = "멤버십 남은기간 조회시 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "0000년 00월 00일",
+            content = @Content(mediaType = "application/json"))
+    })
+    @PreAuthorize("hasAnyRole('ROLE_vip_owner')")
+    public ResponseEntity<?> getRemainingVipPeriod() {
+        String userEmail = MemberInfo.getEmail();
+        RemainingVipPeriodResponseDto remainingVipPeriod = memberService.getRemainingVipPeriod(userEmail);
+        return ResponseEntity.status(HttpStatus.OK).body(remainingVipPeriod);
     }
 
     @PostMapping("/vip")
