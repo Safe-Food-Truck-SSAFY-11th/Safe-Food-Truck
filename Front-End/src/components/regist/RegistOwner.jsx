@@ -162,6 +162,7 @@ const RegistOwner = ({ formData, onFormChange }) => {
           <input type="number" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
           <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
         </div>
+        {pnChecked === 'Possible' && <p className={styles.hintText}>사용 가능한 전화번호입니다</p>}
         {pnChecked === 'Duplicate' && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
       </div>
       <div className={styles.inputContainer}>
