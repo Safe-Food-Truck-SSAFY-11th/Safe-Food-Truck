@@ -5,8 +5,8 @@ import MenuDelete from "./MenuDelete";
 import MenuItem from "./MenuItem";
 import styles from "./ManageMenu.module.css";
 import { useEffect } from "react";
-import { useState } from 'react';
-import AWS from 'aws-sdk';
+import { useState } from "react";
+import AWS from "aws-sdk";
 
 const ManageMenu = () => {
   const {
@@ -50,26 +50,26 @@ const ManageMenu = () => {
 
     // 삭제할 파일 정보 설정
     const deleteParams = {
-      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,  // 버킷 이름 변경
+      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`, // 버킷 이름 변경
       Key: menuForm.savedPath, // S3에 저장될 경로와 파일명
     };
 
     // 삭제 작업이 필요한 경우
     if (menuForm.savedPath !== "empty" && deleteParams.Key !== "") {
-        s3.deleteObject(deleteParams, (err, data) => {
-            if (err) {
-                console.error('Error deleting file:', err);
-            } else {
-                console.log('File deleted successfully. ETag:', data.ETag);
-            }
-        });
-    } 
-  }
+      s3.deleteObject(deleteParams, (err, data) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        } else {
+          console.log("File deleted successfully. ETag:", data.ETag);
+        }
+      });
+    }
+  };
 
   return (
     <>
       <div className={styles.compSize}>
-        <h3>메뉴 관리</h3>
+        <h2>메뉴 관리</h2>
         <div className={styles.menuContainer}>
           {menus.length === 0 ? (
             <p>메뉴가 없습니다.</p>

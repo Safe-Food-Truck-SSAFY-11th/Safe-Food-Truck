@@ -6,30 +6,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: calc(100vh - 69px);
 }
 
 .pageHeader {
-  margin-top: 8vh;
-  margin-bottom: 3vh;
+  margin-top: 5vh;
+  margin-bottom: 4%;
 }
 
 .dayButtons {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
-  max-width: 90%;
-  background-color: #EAFFC9;
-  padding: 0.7rem;
+  /* margin-bottom: 0.8rem; */
+  width: 90%;
+  background-color: #eaffc9;
+  /* padding: 0.7rem; */
   border-radius: 10px;
-  overflow: scroll;
+  /* overflow: scroll; */
+  overflow-x: scroll;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .dayButton,
 .selectedButton {
-  flex: 1;
-  padding: 1rem;
-  margin: 2%;
+  flex: 1 1;
+  padding: 0.7rem;
+  margin: 4% 2%;
   border: none;
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
@@ -43,7 +45,7 @@
 }
 
 .header {
-  margin: 3%
+  margin: 3%;
 }
 
 .dayButton {
@@ -89,10 +91,9 @@
 .buttonGroup {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5vh;
 }
 
-.buttonGroup>button {
+.buttonGroup > button {
   flex: 1;
   width: 20vw;
   height: 4vh;
