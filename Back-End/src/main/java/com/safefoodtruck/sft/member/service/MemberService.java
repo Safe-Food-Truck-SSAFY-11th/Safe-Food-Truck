@@ -1,5 +1,6 @@
 package com.safefoodtruck.sft.member.service;
 
+import com.safefoodtruck.sft.member.dto.response.RemainingVipPeriodResponseDto;
 import java.time.LocalDate;
 
 import com.safefoodtruck.sft.member.dto.request.MemberLoginRequestDto;
@@ -22,5 +23,5 @@ public interface MemberService {
     void extendVip(String email);
     String searchEmail(String name, LocalDate birth, String phoneNumber);
     void searchPassword(String email, String name, LocalDate birth, String phoneNumber);
-
+    RemainingVipPeriodResponseDto getRemainingVipPeriod(String email);
 }
