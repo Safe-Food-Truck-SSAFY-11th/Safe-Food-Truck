@@ -1,47 +1,53 @@
+.container {
+  background-color: white;
+  margin: 4%;
+}
+
+
 .cartContainer {
   background-color: #ffcc80;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   height: 100vh;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   text-align: center;
-  width: 90%; /* 컨테이너 너비를 고정 */
+  width: 100%; /* 컨테이너 너비를 고정 */
 }
 
-.cartContainer h1 {
-  font-size: 1.1em;
+.cartTitle {
+  font-size: 18px;
   color: black;
   background-color: #fff;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 4%;
 }
 
 .cartItem {
+  margin: 4%;
   display: flex;
-  align-items: center;
+  align-items : center;
   background-color: #fff;
   padding: 10px;
   margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  /* width: 100%; */
   justify-content: space-between;
 }
 
 .image {
   width: 50px;
   height: 50px;
-  margin-right: 10px;
+  margin: 4%;
+  border-radius: 10px;
+  object-fit: contain;
 }
 
 .details {
   flex: 1;
   text-align: left;
-}
-
-.details p {
   margin: 5px 0 0;
   font-size: 1em;
   color: #333;
@@ -85,13 +91,13 @@
 .checkoutButton {
   background-color: #f46a45;
   color: white;
-  border: 2px solid #f0ad4e;
-  border-radius: 5px;
+  border: none;
+  border-radius: 10px;
   padding: 10px 20px;
-  width: 100%;
+  width: 92%;
   font-size: 1em;
   cursor: pointer;
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   text-align: center;
   margin-top: 20px;
 }
@@ -101,23 +107,60 @@
   color: #f46a45;
 }
 
-.details p {
-  padding-left: 10px;
-}
-
 .quantityControl span {
   padding-top: 10px;
 }
 
-.emptyCartMessage {
-  background-color: #fff;
+.emptyCartContainer {
+  background-color: #ffcc80;
   padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   color: black;
+  margin: 4%;
+  height: 100vh;
+}
+
+.emptyCartMessage {
+  background-color: white;
+  margin: 4%;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 15px;
+}
+
+.requestBox {
+  margin: 4%;
+  text-align: left;
   margin-top: 20px;
 }
 
-.emptyCartMessage p {
-  text-align: center;
+.requestBox label {
+  font-size: 1em;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.requestInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.requestInput:focus {
+  border-color: #f46a45;
+  box-shadow: 0 0 8px rgba(244, 106, 69, 0.3);
+}
+
+.requestInput::placeholder {
+  color: #aaa;
+  font-style: italic;
 }

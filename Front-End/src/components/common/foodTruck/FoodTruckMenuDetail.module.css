@@ -1,4 +1,10 @@
+.container {
+  background-color: white;
+  margin: 5%;
+}
+
 .menuDetail {
+  /* margin: 4%; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,27 +13,29 @@
   border-radius: 5px;
   width: 100%;
   height: 100vh;
+  box-shadow: 0 2px 4px black;
 }
 
 .title {
   font-size: 20px;
-  font-weight: bold;
   text-align: center;
-  margin-bottom: 10px;
+  margin: 4%;
   background-color: #fff;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   width: 100%;
   box-sizing: border-box;
+  box-shadow: 0 2px 4px black;
 }
 
 .image {
   background-color: white;
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 2000px;
   object-fit: contain;
   border-radius: 10px;
-  margin: 20px 0;
+  margin: 4%;
+  box-shadow: 0 2px 4px black;
 }
 
 .placeholder {
@@ -68,21 +76,22 @@
 }
 
 .descriptionTitle {  
-  /* text-align: left; */
-  padding-bottom: 10px;
+  text-align: left;
+  /* display: flex; */
 }
 
 
 .description {
-  text-align: left;
+  text-align: center;
   background-color: #fff;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 14px;
-  margin-bottom: 20px;
+  margin: 4%;
   box-sizing: border-box;
-  margin-bottom:100px;
+  margin-bottom:10%;
   width: 100%;
+  box-shadow: 0 2px 4px black;
 }
 
 .addToCartButton {
