@@ -18,7 +18,6 @@ public class GlobalNotificationServiceImpl implements GlobalNotificationService 
     @Override
     public SseEmitter subscribe(String email) {
         SseEmitter emitter = createEmitter(email);
-        System.out.println("@@@@@@@@@@@@@@@@@@@@ = " + emitterRepository.get(email));
         sendToClient(email, "연결완료!", "connect", "connected");
         return emitter;
     }
@@ -46,7 +45,6 @@ public class GlobalNotificationServiceImpl implements GlobalNotificationService 
 
     @Override
     public SseEmitter createEmitter(String email) {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@AAAAAAAAAAAAAAA");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         emitterRepository.save(email, emitter);
         emitter.onCompletion(() -> {

@@ -35,16 +35,7 @@ public class EmitterRepository {
         }
     }
 
-//    public void deleteById(String email) {
-//        if (!emitters.containsKey(email) || emitters.get(email).isEmpty()) {
-//            return;
-//        }
-//        emitters.remove(email);
-//    }
-
     public List<SseEmitter> get(String email) {
         return emitters.get(email);
     }
-
-
 }
