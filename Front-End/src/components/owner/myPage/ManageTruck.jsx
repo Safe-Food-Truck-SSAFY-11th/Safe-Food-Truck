@@ -133,7 +133,7 @@ const ManageTruck = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
     fetchTruckInfo();
     setSelectedFile(truckInfo.storeImageDto.savedUrl);
-    window.location.reload();
+    // window.location.reload();
   }
 
   const handleDeleteStore = () => {
