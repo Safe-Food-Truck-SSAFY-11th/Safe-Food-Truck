@@ -50,7 +50,6 @@ function MainCustomer() {
       <BroadCastList/>
       <hr className={styles.hr}/>
       <h3 className={styles.h3mainpage}>{nickname}님!🖐 오늘 푸드트럭 어때요?</h3>
-      <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
       <div className={styles.buttons}>
         <button
           onClick={() => setView("map")}
@@ -69,6 +68,7 @@ function MainCustomer() {
           푸드트럭 목록
         </button>
       </div>
+      <FoodFilter selectedType={selectedType} onSelectType={handleSelectType} />
 
       {loading ? (
         <p>Loading...</p>
