@@ -4,12 +4,15 @@
   padding: 20px; /* 패딩 추가 */
   display: flex;
   justify-content: center;
-  border-bottom: 2px solid #FB833E;
+  border-radius: 10px;
   align-items: center;
   position: relative; /* position을 relative로 설정하여 자식 요소의 absolute 위치 조정 가능 */
+  margin: 15px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .map {
+  border-radius: 10px;
   width: 100%; /* 맵의 너비 설정 */
   height: 400px; /* 맵의 높이 설정 */
   border: 2px solid #ccc; /* 맵 테두리 설정 */

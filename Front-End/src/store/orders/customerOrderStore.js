@@ -8,7 +8,7 @@ const customerOrderStore = create(
       pastOrders: [],
       nowOrder: null,
       nowOrderId: null,
-      orderNow: null,
+      joonbiOrders: null,
 
       setNowOrderId: (orderId) => set({ nowOrderId: orderId }),
 
@@ -36,7 +36,7 @@ const customerOrderStore = create(
       getNowOrder: async () => {
         try {
           const response = await axiosInstance.get('orders/customers/preparing');
-          set({ orderNow : response.data });
+          set({ joonbiOrders : response.data });
         } catch (error) {
           console.error('지금 진행 주문 가져오기 실패' , error);
         }

@@ -6,6 +6,8 @@
   background-color: #ffcc80; /* Background color from the image */
   border-radius: 10px;
   height: 100vh;
+  margin: 15px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 
