@@ -28,7 +28,7 @@ function ChatBox({ messages, ownerNickname, truckName }) {
           </p>
           <p style={{ fontSize: "1rem" }}>
             {" "}
-            /ai 명령어를 사용해 00에게 물어보세요!{" "}
+            /ai 명령어를 사용해 푸디봇에게 물어보세요!{" "}
           </p>
         </div>
         {messages.map((msg, i) => (
