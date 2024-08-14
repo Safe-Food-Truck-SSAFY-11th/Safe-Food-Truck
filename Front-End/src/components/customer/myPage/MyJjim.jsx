@@ -48,7 +48,7 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
   return (
     <div className={styles.container}>
       {myJJimTrucks.length > 0 && (
-        <h3>{memberInfo.nickname} 님이 찜한 푸드트럭이에요!</h3>
+        <h3 className={styles.JJimHeader}>{memberInfo.nickname} 🖐 님이 찜한 푸드트럭이에요!</h3>
       )}
       {myJJimTrucks.length === 0 ? (
         <div className={styles.noJJimTruck}>
@@ -77,7 +77,7 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
             />
              )}
              <div className={styles.truckDetails}>
-               <h3>{truck.name}</h3>
+               <h4 className={styles.truckName}>{truck.name}</h4>
                <p>{truck.storeType}</p>
                <p>
                  {truck.isOpen
