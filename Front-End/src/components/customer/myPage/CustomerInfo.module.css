@@ -1,23 +1,22 @@
 .container {
-  background-color: #FEC87F;
+  background-color: #fec87f;
   padding: 20px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column; 
-  margin: 15px;
-  
+  flex-direction: column;
+  margin: 4%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .contentWrapper {
-  background-color: white; 
+  background-color: white;
   padding: 20px;
   border-radius: 10px;
   width: 100%;
-  text-align: center; 
-  border: 2px solid #FF6347;
+  text-align: center;
+  border: 2px solid #ff6347;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
@@ -36,19 +35,18 @@
 }
 
 .profileButton {
-  background-color: #FF7F50;
-  border: none;
+  background-color: #ff7f50;
   color: white;
   font-size: 10px;
   padding: 10px 10px;
   border-radius: 5px;
   cursor: pointer;
-  border: 2px solid #FF6347;
+  border: 2px solid #ff6347;
 }
 
 .profileButton:hover {
   background-color: white;
-  color: #FF6347;
+  color: #ff6347;
 }
 
 .infoSection {
@@ -75,23 +73,22 @@
 .actionButton {
   width: 80px;
   height: 39px;
-  background-color: #FF7F50;
-  border: none;
+  background-color: #ff7f50;
   color: white;
   padding: 10px 10px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 10px;
-  border: 2px solid #FF6347;
+  border: 2px solid #ff6347;
 }
 
 .actionButton:hover {
   background-color: white;
-  color: #FF6347;
+  color: #ff6347;
 }
 
 .actionButton.active {
   background-color: white;
-  color: #FF7F50;
-  border: 2px solid #FF7F50;
+  color: #ff7f50;
+  border: 2px solid #ff7f50;
 }

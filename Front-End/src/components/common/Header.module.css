@@ -10,10 +10,12 @@
 
 .headerCustomer {
   background-color: #ffcc66;
+  justify-content: center;
 }
 
 .headerOwner {
   background-color: #e2eed0;
+  justify-content: center;
 }
 
 .topSection {
