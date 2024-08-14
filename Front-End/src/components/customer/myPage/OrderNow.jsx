@@ -4,36 +4,33 @@ import { useCustomerEventStore } from 'store/eventStore';
 import customerOrderStore from 'store/orders/customerOrderStore'
 
 
-const OrderNow = ({ memberInfo, orderNow }) => {
+const OrderNow = ({ memberInfo, joonbiOrders }) => {
   
   const { nowOrder , getOrderDetails } = customerOrderStore();
 
   const { customerOrderNotice, setCustomerOrderNotice, customerOrderDetail } = useCustomerEventStore();
-
-  const recentOrders = orderNow.customerPreparingOrderResponseDtos;
+  console.log(joonbiOrders)
+  const recentOrders = joonbiOrders?.customerPreparingOrderResponseDtos;
   const recentOrder = recentOrders[recentOrders.length-1]
   
   console.log(recentOrder)
 
   console.log(recentOrders)
 
-  console.log(customerOrderDetail)
-
-  console.log(customerOrderNotice)
-
   useEffect(() => {
     getOrderDetails(recentOrder.orderId); 
   }, []);
   
   useEffect(() => {
+
     if (customerOrderNotice) {
-      getOrderDetails(nowOrder.orderId);
+      getOrderDetails(recentOrder.orderId);
       setCustomerOrderNotice(false);
     }
     
   }, [customerOrderNotice]);
 
-  if (!orderNow) {
+  if (!joonbiOrders) {
     return (
       <div className={styles.container}>
         <div className={styles.noOrder}>
@@ -45,18 +42,18 @@ const OrderNow = ({ memberInfo, orderNow }) => {
 
   // 주문 상태에 따른 메시지와 스타일
   const statusMessage = () => {
-    if (nowOrder.status === 'pending') {
+    if (recentOrder.status === 'pending') {
       return { message: '주문을 확인하고 있어요!', color: '#FF7F50' };
     }
-    else if (nowOrder.status === 'accepted') {
-      if (nowOrder.cookingStatus === 'completed') {
+    else if (recentOrder.status === 'accepted') {
+      if (recentOrder.cookingStatus === 'completed') {
         return { message: '준비 완료 됬어요!', color: 'green' };
       }
-      else if (nowOrder.cookingStatus === 'waiting' || nowOrder.cookingStatus === 'preparing') {
+      else if (recentOrder.cookingStatus === 'waiting' || recentOrder.cookingStatus === 'preparing') {
         return { message: '메뉴를 준비중이에요!', color: '#FF7F50' };
       }
     }
-    else if (nowOrder.status === 'rejected') {
+    else if (recentOrder.status === 'rejected') {
       return { message: '주문을 거절했어요', color: 'red' };
     }
   }
@@ -75,14 +72,16 @@ const OrderNow = ({ memberInfo, orderNow }) => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.contentWrapper}>
       <div className={styles.header}>
         <span className={styles.status} style={{ color: color }}>{message}</span>
         <span className={styles.orderTime}>주문 시간 : {formatOrderTime(recentOrder.orderTime)}</span>
       </div>
-      <div className={styles.orderDetails}>
+       <div className={styles.orderDetails}>
         <p>
           {recentOrder.orderTitle} 
         </p>       
+      </div>
       </div>
     </div>
   );

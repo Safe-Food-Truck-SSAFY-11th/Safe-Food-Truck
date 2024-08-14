@@ -1,20 +1,21 @@
 .container {
-  background-color: #FEC87F; /* 외부 배경색 유지 */
+  background-color: #FEC87F;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: center; /* 중앙 정렬 */
-  flex-direction: column; /* 세로 방향 정렬 */
+  justify-content: center;
+  flex-direction: column; 
+  margin: 15px;
+  /* border: 2px solid #ff9100; */
 }
 
 .contentWrapper {
-  /* border: 2px solid #ff9100; */
   background-color: white; 
   padding: 20px;
   border-radius: 10px;
   width: 100%;
-  text-align: center; /* 모든 텍스트 가운데 정렬 */
+  text-align: center; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
