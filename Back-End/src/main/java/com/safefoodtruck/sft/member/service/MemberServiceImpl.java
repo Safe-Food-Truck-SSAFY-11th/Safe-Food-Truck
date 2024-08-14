@@ -4,8 +4,11 @@ import static com.safefoodtruck.sft.common.message.ValidationMessage.*;
 import static com.safefoodtruck.sft.member.domain.LoginType.*;
 import static com.safefoodtruck.sft.member.domain.Membership.*;
 
+import com.safefoodtruck.sft.member.dto.response.RemainingVipPeriodResponseDto;
 import java.time.LocalDate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -159,6 +162,16 @@ public class MemberServiceImpl implements MemberService {
 
 		memberRepository.save(member);
 		emailService.sendEmailPassword(email, name, randomPassword);
+	}
+
+	@Override
+	public RemainingVipPeriodResponseDto getRemainingVipPeriod(String email) {
+		Member member = findMemberByEmail(email);
+		LocalDateTime remainingVipPeriod = member.getVipExpiredDate();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+		String formattedDateTime = remainingVipPeriod.format(formatter);
+		return new RemainingVipPeriodResponseDto(formattedDateTime);
 	}
 
 	private Member findMemberByEmail(String email) {
