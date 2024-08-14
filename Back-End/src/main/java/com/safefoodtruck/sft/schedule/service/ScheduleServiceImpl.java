@@ -62,7 +62,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Integer loginStoreId = storeRepository.findStoreWithMenusAndImagesByOwnerEmail(ownerEmail)
             .orElseThrow(NotInsertedStoreException::new).getId();
 
-        if (storeId != loginStoreId) {
+        if (!storeId.equals(loginStoreId)) {
             throw new NotSameUserException();
         }
         scheduleRepository.delete(schedule);
