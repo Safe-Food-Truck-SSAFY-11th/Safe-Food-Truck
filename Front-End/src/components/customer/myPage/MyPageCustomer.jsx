@@ -133,7 +133,6 @@ const MyPageCustomer = () => {
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} pastOrders={pastOrders} memberInfo={memberInfo} />
       <OrderNow memberInfo={memberInfo} joonbiOrders={joonbiOrders} />
       {renderSelectedComponent()}
-      <button onClick={handleDeleteAcct}>탈퇴하기</button>
     </div>
   );
 };
