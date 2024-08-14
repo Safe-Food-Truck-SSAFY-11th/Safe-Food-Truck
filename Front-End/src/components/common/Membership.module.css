@@ -8,8 +8,17 @@
 }
 
 .heading {
-    margin-bottom: 20px;
+    margin-bottom: 3%;
     font-size: 24px;
+}
+
+.container p {
+    font-size: 0.8rem;
+    color: gray;
+}
+
+.btnGroup {
+    margin-top: 3%;
 }
 
 .button {
