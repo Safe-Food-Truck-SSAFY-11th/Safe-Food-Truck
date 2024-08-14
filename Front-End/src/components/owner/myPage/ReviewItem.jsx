@@ -61,6 +61,7 @@ function ReviewItem({ review }) {
     submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
+    window.location.reload(); // 입력 후 새로고침
   };
 
   const handleAIBtnClick = async () => {
@@ -142,9 +143,9 @@ function ReviewItem({ review }) {
           </div>
         )}
       </div>
-      <button onClick={handleReplyButtonClick} className={styles.replyButton}>
+      {review.replyResponseDto == null && <button onClick={handleReplyButtonClick} className={styles.replyButton}>
         답글달기
-      </button>
+      </button>}
     </div>
   );
 }
