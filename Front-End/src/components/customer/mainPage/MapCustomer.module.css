@@ -1,10 +1,10 @@
 .mapContainer {
-  height: 100%;
-  background-color: #FEC674;
+  /* height: 100%; */
+  background-color: #fec674;
   padding: 20px; /* 패딩 추가 */
   display: flex;
   justify-content: center;
-  border-bottom: 2px solid #FB833E;
+  border-bottom: 2px solid #fb833e;
   align-items: center;
   position: relative; /* position을 relative로 설정하여 자식 요소의 absolute 위치 조정 가능 */
 }
@@ -17,7 +17,7 @@
 
 .searchButton {
   position: absolute;
-  
+
   top: 25px;
   left: 29px;
   z-index: 1000;
@@ -30,6 +30,6 @@
 }
 
 .searchButton:active {
-  background-color: #FEC674; /* 클릭 시의 배경색 */
+  background-color: #fec674; /* 클릭 시의 배경색 */
   color: white;
 }

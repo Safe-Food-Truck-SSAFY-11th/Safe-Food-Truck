@@ -6,8 +6,8 @@
   background-color: #ffcc80; /* Background color from the image */
   border-radius: 10px;
   height: 100vh;
+  overflow-y: scroll;
 }
-
 
 .noOpenTruck {
   text-align: center;
