@@ -1,11 +1,22 @@
+.backgroundColor {
+  margin: 3%;
+  background-color: #FEC87F;
+  border-radius: 10px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 
 .container {
-  background-color: #FEC87F;  
+  border: 2px solid #FF6347;
+  background-color: white;  
   padding: 20px;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  margin: 15px;
+  margin: 4%;
 }
 
 .container h3 {

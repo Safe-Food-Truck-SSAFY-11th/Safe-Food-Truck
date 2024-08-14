@@ -7,7 +7,8 @@
   justify-content: center;
   flex-direction: column; 
   margin: 15px;
-  /* border: 2px solid #ff9100; */
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .contentWrapper {
@@ -16,6 +17,7 @@
   border-radius: 10px;
   width: 100%;
   text-align: center; 
+  border: 2px solid #FF6347;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
