@@ -1,8 +1,8 @@
 .container {
   margin: 3%;
-  background-color: #FEC87F;
+  background-color: #fec87f;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   text-align: left;
   height: 100vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);

@@ -1,50 +1,49 @@
 .container {
   height: 99px;
   border-radius: 10px;
-  background-color: #FEC87F;
+  background-color: #fec87f;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  margin: 15px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  margin: 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contentWrapper {
-  border: 2px solid #FF6347;
+  border: 2px solid #ff6347;
   width: 95%;
   padding: 10px;
   border-radius: 5px;
   background-color: white;
 }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .status {
-    font-size: 13px;
-    color: #FF7F50;
-    /* font-weight: bold; */
-  }
-  
-  .orderTime {
-    font-size: 13px;
-    color: black;
-    /* font-weight: bold;  */
-  }
-  
-  .orderDetails p {
-    font-size: 16px;
-    padding-top: 10px;
-    text-align: center;
-  }
-  
-  .noOrder {
-    text-align: center;
-    justify-content: center;
-    color: black;
-    font-size: 1.2em;
-    line-height: 105px;
-  }
-  
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.status {
+  font-size: 13px;
+  color: #ff7f50;
+  /* font-weight: bold; */
+}
+
+.orderTime {
+  font-size: 13px;
+  color: black;
+  /* font-weight: bold;  */
+}
+
+.orderDetails p {
+  font-size: 16px;
+  padding-top: 10px;
+  text-align: center;
+}
+
+.noOrder {
+  text-align: center;
+  justify-content: center;
+  color: black;
+  font-size: 1.2em;
+  line-height: 105px;
+}
