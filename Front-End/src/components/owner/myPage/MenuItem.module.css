@@ -4,17 +4,17 @@
   background-color: #ffffff; /* 메뉴 항목 배경색 */
   border: 1px solid #ffffff; /* 경계선 */
   border-radius: 8px; /* 모서리 둥글게 */
-  padding: 20px; /* 내부 여백 */
+  padding: 4%;
   margin: 10px 0; /* 항목 간 간격 */
   width: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .menuImage {
-  width: 30%; 
-  height: auto; 
-  border-radius: 4px; 
-  margin-right: 16px; 
+  width: 30%;
+  height: auto;
+  border-radius: 4px;
+  margin-right: 16px;
 }
 
 .menuDetails {
