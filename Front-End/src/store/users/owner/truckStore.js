@@ -144,7 +144,7 @@ const useTruckStore = create(
       fetchTruckInfo: async () => {
         try {
           const response = await axiosInstance.get(`stores`);
-          console.log("트럭 정보 가져오기 성공", response.data);
+          // console.log("트럭 정보 가져오기 성공", response.data);
 
           // 요청이 성공하면 truckInfo 상태를 업데이트
           set({ truckInfo: response.data });

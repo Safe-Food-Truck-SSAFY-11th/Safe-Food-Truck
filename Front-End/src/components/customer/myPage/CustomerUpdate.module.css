@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh; 
-  background-color: #FEC87F;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -21,7 +20,7 @@
   display: block;
   font-size: 14px;
   margin-bottom: 5px;
-  color: #008716;
+  color: #FF9639;
 }
 
 .inputContainer input,
@@ -30,8 +29,9 @@
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #CDE7B0;
+  background-color: #FFEDDD;
   box-sizing: border-box;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .readOnlyInput {
@@ -55,13 +55,14 @@
 }
 
 .duplicateButton {
-  background-color: #66B13B;
+  background-color: #FB9256;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   margin-left: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .duplicateButton:hover {
@@ -123,6 +124,7 @@
   border-radius: 5px;
   cursor: pointer;
   margin: 0 5px; /* 버튼 사이 간격 */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .validUpdateButton:hover {
