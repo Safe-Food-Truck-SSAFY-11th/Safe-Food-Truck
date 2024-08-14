@@ -22,6 +22,7 @@ public class GlobalNotificationController {
 
     @GetMapping(value = "/subscribe/{email}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable("email") String email) {
+        System.out.println("연결!!!!!!!!!!!!!!!!!!!!");
         return globalNotificationService.subscribe(email);
     }
 }
