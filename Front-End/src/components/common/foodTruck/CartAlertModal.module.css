@@ -18,6 +18,7 @@
     text-align: center;
     max-width: 300px;
     width: 100%;
+    border: 2px solid #f46a45
   }
   
   .modalContent p {
@@ -30,7 +31,7 @@
     background-color: #f46a45;
     border: 2px solid #f46a45;
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
   }
   
