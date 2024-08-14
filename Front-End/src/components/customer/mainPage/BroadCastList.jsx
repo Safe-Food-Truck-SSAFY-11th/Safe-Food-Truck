@@ -52,7 +52,7 @@ function BroadCastList() {
           ))}
           </Slider>
         ) : (
-          <div style={{textAlign:'center'}}>현재 방송중인 푸드트럭이 없습니다.</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
+          <div style={{textAlign:'center' , fontSize: '20px'}}>현재 방송중인 푸드트럭이 없습니다.</div>  // items가 없을 때 표시할 메시지 또는 컴포넌트
       )}
     </div>
   );
