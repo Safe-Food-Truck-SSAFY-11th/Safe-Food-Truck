@@ -4,7 +4,8 @@
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin: 15px;
 }
 
 .container h3 {
