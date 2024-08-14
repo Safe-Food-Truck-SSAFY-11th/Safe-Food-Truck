@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import OrderItem from './OrderItem';
+import OrderItemDetail from './OrderItemDetail';
 import styles from './JiguemOrder.module.css';
 import barcodeImg from '../../../assets/images/barcode.png';
 import useTruckStore from "store/users/owner/truckStore";
@@ -10,6 +11,8 @@ const JiguemOrder = () => {
     const { truckInfo } = useTruckStore();
     const { nowOrderList, getOrderList } = useOrderStore();
     const { ownerOrderNotice, setOwnerOrderNotice } = useEventStore();
+
+    const [ selectedOrder, setSelectedOrder ] = useState(null);
 
     useEffect(() => {
         getOrderList();
@@ -48,6 +51,14 @@ const JiguemOrder = () => {
         return b.orderId - a.orderId; // ID 내림차순
     });
 
+    const handleOrderItemClick = (order) => {
+        setSelectedOrder(order); 
+    };
+
+    const handleCloseModal = () => {
+        setSelectedOrder(null); 
+    };
+
     return (
         <div className={styles.jiguemOrder}>
             <div className={styles.barcode}>
@@ -62,9 +73,17 @@ const JiguemOrder = () => {
                         <OrderItem
                             key={index}
                             order={order}
+                            onClick={() => handleOrderItemClick(order)}
                         />
                     ))}
                 </>
+            )}
+
+            {selectedOrder && (
+                <OrderItemDetail 
+                    order={selectedOrder}
+                    onClose={handleCloseModal}
+                />
             )}
         </div>
     );

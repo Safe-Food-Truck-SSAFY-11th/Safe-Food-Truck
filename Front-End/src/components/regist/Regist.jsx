@@ -115,7 +115,7 @@ const Regist = () => {
     return (
         <div className={`${styles.registContainer} ${!isGuest ? styles.ownerBackground : ''}`}>
             <div className={styles.contentContainer}>
-                <div className={styles.imageUpload} onClick={() => document.getElementById('profileImageInput').click()}>
+                <div className={`${styles.imageUpload} ${isGuest ? styles.guestImgColor : ''}`} onClick={() => document.getElementById('profileImageInput').click()}>
                     <img src={profileImage} alt="이미지 업로드" />
                     <input type="file" name="" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                 </div>
