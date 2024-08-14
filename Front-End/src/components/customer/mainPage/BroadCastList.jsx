@@ -11,6 +11,10 @@ function BroadCastList() {
   const { ownerLiveEndFlag, setOwnerLiveEndFlag } = useEventStore();
 
   useEffect(() => {
+    getLiveList();
+  }, [])
+
+  useEffect(() => {
     if (ownerLiveStratFlag) {
       getLiveList();
       setOwnerLiveStratFlag(false);
