@@ -32,7 +32,21 @@ const MyPageOwner = () => {
     alignItems: 'center'
   };
 
-  
+  const membershipStyle = {
+    width: '70%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '5%',
+    fontSize: '0.9rem',
+    color: '#5f5f5f',
+    marginBottom: '3%',
+  };
+
+  const memberJoin = {
+    border: 'none',
+    color: 'violet',
+  }
 
   const handleMembershipBtn = () => {
     // 멤버십 가입 페이지 이동
@@ -44,7 +58,10 @@ const MyPageOwner = () => {
       <Header />
       <OwnerInfo />
       <SalesChart />
-      <button onClick={handleMembershipBtn}>멤버십 가입</button>
+      <div style={membershipStyle}>
+        <p>멤버십에 가입하실래요?</p>
+        <a style={memberJoin} onClick={handleMembershipBtn}>멤버십 가입</a>
+      </div>
     </div>
   );
 };
