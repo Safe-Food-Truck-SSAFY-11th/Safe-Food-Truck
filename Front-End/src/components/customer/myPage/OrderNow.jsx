@@ -12,7 +12,7 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
 
   useEffect(() => {
     if (customerOrderNotice) {
-        getOrderList();
+        // getOrderList();
         setCustomerOrderNotice(false);
     }
 
