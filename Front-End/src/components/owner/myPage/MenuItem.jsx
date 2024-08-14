@@ -12,7 +12,7 @@ const MenuItem = ({ menu, onEdit, onDelete }) => {
       />
       <div className={styles.menuDetails}>
         <p>{menu.name}</p>
-        <p>{menu.price}원</p>
+        <p>{menu.price.toLocaleString()}원</p>
       </div>
       <div className={styles.menuButtons}>
         <button type="button" className={styles.editButton} onClick={onEdit}>

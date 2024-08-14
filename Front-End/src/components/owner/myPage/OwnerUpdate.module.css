@@ -4,7 +4,6 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh; 
-    background-color: #E0F7D4;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -67,7 +66,7 @@
     font-size: 16px;
     font-weight: 100;
     margin-bottom: 5px;
-    color: #FF9639;
+    color: #008716;
 }
 
 .inputContainer input,
@@ -77,7 +76,7 @@
     border: none;
     border-radius: 5px;
     box-sizing: border-box;
-    background-color: #FFEDDD;
+    background-color: #E2EED0;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 

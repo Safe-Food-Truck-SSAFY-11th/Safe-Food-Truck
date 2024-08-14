@@ -6,9 +6,9 @@
 }
 
 .scrollableContent {
+  height: calc(100vh - 135px);
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 69px;
 }
 
 .h3mainpage {
