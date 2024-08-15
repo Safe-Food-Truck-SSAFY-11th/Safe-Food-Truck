@@ -23,7 +23,7 @@ const StarRating = ({ maxStars = 5, onRatingChange }) => {
   const [hoverRating, setHoverRating] = useState(5);
 
   const bind = useDrag(({ movement: [mx], memo = rating }) => {
-    const newRating = Math.min(maxStars, Math.max(0, Math.round((memo + mx / 24) * 2) / 2));
+    const newRating = Math.min(maxStars, Math.max(0, Math.round(memo + mx / 24)));
     setHoverRating(newRating);
     return memo;
   }, { axis: 'x' });

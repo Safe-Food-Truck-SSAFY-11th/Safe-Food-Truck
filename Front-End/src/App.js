@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { MdLiveTv } from "react-icons/md";
+
 import "./App.css";
 import Waiting from "./components/common/Waiting";
 import LoginUser from "./components/login/LoginUser";
@@ -43,7 +45,10 @@ import { useEventStore, useCustomerEventStore } from 'store/eventStore';
 function App() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [liveNotice, setLiveNotice] = useState(false);
+  const [liveStoreData, setLiveStoreData] = useState(null);
   const { getLoginedEmail } = useUserStore();
+  const navigate = useNavigate();
   
   const { 
     ownerOrderNotice, 
@@ -187,11 +192,14 @@ function App() {
         setNotificationMessage(data.message);
         setShowNotification(true);
         setOwnerLiveStratFlag(true);
+        setLiveNotice(true);
+        setLiveStoreData(data);
 
-        // 2초 후에 알림 메시지를 숨김
+        // 5초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
-        }, 3000);
+          setLiveNotice(false);
+        }, 5000);
       });
 
       //방송종료 알림
@@ -222,11 +230,30 @@ function App() {
     };
   }, [getLoginedEmail()]);
 
+  const handleGoLive = (storeId) => {
+    const answer = window.confirm(
+      '라이브 방송으로 이동하시겠어요?'
+    );
+    if (answer) {
+      navigate(`/live/${storeId}`);
+    }
+  };
+
   return (
     <div className="App">
-      {showNotification && (
-        <div className="notification">{notificationMessage}</div>
-      )}
+      <div className='noticeContainer'>
+        {showNotification && (
+          <div className="notification">
+            <p>{notificationMessage}</p>
+            {(showNotification && liveNotice) && (
+              <div className='liveInfoContainer'>
+                <button onClick={() => {handleGoLive(liveStoreData.storeId)}}>
+                  <span className='liveTruckBtn'><span>{liveStoreData.storeName}&nbsp;</span><MdLiveTv size="18" color="white"/></span>
+                </button>
+              </div>
+            )}
+          </div>) }
+      </div>
       <ContentWrapper>
         <Routes>
           <Route path="/" element={<Waiting />} />
