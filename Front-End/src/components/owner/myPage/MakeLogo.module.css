@@ -78,14 +78,13 @@
 
 .saveBtn {
   background-color: #aff070;
-  color: white;
+  color: black;
 }
 
 .reCreateBtn {
   background-color: #fb9256;
-  color: white;
+  color: black;
 }
-
 
 .aiImg {
   width: 100%;
@@ -131,8 +130,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingOverlay p {
