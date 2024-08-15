@@ -40,6 +40,7 @@
   padding: 2%;
   margin: 2%;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
 }
 
 .imageButton {
@@ -114,6 +115,7 @@
   flex: 1;
   margin-right: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
 }
 
 .cancelButton {
@@ -125,6 +127,7 @@
   cursor: pointer;
   flex: 1;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
 }
 
 .deleteAccountArea {
@@ -137,7 +140,7 @@
 }
 
 .deleteAccountArea p {
-  color: #7f7f7f
+  color: #7f7f7f;
 }
 
 .deleteAccountArea a {

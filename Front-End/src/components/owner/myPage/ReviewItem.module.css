@@ -37,7 +37,7 @@
 }
 
 .slick-next:before {
-  color: #000000; 
+  color: #000000;
 }
 
 .separator {
@@ -65,7 +65,8 @@
   width: 100%;
 }
 
-.reviewHeader h4, .reply h4 {
+.reviewHeader h4,
+.reply h4 {
   font-size: 5vw;
   margin: 0;
 }
@@ -75,9 +76,10 @@
   right: 3%;
   border: none;
   border-radius: 10px;
-  background-color: #A9DF55;
+  background-color: #a9df55;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  padding: 5px 10px; 
+  padding: 5px 10px;
+  font-size: 1rem;
 }
 
 .replyInput {
@@ -88,6 +90,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   height: 150px;
+  font-size: 1rem;
 }
 
 .replyInputContainer button {
@@ -97,10 +100,11 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin: 2%;
   color: white;
+  font-size: 1rem;
 }
 
 .submitButton {
-  background-color: #66B13B;
+  background-color: #66b13b;
 }
 
 .AIBtn {
@@ -108,11 +112,11 @@
 }
 
 .customerName {
-  color: #FB833E;
+  color: #fb833e;
 }
 
 .ownerName {
-  color: #66B13B;
+  color: #66b13b;
 }
 
 .spinner {
