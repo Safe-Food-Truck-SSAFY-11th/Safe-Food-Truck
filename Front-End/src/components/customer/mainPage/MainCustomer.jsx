@@ -51,9 +51,9 @@ function MainCustomer() {
         <BroadCastList />
         <hr className={styles.hr} />
         <div className={styles.background}>
-        <h3 className={styles.h3mainpage}>
-          {nickname}님!🖐 오늘 푸드트럭 어때요?
-        </h3>
+          <h3 className={styles.h3mainpage}>
+            {nickname}님!🖐 오늘 푸드트럭 어때요?
+          </h3>
         </div>
         <div className={styles.buttons}>
           <button
@@ -73,10 +73,10 @@ function MainCustomer() {
             푸드트럭 목록
           </button>
         </div>
-            <FoodFilter
-              selectedType={selectedType}
-              onSelectType={handleSelectType}
-            />
+        <FoodFilter
+          selectedType={selectedType}
+          onSelectType={handleSelectType}
+        />
         {loading ? (
           <p>Loading...</p>
         ) : view === "map" ? (

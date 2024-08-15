@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import styles from "./Footer.module.css";
 import Notification from "components/customer/mainPage/Notification";
 import { TbHome, TbMessage2Star } from "react-icons/tb";
@@ -7,6 +7,8 @@ import { LuSettings } from "react-icons/lu";
 import { RxPerson } from "react-icons/rx";
 import { PiShoppingCartBold } from "react-icons/pi";
 import { BiBell } from "react-icons/bi";
+import useLiveStore from "store/live/useLiveStore";
+import useTruckStore from "store/users/owner/truckStore";
 
 const Footer = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,6 +16,11 @@ const Footer = () => {
   const [showNotification, setNotification] = useState(false);
   const [activeIcon, setActiveIcon] = useState(""); // 현재 클릭된 아이콘을 저장
   const location = useLocation();
+  const { leaveSessionStore } = useLiveStore();
+  const { toggleLive } = useTruckStore();
+  const navigate = useNavigate();
+
+  const { storeId } = useParams();
 
   const handleNotificationClick = () => {
     setNotification(!showNotification);
@@ -30,7 +37,19 @@ const Footer = () => {
   };
 
   const handleIconClick = (icon) => {
+    if (location.pathname.startsWith("/live/")) {
+      leaveSessionStore();
+    }
     setActiveIcon(icon);
+  };
+
+  const handleIconClickOwner = (icon, targetPath) => {
+    if (location.pathname.startsWith("/live/")) {
+      alert("방송을 종료해주세요.");
+      return;
+    }
+    setActiveIcon(icon);
+    navigate(targetPath);
   };
 
   if (role.indexOf("customer") !== -1) {
@@ -105,7 +124,10 @@ const Footer = () => {
         <Link
           to="/mainOwner"
           className={styles.menuItem}
-          onClick={() => handleIconClick("home")}
+          onClick={(e) => {
+            e.preventDefault();
+            handleIconClickOwner("home", "/mainOwner");
+          }}
         >
           <TbHome
             size="35"
@@ -119,7 +141,10 @@ const Footer = () => {
         <Link
           to="/mypageOwner"
           className={styles.menuItem}
-          onClick={() => handleIconClick("mypage")}
+          onClick={(e) => {
+            e.preventDefault();
+            handleIconClickOwner("home", "/mypageOwner");
+          }}
         >
           <RxPerson
             size="34"
@@ -134,7 +159,10 @@ const Footer = () => {
         <Link
           to="/ownerReview"
           className={styles.menuItem}
-          onClick={() => handleIconClick("review")}
+          onClick={(e) => {
+            e.preventDefault();
+            handleIconClickOwner("home", "/ownerReview");
+          }}
         >
           <TbMessage2Star
             size="35"
@@ -157,9 +185,33 @@ const Footer = () => {
           />
           {isDropdownOpen && (
             <div className={styles.dropdown}>
-              <Link to="/manageTruck">트럭정보수정</Link>
-              <Link to="/manageSchedule">스케줄관리</Link>
-              <Link to="/manageMenu">메뉴관리</Link>
+              <Link
+                to="/manageTruck"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleIconClickOwner("home", "/manageTruck");
+                }}
+              >
+                트럭정보수정
+              </Link>
+              <Link
+                to="/manageSchedule"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleIconClickOwner("home", "/manageSchedule");
+                }}
+              >
+                스케줄관리
+              </Link>
+              <Link
+                to="/manageMenu"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleIconClickOwner("home", "/manageMenu");
+                }}
+              >
+                메뉴관리
+              </Link>
             </div>
           )}
         </div>
