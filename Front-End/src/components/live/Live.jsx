@@ -88,9 +88,9 @@ const Live = () => {
   const OV = useRef();
 
   //처음 스크롤 맨위로 올리기
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  });
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // });
 
   //페이지 떠나려고 할 때 동작
   useEffect(() => {
