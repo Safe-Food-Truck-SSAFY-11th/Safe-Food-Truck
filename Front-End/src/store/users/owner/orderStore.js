@@ -9,7 +9,11 @@ const useOrderStore = create((set) => ({
         try {
             const response = await axios.get(`orders/owners`);
 
-            const today = new Date().toISOString().split('T')[0]; // 현재 날짜 (YYYY-MM-DD 형식)
+            const unformattedToday = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+            const [year, month, day] = unformattedToday.split('. ').map(part => part.replace('.', '').trim());
+
+            const today = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+            
             const orders = response.data.ownerOrderResponseDtos;
 
             const nowOrders = orders.filter(order => order.orderTime.split('T')[0] === today);
