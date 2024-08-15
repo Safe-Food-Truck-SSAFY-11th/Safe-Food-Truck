@@ -37,7 +37,7 @@ const onwerReplyAI = async (name, offDay, storeType, description, menuListRespon
   
   고객의 리뷰: "${reviewContent}"
   
-  이 정보를 기반으로 고객의 리뷰에 친절하게 답글 초안을 작성해줘. 답변에 마크다운 문법을 적용하지 말아줘
+  이 정보를 기반으로 고객의 리뷰에 친절하게 답글 초안을 한국말로 작성해줘. 답변에 마크다운 문법을 적용하지 말아줘, 답변이 길다면 가독성 좋게 작성해줘
   `;
   console.log(prompt);
   const result = await model.generateContent(prompt);
