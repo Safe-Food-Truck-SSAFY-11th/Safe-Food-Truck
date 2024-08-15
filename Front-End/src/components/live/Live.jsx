@@ -15,6 +15,8 @@ import NoticeModal from "./NoticeModal";
 import chatbot from "gemini/geminiChatBot";
 import ChatBox from "./ChatBox";
 import truck_img from "assets/images/truck-img.png";
+import { LuClipboardEdit } from "react-icons/lu";
+import { ImSpoonKnife } from "react-icons/im";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -30,6 +32,8 @@ const Live = () => {
     isLiveFailed,
     fetchTruckInfo,
     truckInfo,
+    storeSession,
+    setStoreSession,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
@@ -95,34 +99,47 @@ const Live = () => {
 
       console.log("페이지 떠남");
 
-      const navigationType = performance.getEntriesByType("navigation")[0].type;
-
-      if (navigationType === "reload") {
-        // 새로고침인 경우
-        console.log("새로고침 감지");
-
-        if (role.indexOf("customer") !== -1) {
-          // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
-          await leaveSession();
-        }
-
-        return; // 아무 작업도 하지 않음
-      } else {
-        console.log("새로고침 아님");
-        // 새로고침이 아닌 경우
-        if (role.indexOf("customer") !== -1) {
-          // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
-          leaveSession();
-        } else if (role.indexOf("owner") !== -1) {
-          // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
-          const res = window.confirm("방송을 종료하시겠습니까?");
-          if (res) {
-            await endLive(); // 방송 종료
-          } else {
-            event.preventDefault(); // 페이지 이탈을 막음
-          }
+      if (role.indexOf("customer") !== -1) {
+        // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+        leaveSession();
+      } else if (role.indexOf("owner") !== -1) {
+        // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
+        const res = window.confirm("방송을 종료하시겠습니까?");
+        if (res) {
+          await endLive(); // 방송 종료
+        } else {
+          event.preventDefault(); // 페이지 이탈을 막음
         }
       }
+
+      // const navigationType = performance.getEntriesByType("navigation")[0].type;
+
+      // if (navigationType === "reload") {
+      //   // 새로고침인 경우
+      //   console.log("새로고침 감지");
+
+      //   if (role.indexOf("customer") !== -1) {
+      //     // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+      //     await leaveSession();
+      //   }
+
+      //   return; // 아무 작업도 하지 않음
+      // } else {
+      //   console.log("새로고침 아님");
+      //   // 새로고침이 아닌 경우
+      //   if (role.indexOf("customer") !== -1) {
+      //     // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+      //     leaveSession();
+      //   } else if (role.indexOf("owner") !== -1) {
+      //     // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
+      //     const res = window.confirm("방송을 종료하시겠습니까?");
+      //     if (res) {
+      //       await endLive(); // 방송 종료
+      //     } else {
+      //       event.preventDefault(); // 페이지 이탈을 막음
+      //     }
+      //   }
+      // }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -211,6 +228,7 @@ const Live = () => {
     const newSession = OV.current.initSession();
 
     setSession(newSession);
+    setStoreSession(newSession);
 
     newSession.on("streamCreated", (event) => {
       const subscriber = newSession.subscribe(event.stream, undefined);
@@ -290,6 +308,7 @@ const Live = () => {
     const newSession = OV.current.initSession();
 
     setSession(newSession);
+    setStoreSession(newSession);
 
     newSession.on("streamCreated", (event) => {
       const subscriber = newSession.subscribe(event.stream, undefined);
@@ -535,11 +554,11 @@ const Live = () => {
             <div className={styles.buttons}>
               {role.indexOf("owner") !== -1 ? (
                 <button
-                  className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
+                  className={styles.noticeBtn}
                   id="noticeRegist"
                   onClick={openNoticeModal}
                 >
-                  공지사항 작성
+                  <LuClipboardEdit size="34" color="black" />{" "}
                 </button>
               ) : null}
               <button
@@ -597,11 +616,15 @@ const Live = () => {
           <div className={styles.sessionHeader}>
             {role.indexOf("customer") !== -1 ? (
               <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
+                className={styles.goDetailBtn}
                 id="buttonLeaveSession"
                 onClick={leaveSession}
               >
-                나가기
+                <p className={styles.truckName}>{truckName}</p>
+                <p className={styles.joomoon}>
+                  <div>주문하러가기</div>
+                  <ImSpoonKnife />
+                </p>
               </button>
             ) : null}
           </div>

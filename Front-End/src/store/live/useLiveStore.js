@@ -52,6 +52,19 @@ const useLiveStore = create(
           console.error("트럭 가져오는데 실패 했음 ㅠㅜ", error);
         }
       },
+
+      //현재 세션 저장
+      storeSession: null,
+      setStoreSession: (session) => set({ storeSession: session }),
+      leaveSessionStore: () =>
+        set((state) => {
+          if (state.storeSession) {
+            state.storeSession.disconnect();
+            console.log(state.storeSession);
+          }
+
+          return { storeSession: null };
+        }),
     }),
     {
       name: "truck-info-store", // sessionStorage에 저장될 키 이름

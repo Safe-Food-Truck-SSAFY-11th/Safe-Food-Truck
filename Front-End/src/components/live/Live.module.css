@@ -31,6 +31,11 @@
   border-radius: 5px;
 }
 
+.noticeBtn {
+  border: none;
+  background-color: white;
+}
+
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -68,9 +73,37 @@
   display: flex;
   width: 100%;
   justify-content: end;
-  gap: 2%;
+  gap: 3%;
   margin-right: 10%;
   margin-top: 2%;
+}
+
+.goDetailBtn {
+  display: inline-block;
+  padding: 2% 4%;
+  margin-top: 0;
+  border: none;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #fec674;
+  font-size: 2em;
+  width: 70%;
+}
+
+.truckName {
+  color: white;
+}
+
+.joomoon {
+  font-size: 0.7em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.joomoon div {
+  margin-right: 2%;
 }
 
 .session {
@@ -82,7 +115,7 @@
 
 .sessionHeader {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: 10px 10px;
   width: 100%;
   box-sizing: border-box;
@@ -90,7 +123,7 @@
 
 .mainVideo {
   width: 100%;
-  height: 30vh;
+  height: 30dvh;
   overflow: hidden;
   /* margin: 20px auto; */
 }
@@ -116,7 +149,7 @@
   gap: 30px;
   padding: 10px;
   /* margin-top: 10px; */
-  margin: 10px 5px 5px 5px;
+  margin: 1%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -204,7 +237,7 @@
 }
 
 .chatContainerExpanded {
-  height: calc(70vh - 69px);
+  height: calc(70dvh - 69px);
   opacity: 1;
   transform: translateY(0);
 }
