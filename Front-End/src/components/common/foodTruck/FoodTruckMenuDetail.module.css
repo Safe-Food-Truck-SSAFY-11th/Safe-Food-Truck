@@ -135,3 +135,10 @@
   background-color: #f46a45;
   color: white;
 }
+
+
+.scrollable {
+  height: calc(100vh - 135px);
+  flex: 1 1;
+  overflow-y: auto;
+}

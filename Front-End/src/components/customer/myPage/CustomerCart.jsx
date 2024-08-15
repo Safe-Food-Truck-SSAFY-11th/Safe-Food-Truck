@@ -90,12 +90,14 @@ const CustomerCart = () => {
   if (isEmpty || !cartItems.length) {
     return (
       <>
-        <Header />
+      <Header />
+      <div className={styles.scrollable}>
         <div className={styles.emptyCartContainer}>
           <div className={styles.emptyCartMessage}>
             <p>장바구니에 담긴 상품이 없어요 🤣</p>
           </div>
         </div>
+      </div>
       </>
     );
   }
@@ -109,6 +111,7 @@ const CustomerCart = () => {
   return (
     <>
       <Header />
+     <div className={styles.scrollable}> 
       <div className={styles.container}>
         <div className={styles.cartContainer}>
           <h1 className={styles.cartTitle}>{nickname} 님의 장바구니에요!</h1>
@@ -149,7 +152,7 @@ const CustomerCart = () => {
           </>
         </div>
       </div>
-
+    </div> 
       {/* 모달 컴포넌트 추가 */}
       <CartAlertModal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
     </>
