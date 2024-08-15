@@ -225,6 +225,7 @@ const Live = () => {
   //사장 - 새로 세션을 만들고 입장
   const createSessionAndJoin = async () => {
     OV.current = new OpenVidu();
+    OV.current.enableProdMode(); // 로그제거
     const newSession = OV.current.initSession();
 
     setSession(newSession);
