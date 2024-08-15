@@ -14,6 +14,9 @@ const useEventStore = create((set, get) => ({
     // 방송 종료
     ownerLiveEndFlag: false,
     setOwnerLiveEndFlag: (ownerLiveEndFlag) => set({ownerLiveEndFlag}),
+
+    customerOrderNoticeFlag: false,
+    setCustomerOrderNoticeFlag: (customerOrderNoticeFlag) => set({customerOrderNoticeFlag})
 }));
 
 const useCustomerEventStore = create((set, get) => ({
