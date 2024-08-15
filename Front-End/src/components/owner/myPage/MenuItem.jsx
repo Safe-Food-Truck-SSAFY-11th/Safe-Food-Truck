@@ -1,5 +1,5 @@
 import React from "react";
-import imageIcon from "assets/images/sft-logo.png";
+import imageIcon from "assets/images/foodImage/all.png";
 import styles from "./MenuItem.module.css";
 
 const MenuItem = ({ menu, onEdit, onDelete }) => {

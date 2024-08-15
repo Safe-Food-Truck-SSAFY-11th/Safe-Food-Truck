@@ -126,3 +126,22 @@
   flex: 1;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
+
+.deleteAccountArea {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 0.85rem;
+  gap: 5vw;
+  margin: 10%;
+}
+
+.deleteAccountArea p {
+  color: #7f7f7f
+}
+
+.deleteAccountArea a {
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
