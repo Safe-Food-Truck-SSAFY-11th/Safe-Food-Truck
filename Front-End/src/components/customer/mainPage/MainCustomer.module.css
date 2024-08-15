@@ -9,6 +9,7 @@
   height: calc(100vh - 135px);
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .h3mainpage {
@@ -18,45 +19,45 @@
 }
 
 .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 7%; /* 버튼 간격 설정 */
-    padding-top: 10px;
-    padding-bottom: 10px; 
-  }
-  
-  .buttons button {
-    padding: 3% 5% 3% 5%;
-    font-size: 16px; /* 폰트 크기 설정 */
-    border: none;
-    background-color: white; /* 배경색 설정 */
-    color: black; /* 텍스트 색상 설정 */
-    cursor: pointer; /* 커서 스타일 설정 */
-    transition: background-color 0.3s, color 0.3s;
-    border-bottom: 2px solid black; 
-  }
-  
-  .buttons button:hover {
-    /* background-color: white; 호버 시 배경색 변경 */
-    /* color: #FB9256; 호버 시 텍스트 색상 변경 */
-  }
-  
-  .buttons button.selected {
-    /* background-color: white;  */
-     color: #FB9256;
-     border-bottom: 2px solid #FB9256;
-  }
-  
-  .hr {
-    margin: 0 auto;
-    width: 90%;
-    border: 1px solid #FB9256;
-  }
+  display: flex;
+  justify-content: center;
+  gap: 7%; /* 버튼 간격 설정 */
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 
-  .background {
-    border-radius: 10px;
-    margin: 0 auto;
-    width: 90%;
-    background-color: #ffcc80;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  }
+.buttons button {
+  padding: 3% 5% 3% 5%;
+  font-size: 16px; /* 폰트 크기 설정 */
+  border: none;
+  background-color: white; /* 배경색 설정 */
+  color: black; /* 텍스트 색상 설정 */
+  cursor: pointer; /* 커서 스타일 설정 */
+  transition: background-color 0.3s, color 0.3s;
+  border-bottom: 2px solid black;
+}
+
+.buttons button:hover {
+  /* background-color: white; 호버 시 배경색 변경 */
+  /* color: #FB9256; 호버 시 텍스트 색상 변경 */
+}
+
+.buttons button.selected {
+  /* background-color: white;  */
+  color: #fb9256;
+  border-bottom: 2px solid #fb9256;
+}
+
+.hr {
+  margin: 0 auto;
+  width: 90%;
+  border: 1px solid #fb9256;
+}
+
+.background {
+  border-radius: 10px;
+  margin: 0 auto;
+  width: 90%;
+  background-color: #ffcc80;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
