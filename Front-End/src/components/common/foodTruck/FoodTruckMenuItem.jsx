@@ -26,7 +26,7 @@ function FoodTruckMenuItem({ item , storeId }) {
       </div>
       <div className={styles.details}>
         <h3>{item.name}</h3>
-        <span>{item.description}</span>
+        <span className={styles.description}>{item.description}</span>
         <span>{item.price.toLocaleString()}원</span> {/* 숫자에 쉼표 추가 */}
       </div>
     </div>
