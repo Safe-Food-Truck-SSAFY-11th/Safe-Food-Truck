@@ -1,11 +1,4 @@
 .menuItem {
-  /* display: flex;
-  align-items: center;
-  background-color: white;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  margin: 10px 0; */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -13,13 +6,14 @@
   padding: 10px;
   margin: 10px 0;
   border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
-  height: 100px;
+  min-height: 100px;
+  cursor: pointer; /* 클릭 가능한 요소임을 나타내기 위해 추가 */
+  overflow: hidden; /* 컨테이너를 벗어나는 요소들을 숨기기 위해 추가 */
 }
 
 .imageContainer {
-  padding-left: 10px;
   flex-shrink: 0;
   margin-right: 15px;
 }
@@ -27,13 +21,13 @@
 .image {
   width: 80px;
   height: 80px;
-  object-fit: contain;
+  object-fit: contain; /* 이미지가 영역을 꽉 채우도록 설정 */
   border-radius: 5px;
 }
 
 .placeholder {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,28 +35,40 @@
   color: #888;
   font-size: 12px;
   border-radius: 5px;
-  margin-right: 15px; /* 이미지와 텍스트 사이에 약간의 간격 추가 */
+  margin-right: 15px;
 }
 
 .details {
   display: flex;
   flex-direction: column;
-  flex: 1; /* 세부사항이 가능한 많이 공간을 차지하도록 설정 */
+  flex: 1;
+  justify-content: center;
+  overflow: hidden; /* 컨테이너를 벗어나는 요소들을 숨기기 위해 추가 */
 }
 
 .details h3 {
-  font-size: 18px;
-  padding-left: 18px;
-  padding-bottom: 3px;
-  margin: 0; /* 기본 여백 제거 */
+  font-size: 16px;
+  margin: 0;
+  padding-bottom: 4px;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 텍스트를 '...'으로 표시 */
+}
+
+.description {
+  font-size: 14px;
+  margin: 0;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .details span {
-  padding-left: 18px;
   font-size: 14px;
-  padding-bottom: 3px;
-  white-space: nowrap; /* 줄바꿈 없이 한 줄로 유지 */
-  overflow: hidden; /* 넘치는 텍스트는 숨김 */
-  text-overflow: ellipsis; /* 넘치는 부분을 생략 부호(...)로 표시 */
-  color: #666; /* 텍스트 색상 설정 */
+  color: #333;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
