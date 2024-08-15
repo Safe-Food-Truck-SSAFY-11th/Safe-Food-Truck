@@ -87,6 +87,7 @@
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  height: 150px;
 }
 
 .replyInputContainer button {
