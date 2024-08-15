@@ -1,11 +1,38 @@
 .mapContainer {
-  text-align: center;
-  margin-top: 20px;
+  /* height: 100%; */
+  background-color: #fec674;
+  padding: 20px; /* 패딩 추가 */
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  align-items: center;
+  position: relative; /* position을 relative로 설정하여 자식 요소의 absolute 위치 조정 가능 */
+  margin: 15px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
-.mapImage {
-  width: 100%;
-  max-width: 600px;
-  height: auto;
-  border: 2px solid #ffd27f;
+.map {
+  border-radius: 10px;
+  width: 100%; /* 맵의 너비 설정 */
+  height: 400px; /* 맵의 높이 설정 */
+  border: 2px solid #ccc; /* 맵 테두리 설정 */
+}
+
+.searchButton {
+  position: absolute;
+
+  top: 25px;
+  left: 29px;
+  z-index: 1000;
+  background-color: #fff;
+  border: none;
+  padding: 10px 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.searchButton:active {
+  background-color: #fec674; /* 클릭 시의 배경색 */
+  color: white;
 }

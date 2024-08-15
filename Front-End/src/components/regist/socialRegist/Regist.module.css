@@ -1,0 +1,139 @@
+.registContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+    background-color: #FEC674;
+    /* 손님 배경 색 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    /* 추가 */
+}
+
+.registContainer.ownerBackground {
+    background-color: #E0F7D4;
+    /* 사장님 배경 색 */
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    /* 추가 */
+    -webkit-overflow-scrolling: touch;
+    /* iOS에서 부드러운 스크롤 */
+    scrollbar-width: none;
+    /* Firefox에서 스크롤바 숨김 */
+}
+
+.contentContainer::-webkit-scrollbar {
+    display: none;
+    /* 크롬, 사파리, 엣지에서 스크롤바 숨김 */
+}
+
+.imageUpload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 23vw;
+    height: 12vh;
+    background-color: #F8F8F8;
+    border-radius: 50%;
+    margin: 30px 0;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.imageUpload img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.uploadedImage {
+    width: 100%;
+    height: auto;
+}
+
+.optionContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.option {
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: black;
+    /* 기본 글자 색상 */
+}
+
+.inactive {
+    color: gray;
+    /* 비활성화된 글자 색상 */
+}
+
+.guestActive {
+    color: #ff5922;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    /* 손님 선택 시 글자 색상 */
+}
+
+.ownerActive {
+    color: #2AC311;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    /* 사장님 선택 시 글자 색상 */
+}
+
+.divider {
+    font-size: 16px;
+    color: gray;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+    gap: 5vw;
+}
+
+.joinButton {
+    background-color: #D1FD8C;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+    margin-right: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.joinButton:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    background-color: #FFA285;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    flex: 1;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}

@@ -6,55 +6,38 @@ import styles from './SobiPattern.module.css';
 // Chart.js에서 필요한 컴포넌트 등록
 ChartJS.register(CategoryScale, LinearScale, ArcElement, Title, Tooltip, Legend);
 
-const SobiPatternPie = () => {
+const SobiPatternPie = ({ memberInfo, mySobiPattern }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      // 더미 데이터를 사용하여 테스트합니다.
-      const dummyData = {
-        totalSpent: 12500,
-        mostEaten: '붕어빵',
-        pattern: {
-          labels: ['맛있는 붕어빵', '한반대 닭꼬치', '유온 타코야끼', '맛있는 닭꼬치', '대박 떡볶이', '집에 가고싶다', '배고파요'],
-          datasets: [
-            {
-              label: '이번주 소비 패턴',
-              data: [10, 8, 6, 4, 2, 1, 1],
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 99, 132, 0.2)',
-              ],
-              borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(255, 99, 132, 1)',
-              ],
-              borderWidth: 1,
-            },
-          ],
-        },
+    if (mySobiPattern) {
+      // 데이터를 변환하여 chart.js에서 사용할 수 있도록 함
+      const chartData = {
+        labels: mySobiPattern.customerOrderByStoreSummaryDtos.map(store => store.storeName),
+        datasets: [
+          {
+            label: '주간 주문 횟수',
+            data: mySobiPattern.customerOrderByStoreSummaryDtos.map(store => store.orderCount),
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+          },
+        ],
       };
 
-      // 로딩 시뮬레이션을 위해 타임아웃을 설정합니다.
-      setTimeout(() => {
-        setData(dummyData);
-        setLoading(false);
-      }, 1000);
-    };
+      // storeType별로 가장 많이 주문한 항목을 찾음
+      const mostEatenStoreType = mySobiPattern.customerOrderByStoreSummaryDtos.reduce((prev, current) => {
+        return (prev.orderCount > current.orderCount) ? prev : current;
+      }, { storeType: 'N/A', orderCount: 0 }).storeType;
 
-    fetchData();
-  }, []);
+      setData({
+        
+        totalSpent: mySobiPattern.weeklyTotalAmount,
+        mostEaten: mostEatenStoreType,
+        pattern: chartData,
+      });
+      setLoading(false);
+    }
+  }, [mySobiPattern]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -63,11 +46,28 @@ const SobiPatternPie = () => {
   return (
     <div className={styles.backgroundColor}>
       <div className={styles.container}>
-        <h3>용훈님이 자주 만난 푸드트럭이에요! </h3>
-        <p>이번주에 푸드트럭에 총 <strong>{data.totalSpent.toLocaleString()}원</strong> 썼어요!</p>
-        <p>가장 많이 먹은 음식은 <strong>{data.mostEaten}</strong>입니다!</p>
-          <div className={styles.chartContainer}>
-            <Pie data={data.pattern} />
+        {data.totalSpent ? (
+          <>
+            <h3>{memberInfo.nickname}님이 자주 만난 푸드트럭이에요!</h3>
+            <p>
+              이번주에 푸드트럭에 총{" "}
+              <strong>
+                {data.totalSpent ? data.totalSpent.toLocaleString() : "0"}원
+              </strong>{" "}
+              썼어요!
+            </p>
+            <p>
+              가장 많이 먹은 음식은 <strong>{data.mostEaten}</strong>입니다!
+            </p>
+          </>
+        ) : (
+          <div className={styles.noDataContainer}>
+          <div className={styles.noData}>소비패턴을 분석할 데이터가 부족해요 😅</div>
+          </div>
+        )}
+
+        <div className={styles.chartContainer}>
+          <Pie data={data.pattern} />
         </div>
       </div>
     </div>

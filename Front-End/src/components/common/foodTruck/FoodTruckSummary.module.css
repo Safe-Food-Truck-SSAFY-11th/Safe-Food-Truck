@@ -1,16 +1,92 @@
-@import './sharedStyles.module.css'; /* 공유 스타일 임포트 */
-
 .header {
+  padding: 20px;
+  background-color: #fec674;
+  border-radius: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* 이미지를 텍스트 위로 배치하기 위해 column으로 변경 */
+  align-items: center; /* 이미지와 텍스트를 모두 가운데 정렬 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-align: center; /* 텍스트를 가운데 정렬 */
+}
+
+.container {
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.truckImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  margin-bottom: 15px; /* 이미지와 텍스트 사이에 여백 추가 */
+  object-fit: contain;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 텍스트를 가운데 정렬 */
   text-align: center;
-  margin-bottom: 20px;
 }
 
-.header h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.truckName {
+  margin: 0;
+  font-size: 20px;
+  color: #fe8980;
+  padding-bottom: 25px;
 }
 
-.header p {
-  margin: 5px 0;
+.description {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 4%;
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center; /* 버튼들을 가운데 정렬 */
+}
+
+.jjimButtonActive,
+.jjimButtonInActive,
+.liveButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.jjimButtonActive {
+  width: 88px;
+  height: 40px;
+  background-color: #ed377d;
+  color: white;
+  border: 2px solid #ed377d;
+}
+
+.jjimButtonInActive {
+  background-color: white;
+  color: #ed377d;
+  border: 2px solid #ed377d;
+}
+
+.liveButton {
+  background-color: #4caf50;
+  color: white;
+  border: 2px solid #4caf50;
 }

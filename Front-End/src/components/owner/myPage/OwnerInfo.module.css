@@ -1,0 +1,84 @@
+.container {
+  background-color: #eaffc9;
+  padding: 4%;
+  border-radius: 10px;
+  width: 90%;
+  margin-top: 2vh;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.contentWrapper {
+  border: 2px solid #2AC311;
+  background-color: white; 
+  padding: 5% 5% 3% 5%;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center; 
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.profileSection {
+  height: 62%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+.ownerprofileImageBox{
+  /* height: 100%; */
+  /* width: 53%; */
+  height: 100px;
+  width: 100px;
+  position: relative;
+}
+.ownerprofileImageBox2{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지를 컨테이너에 꽉 차도록 설정 */
+}
+.crown {
+  position: absolute;
+  top: -30px; /* 왕관을 프로필 이미지 위로 올림 */
+  left: 84%; /* 왼쪽에서 50% 위치로 설정하여 중앙 정렬을 시작 */
+  transform: translateX(-50%); /* 중앙으로 정렬되도록 위치 조정 */
+  width: 17vw; /* 왕관 크기 조정 (필요에 따라 조정) */
+  height: auto; /* 비율을 유지하면서 높이 자동 조정 */
+}
+.headText {
+  font-size: 1.3rem !important;
+  margin-bottom: 1%;
+}
+
+.infoText {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.highlight {
+  color: #00a71c;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  background-color: #a9df55;
+  border: none;
+  padding: 2%;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: #181818;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
