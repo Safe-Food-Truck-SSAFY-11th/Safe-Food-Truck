@@ -1,0 +1,41 @@
+.mapContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  height: 40vh;
+  margin-bottom: 1rem;
+  background-color: #EAFFC9;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map {
+  width: 90%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.btnArea>button {
+  margin: 10px;
+}
+
+.confirmButton {
+  padding: 0.5rem 1rem;
+  background-color: #6bce6f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.currentLocationButton {
+  padding: 0.5rem 1rem;
+  background-color: #6bce6f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}

@@ -1,14 +1,18 @@
-.form {
-  width: 80%;
-  max-width: 400px;
-  margin: 0 auto;
-  background-color: #FEC87F;
-  padding: 20px;
-  border-radius: 10px;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-y: scroll;
 }
 
 .inputContainer {
-  margin-bottom: 10px;
+  width: 80%; /* 인풋 박스의 너비를 컨테이너 너비의 80%로 설정 */
+  margin-bottom: 15px;
   position: relative;
 }
 
@@ -16,7 +20,7 @@
   display: block;
   font-size: 14px;
   margin-bottom: 5px;
-  color: #008716;
+  color: #FF9639;
 }
 
 .inputContainer input,
@@ -25,8 +29,9 @@
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #CDE7B0;
+  background-color: #FFEDDD;
   box-sizing: border-box;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .readOnlyInput {
@@ -50,13 +55,20 @@
 }
 
 .duplicateButton {
-  background-color: #66B13B;
+  background-color: #FB9256;
   color: white;
   border: none;
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   margin-left: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.duplicateButton:hover {
+  background-color: white;
+  color: #66B13B;
+  border: 2px solid #66B13B;
 }
 
 .hintText {
@@ -74,6 +86,7 @@
 .inputRow {
   display: flex;
   justify-content: space-between;
+  width: 80%; /* 인풋 박스의 너비를 컨테이너 너비의 80%로 설정 */
 }
 
 .inputRow .inputContainer {
@@ -96,33 +109,44 @@
 .buttonGroup {
   display: flex;
   justify-content: space-between;
+  width: 80%; /* 버튼 그룹의 너비를 컨테이너 너비의 80%로 설정 */
   margin-top: 20px;
 }
 
-.updateButton {
+.updateButton,
+.validUpdateButton,
+.cancelButton {
+  flex: 1;
   background-color: #8BC34A;
   border: none;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  margin: 0 5px; /* 버튼 사이 간격 */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.updateButton:hover {
-  background-color: #7CB342;
+.validUpdateButton:hover {
+  background-color: white;
+  color: #8BC34A;
+  border: 2px solid #8BC34A;
+}
+
+.updateButton:disabled {
+  background-color: #cccccc;
+  color: #666666;
+   cursor: not-allowed;
 }
 
 .cancelButton {
   background-color: #FF7F50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .cancelButton:hover {
-  background-color: #FF6347;
+  background-color: white;
+  color: #FF7F50;
+  border: 2px solid #FF7F50;
 }
 
 .imageContainer {
@@ -143,6 +167,15 @@
   color: #4F8A10;
   position: relative;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* 이미지가 클릭 가능한 버튼처럼 보이도록 */
+}
+
+.inputTitle {
+  font-size: 0.9rem;
+  text-align: center;
+  color: black;
+  margin-top: 3vh;
+  margin-bottom: 1vh;
 }
 
 .imagePlaceholder img {
@@ -153,13 +186,23 @@
 }
 
 .uploadButton {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: transparent;
-  color: #4F8A10;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
+  display: none; /* 이제 이미지를 클릭해 업로드할 수 있으므로 이 버튼은 숨깁니다. */
+}
+
+.deleteAccountArea {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  gap: 5vw;
+  margin: 10%;
+}
+
+.deleteAccountArea p {
+  color: #7f7f7f
+}
+
+.deleteAccountArea a {
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }

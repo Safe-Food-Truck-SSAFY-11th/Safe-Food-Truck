@@ -6,6 +6,10 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 etc/letsencrypt/
 
+# ADDED GITIGONRE
+.build/**
+.gradle/**
+
 # User-specific stuff
 .idea
 

@@ -1,34 +1,107 @@
-// src/store/foodTruckStore.js
-
-// 일반 코드
-
-import {create} from 'zustand';
-import axios from 'axios';
+import { create } from 'zustand';
+import axiosInstance from 'utils/axiosInstance';
 
 const useReviewStore = create((set) => ({
-  Reviews: [],
+  myReviews: [], // 기본적으로 빈 배열로 초기화
+  selectedReview: null,
 
-  // 리뷰 작성 요청
-  CreateReview: async (newReview) => {
-    const response = await axios.post('/api/review', newReview);
+  currentReview: {
+    content: '',
+    is_visible: 1,
+    rating: 10,
+    savedPath: 'empty',
+    savedUrl: 'empty',
+  },
+
+  initCurrentReview: () => {
+    set({
+      currentReview: {
+        content: '',
+        is_visible: 1,
+        rating: 10,
+        savedPath: 'empty',
+        savedUrl: 'empty',
+      },
+    });
+  },
+
+  // 내가 작성한 리뷰 전체 조회
+  getAllMyReview: async () => {
+    try {
+      const response = await axiosInstance.get('/reviews');
+      set({ myReviews: response.data });
+    } catch (error) {
+      console.error('리뷰 가져오기 실패 했습니다', error);
+    }
+  },
+
+  // 리뷰 작성하기
+  createReview: async (newReview) => {
+    try {
+      const reviewToSend = {
+        ...newReview,
+        reviewImageDtos: newReview.reviewImageDtos.length ? newReview.reviewImageDtos : [{
+          savedUrl: 'empty',
+          savedPath: 'empty',
+        }],
+      };
+  
+      const response = await axiosInstance.post('/reviews', reviewToSend);
+      set((state) => ({
+        myReviews: Array.isArray(state.myReviews) ? [...state.myReviews, response.data] : [response.data], // 항상 배열로 초기화
+        currentReview: {
+          content: '',
+          is_visible: 1,
+          rating: 10,
+          savedPath: 'empty',
+          savedUrl: 'empty',
+        },
+      }));
+    } catch (error) {
+      console.error('리뷰 작성에 실패 했습니다', error);
+    }
+  },
+
+  // 리뷰 삭제하기
+  deleteReview: async (reviewId) => {
+    try {
+      await axiosInstance.delete(`/reviews/${reviewId}`);
+      set((state) => ({
+        myReviews: state.myReviews.filter((review) => review.id !== reviewId),
+      }));
+    } catch (error) {
+      console.error('리뷰 삭제에 실패했습니다', error);
+    }
+  },
+
+  // 리뷰 신고하기 함수
+  reportReview: async () => {
+    try {
+      await axiosInstance.post(`/reviews`);
+      console.log('리뷰 신고 성공');
+    } catch (error) {
+      console.error('리뷰 신고 실패');
+    }
+  },
+
+  // 리뷰 신고여부 체크
+  isReportedReview: async (reviewId) => {
+    try {
+      const response = await axiosInstance.get(`/reviews/${reviewId}`);
+      return response.data;
+    } catch (error) {
+      console.error('리뷰 신고여부 체크 실패', error);
+    }
+  },
+
+  // 현재 리뷰 업데이트
+  updateCurrentReview: (field, value) =>
     set((state) => ({
-      Reviews: [...state.Reviews, response.data],
-    }));
-  },
-
-  // 리뷰 목록 조회 요청
-  getAllReview: async () => {
-    const response = await axios.get('/api/review');
-    set({ Reviews: response.data });
-  },
-
-  // 트럭 삭제 요청
-  deleteReview: async (id) => {
-    await axios.delete(`/api/review/${id}`);
-    set((state) => ({
-      Reviews: state.Reviews.filter(review => review.id !== id),
-    }));
-  },
+      currentReview: {
+        ...state.currentReview,
+        [field]: value,
+      },
+    })),
 }));
 
 export default useReviewStore;

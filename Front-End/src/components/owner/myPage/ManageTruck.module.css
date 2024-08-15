@@ -1,0 +1,150 @@
+.form {
+  width: 100%;
+  max-width: 500px;
+  /* margin: 37px auto; */
+  padding: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* height: calc(100vh - 69px); */
+  justify-content: center;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.imageUpload {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.uploadedImage {
+  width: 100%;
+  max-width: 70vw;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.imageInput {
+  display: none;
+}
+
+.imageButton,
+.AiBtn {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 2%;
+  margin: 2%;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+}
+
+.imageButton {
+  background-color: #2ac311;
+}
+
+.AiBtn {
+  background-color: violet;
+}
+
+.inputContainer {
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.inputContainer label {
+  display: block;
+  font-size: 14px;
+  font-weight: 100;
+  margin-bottom: 5px;
+  color: green;
+}
+
+.inputContainer input,
+.inputContainer select,
+.inputContainer textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #e2eed0;
+}
+
+.daysContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dayButton {
+  background-color: #f8f8f8;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  width: 40px;
+  text-align: center;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.activeDay {
+  background-color: #2ac311;
+  color: white;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.submitButton {
+  background-color: #aff070;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  flex: 1;
+  margin-right: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+}
+
+.cancelButton {
+  background-color: #fb9256;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  flex: 1;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+}
+
+.deleteAccountArea {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 0.85rem;
+  gap: 5vw;
+  margin: 10%;
+}
+
+.deleteAccountArea p {
+  color: #7f7f7f;
+}
+
+.deleteAccountArea a {
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}

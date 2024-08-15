@@ -1,0 +1,267 @@
+.container {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.join {
+  margin-top: 50px;
+}
+
+.imgDiv img {
+  width: 300px;
+}
+
+.joinDialog {
+  display: inline-block;
+  text-align: left;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formControl {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.noticeBtn {
+  border: none;
+  background-color: white;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 0;
+  border: none;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.btnLarge {
+  font-size: 1em;
+}
+
+.btnSuccess {
+  background-color: #28a745;
+}
+
+.btnDanger {
+  background-color: #ffa285;
+}
+
+.btnInfo {
+  background-color: #89dfec;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  gap: 3%;
+  margin-right: 10%;
+  margin-top: 2%;
+}
+
+.goDetailBtn {
+  display: inline-block;
+  padding: 2% 4%;
+  margin-top: 0;
+  border: none;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #fec674;
+  font-size: 2em;
+  width: 70%;
+}
+
+.truckName {
+  color: white;
+}
+
+.joomoon {
+  font-size: 0.7em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.joomoon div {
+  margin-right: 2%;
+}
+
+.session {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.sessionHeader {
+  display: flex;
+  justify-content: center;
+  padding: 10px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mainVideo {
+  width: 100%;
+  height: 30dvh;
+  overflow: hidden;
+  /* margin: 20px auto; */
+}
+
+.videoContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.streamContainer {
+  cursor: pointer;
+  width: 45%;
+  margin: 2.5%;
+}
+
+.noticeBox {
+  width: 90%;
+  border-radius: 10px;
+  background-color: #eaffc9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+  padding: 10px;
+  /* margin-top: 10px; */
+  margin: 1%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.truckImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 45px;
+  overflow: hidden;
+}
+
+.noticeTitle {
+  color: #ff0000;
+}
+
+.noticeContent {
+  white-space: pre-wrap;
+}
+
+.noticeInfo {
+  text-align: left;
+}
+
+.messageForm {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
+  gap: 10px;
+}
+
+.messageInput {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-top: 1px solid #ccc;
+  width: 70%;
+}
+
+.sendButton {
+  margin: 0;
+  padding: 10px 20px;
+  border: none;
+  background-color: #ffa285;
+  color: black;
+  border-radius: 10px;
+  height: 40px;
+}
+
+.ownerItems {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+
+  padding: 3% 8% 10% 8%;
+}
+
+.videoId {
+  font-weight: bold;
+  background-color: black;
+  color: white;
+}
+
+.chatContainer {
+  width: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  border-top: 3px solid transparent;
+  background-image: linear-gradient(#fff, #fff),
+    linear-gradient(to right, #daeed0 0%, #ffb285 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  overflow: hidden;
+  /* position: fixed; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.chatContainerExpanded {
+  height: calc(70dvh - 69px);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chatContainerCollapsed .buttons {
+  height: 43px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.chatContainerCollapsed {
+  height: 60px;
+  /* opacity: 0.7; */
+  transform: translateY(calc(100% - 60px)); /* 높이 변경에 맞춰 조정 */
+}
+
+.chatInputBox {
+  display: flex;
+  width: 100%;
+  background-color: #f2f2f2;
+  padding: 5px 10px;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: absolute; /* 고정 위치로 변경 */
+  bottom: 0; /* 하단에 위치 */
+}

@@ -1,0 +1,41 @@
+.container {
+  padding: 15px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.content {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #eaffc9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chartTitle {
+  text-align: center;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  color: black;
+  cursor: pointer;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.activeButton {
+  background-color: #4caf50;
+  color: white;
+}

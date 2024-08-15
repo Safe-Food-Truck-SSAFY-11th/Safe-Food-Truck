@@ -1,8 +1,4 @@
-.broadcastList {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    background-color: #ffd27f; /* 배경색을 이미지와 맞춤 */
-    padding: 20px;
-  }
-  
+.container {  
+  padding: 2.5% 0 2% 0;
+  width: 100%;
+}

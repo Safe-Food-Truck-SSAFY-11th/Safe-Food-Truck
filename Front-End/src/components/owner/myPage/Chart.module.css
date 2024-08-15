@@ -1,0 +1,49 @@
+.container {
+  width: 90%;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3vh;
+  border: 2px solid #2AC311;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container p {
+  font-size: 1.1rem;
+}
+
+.container select {
+  width: 100%;
+  padding: 3%;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button {
+  text-align: center;
+  width: 50%;
+  padding: 3%;
+  border: none;
+  border-radius: 10px;
+  background-color: #a9df55;
+  color: white;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.areaContainer {
+  width: 100%;
+}
+
+.chartSummary {
+  width: 100%;
+  text-align: center;
+}
+
+.chartSummary strong {
+  color: #ff5100;
+}

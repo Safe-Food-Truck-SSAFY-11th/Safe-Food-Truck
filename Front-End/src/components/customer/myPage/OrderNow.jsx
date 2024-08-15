@@ -1,65 +1,116 @@
-import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-import styles from './OrderNow.module.css';
+import React, { useEffect } from "react";
+import styles from "./OrderNow.module.css";
+import { useCustomerEventStore } from "store/eventStore";
+import customerOrderStore from "store/orders/customerOrderStore";
 
-const OrderNow = () => {
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+const OrderNow = ({ memberInfo, joonbiOrders }) => {
+  const { nowOrder, getOrderDetails, pastOrders } = customerOrderStore();
+  const { customerOrderNotice, setCustomerOrderNotice, customerOrderDetail } =
+    useCustomerEventStore();
 
-  // api 추가되면 사용할 로직
-//   useEffect(() => {
-//     const fetchOrder = async () => {
-//       try {
-//         const response = await axios.get('/api/order/current'); 
-//         setOrder(response.data);
-//       } catch (error) {
-//         console.error("Error fetching order", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
+  const recentOrders = joonbiOrders
+    ? []
+    : joonbiOrders.customerPreparingOrderResponseDtos;
+  const recentOrder =
+    recentOrders.length > 0 ? recentOrders[recentOrders.length - 1] : null;
 
-//     fetchOrder();
-//   }, []);
+  useEffect(() => {
+    if (customerOrderNotice) {
+      // getOrderList();
+      setCustomerOrderNotice(false);
+    }
+  }, [customerOrderNotice]);
 
-useEffect(() => {
-    const fetchOrder = async () => {
-  
-      const dummyOrder = {
-        orderTime: '2024.07.17 17:39:59',
-        foodName: '핵불닭 타코야끼 8알',
-      };
+  const completeOrder =
+    pastOrders.count === 0
+      ? []
+      : pastOrders.customerOrderResponseDtos[
+          pastOrders.customerOrderResponseDtos.length - 1
+        ];
 
+  const statusMessage = (order) => {
+    if (order.status === "pending") {
+      return { message: "주문을 확인하고 있어요!", color: "#FF7F50" };
+    } else if (order.status === "accepted") {
+      if (order.cookingStatus === "completed") {
+        return { message: "준비 완료 됐어요!", color: "green" };
+      } else if (
+        order.cookingStatus === "waiting" ||
+        order.cookingStatus === "preparing"
+      ) {
+        return { message: "메뉴를 준비중이에요!", color: "#FF7F50" };
+      }
+    } else if (order.status === "rejected") {
+      return { message: "주문을 거절했어요", color: "red" };
+    }
+    return { message: "상태를 알 수 없습니다.", color: "#000" };
+  };
 
-      setTimeout(() => {
-        setOrder(dummyOrder);
-        setLoading(false);
-      }, 1000);
-    };
+  useEffect(() => {
+    if (recentOrder) {
+      getOrderDetails(recentOrder.orderId);
+    } else if (!recentOrder && completeOrder.length !== 0) {
+      getOrderDetails(completeOrder.orderId);
+    } else {
+      return;
+    }
+  }, [recentOrder, getOrderDetails]);
 
-    fetchOrder();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!order) {
+  if (completeOrder.length === 0 && !recentOrder) {
     return (
-    <div className={styles.container}>
-      <div className={styles.noOrder}>주문한 음식이 없어요 😥</div>
-    </div>
-  )
+      <div className={styles.container}>
+        <div className={styles.noOrder}>
+          {memberInfo.nickname} 님이 주문한 음식이 없어요 😥
+        </div>
+      </div>
+    );
   }
+
+  const orderToShow = recentOrder || nowOrder;
+
+  if (!orderToShow) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.noOrder}>
+          {memberInfo.nickname} 님이 주문한 음식이 없어요 😥
+        </div>
+      </div>
+    );
+  }
+
+  const { message, color } = statusMessage(orderToShow);
+
+  // orderTime을 월, 일, 시, 분 형식으로 변환하는 함수
+  const formatOrderTime = (orderTime) => {
+    if (!orderTime) return "시간 정보 없음";
+    const date = new Date(orderTime);
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${month}월 ${day}일 ${hours}:${minutes}`;
+  };
+
+  // recentOrder와 nowOrder의 필드 차이를 처리하는 조건문
+  const menuName = recentOrder
+    ? orderToShow.orderTitle // recentOrder의 필드 사용
+    : nowOrder?.orderMenuListResponseDto?.orderMenuResponseDtos[0]?.menuName ||
+      "메뉴 정보가 없습니다"; // nowOrder의 필드 사용
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <span className={styles.status}>주문 진행 중</span>
-        <span className={styles.orderTime}>주문한 시간 : {order.orderTime}</span>
-      </div>
-      <div className={styles.orderDetails}>
-        <p>{order.foodName}</p>
+      <div className={styles.contentWrapper}>
+        <div className={styles.header}>
+          <span className={styles.status} style={{ color: color }}>
+            {message}
+          </span>
+          <span className={styles.orderTime}>
+            주문 시간 : {formatOrderTime(orderToShow.orderTime)}
+          </span>
+        </div>
+        <div className={styles.orderDetails}>
+          <p>{menuName}</p>
+        </div>
       </div>
     </div>
   );
