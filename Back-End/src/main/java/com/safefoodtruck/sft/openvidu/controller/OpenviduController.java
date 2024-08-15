@@ -14,11 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
@@ -74,11 +74,11 @@ public class OpenviduController {
 
 	@PostMapping("/{sessionId}/close")
 	public ResponseEntity<Void> closeConnection(
-		@PathVariable("sessionId") String sessionId,
-		@RequestBody(required = false) Map<String, Object> params
+		@PathVariable("sessionId") String sessionId
 	) {
-		openviduService.closeSession(sessionId, params);
+		openviduService.closeSession(sessionId);
 		redisService.deleteValue(RedisDto.builder().key(sessionId).build());
+
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -96,12 +96,14 @@ public class OpenviduController {
 	}
 
 	@PostMapping("/get-live-list")
-	public ResponseEntity<ArrayList<OpenviduDto>> getLiveList()
-        throws OpenViduJavaClientException, OpenViduHttpException {
+	public ResponseEntity<ArrayList<OpenviduDto>> getLiveList() {
 		ArrayList<OpenviduDto> liveList = redisService.getLiveList();
-		for(OpenviduDto openviduDto : liveList) {
-			log.info("OpenviduDto: " + openviduDto.key() + ": " + openviduDto.value());
-		}
 		return new ResponseEntity<>(liveList, HttpStatus.OK);
+	}
+
+	@GetMapping("/isLive/{sessionId}")
+	public ResponseEntity<?> isLive(@PathVariable("sessionId") String sessionId) {
+		Boolean isLive = redisService.getValue(sessionId) == null ? false : true;
+		return new ResponseEntity<>(isLive, HttpStatus.OK);
 	}
 }
