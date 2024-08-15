@@ -8,6 +8,8 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
 
   const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 
+  const nickname = sessionStorage.getItem('nickname')
+
   const scheduleList = selectedTruckSchedule.scheduleList;
 
   useEffect(() => {
@@ -54,7 +56,10 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
       <div className={styles.section}>
         <h3>가게 통계</h3>
         <hr/>
-        <p>{isMeet ? '예전에 만났던 푸드트럭이에요!' : '만난 적 없는 푸드트럭이에요!'}</p>
+
+        {/* 예전에 이용한 적 있는 푸드트럭인지 설명하는 텍스트 수정*/}
+        
+        <p>{isMeet ? `${nickname}님과 만났던 푸드트럭이에요!` : '만난 적 없는 푸드트럭이에요!'}</p>
         <p>리뷰: {reviews.length} 개</p>
         <p>찜: {likes?.favoriteCount || 0} 개</p>
       </div>
