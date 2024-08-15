@@ -1,36 +1,49 @@
-@import './sharedStyles.module.css'; /* 공유 스타일 임포트 */
+@import "./sharedStyles.module.css"; /* 공유 스타일 임포트 */
 
 .foodTruckDetail {
+  height: calc(100vh - 135px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffcc80; /* 배경 색상 */
-  padding: 20px;
-  border-radius: 10px;
+  background-color: white;
+  padding: 4%;
+  border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  margin: 20px auto;
+  width: 100%;
+  overflow-y: auto;
+  gap: 2%;
 }
 
 .nav {
+  width: 100%;
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
 }
 
 .nav button {
   background: none;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px;
   cursor: pointer;
-  font-size: 18px;
-  margin: 0 10px;
+  font-size: 18px; /* 폰트 크기를 줄여 작은 화면에 맞춤 */
+  margin: 0 20px; /* 버튼 사이의 간격 줄이기 */
 }
 
 .nav button.selected {
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid #fb9256;
+  color: #fb9256;
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5%;
+  /* margin: 4%; */
+  background-color: #ffcc80;
+  border-radius: 10px;
+  /* height: 100vh; */
   width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  /* overflow-y: scroll; */
 }

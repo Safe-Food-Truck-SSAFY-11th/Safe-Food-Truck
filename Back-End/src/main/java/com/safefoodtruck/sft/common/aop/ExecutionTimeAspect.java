@@ -1,4 +1,4 @@
-package com.safefoodtruck.sft.common;
+package com.safefoodtruck.sft.common.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

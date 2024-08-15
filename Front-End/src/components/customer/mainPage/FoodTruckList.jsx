@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import FoodTruckItem from './FoodTruckItem';
 import styles from './FoodTruckList.module.css';
 import axios from 'axios';
+import defaultImage from 'assets/images/truck-img.png';
 
-function FoodTruckList({ openFoodTrucks, userLocation }) {
+function FoodTruckList({ openFoodTrucks, userLocation, selectedType }) {
   const trucks = openFoodTrucks.storeInfoResponseDtos || [];
   const [addresses, setAddresses] = useState([]);
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -69,22 +70,29 @@ function FoodTruckList({ openFoodTrucks, userLocation }) {
     return distance;
   };
 
+  // selectedType이 'all'이 아니면 해당 타입만 필터링
+  const filteredTrucks = selectedType === 'all' ? addresses : addresses.filter(truck => truck.storeType === selectedType);
+
+  // 거리 순으로 정렬
+  const sortedTrucks = filteredTrucks.sort((a, b) => a.distance - b.distance);
+
   return (
     <div className={styles.foodTruckList}>
-      {Array.isArray(addresses) && addresses.length > 0 ? (
-        addresses.map(truck => (
+      {Array.isArray(sortedTrucks) && sortedTrucks.length > 0 ? (
+        sortedTrucks.map(truck => (
           <FoodTruckItem
             key={truck.storeId}
             name={truck.name}
+            type={truck.storeType}
             category={truck.menuCategory}
             address={truck.address}
             distance={truck.distance}
-            imageUrl={truck.storeImageDto?.savedUrl} // 이미지 URL 전달
-            onClick={() => navigate(`/foodtruckDetail/${truck.storeId}`)} // 클릭 시 디테일 페이지로 이동
+            imageUrl={truck.storeImageDto?.savedUrl === 'empty' || truck.storeImageDto?.savedUrl.trim() === "" ? defaultImage : truck.storeImageDto.savedUrl}
+            onClick={() => navigate(`/foodtruckDetail/${truck.storeId}`)}
           />
         ))
       ) : (
-        <p>현재 근처에 영업중인 푸드트럭이 없어요😂</p>
+        <p className={styles.noOpenTruck}>현재 근처에 영업중인 푸드트럭이 없어요😂</p>
       )}
     </div>
   );

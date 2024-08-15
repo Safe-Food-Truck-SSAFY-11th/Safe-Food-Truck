@@ -17,6 +17,7 @@ public class GlobalNotificationServiceImpl implements GlobalNotificationService 
     @Override
     public SseEmitter subscribe(String email) {
         SseEmitter emitter = createEmitter(email);
+        sendToClient(email, "연결완료!", "connect", "connected");
         return emitter;
     }
 
@@ -45,6 +46,4 @@ public class GlobalNotificationServiceImpl implements GlobalNotificationService 
         emitter.onTimeout(() -> emitterRepository.deleteById(email));
         return emitter;
     }
-
-
 }

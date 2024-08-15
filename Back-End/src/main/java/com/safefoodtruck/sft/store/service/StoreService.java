@@ -1,20 +1,20 @@
 package com.safefoodtruck.sft.store.service;
 
 import com.safefoodtruck.sft.menu.dto.response.MenuListResponseDto;
+import com.safefoodtruck.sft.store.dto.StoreImageDto;
+import com.safefoodtruck.sft.store.dto.request.StoreAILogoRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreLocationRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreNoticeRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreRegistRequestDto;
 import com.safefoodtruck.sft.store.dto.request.StoreUpdateRequestDto;
 import com.safefoodtruck.sft.store.dto.response.StoreFindResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreInfoListResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreLocationResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreNoticeResponseDto;
-import com.safefoodtruck.sft.store.dto.response.StoreRegistResponseDto;
 import com.safefoodtruck.sft.store.dto.response.StoreUpdateResponseDto;
 
 public interface StoreService {
 
-	StoreRegistResponseDto registStore(StoreRegistRequestDto storeRegistRequestDto);
+	void registStore(StoreRegistRequestDto storeRegistRequestDto);
 
 	StoreUpdateResponseDto updateStore(StoreUpdateRequestDto storeUpdateRequestDto);
 
@@ -26,19 +26,23 @@ public interface StoreService {
 
 	void deleteStore();
 
-	boolean updateStoreStatus();
+	Boolean updateStoreStatus();
 
 	boolean getStoreStatus();
 
 	StoreInfoListResponseDto findOpenStores();
 
-	StoreLocationResponseDto updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
+	void updateStoreLocation(StoreLocationRequestDto storeLocationRequestDto);
 
 	Double findStoreAverageStar(Integer storeId);
 
-	StoreNoticeResponseDto updateStoreNotice(StoreNoticeRegistRequestDto notice);
+	void updateStoreNotice(StoreNoticeRegistRequestDto notice);
 
 	StoreNoticeResponseDto findStoreNotice(Integer storeId);
 
-	StoreNoticeResponseDto deleteStoreNotice();
+	void deleteStoreNotice();
+
+	String checkDuplicateSafetyLicenseNumber(String safetyLicenseNumber);
+
+	void updateStoreAILogo (StoreAILogoRequestDto storeAILogoRequestDto);
 }

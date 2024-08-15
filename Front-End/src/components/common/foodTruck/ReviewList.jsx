@@ -22,11 +22,17 @@ function ReviewList({ reviews }) {
   }, [reviews]);
 
   if (reviews.length === 0) {
-    return <p>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>;
+    return(
+   <div className={styles.container}>
+     <p className={styles.noReviewList}>아직 트럭에 작성된 리뷰가 없어요! 🤣</p>
+   </div>
+    )  
   }
   
   return (
+   <div className={styles.container}>
     <div className={styles.reviewList}>
+      <h3 className={styles.reviewCount}>최근 리뷰 {reviews.length} 개</h3>
       {reviews.map((review) => (
         <ReviewItem
           key={review.id}
@@ -35,6 +41,7 @@ function ReviewList({ reviews }) {
         />
       ))}
     </div>
+  </div>
   );
 }
 

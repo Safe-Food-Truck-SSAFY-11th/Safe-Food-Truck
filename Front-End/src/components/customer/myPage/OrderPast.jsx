@@ -1,22 +1,39 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './OrderPast.module.css';
+import useReviewStore from 'store/reviews/useReviewStore';
 
-const OrderPast = ({ memberInfo, pastOrders }) => {
+const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
   const navigate = useNavigate();
+  const { initCurrentReview } = useReviewStore();
 
+  const orders = pastOrders.customerOrderResponseDtos;
+  const reviews = myReviews.reviewResponseDtos;
+  
+  // status가 accepted인 주문만 필터링
+  const acceptedOrders = orders.filter(order => order.status === 'accepted');
+  
+  // 이미 작성된 리뷰의 orderId 리스트를 추출
+  const reviewedOrderIds = reviews?.map(review => review.orderId);
+  
+  // 컴포넌트가 처음 마운트될 때만 상태 초기화
+  useEffect(() => {
+    initCurrentReview();
+  }, [initCurrentReview]); // initCurrentReview를 의존성 배열에 추가
+  
   // 과거 주문 내역을 역순으로 정렬
-  const results = [...pastOrders.customerOrderResponseDtos].reverse();
+  const results = [...acceptedOrders].reverse();
 
   const handleReviewButtonClick = (orderId) => {
     navigate(`/createReview/${orderId}`, { state: { memberInfo } });
   };  
+  
   return (
     <div className={styles.container}>
       {results.length > 0 ? (
         <>
-          <h3>{memberInfo.nickname} 🖐 님이 구매했던 내역이에요!</h3>
-          {results.map((order) => (
+          <h3 className={styles.reviewHeader}>{memberInfo.nickname} 🖐 님의 구매 내역 {results.length}개</h3>
+          {results?.map((order) => (
             <div key={order.orderId} className={styles.orderCard}>
               <div className={styles.orderContent}>
                 <div className={styles.orderDetails}>
@@ -35,6 +52,7 @@ const OrderPast = ({ memberInfo, pastOrders }) => {
                 <button
                   className={styles.reviewButton}
                   onClick={() => handleReviewButtonClick(order.orderId)}
+                  disabled={reviewedOrderIds.includes(order.orderId)} // 리뷰가 이미 작성된 주문이라면 버튼 비활성화
                 >
                   리뷰 쓰기
                 </button>
@@ -43,7 +61,7 @@ const OrderPast = ({ memberInfo, pastOrders }) => {
           ))}
         </>
       ) : (
-        <p>{memberInfo.nickname} 님의 구매 내역이 없습니다 😅</p>
+        <p className={styles.noReviewHeader}>{memberInfo.nickname} 님의 구매 내역이 없습니다 😅</p>
       )}
     </div>
   );

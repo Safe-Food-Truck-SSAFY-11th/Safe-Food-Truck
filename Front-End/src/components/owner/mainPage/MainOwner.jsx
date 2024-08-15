@@ -48,15 +48,17 @@ const MainOwner = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div>
       <Header />
-      <TruckStatus />
-      <OpenClose />
-      <JiguemOrder />
-      <StoreRegistModal
-        isOpen={modalIsOpen}
-        onRequestClose={handleCloseModal}
-      />
+      <div className={styles.container}>
+        <TruckStatus />
+        <OpenClose />
+        <JiguemOrder />
+        <StoreRegistModal
+          isOpen={modalIsOpen}
+          onRequestClose={handleCloseModal}
+        />
+      </div>
     </div>
   );
 };

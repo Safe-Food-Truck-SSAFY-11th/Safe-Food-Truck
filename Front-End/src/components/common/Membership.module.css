@@ -1,16 +1,24 @@
-/* src/MembershipComponent.module.css */
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: calc(100vh - 135px);
     background-color: #f0f0f0;
 }
 
 .heading {
-    margin-bottom: 20px;
+    margin-bottom: 3%;
     font-size: 24px;
+}
+
+.container p {
+    font-size: 0.8rem;
+    color: gray;
+}
+
+.btnGroup {
+    margin-top: 3%;
 }
 
 .button {

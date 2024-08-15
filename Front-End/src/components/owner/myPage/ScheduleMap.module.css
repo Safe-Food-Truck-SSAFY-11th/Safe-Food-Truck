@@ -8,6 +8,7 @@
   margin-bottom: 1rem;
   background-color: #EAFFC9;
   border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .map {
@@ -23,8 +24,18 @@
 
 .confirmButton {
   padding: 0.5rem 1rem;
-  background-color: #4caf50;
+  background-color: #6bce6f;
   color: white;
   border: none;
   border-radius: 4px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.currentLocationButton {
+  padding: 0.5rem 1rem;
+  background-color: #6bce6f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }

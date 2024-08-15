@@ -3,7 +3,7 @@ import styles from './RegistUser.module.css';
 import useUserStore from 'store/users/userStore';
 
 const RegistUser = ({ formData, onFormChange }) => {
-  const { nicknameChecked, checkNickname, setPasswordMatch, nicknameTouched, setNicknameTouched } = useUserStore();
+  const { nicknameChecked, checkNickname, setPasswordMatch, nicknameTouched, setNicknameTouched, pnChecked, checkPN } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
@@ -31,6 +31,11 @@ const RegistUser = ({ formData, onFormChange }) => {
   const handleNicknameCheck = () => {
     checkNickname(formData.nickname);
   };
+
+  const handlePNCheck = () => {
+    // 전화번호 중복 검사
+    checkPN(formData.phoneNumber);
+  }
 
   return (
     <form className={styles.form}>
@@ -71,7 +76,11 @@ const RegistUser = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
+        <div className={styles.emailContainer}>
+          <input type="number" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
+          <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
+        </div>
+        {pnChecked === 'Duplicate' && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
       </div>
     </form>
   );

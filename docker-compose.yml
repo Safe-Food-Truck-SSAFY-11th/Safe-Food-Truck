@@ -2,12 +2,16 @@ services:
   spring:
     container_name: spring
     image: spring-app
+    environment:
+      - TZ=Asia/Seoul
     networks:
       - app-network
 
   nginx-react:
     container_name: nginx-react
     image: nginx
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - /home/ubuntu/templates-react:/etc/nginx/templates
       - /home/ubuntu/templates-react/nginx-react/logs:/var/log/nginx

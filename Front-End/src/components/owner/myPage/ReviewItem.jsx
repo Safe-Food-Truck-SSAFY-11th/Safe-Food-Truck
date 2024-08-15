@@ -6,6 +6,7 @@ import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import useUserStore from 'store/users/userStore';
 
 function ReviewItem({ review }) {
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -15,6 +16,7 @@ function ReviewItem({ review }) {
   const [revImg, setRevImg] = useState([]);
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const { submitReply } = useOwnerReviewStore();
+  const { getLoginedRole } = useUserStore();
 
   useEffect(() => {
     const fetchData = () => {
@@ -29,13 +31,10 @@ function ReviewItem({ review }) {
     let stars = '';
     for (let i = 0; i < 5; i++) {
       if (rating >= 2) {
-        stars += '★';
+        stars += '⭐';
         rating -= 2;
-      } else if (rating === 1) {
-        stars += '☆';
-        rating -= 1;
       } else {
-        stars += ' ';
+        stars += '★ ';
       }
     }
     return stars;
@@ -51,17 +50,22 @@ function ReviewItem({ review }) {
     setReply(e.target.value);
   };
 
-  const handleReplySubmit = () => {
+  const handleReplySubmit = async () => {
     const replyData = {
       reviewId: review.id,
       content: reply
     };
-    submitReply(replyData);
+    await submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
+    window.location.reload(); // 입력 후 새로고침
   };
 
   const handleAIBtnClick = async () => {
+    if (getLoginedRole() !== 'vip_owner') {
+      alert('멤버십에 가입한 사장님만 이용할 수 있어요!');
+      return;
+    }
     setIsLoading(true); // 로딩 상태를 true로 설정
     // name, offDay, storeType, description, menuListResponseDto. review.content
     const aiText = await onwerReplyAI(truckInfo.name, truckInfo.offDay, truckInfo.storeType, truckInfo.description, truckInfo.menuListResponseDto, review.content);
@@ -136,9 +140,9 @@ function ReviewItem({ review }) {
           </div>
         )}
       </div>
-      <button onClick={handleReplyButtonClick} className={styles.replyButton}>
+      {review.replyResponseDto == null && <button onClick={handleReplyButtonClick} className={styles.replyButton}>
         답글달기
-      </button>
+      </button>}
     </div>
   );
 }

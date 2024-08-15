@@ -39,7 +39,7 @@ const OpenClose = ({ onLiveEndClick }) => {
       case true: // 영업중
         if (isLive) {
           return (
-            <>
+            <div className={styles.openCloseContainer}>
               <button
                 className={styles.openButton}
                 onClick={handleLiveEndClick}
@@ -53,13 +53,19 @@ const OpenClose = ({ onLiveEndClick }) => {
                 </span>{" "}
                 방송종료
               </button>
-              <button className={styles.closeButton} onClick={switchStatus}>
+              <button
+                className={styles.closeButton}
+                onClick={() => {
+                  switchStatus();
+                  handleLiveEndClick();
+                }}
+              >
                 <span role="img" aria-label="close" className={styles.icon}>
                   🏢
                 </span>{" "}
                 영업종료
               </button>
-            </>
+            </div>
           );
         } else {
           return (

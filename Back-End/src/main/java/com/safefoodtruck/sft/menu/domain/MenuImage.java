@@ -1,8 +1,11 @@
 package com.safefoodtruck.sft.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safefoodtruck.sft.menu.dto.MenuImageDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,8 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Table(name = "menu_image")
 @Entity
@@ -33,11 +34,10 @@ public class MenuImage {
 	@Column(name = "menu_id")
 	private Integer id;
 
-	@JsonIgnore
 	@OneToOne
 	@MapsId
 	@Setter
-	@JoinColumn(name = "menu_id")
+	@JoinColumn(name = "menu_id", nullable = false)
 	private Menu menu;
 
 	@Column(name = "saved_url")
@@ -58,5 +58,11 @@ public class MenuImage {
 			.savedUrl(menuImageDto.savedUrl())
 			.savedPath(menuImageDto.savedPath())
 			.build();
+	}
+
+	public void updateMenuImage(MenuImageDto menuImageDto) {
+		this.menu = menuImageDto.menu();
+		this.savedUrl = menuImageDto.savedUrl();
+		this.savedPath = menuImageDto.savedPath();
 	}
 }

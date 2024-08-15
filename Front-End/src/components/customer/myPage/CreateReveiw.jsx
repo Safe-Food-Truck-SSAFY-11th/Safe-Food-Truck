@@ -4,11 +4,13 @@ import useReviewStore from '../../../store/reviews/useReviewStore';
 import StarRating from './StarRating';
 import styles from './CreateReview.module.css';
 import AWS from 'aws-sdk';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const CreateReview = () => {
   const { orderId } = useParams();
   const location = useLocation();
-  const memberInfo = location.state;
   const navigate = useNavigate();
   const { currentReview, updateCurrentReview, createReview } = useReviewStore();
   const [reviewImages, setReviewImages] = useState([]);
@@ -16,21 +18,25 @@ const CreateReview = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setSelectedFiles(files);
 
-    files.forEach(file => {
+    const newImages = files.map(file => {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setReviewImages(prevState => [...prevState, event.target.result]);
-      };
-      reader.readAsDataURL(file);
+      return new Promise((resolve) => {
+        reader.onload = (event) => {
+          resolve(event.target.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newImages).then(images => {
+      setReviewImages(images);
+      setSelectedFiles(files);
     });
   };
 
   const handleUpload = async () => {
-    if (!selectedFiles.length) {
-      return [];
-    }
+    if (!selectedFiles.length) return [];
 
     AWS.config.update({
       accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
@@ -40,19 +46,18 @@ const CreateReview = () => {
 
     const s3 = new AWS.S3();
     const uploadPromises = selectedFiles.map(file => {
+      const memberEmail = sessionStorage.getItem("email");
       const uploadParams = {
         Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-        Key: `members/${memberInfo.email}/${file.name}`,
+        Key: `members/${memberEmail}/orders/reviews/${orderId}/${file.name}`,
         Body: file,
       };
-
       return new Promise((resolve, reject) => {
         s3.upload(uploadParams, (err, data) => {
           if (err) {
             console.error('Error uploading file:', err);
             reject(err);
           } else {
-            console.log('File uploaded successfully. ETag:', data.ETag);
             resolve({
               savedUrl: data.Location,
               savedPath: data.Key,
@@ -63,8 +68,7 @@ const CreateReview = () => {
     });
 
     try {
-      const uploadResults = await Promise.all(uploadPromises);
-      return uploadResults;
+      return await Promise.all(uploadPromises);
     } catch (err) {
       console.error('Error uploading files:', err);
       return [];
@@ -74,20 +78,15 @@ const CreateReview = () => {
   const handleSubmit = async () => {
     const uploadedFiles = await handleUpload();
 
-    if (uploadedFiles.length === 0) {
-      updateCurrentReview('savedUrl', 'empty');
-      updateCurrentReview('savedPath', 'empty');
-    } else {
-      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
-      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
-    }
-
     const newReview = {
       orderId: parseInt(orderId, 10),
       isVisible: currentReview.is_visible === 1,
       star: currentReview.rating * 2,
       content: currentReview.content,
-      reviewImageDtos: uploadedFiles,
+      reviewImageDtos: uploadedFiles.length ? uploadedFiles : [{
+        savedUrl: 'empty',
+        savedPath: 'empty',
+      }],
     };
 
     try {
@@ -100,15 +99,35 @@ const CreateReview = () => {
   };
 
   const handleCheckboxChange = (e) => {
-    updateCurrentReview('is_visible', e.target.checked ? 1 : 0);
+    updateCurrentReview('is_visible', e.target.checked ? 0 : 1);
+  };
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.imageUpload} onClick={() => document.getElementById('imageUpload').click()}>
-        {reviewImages.map((image, index) => (
-          <img className={styles.img} key={index} src={image} alt="이미지 업로드" />
-        ))}
+      <div className={styles.reviewImages} onClick={() => document.getElementById('imageUpload').click()}>
+        {reviewImages.length > 0  ? (
+          reviewImages.length === 1 ? (
+            <div>
+              <img src={reviewImages[0]} alt="review-single" className={styles.reviewImage} />
+            </div>
+          ) : (
+            <Slider {...settings}>
+              {reviewImages.map((img, index) => (
+                <div key={index}>
+                  <img src={img} alt={`review-${index}`} className={styles.reviewImage} />
+                </div>
+              ))}
+            </Slider>
+          )
+        ) : <div className={styles.imageUpload}>image</div>}
         <input
           id="imageUpload"
           type="file"
@@ -117,42 +136,36 @@ const CreateReview = () => {
           style={{ display: 'none' }}
           onChange={handleImageUpload}
         />
-        <div className={styles.imagePlaceholder}>image</div>
       </div>
 
-      <p>음식은 어떠셨나요?</p>
-      <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value)} />
-
-      <input
-        type="text"
-        value={memberInfo.memberInfo.nickname}
-        readOnly
-        placeholder={memberInfo.memberInfo.nickname}
-        className={styles.input}
-      />
+      <div className={styles.starRating}>
+        <p>음식은 어떠셨나요?</p>
+        <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value)} />
+      </div>
 
       <textarea
         value={currentReview.content}
         onChange={(e) => updateCurrentReview('content', e.target.value)}
-        placeholder="리뷰 내용"
+        placeholder="리뷰를 입력하세요"
         className={styles.textarea}
+        maxLength={100}
       />
 
       <div className={styles.checkboxContainer}>
         <label>
           <input
             type="checkbox"
-            checked={currentReview.is_visible === 1}
+            checked={currentReview.is_visible === 0}
             onChange={handleCheckboxChange}
           />
-          사장님에게만 보이게
+          사장님에게만 보이기
         </label>
       </div>
       <div className={styles.buttonContainer}>
         <button className={styles.submitButton} onClick={handleSubmit}>
           작성하기
         </button>
-        <button className={styles.backButton} onClick={() => window.history.back()}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
           돌아가기
         </button>
       </div>

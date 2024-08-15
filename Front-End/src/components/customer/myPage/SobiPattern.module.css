@@ -1,26 +1,50 @@
+.backgroundColor {
+  margin: 3%;
+  background-color: #FEC87F;
+  border-radius: 10px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 
 .container {
-  background-color: #FEC87F;  
+  border: 2px solid #FF6347;
+  background-color: white;  
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin: 4%;
 }
 
-h3 {
+.container h3 {
   margin-bottom: 10px;
   color: black;
 }
 
-p {
+.container p {
   margin: 5px 0;
   font-size: 1.1em;
 }
 
-strong {
+.container strong {
   color: #FF4500;
 }
 
 .chartContainer {
   margin-top: 20px;
 }
+
+.noData {
+  text-align: center;
+  font-size: 1.1em;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin-top: 20px;
+}
+

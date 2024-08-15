@@ -33,21 +33,21 @@
   .modalBody {
     padding: 10px 0;
     max-height: 300px;
-    overflow-y: auto;
+    overflow-y: scroll;
+    scrollbar-width: hidden;
+  }
+
+  .modalBody::-webkit-scrollbar {
+    display: none; 
   }
   
   .notification {
+    text-align: left;
     padding: 10px;
     border-bottom: 1px solid #ddd;
   }
   
-  .notification.important {
-    background-color: rgb(255, 204, 102); /* 중요 알림을 위한 빨간 배경색 */
-  }
-  
-  .notification.general {
-    background-color: #fff; /* 일반 알림을 위한 흰 배경색 */
-  }
+
   
   .closeButton {
     background: none;
@@ -56,3 +56,13 @@
     cursor: pointer;
   }
   
+
+  .notificationInfo {
+    
+    font-size: 13px;
+  }
+
+  .notificationTimeStamp {
+    color: #666;
+    font-size: 12px;
+  }

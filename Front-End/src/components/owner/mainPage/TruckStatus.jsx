@@ -16,9 +16,9 @@ const TruckStatus = () => {
   // 푸드트럭 상태에 따른 문구 변경
   const renderStatusComment = () => {
     if (truckInfo.isOpen) {
-      return <span>트럭이 장사를 시작했어요 👍</span>;
+      return <span>영업 중 👍</span>;
     } else {
-      return <span>트럭이 장사를 종료했어요 😴</span>;
+      return <span>영업 종료 😴</span>;
     }
   };
 
@@ -40,16 +40,18 @@ const TruckStatus = () => {
 
   return (
     <div className={styles.truckStatus}>
-      <img src={imageUrl} alt="Truck" className={styles.image} />
+      <div className={styles.truckStatusImage}>
+
+        <img src={imageUrl} alt="Truck" className={styles.image} />
+      </div>
 
       <div className={styles.statusText}>
         <p>
-          오늘은 <span className={styles.inputText}>{formattedDate}</span>{" "}
-          입니다
-        </p>
+          <span className={styles.inputText}>{formattedDate}</span>{" "}
+          </p>
         <p>
-          <span className={styles.inputText}>{truckInfo.name}</span>{" "}
-          {renderStatusComment()}
+          <span className={styles.inputTextStoreName}>{truckInfo.name}</span>{" "}
+          <p>{renderStatusComment()}</p>
         </p>
       </div>
     </div>

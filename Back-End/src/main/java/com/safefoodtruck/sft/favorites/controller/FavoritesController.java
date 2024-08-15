@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.favorites.controller;
 
 import com.safefoodtruck.sft.common.dto.ErrorResponseDto;
 import com.safefoodtruck.sft.common.util.MemberInfo;
+import com.safefoodtruck.sft.favorites.dto.response.CheckIsFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectMemberFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.exception.ImpossibleRetryException;
@@ -110,4 +111,18 @@ public class FavoritesController {
                 )
             );
     }
+    @GetMapping("/my/{storeId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "가게 찜 확인",
+        description = "가게 상세 조회 할 때 사용자가 해당 가게를 찜 했는지 확인 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200",
+            description = "가게 찜 해당 여부 조회 성공",
+            content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> checkIsFavorite(@PathVariable("storeId") Integer storeId) {
+        String userEmail = MemberInfo.getEmail();
+        return ResponseEntity.status(HttpStatus.OK).body(favoritesService.checkIsFavorite(userEmail, storeId));
+    }
+
 }

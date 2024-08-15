@@ -10,7 +10,7 @@ import img_upload from 'assets/images/img_upload.png';
 
 const Regist = () => {
     const navigate = useNavigate();
-    const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailChecked, nicknameChecked, passwordMatch } = useUserStore();
+    const { isGuest, setGuest, setOwner, fetchUser, registerUser, emailValid, emailChecked, nicknameChecked, passwordMatch, pwdValid, pnChecked } = useUserStore();
     const [profileImage, setProfileImage] = useState(img_upload);
     const [formData, setFormData] = useState({
         email: '',
@@ -56,7 +56,7 @@ const Regist = () => {
         }
     };
 
-    const isFormValid = emailChecked === 'Possible' && nicknameChecked === 'Possible' && passwordMatch && (isGuest || formData.bsNumValid);
+    const isFormValid = emailValid && emailChecked === 'Possible' && nicknameChecked === 'Possible' && pwdValid && passwordMatch && pnChecked === 'Possible' && (isGuest || formData.bsNumValid);
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -115,7 +115,7 @@ const Regist = () => {
     return (
         <div className={`${styles.registContainer} ${!isGuest ? styles.ownerBackground : ''}`}>
             <div className={styles.contentContainer}>
-                <div className={styles.imageUpload} onClick={() => document.getElementById('profileImageInput').click()}>
+                <div className={`${styles.imageUpload} ${isGuest ? styles.guestImgColor : ''}`} onClick={() => document.getElementById('profileImageInput').click()}>
                     <img src={profileImage} alt="이미지 업로드" />
                     <input type="file" name="" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                 </div>

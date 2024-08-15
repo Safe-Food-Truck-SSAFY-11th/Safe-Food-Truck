@@ -8,11 +8,12 @@ import AWS from 'aws-sdk';
 const OwnerUpdate = () => {
   const navigate = useNavigate();
 
-  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser } = useUserStore();
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, passwordMatch, setPasswordMatch, passwordTouched, setPasswordTouched, fetchUser, updateUser, pwdValid, setPwdValid, passwordValidChk, passwordCheckTouched, setPasswordCheckTouched, pnChecked, checkPN } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [form, setForm] = useState({});
-  const [profileImage, setProfileImage] = useState(''); 
+  const [profileImage, setProfileImage] = useState('');
   const [initialNickname, setInitialNickname] = useState('');
+  const [initialPN, setInitialPN] = useState('');
 
   useEffect(() => {
     const today = new Date();
@@ -20,12 +21,13 @@ const OwnerUpdate = () => {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     setMaxDate(`${yyyy}-${mm}-${dd}`);
-    
+
     const fetchData = async () => {
       try {
         const user = await fetchUser();
         setForm(user);
         setInitialNickname(user.nickname);
+        setInitialPN(user.phoneNumber);
         const imageUrl = user?.memberImage?.savedUrl === 'empty' ? profile_img : user?.memberImage?.savedUrl;
         setProfileImage(imageUrl);
       } catch (error) {
@@ -40,11 +42,15 @@ const OwnerUpdate = () => {
     setPasswordMatch(form.password === form.confirmPassword);
   }, [form.password, form.confirmPassword, setPasswordMatch]);
 
+  useEffect(() => {
+    handlePwdCheck(form.password);
+  }, [form.password])
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     setForm({
-     ...form,
+      ...form,
       [name]: value,
     });
   }
@@ -53,6 +59,15 @@ const OwnerUpdate = () => {
     handleChange(e);
     setPasswordTouched();
   };
+
+  const handlePwdCheckChange = (e) => {
+    handleChange(e);
+    setPasswordCheckTouched();
+  }
+
+  const handlePwdCheck = (pwd) => {
+    setPwdValid(passwordValidChk(pwd));
+  }
 
   const handleNicknameChange = (e) => {
     handleChange(e);
@@ -66,12 +81,12 @@ const OwnerUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await handleUpload();
-    updateUser(form);
+    await updateUser(form);
     alert('정보가 성공적으로 업데이트되었습니다.');
-    navigate('/mypageOwner');
+    navigate('/mypageOwner', { state: { updated: true } });
   };
 
-  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch;
+  const isFormValid = (nicknameChecked === 'Possible' || form.nickname === initialNickname) && passwordMatch && pwdValid && (pnChecked === 'Possible' || form.phoneNumber === initialPN);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -80,30 +95,30 @@ const OwnerUpdate = () => {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-        setProfileImage(event.target.result);
+      setProfileImage(event.target.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleUpload = async () => {
     if (!selectedFile) {
-        return;
+      return;
     }
 
     // AWS S3 설정
     AWS.config.update({
-        accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
-        secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
-        region: `${process.env.REACT_APP_AWS_REGION}`,
+      accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
+      secretAccessKey: `${process.env.REACT_APP_AWS_S3_ACCESS_KEY}`,
+      region: `${process.env.REACT_APP_AWS_REGION}`,
     });
 
     const s3 = new AWS.S3();
 
     // 업로드할 파일 정보 설정
     const uploadParams = {
-        Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
-        Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
-        Body: selectedFile,
+      Bucket: `${process.env.REACT_APP_AWS_BUCKET_NAME}`,
+      Key: `members/${form.email}/${selectedFile.name}`, // S3에 저장될 경로와 파일명
+      Body: selectedFile,
     };
 
     // S3에 파일 업로드
@@ -127,13 +142,34 @@ const OwnerUpdate = () => {
     });
   };
 
+  const handlePNCheck = () => {
+    // 전화번호 중복 검사
+    checkPN(form.phoneNumber);
+  }
+
+  const handleDeleteAcct = async () => {
+    const confirmed = window.confirm('정말 탈퇴하시겠습니까?');
+    if (confirmed) {
+      try {
+        const deleteUser = useUserStore.getState().deleteUser;
+        await deleteUser();
+        alert('탈퇴가 완료되었습니다.');
+        sessionStorage.clear();
+        window.location.href = '/login';
+      } catch (error) {
+        console.error('회원 탈퇴 오류:', error);
+        alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    }
+  };
+
   const handleGoBack = () => {
     navigate('/mypageOwner');
   }
 
   return (
     <div className={styles.container}>
-      <h2>내 정보 수정</h2>
+      <h2 className={styles.title}>내 정보 수정</h2>
       <div className={styles.profileContainer} onClick={() => document.getElementById('profileImageInput').click()}>
         <img src={profileImage} alt="Profile" />
         <input type="file" id="profileImageInput" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
@@ -145,13 +181,14 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호</label>
-          <input type="password" name="password" value={form.password} onChange={handleChange}/>
+          <input type="password" name="password" value={form.password} onChange={handlePasswordChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
+          {passwordTouched && !pwdValid && <p className={styles.errorText}>비밀번호 양식을 확인해주세요</p>}
         </div>
         <div className={styles.inputContainer}>
           <label>비밀번호확인</label>
-          <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handlePasswordChange} />
-          {passwordTouched && passwordMatch === true && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
-          {passwordTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+          <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handlePwdCheckChange} placeholder='영문, 숫자, 특수문자 조합 8-16자' />
+          {passwordCheckTouched && passwordMatch === false && <p className={styles.errorText}>비밀번호가 일치하지 않습니다</p>}
+          {passwordCheckTouched && passwordMatch && <p className={styles.hintText}>비밀번호가 일치합니다</p>}
         </div>
         <div className={styles.inputRow}>
           <div className={styles.inputContainer}>
@@ -184,7 +221,12 @@ const OwnerUpdate = () => {
         </div>
         <div className={styles.inputContainer}>
           <label>전화번호</label>
-          <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange}/>
+          <div className={styles.emailContainer}>
+            <input type="number" name="phoneNumber" value={form.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요' />
+            <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
+          </div>
+          {pnChecked === 'Possible' && <p className={styles.hintText}>사용 가능한 전화번호입니다</p>}
+          {(pnChecked === 'Duplicate' && form.phoneNumber !== initialPN) && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
         </div>
         <div className={styles.inputContainer}>
           <label>사업자등록번호</label>
@@ -195,6 +237,10 @@ const OwnerUpdate = () => {
           <button type="button" className={styles.cancelButton} onClick={handleGoBack}>취소하기</button>
         </div>
       </form>
+      <div className={styles.deleteAccountArea}>
+        <p>세이푸트를 떠나시겠어요?😥</p>
+        <a className={styles.deleteAcnt} onClick={handleDeleteAcct}>회원 탈퇴</a>
+      </div>
     </div>
   );
 };

@@ -46,7 +46,8 @@
     height: 12vh;
     background-color: #F8F8F8;
     border-radius: 50%;
-    margin: 20px 0;
+    margin: 30px 0;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .imageUpload img {
@@ -83,12 +84,14 @@
 }
 
 .guestActive {
-    color: #FF5D00;
+    color: #ff5922;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
     /* 손님 선택 시 글자 색상 */
 }
 
 .ownerActive {
     color: #2AC311;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
     /* 사장님 선택 시 글자 색상 */
 }
 
@@ -102,7 +105,8 @@
     justify-content: space-between;
     width: 80%;
     margin-top: 3vh;
-    margin-bottom: 3vh;
+    margin-bottom: 5vh;
+    gap: 5vw;
 }
 
 .joinButton {
@@ -114,6 +118,7 @@
     cursor: pointer;
     flex: 1;
     margin-right: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .joinButton:disabled {
@@ -130,4 +135,5 @@
     padding: 10px 20px;
     cursor: pointer;
     flex: 1;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
