@@ -2,33 +2,29 @@
   display: flex;
 
   /* 수평으로 스크롤 하게 함 */
-  overflow-x: scroll; 
+  overflow-x: scroll;
 
   /* 스크롤 스냅 기능 */
-  scroll-snap-type: x mandatory; 
+  scroll-snap-type: x mandatory;
 
   /* iOS에서 부드러운 스크롤을 위한 설정 */
-  -webkit-overflow-scrolling: touch; 
+  -webkit-overflow-scrolling: touch;
   gap: 3%;
-  /* background-color: #ffd27f; */
   padding: 5%;
-  /* border-top: 2px solid #FB9256; */
-  /* border-bottom: 2px solid #FB9256; */
   scroll-behavior: smooth;
-  
 }
 
 .foodFilter::-webkit-scrollbar {
   /* 스크롤바 숨기기 */
-  display: none; 
+  display: none;
 }
 
 .filterButton {
   width: 23vw;
   /* 각 버튼이 수평으로 정렬되도록 설정 */
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
   /* 버튼이 스크롤 시 스냅되는 지점 */
-  scroll-snap-align: center; 
+  scroll-snap-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,5 +46,12 @@
 }
 
 .icon {
-  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+}
+
+/* 추가된 label 스타일 */
+.filterButton span {
+  font-size: 14px;
 }
