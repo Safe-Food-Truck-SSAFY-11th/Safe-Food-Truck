@@ -8,7 +8,7 @@ const customerOrderStore = create(
       pastOrders: [],
       nowOrder: null,
       nowOrderId: null,
-      joonbiOrders: null,
+      joonbiOrders: [],
 
       setNowOrderId: (orderId) => set({ nowOrderId: orderId }),
 
