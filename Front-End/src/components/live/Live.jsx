@@ -310,6 +310,7 @@ const Live = () => {
   //손님 - 존재하는 세션에 입장
   const joinExistingSession = async () => {
     OV.current = new OpenVidu();
+    OV.current.enableProdMode(); // 로그제거
     const newSession = OV.current.initSession();
 
     setSession(newSession);
