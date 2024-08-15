@@ -8,19 +8,13 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
   const { customerOrderNotice, setCustomerOrderNotice, customerOrderDetail } =
     useCustomerEventStore();
 
-  console.log("준비오더스!!!!!!!!!!!!", joonbiOrders);
-  const recentOrders =
-    joonbiOrders?.count === 0
-      ? []
-      : joonbiOrders.customerPreparingOrderResponseDtos;
-  console.log("리센트 오더스!!!!!!!!!", recentOrders);
+  const recentOrders = joonbiOrders
+    ? []
+    : joonbiOrders.customerPreparingOrderResponseDtos;
   const recentOrder =
     recentOrders.length > 0 ? recentOrders[recentOrders.length - 1] : null;
 
   useEffect(() => {
-    console.log("나우오더!!!!!!!!!!!!!!!", nowOrder);
-    console.log("패스트오더!!!!!!!!!!!!!!!", pastOrders);
-
     if (customerOrderNotice) {
       // getOrderList();
       setCustomerOrderNotice(false);
@@ -53,13 +47,9 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
   };
 
   useEffect(() => {
-    console.log("최근오더!!!!!!!!!!!!!!!", recentOrder);
-
     if (recentOrder) {
-      console.log("recentOrder :", recentOrder);
       getOrderDetails(recentOrder.orderId);
-    } else if (!recentOrder) {
-      console.log("completeOrder :", completeOrder);
+    } else if (!recentOrder && completeOrder.length !== 0) {
       getOrderDetails(completeOrder.orderId);
     }
   }, [recentOrder, getOrderDetails]);
@@ -74,7 +64,6 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
     );
   }
 
-  console.log("나우 오더!!!!!!", nowOrder);
   const orderToShow = recentOrder || nowOrder;
 
   if (!orderToShow) {
@@ -87,7 +76,6 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
     );
   }
 
-  console.log("오더 투 쇼!!!!!!!!", orderToShow);
   const { message, color } = statusMessage(orderToShow);
 
   // orderTime을 월, 일, 시, 분 형식으로 변환하는 함수

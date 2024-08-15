@@ -27,7 +27,7 @@
 
 .map {
   width: 100%;
-  height: 500px;
+  height: 50dvh;
   border: 1px solid #ccc;
   border-radius: 10px;
 }

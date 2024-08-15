@@ -1,34 +1,34 @@
 .container {
-    margin: 0 auto;
-    width: 95%;
-    background-color: #FEC87F;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: left;
-    min-height: 100vh; /* 화면 전체를 채우도록 최소 높이를 100vh로 설정 */
-    box-sizing: border-box; /* 패딩을 포함한 전체 너비/높이 계산 */
-    display: flex;
-    flex-direction: column;
-    gap: 2.5vh;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin: 4%;
+  /* width: 95%; */
+  background-color: #fec87f;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  /* min-height: 100vh; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .noReview {
-    text-align: center;
-    font-size: 1.1em;
-    background-color:#FEC87F;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    margin-top: 20px;
+  text-align: center;
+  font-size: 1.1em;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin-top: 20px;
 }
 
 .myReviewListh3 {
-    border-radius: 10px;
-    background-color: white;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  padding: 10px;
 }
