@@ -50,7 +50,7 @@ const MyReviewList = ({ memberInfo }) => {
         <div className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</div>
       ) : (
         <>
-          <h3 className={styles.myReviewListh3}>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
+          <h3 className={styles.myReviewListh3}>{memberInfo.nickname} 👏 님이 작성한 리뷰 {myReviewList.length}개</h3>
           {myReviewList.map(review => (
             <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id, review.orderId)} />
           ))}

@@ -16,8 +16,8 @@ const CustomerInfo = ({ onSelect, activeButton, memberInfo, pastOrders }) => {
     return <div>로딩중입니다!!</div>;
   }
 
-  // 과거 주문 목록을 토대로 내가 푸드트럭 몇 번 이용했는지 횟수 가져옴!
-  const pastOrderNum = pastOrders?.customerOrderResponseDtos?.length;
+  // 과거 주문 목록을 토대로 거절 당한적 없고 수락된 주문 횟수만 카운팅
+  const pastOrderNum = pastOrders?.customerOrderResponseDtos?.filter(order => order.status !== 'rejected' && order.status === 'accepted').length || 0;
 
   return (
     <div className={styles.container}>

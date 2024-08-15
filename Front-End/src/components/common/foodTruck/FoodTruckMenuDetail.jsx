@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import CartAlertModal from './CartAlertModal'; // 모달 컴포넌트 임포트
 import styles from './FoodTruckMenuDetail.module.css';
 import defaultImage from 'assets/images/foodImage/all.png'
+import Header from 'components/common/Header';
 
 function FoodTruckMenuDetail() {
   const location = useLocation();
@@ -88,6 +89,9 @@ function FoodTruckMenuDetail() {
   }).format(item.price * quantity);
 
   return (
+    <>
+    <Header />
+    <div className={styles.scrollable}>
     <div className={styles.container}>
     <div className={styles.menuDetail}>
       <h2 className={styles.title}>{item.name}</h2>
@@ -117,6 +121,8 @@ function FoodTruckMenuDetail() {
       <CartAlertModal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
     </div>
     </div>
+    </div>
+    </>
   );
 }
 

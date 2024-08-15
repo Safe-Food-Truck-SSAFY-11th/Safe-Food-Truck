@@ -83,16 +83,17 @@ function FoodTruckSummary({ truck }) {
 
   return (
     <header className={styles.header}>
+      <div className={styles.container}>
         <img
         src={truck.storeImageDto?.savedUrl === 'empty' || " " ? defaultImage : truck.storeImageDto.savedUrl}
           alt={`${truck.name} 이미지`}
           className={styles.truckImage}
         />
       <div className={styles.textContainer}>
-        <h1>
-          {truck.name} ★ {truck.averageStar / 2}
+        <h1 className={styles.truckName}>
+          {truck.name} ⭐ {truck.averageStar / 2}
         </h1>
-        <h1>{truck.description}</h1>
+        <p className={styles.description}>{truck.description}</p>
         <div className={styles.buttonContainer}>
           {checkJJimTruck ? (
           <button
@@ -115,6 +116,7 @@ function FoodTruckSummary({ truck }) {
           >
             LIVE
           </button>
+          </div>
         </div>
       </div>
     </header>

@@ -48,7 +48,7 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
   return (
     <div className={styles.container}>
       {myJJimTrucks.length > 0 && (
-        <h3 className={styles.JJimHeader}>{memberInfo.nickname} 🖐 님이 찜한 푸드트럭이에요!</h3>
+        <h3 className={styles.JJimHeader}>{memberInfo.nickname} 🖐 님이 찜한 푸드트럭 {myJJimTrucks.length}개</h3>
       )}
       {myJJimTrucks.length === 0 ? (
         <div className={styles.noJJimTruck}>
