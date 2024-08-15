@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   position: absolute;
-  top: 10%
+  top: 10%;
 }
 
 .form {
@@ -57,7 +57,7 @@
 .submitButton {
   padding: 10px;
   background-color: #c0d79e;
-  color: white;
+  color: black;
   border: none;
   border-radius: 5px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
@@ -65,8 +65,8 @@
 
 .cancelButton {
   padding: 10px;
-  background-color: #FFA285;
-  color: white;
+  background-color: #ffa285;
+  color: black;
   border: none;
   border-radius: 5px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
