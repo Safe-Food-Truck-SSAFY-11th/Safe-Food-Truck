@@ -14,7 +14,7 @@
     font-size: 16px;
     font-weight: 100;
     margin-bottom: 5px;
-    color: #008716;
+    color: #FF9639;
 }
 
 .inputContainer input,
@@ -24,7 +24,7 @@
     border: none;
     border-radius: 5px;
     box-sizing: border-box;
-    background-color: #E2EED0;
+    background-color: #FFEDDD;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -44,7 +44,7 @@
 }
 
 .duplicateButton {
-    background-color: #66B13B;
+    background-color: #FB9256;
     color: white;
     border: none;
     border-radius: 5px;
