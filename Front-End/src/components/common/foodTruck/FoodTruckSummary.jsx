@@ -85,7 +85,7 @@ function FoodTruckSummary({ truck }) {
     <header className={styles.header}>
       <div className={styles.container}>
         <img
-        src={truck.storeImageDto?.savedUrl === 'empty' || " " ? defaultImage : truck.storeImageDto.savedUrl}
+        src={truck.storeImageDto?.savedUrl !== 'empty' && " " ? truck.storeImageDto.savedUrl : defaultImage }
           alt={`${truck.name} 이미지`}
           className={styles.truckImage}
         />
