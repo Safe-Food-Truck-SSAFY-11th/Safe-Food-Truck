@@ -41,10 +41,13 @@ const LoginUser = () => {
     const handleLoginClick = async () => {
         try {
             const user = await loginUser(email, password);
-            if (user.role.indexOf('customer') != -1) {
+            if (isGuest && user.role.indexOf('customer') != -1) {
                 navigate('/mainCustomer');
-            } else if (user.role.indexOf('owner') != -1) {
+            } else if (!isGuest && user.role.indexOf('owner') != -1) {
                 navigate('/mainOwner');
+            } else {
+                alert('로그인 실패: 역할을 확인해주세요.');
+                sessionStorage.clear();
             }
         } catch (error) {
             console.error('로그인 실패:', error);
