@@ -36,11 +36,11 @@ import CustomerRoute from "components/common/CustomerRoute";
 import OwnerRoute from "components/common/OwnerRoute";
 import Footer from "components/common/Footer";
 
-import useSound from 'use-sound';
-import ownerBell from "assets/audios/ownerOrder.mp3"
-import alertBell from "assets/audios/customer.mp3"
+import useSound from "use-sound";
+import ownerBell from "assets/audios/ownerOrder.mp3";
+import alertBell from "assets/audios/customer.mp3";
 
-import { useEventStore, useCustomerEventStore } from 'store/eventStore';
+import { useEventStore, useCustomerEventStore } from "store/eventStore";
 
 function App() {
   const [showNotification, setShowNotification] = useState(false);
@@ -49,22 +49,22 @@ function App() {
   const [liveStoreData, setLiveStoreData] = useState(null);
   const { getLoginedEmail } = useUserStore();
   const navigate = useNavigate();
-  
-  const { 
-    ownerOrderNotice, 
-    setOwnerOrderNotice, 
-    setOwnerOrderNoticeMessage, 
-    setOwnerLiveStratFlag, 
-    setOwnerLiveEndFlag, 
-    ownerLiveStratFlag, 
+
+  const {
+    ownerOrderNotice,
+    setOwnerOrderNotice,
+    setOwnerOrderNoticeMessage,
+    setOwnerLiveStratFlag,
+    setOwnerLiveEndFlag,
+    ownerLiveStratFlag,
     ownerLiveEndFlag,
   } = useEventStore();
-  
-  const { 
-    setCustomerOrderNotice, 
-    setCustomerOrderNoticeMessage, 
+
+  const {
+    setCustomerOrderNotice,
+    setCustomerOrderNoticeMessage,
     setCustomerOrderDetail,
-} = useCustomerEventStore();
+  } = useCustomerEventStore();
 
   const [userType, setUserType] = useState(sessionStorage.getItem("role"));
 
@@ -107,6 +107,9 @@ function App() {
         // 2초 후에 알림 메시지를 숨김
         setTimeout(() => {
           setShowNotification(false);
+          if (data.message.includes("완료") || data.message.includes("수락")) {
+            window.location.reload();
+          }
         }, 3000);
       });
 
@@ -231,9 +234,7 @@ function App() {
   }, [getLoginedEmail()]);
 
   const handleGoLive = (storeId) => {
-    const answer = window.confirm(
-      '라이브 방송으로 이동하시겠어요?'
-    );
+    const answer = window.confirm("라이브 방송으로 이동하시겠어요?");
     if (answer) {
       navigate(`/live/${storeId}`);
     }
@@ -241,18 +242,26 @@ function App() {
 
   return (
     <div className="App">
-      <div className='noticeContainer'>
+      <div className="noticeContainer">
         {showNotification && (
           <div className="notification">
             <p>{notificationMessage}</p>
-            {(showNotification && liveNotice) && (
-              <div className='liveInfoContainer'>
-                <button onClick={() => {handleGoLive(liveStoreData.storeId)}}>
-                  <span className='liveTruckBtn'><span>{liveStoreData.storeName}&nbsp;</span><MdLiveTv size="18" color="white"/></span>
+            {showNotification && liveNotice && (
+              <div className="liveInfoContainer">
+                <button
+                  onClick={() => {
+                    handleGoLive(liveStoreData.storeId);
+                  }}
+                >
+                  <span className="liveTruckBtn">
+                    <span>{liveStoreData.storeName}&nbsp;</span>
+                    <MdLiveTv size="18" color="white" />
+                  </span>
                 </button>
               </div>
             )}
-          </div>) }
+          </div>
+        )}
       </div>
       <ContentWrapper>
         <Routes>
