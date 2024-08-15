@@ -11,7 +11,6 @@ import 'slick-carousel/slick/slick-theme.css';
 const CreateReview = () => {
   const { orderId } = useParams();
   const location = useLocation();
-  const memberInfo = location.state;
   const navigate = useNavigate();
   const { currentReview, updateCurrentReview, createReview } = useReviewStore();
   const [reviewImages, setReviewImages] = useState([]);
@@ -20,7 +19,6 @@ const CreateReview = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
 
-    // 새로 선택한 파일만 상태에 저장
     const newImages = files.map(file => {
       const reader = new FileReader();
       return new Promise((resolve) => {
@@ -32,15 +30,13 @@ const CreateReview = () => {
     });
 
     Promise.all(newImages).then(images => {
-      setReviewImages(images);  // 새로 선택한 이미지만 상태에 저장
-      setSelectedFiles(files);  // 파일 상태도 업데이트
+      setReviewImages(images);
+      setSelectedFiles(files);
     });
   };
 
   const handleUpload = async () => {
-    if (!selectedFiles.length) {
-      return [];
-    }
+    if (!selectedFiles.length) return [];
 
     AWS.config.update({
       accessKeyId: `${process.env.REACT_APP_AWS_S3_KEY_ID}`,
@@ -62,7 +58,6 @@ const CreateReview = () => {
             console.error('Error uploading file:', err);
             reject(err);
           } else {
-            console.log('File uploaded successfully. ETag:', data.ETag);
             resolve({
               savedUrl: data.Location,
               savedPath: data.Key,
@@ -73,8 +68,7 @@ const CreateReview = () => {
     });
 
     try {
-      const uploadResults = await Promise.all(uploadPromises);
-      return uploadResults;
+      return await Promise.all(uploadPromises);
     } catch (err) {
       console.error('Error uploading files:', err);
       return [];
@@ -84,20 +78,15 @@ const CreateReview = () => {
   const handleSubmit = async () => {
     const uploadedFiles = await handleUpload();
 
-    if (uploadedFiles.length === 0) {
-      updateCurrentReview('savedUrl', 'empty');
-      updateCurrentReview('savedPath', 'empty');
-    } else {
-      updateCurrentReview('savedUrl', uploadedFiles[0].savedUrl);
-      updateCurrentReview('savedPath', uploadedFiles[0].savedPath);
-    }
-
     const newReview = {
       orderId: parseInt(orderId, 10),
       isVisible: currentReview.is_visible === 1,
       star: currentReview.rating * 2,
       content: currentReview.content,
-      reviewImageDtos: uploadedFiles,
+      reviewImageDtos: uploadedFiles.length ? uploadedFiles : [{
+        savedUrl: 'empty',
+        savedPath: 'empty',
+      }],
     };
 
     try {
@@ -114,7 +103,6 @@ const CreateReview = () => {
   };
 
   const settings = {
-    slide: 'div',
     dots: true,
     infinite: true,
     speed: 500,
@@ -133,11 +121,9 @@ const CreateReview = () => {
           ) : (
             <Slider {...settings}>
               {reviewImages.map((img, index) => (
-                img.savedUrl !== 'empty' && (
-                  <div key={index}>
-                    <img src={img} alt={`review-${index}`} className={styles.reviewImage} />
-                  </div>
-                )
+                <div key={index}>
+                  <img src={img} alt={`review-${index}`} className={styles.reviewImage} />
+                </div>
               ))}
             </Slider>
           )
@@ -171,7 +157,6 @@ const CreateReview = () => {
             type="checkbox"
             checked={currentReview.is_visible === 0}
             onChange={handleCheckboxChange}
-            value={currentReview.is_visible}
           />
           사장님에게만 보이기
         </label>
@@ -180,7 +165,7 @@ const CreateReview = () => {
         <button className={styles.submitButton} onClick={handleSubmit}>
           작성하기
         </button>
-        <button className={styles.backButton} onClick={() => window.history.back()}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
           돌아가기
         </button>
       </div>

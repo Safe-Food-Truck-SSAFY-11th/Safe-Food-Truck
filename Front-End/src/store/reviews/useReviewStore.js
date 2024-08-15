@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axiosInstance from 'utils/axiosInstance';
 
 const useReviewStore = create((set) => ({
-  myReviews: [],
+  myReviews: [], // 기본적으로 빈 배열로 초기화
   selectedReview: null,
 
   currentReview: {
@@ -14,7 +14,7 @@ const useReviewStore = create((set) => ({
   },
 
   initCurrentReview: () => {
-    set((state) => ({
+    set({
       currentReview: {
         content: '',
         is_visible: 1,
@@ -22,7 +22,7 @@ const useReviewStore = create((set) => ({
         savedPath: 'empty',
         savedUrl: 'empty',
       },
-    }));
+    });
   },
 
   // 내가 작성한 리뷰 전체 조회
@@ -38,10 +38,17 @@ const useReviewStore = create((set) => ({
   // 리뷰 작성하기
   createReview: async (newReview) => {
     try {
-      const response = await axiosInstance.post('/reviews', newReview);
-      console.log(response.data);
+      const reviewToSend = {
+        ...newReview,
+        reviewImageDtos: newReview.reviewImageDtos.length ? newReview.reviewImageDtos : [{
+          savedUrl: 'empty',
+          savedPath: 'empty',
+        }],
+      };
+  
+      const response = await axiosInstance.post('/reviews', reviewToSend);
       set((state) => ({
-        myReviews: [...state.myReviews, response.data],
+        myReviews: Array.isArray(state.myReviews) ? [...state.myReviews, response.data] : [response.data], // 항상 배열로 초기화
         currentReview: {
           content: '',
           is_visible: 1,
