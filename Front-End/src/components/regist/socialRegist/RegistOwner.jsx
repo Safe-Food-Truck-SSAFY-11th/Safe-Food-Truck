@@ -4,7 +4,7 @@ import useUserStore from 'store/users/userStore';
 import axios from 'axios';
 
 const RegistOwner = ({ formData, onFormChange }) => {
-  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, setPasswordMatch } = useUserStore();
+  const { nicknameChecked, checkNickname, nicknameTouched, setNicknameTouched, setPasswordMatch, pnChecked, checkPN, bsNumChecked, checkBsNumber } = useUserStore();
   const [maxDate, setMaxDate] = useState('');
   const [bsNumValid, setBsNumValid] = useState(null);
 
@@ -37,6 +37,11 @@ const RegistOwner = ({ formData, onFormChange }) => {
     checkNickname(formData.nickname);
   };
 
+  const handlePNCheck = () => {
+    // 전화번호 중복 검사
+    checkPN(formData.phoneNumber);
+  }
+
   // 사업자번호 확인 api
   const ntsApiKey = process.env.REACT_APP_NTS_BUSINESS_NUM_API_KEY;
   const data = {
@@ -56,6 +61,8 @@ const RegistOwner = ({ formData, onFormChange }) => {
       if (response.status === 200 && response.data.data[0].b_stt_cd === "01") {
         setBsNumValid(true);
         onFormChange('bsNumValid', true); // bsNumValid 상태를 formData에 저장
+        // 사업자 번호 중복 검사
+        checkBsNumber(formData.businessNumber);
       } else {
         // 사업자 번호 검증 실패
         setBsNumValid(false);
@@ -108,14 +115,21 @@ const RegistOwner = ({ formData, onFormChange }) => {
       </div>
       <div className={styles.inputContainer}>
         <label>전화번호</label>
-        <input type="text" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} />
+        <div className={styles.emailContainer}>
+          <input type="number" name="phoneNumber" value={formData.phoneNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
+          <button type="button" className={styles.duplicateButton} onClick={handlePNCheck}>중복확인</button>
+        </div>
+        {pnChecked === 'Duplicate' && <p className={styles.errorText}>이미 등록된 전화번호입니다</p>}
       </div>
       <div className={styles.inputContainer}>
         <label>사업자 번호</label>
-        <input type="text" name="businessNumber" value={formData.businessNumber || ''} onChange={handleChange} />
-        <button type="button" className={styles.duplicateButton} onClick={handleBusNumCheck}>사업자 번호 확인</button>
+        <div className={styles.emailContainer}>
+          <input type="number" name="businessNumber" value={formData.businessNumber || ''} onChange={handleChange} className={styles.emailInput} placeholder='숫자만 입력하세요'/>
+          <button type="button" className={styles.duplicateButton} onClick={handleBusNumCheck}>사업자 번호 확인</button>
+        </div>
         {bsNumValid === false && <p className={styles.errorText}>사업자 번호가 유효하지 않습니다</p>}
-        {bsNumValid === true && <p className={styles.hintText}>유효한 사업자 번호입니다</p>}
+        {bsNumValid === true && bsNumChecked == 'Duplicate' && <p className={styles.errorText}>이미 등록된 사업자 번호입니다</p>}
+        {bsNumValid === true && bsNumChecked == 'Possible' && <p className={styles.hintText}>유효한 사업자 번호입니다</p>}
       </div>
     </form>
   );

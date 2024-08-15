@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MyJjim.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
+import defaultImage from 'assets/images/truck-img.png'
 
 const MyJjim = ({ memberInfo, jjimTrucks }) => {
   const memberFavoriteList = jjimTrucks.memberFavoriteList || [];
@@ -47,31 +48,43 @@ const MyJjim = ({ memberInfo, jjimTrucks }) => {
   return (
     <div className={styles.container}>
       {myJJimTrucks.length > 0 && (
-        <h3>{memberInfo.nickname} 님이 찜한 푸드트럭이에요!</h3>
+        <h3 className={styles.JJimHeader}>{memberInfo.nickname} 🖐 님이 찜한 푸드트럭 {myJJimTrucks.length}개</h3>
       )}
       {myJJimTrucks.length === 0 ? (
+        <div className={styles.noJJimTruck}>
         <p>{memberInfo.nickname} 님이 찜한 푸드트럭이 없어요 😅</p>
+        </div>
       ) : (
         <ul>
           {myJJimTrucks.map((truck, index) => (
-            <li
-              key={index}
-              className={styles.truckItem}
-              onClick={() => handleTruckClick(truck.storeId)}
-            >
-              {truck.storeImageDto && truck.storeImageDto.savedUrl ? (
-                <img src={truck.storeImageDto.savedUrl} alt={truck.name} />
-              ) : (
-                <p>사진 없음</p>
-              )}
-              <h3>{truck.name}</h3>
-              <p>{truck.storeType}</p>
-              <p>
-                {truck.isOpen
-                  ? `${truck.name} 트럭은 현재 영업중이에요!`
-                  : `${truck.name} 트럭은 오늘 쉬어요😂`}
-              </p>
-            </li>
+           <li
+           key={index}
+           className={styles.truckItem}
+           onClick={() => handleTruckClick(truck.storeId)}
+         >
+           <div className={styles.truckContent}>
+             {truck.storeImageDto.savedUrl !== 'empty' && " " ? (
+               <img 
+               src={truck.storeImageDto.savedUrl}  
+               className={styles.truckImage}
+                />
+             ) : (
+              <img
+              src={defaultImage} 
+              className={styles.truckImage}
+            />
+             )}
+             <div className={styles.truckDetails}>
+               <h4 className={styles.truckName}>{truck.name}</h4>
+               <p>{truck.storeType}</p>
+               <p>
+                 {truck.isOpen
+                   ? `${truck.name} 트럭은 현재 영업중이에요!`
+                   : `${truck.name} 트럭은 오늘 쉬어요😂`}
+               </p>
+             </div>
+           </div>
+         </li>
           ))}
         </ul>
       )}

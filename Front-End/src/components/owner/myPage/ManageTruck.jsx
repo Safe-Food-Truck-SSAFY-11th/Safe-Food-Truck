@@ -5,11 +5,14 @@ import imageIcon from "assets/images/truck-img.png";
 import useTruckStore from "store/users/owner/truckStore";
 import AWS from 'aws-sdk';
 import MakeLogo from "./MakeLogo";
+import useUserStore from 'store/users/userStore';
 
 const ManageTruck = () => {
   const navigate = useNavigate();
-  const [truckImage, setTruckImage] = useState(''); 
+  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedTruckImage, setTruckImage] = useState('');
   const [showWarning, setShowWarning] = useState(false); // 모달 표시 상태 추가
+  const { getLoginedRole } = useUserStore();
 
   const {
     updateForm,
@@ -45,19 +48,26 @@ const ManageTruck = () => {
   };
 
   useEffect(() => {
-    fetchTruckInfo();
-    setTruckImage(truckInfo.storeImageDto.savedUrl);
-    translate();
-  }, []);
+    const fetchData = async () => {
+      await fetchTruckInfo(); // 데이터를 가져오는 동안 기다림
+    };
 
-  const [selectedFile, setSelectedFile] = useState(null);
+    fetchData(); // 함수 호출
+  }, [fetchTruckInfo]); // `fetchTruckInfo`가 변경될 때만 호출
+
+  useEffect(() => {
+    if (truckInfo && truckInfo.storeImageDto) {
+      setTruckImage(truckInfo.storeImageDto.savedUrl || imageIcon); // 기본 이미지로 설정
+    }
+    translate(); // 데이터 로드 후 번역 수행
+  }, [truckInfo]); // `truckInfo`가 업데이트될 때만 호출
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
 
     const reader = new FileReader();
     reader.onload = (event) => {
-        setTruckImage(event.target.result);
+      setTruckImage(event.target.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
@@ -112,11 +122,18 @@ const ManageTruck = () => {
 
   const handleAILogo = (e) => {
     e.preventDefault();
+    if (getLoginedRole() !== 'vip_owner') {
+      alert('멤버십에 가입한 사장님만 이용할 수 있어요!');
+      return;
+    }
     setShowWarning(true); // 모달 표시 상태를 true로 설정
   }
 
   const closeMakeLog = () => {
     setShowWarning(false); // 모달 표시 상태를 false로 설정
+    fetchTruckInfo();
+    setSelectedFile(truckInfo.storeImageDto.savedUrl);
+    // window.location.reload();
   }
 
   const handleDeleteStore = () => {
@@ -133,7 +150,7 @@ const ManageTruck = () => {
         <h1 className={styles.title}>푸드트럭 정보 수정</h1>
         <div className={styles.imageUpload}>
           <img
-            src={truckImage === 'empty' ? imageIcon : truckImage}
+            src={selectedTruckImage === 'empty' ? imageIcon : selectedTruckImage}
             alt="이미지 업로드"
             className={styles.uploadedImage}
           />
@@ -224,7 +241,11 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
-      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult}/>}
+      <div className={styles.deleteAccountArea}>
+        <p>점포를 삭제하시겠어요?</p>
+        <a className={styles.deleteAcnt} onClick={handleDeleteStore}>점포 삭제</a>
+      </div>
+      {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult} storeId={truckInfo.storeId}/>}
     </>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'utils/axiosInstance';
 import styles from './FindPassword.module.css';
 
-const FindPassword = () => {
+const FindPassword = ({ closeFunc }) => {
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -39,64 +39,66 @@ const FindPassword = () => {
   };
 
   const handleGoBack = () => {
-    window.history.back(); // 뒤로가기
+    closeFunc(false);
   };
 
   return (
-    <div className={styles.container}>
-      <h2>비밀번호 찾기</h2>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.inputContainer}>
-          <label htmlFor="email">이메일</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+    <div className={styles.background}>
+      <div className={styles.container}>
+        <h2>비밀번호 찾기</h2>
+        <div className={styles.form}>
+          <div className={styles.inputContainer}>
+            <label htmlFor="email">이메일</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.inputContainer}>
+            <label htmlFor="name">이름</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.inputContainer}>
+            <label htmlFor="birth">생일</label>
+            <input
+              type="date"
+              id="birth"
+              name="birth"
+              value={formData.birth}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.inputContainer}>
+            <label htmlFor="phoneNumber">연락처</label>
+            <input
+              type="text"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          {message && <p className={styles.successText}>{message}</p>}
+          {error && <p className={styles.errorText}>{error}</p>}
         </div>
-        <div className={styles.inputContainer}>
-          <label htmlFor="name">이름</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className={styles.inputContainer}>
-          <label htmlFor="birth">생일</label>
-          <input
-            type="date"
-            id="birth"
-            name="birth"
-            value={formData.birth}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className={styles.inputContainer}>
-          <label htmlFor="phoneNumber">연락처</label>
-          <input
-            type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <button type="submit" className={styles.submitButton}>비밀번호 찾기</button>
-          <button type="button" className={styles.cancelButton} onClick={handleGoBack}>돌아가기</button>
-        </div>
-      </form>
-      {message && <p className={styles.successText}>{message}</p>}
-      {error && <p className={styles.errorText}>{error}</p>}
+      </div>
+      <div className={styles.btnContainer}>
+        <button type="button" className={styles.submitButton} onClick={handleSubmit}>비밀번호 찾기</button>
+        <button type="button" className={styles.cancelButton} onClick={handleGoBack}>돌아가기</button>
+      </div>
     </div>
   );
 };

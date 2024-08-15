@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import styles from './FoodTruckInfo.module.css';
 import useFoodTruckStore from 'store/trucks/useFoodTruckStore';
+import defaultImage from 'assets/images/truck-img.png'; 
 
 function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
   const { getFoodTruckLikes, likes } = useFoodTruckStore();
 
   const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
+  const nickname = sessionStorage.getItem('nickname')
 
   const scheduleList = selectedTruckSchedule.scheduleList;
 
@@ -15,26 +18,35 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
 
   return (
     <div className={styles.container}>
+      <h3 className={styles.infoHeader}>{truck.name}</h3>
       <div className={styles.section}>
         <h3>푸드트럭 사진</h3>
-        {truck.storeImageDto?.savedUrl ? (
+        <hr/>
+        {truck.storeImageDto?.savedUrl && truck.storeImageDto.savedUrl !== 'empty' ? (
           <img
             src={truck.storeImageDto.savedUrl}
             alt={truck.name}
             className={styles.truckImage}
           />
         ) : (
-          <p>이미지 없음</p>
+          <img
+            src={defaultImage}
+            alt="디폴트 이미지"
+            className={styles.truckImage}
+          />
         )}
       </div>
       <div className={styles.section}>
         <h3>영업 스케줄</h3>
+        <hr/>
         {scheduleList && scheduleList.length > 0 ? (
           <ul>
             {scheduleList.map((schedule, index) => (
               <li key={index}>
-                <strong>{daysOfWeek[schedule.day - 1]}:</strong> {schedule.address}
-                <p>상세 주소 : {schedule.addAddress}</p>
+                <strong>{daysOfWeek[schedule.day]}:</strong> {schedule.address}
+                <br/>
+                <span>상세 주소 : {schedule.addAddress}</span>
+                <hr/>
               </li>
             ))}
           </ul>
@@ -44,7 +56,11 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
       </div>
       <div className={styles.section}>
         <h3>가게 통계</h3>
-        <p>{isMeet ? '만났던 푸드트럭이에요!' : '만난 적 없는 푸드트럭이에요!'}</p>
+        <hr/>
+
+        {/* 예전에 이용한 적 있는 푸드트럭인지 설명하는 텍스트 수정*/}
+        
+        <p>{isMeet ? `${nickname}님과 만났던 푸드트럭이에요!` : '만난 적 없는 푸드트럭이에요!'}</p>
         <p>리뷰: {reviews.length} 개</p>
         <p>찜: {likes?.favoriteCount || 0} 개</p>
       </div>

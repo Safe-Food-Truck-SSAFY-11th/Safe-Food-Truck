@@ -22,39 +22,54 @@ const MyPageCustomer = () => {
   // 내 정보 , 내가 찜한 트럭 가져오는 스토어 , 함수 호출
   const { 
     memberInfo, 
-    getMemberInfo, 
-    getJJimTruck, 
-    myJJimTruck,
+    getMemberInfo,
+    getJJimTrucks, 
+    myJJimTrucks,
     getSobiPattern,
     mySobiPattern, 
   } = customerStore(); 
 
   // 내 과거 주문 기록 불러오는 스토어 , 함수 호출
   const { 
+    // 내 과거 주문 목록 전체 조회 함수
     getMyOrders, 
+    // 위에 함수로 가져올 객체
     pastOrders, 
+    // orderId로 가져올 해당 주문의 상세 정보
     getOrderDetails, 
-    nowOrderId, 
+    // 위에 함수로 가져올 객체 
     nowOrder,
+    // 현재 주문 아이디 세팅하는 함수
+    setNowOrderId,
+    // 위에 함수로 가져올 객체
+    nowOrderId, 
+    // 지금 진행중인 주문 목록 가져오는 함수
+    getNowOrder,
+    // 위에 함수로 가져올 객체
+    joonbiOrders,
   } = customerOrderStore();
-
+  
   // 내가 작성한 리뷰 가져오는 스토어 , 함수 호출
   const { getAllMyReview, myReviews } = useReviewStore(); 
   
-  // 리뷰는 리뷰 리스트 컴포넌트에서 동적으로 상태가 변하기 때문에 부모 컴포넌트에서 상태가 변경 될 때마다
-  // 렌더링 되어야 하므로 useEffect 훅에서 따로 빼줬습니다.
   useEffect(() => {
     
+    // 리뷰 목록 가져옴
     getAllMyReview();
-    
-  },[]);
-  
-  useEffect(() => {
+    // 회원 정보 가져옴
     getMemberInfo();
-    getJJimTruck();
+    // 찜 트럭 가져옴
+    getJJimTrucks();
+    // 내 과거 주문 목록 가져옴
     getMyOrders();
+    // 소비패턴 가져옴
     getSobiPattern();
+    // 현재 진행중인 주문 가져옴
+    getNowOrder();
+
   },[]);
+
+
 
   useEffect(() => {
 
@@ -82,11 +97,11 @@ const MyPageCustomer = () => {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'liked':
-        return <MyJjim memberInfo={memberInfo} jjimTrucks={myJJimTruck} />;
+        return <MyJjim memberInfo={memberInfo} jjimTrucks={myJJimTrucks} />;
       case 'review':
         return <MyReviewList memberInfo={memberInfo} myReviews={myReviews} />;
       case 'order':
-        return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} />;
+        return <OrderPast memberInfo={memberInfo} pastOrders={pastOrders} myReviews={myReviews} />;
       default:
         return <SobiPattern memberInfo={memberInfo} mySobiPattern={mySobiPattern} />;
     }
@@ -116,10 +131,8 @@ const MyPageCustomer = () => {
     <div>
       <Header />
       <CustomerInfo onSelect={handleSelect} activeButton={activeButton} pastOrders={pastOrders} memberInfo={memberInfo} />
-      <p>- - - - - - - - 현재 주문 내역 - - - - - - - -</p>
-      <OrderNow memberInfo={memberInfo} nowOrder={nowOrder} />
+      <OrderNow memberInfo={memberInfo} joonbiOrders={joonbiOrders} />
       {renderSelectedComponent()}
-      <button onClick={handleDeleteAcct}>탈퇴하기</button>
     </div>
   );
 };

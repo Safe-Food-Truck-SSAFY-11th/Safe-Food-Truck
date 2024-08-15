@@ -31,6 +31,11 @@
   border-radius: 5px;
 }
 
+.noticeBtn {
+  border: none;
+  background-color: white;
+}
+
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -57,24 +62,70 @@
   background-color: #89dfec;
 }
 
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  gap: 3%;
+  margin-right: 10%;
+  margin-top: 2%;
+}
+
+.goDetailBtn {
+  display: inline-block;
+  padding: 2% 4%;
+  margin-top: 0;
+  border: none;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #fec674;
+  font-size: 2em;
+  width: 70%;
+}
+
+.truckName {
+  color: white;
+}
+
+.joomoon {
+  font-size: 0.7em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.joomoon div {
+  margin-right: 2%;
+}
+
 .session {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100vw;
+  width: 100%;
 }
 
 .sessionHeader {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: 10px 10px;
-  border-bottom: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
 }
 
 .mainVideo {
-  margin: 20px auto;
+  width: 100%;
+  height: 30dvh;
+  overflow: hidden;
+  /* margin: 20px auto; */
 }
 
 .videoContainer {
@@ -88,41 +139,6 @@
   margin: 2.5%;
 }
 
-.chatContainer {
-  width: 100%;
-  height: 600px; /* 필요에 따라 조정 가능 */
-  background-color: white;
-  border-radius: 15px 15px 0 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
-    /* 아래쪽 그림자 */ 0 -2px 4px rgba(0, 0, 0, 0.3),
-    /* 위쪽 그림자 */ 2px 0 4px rgba(0, 0, 0, 0.3),
-    /* 오른쪽 그림자 */ -2px 0 4px rgba(0, 0, 0, 0.3); /* 왼쪽 그림자 */
-  padding: 20px;
-  margin: 20px;
-  box-sizing: border-box;
-}
-
-.chatBox {
-  flex: 1; /* 남은 공간을 차지하도록 설정 */
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 가능 */
-}
-
-.chatInputBox {
-  display: flex;
-  width: 100%;
-  background-color: #f2f2f2;
-  padding: 5px 10px;
-  justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
 .noticeBox {
   width: 90%;
   border-radius: 10px;
@@ -132,25 +148,20 @@
   justify-content: flex-start;
   gap: 30px;
   padding: 10px;
-  margin: 5px;
+  /* margin-top: 10px; */
+  margin: 1%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.infoGreen {
-  color: #5bb527;
-  font-weight: bold;
-}
-
 .truckImg {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 45px;
   overflow: hidden;
 }
 
 .noticeTitle {
   color: #ff0000;
-  font-weight: bold;
 }
 
 .noticeContent {
@@ -158,52 +169,6 @@
 }
 
 .noticeInfo {
-  text-align: left;
-}
-
-.chatInfo p {
-  text-align: center;
-}
-
-.messageOwner {
-  background-color: #eaffc9; /* 녹색 배경 */
-  align-self: flex-start;
-  text-align: left;
-}
-
-.messageCustomer {
-  background-color: #ffedd3; /* 기존 배경색 */
-  align-self: flex-end;
-  text-align: right;
-}
-
-.messageList {
-  overflow-y: auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  min-width: 300px; /* 최소 너비 */
-  height: 100%;
-}
-
-.message {
-  padding: 10px 15px;
-  border-radius: 10px;
-  margin-bottom: 5px;
-  width: max-content;
-  max-width: 300px;
-  word-break: break-all;
-}
-
-.messageFromCustomer {
-  color: #fb833e;
-}
-
-.messageFromOwner {
-  color: #407223;
-}
-
-.messageFromCustomerText {
   text-align: left;
 }
 
@@ -236,13 +201,67 @@
 }
 
 .ownerItems {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 2vh;
+
+  padding: 3% 8% 10% 8%;
 }
 
 .videoId {
   font-weight: bold;
   background-color: black;
   color: white;
+}
+
+.chatContainer {
+  width: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  border-top: 3px solid transparent;
+  background-image: linear-gradient(#fff, #fff),
+    linear-gradient(to right, #daeed0 0%, #ffb285 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  overflow: hidden;
+  /* position: fixed; */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.chatContainerExpanded {
+  height: calc(70dvh - 69px);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chatContainerCollapsed .buttons {
+  height: 43px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.chatContainerCollapsed {
+  height: 60px;
+  /* opacity: 0.7; */
+  transform: translateY(calc(100% - 60px)); /* 높이 변경에 맞춰 조정 */
+}
+
+.chatInputBox {
+  display: flex;
+  width: 100%;
+  background-color: #f2f2f2;
+  padding: 5px 10px;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: absolute; /* 고정 위치로 변경 */
+  bottom: 0; /* 하단에 위치 */
 }

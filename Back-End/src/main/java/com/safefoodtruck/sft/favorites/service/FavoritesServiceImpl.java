@@ -1,5 +1,8 @@
 package com.safefoodtruck.sft.favorites.service;
 
+import com.safefoodtruck.sft.favorites.dto.response.CheckIsFavoriteResponseDto;
+import org.springframework.stereotype.Service;
+
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
@@ -9,12 +12,14 @@ import com.safefoodtruck.sft.favorites.exception.NotInsertedFavoriteException;
 import com.safefoodtruck.sft.favorites.exception.NotWriterFavoriteException;
 import com.safefoodtruck.sft.favorites.repository.FavoritesRepository;
 import com.safefoodtruck.sft.member.domain.Member;
+import com.safefoodtruck.sft.member.exception.NotFoundMemberException;
 import com.safefoodtruck.sft.member.repository.MemberRepository;
 import com.safefoodtruck.sft.store.domain.Store;
+import com.safefoodtruck.sft.store.exception.StoreNotFoundException;
 import com.safefoodtruck.sft.store.repository.StoreRepository;
+
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +44,9 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (memberFavoritesDto != null) {
             throw new ImpossibleRetryException();
         }
-        Member member = memberRepository.findByEmail(userEmail);
-        Store store = storeRepository.findById(storeId).get();
+        Member member = memberRepository.findByEmail(userEmail).orElseThrow(
+            NotFoundMemberException::new);;
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
         favoritesRepository.save(Favorites.builder()
             .member(member)
             .store(store)
@@ -63,5 +69,14 @@ public class FavoritesServiceImpl implements FavoritesService {
     @Override
     public SelectFavoriteResponseDto selectFavoriteCount(Integer storeId) {
         return favoritesRepository.findFavoritesCount(storeId);
+    }
+
+    @Override
+    public CheckIsFavoriteResponseDto checkIsFavorite(String userEmail, Integer storeId) {
+        CheckIsFavoriteResponseDto checkIsFavoriteResponseDto = favoritesRepository.checkIsFavorite(userEmail, storeId);
+        if (checkIsFavoriteResponseDto == null) {
+            checkIsFavoriteResponseDto = new CheckIsFavoriteResponseDto(-1);
+        }
+        return checkIsFavoriteResponseDto;
     }
 }

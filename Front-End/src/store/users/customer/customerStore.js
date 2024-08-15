@@ -31,9 +31,11 @@ const customerStore = create((set, get) => ({
   // 회원 정보 상태 추가 
   memberInfo: null,
   // 내가 찜한 트럭 반환 받을 배열 추가 
-  myJJimTruck: [],
+  myJJimTrucks: [],
   // 내 소비패턴 객체 추가
   mySobiPattern: null,
+
+  myNotification: [],
 
 
   setForm: (name, value) => {
@@ -45,6 +47,7 @@ const customerStore = create((set, get) => ({
   checkEmail: () => set({ emailChecked: true }),
   setEmailTouched: () => set({ emailTouched: true }),
   setPasswordTouched: () => set({ passwordTouched: true }),
+  
   checkNickname: async (nickname) => {
     try {
       const response = await axiosInstance.get(`members/duplication-nickname/${nickname}`);
@@ -73,6 +76,23 @@ const customerStore = create((set, get) => ({
     }
   },
 
+
+  // 알림 가져오는 함수
+  getNotification: async () => {
+    try {
+
+      const response = await axiosInstance.get('notifications')
+
+      set({ myNotification : response.data});
+  
+    } catch (error) {
+
+      console.error('못 가져옴' , error);
+
+    }
+  },
+
+
   // 회원 정보 수정하는 함수
   modifyMemberInfo: async (updateData) => { 
     try {
@@ -88,18 +108,34 @@ const customerStore = create((set, get) => ({
     }
   },
 
-  // 내가 찜한 푸드트럭 가져오는 함수
-  getJJimTruck: async () => { 
+  // 내가 찜한 푸드트럭 전부 가져오는 함수
+  getJJimTrucks: async () => { 
     try {
 
       const response = await axiosInstance.get('favorites')
 
-      set({myJJimTruck : response.data})
+      set({myJJimTrucks : response.data})
    
     } catch (error) {
 
       console.error('찜 푸드트럭 가져오기 실패' , error)
       
+    }
+  },
+
+  // 특정 트럭이 찜 한 트럭인지 확인하는 함수
+  getJJimTruck: async(storeId) => {
+
+    try { 
+
+    const response = await axiosInstance.get(`favorites/my/${storeId}`)
+      
+    return response.data;
+
+    } catch (error) {
+
+      console.error('찜 트럭 가져오기 실패' , error)
+
     }
   },
 

@@ -2,6 +2,7 @@ package com.safefoodtruck.sft.favorites.repository;
 
 import com.safefoodtruck.sft.favorites.domain.Favorites;
 import com.safefoodtruck.sft.favorites.dto.MemberFavoritesDto;
+import com.safefoodtruck.sft.favorites.dto.response.CheckIsFavoriteResponseDto;
 import com.safefoodtruck.sft.favorites.dto.response.SelectFavoriteResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +36,12 @@ public interface FavoritesRepository extends JpaRepository<Favorites, Integer> {
     SelectFavoriteResponseDto findFavoritesCount(@Param("storeId") Integer storeId);
 
     List<Favorites> findAllByStoreId(Integer storeId);
+
+    @Query(value =
+        "SELECT new com.safefoodtruck.sft.favorites.dto.response.CheckIsFavoriteResponseDto(f.id) " +
+            "FROM Favorites f " +
+            "WHERE f.member.email = :email " +
+            "AND f.store.id = :storeId")
+    CheckIsFavoriteResponseDto checkIsFavorite(@Param("email") String email, @Param("storeId") Integer storeId);
+
 }

@@ -3,7 +3,6 @@ package com.safefoodtruck.sft.review.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safefoodtruck.sft.review.domain.Review;
 import com.safefoodtruck.sft.review.domain.ReviewImage;
-
 import lombok.Builder;
 
 @Builder

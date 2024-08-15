@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MyReviewItem from './MyReviewItem';
 import DeleteReview from './DeleteReview';
 import DeleteComplete from './DeleteComplete';
-import styles from './MyReview.module.css';
+import styles from './MyReviewList.module.css';
 import useReviewStore from 'store/reviews/useReviewStore';
 
 const MyReviewList = ({ memberInfo }) => {
@@ -10,10 +10,12 @@ const MyReviewList = ({ memberInfo }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteCompleteModalOpen, setIsDeleteCompleteModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
-
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  console.log(myReviews)
   // 삭제 모달 열기
-  const openDeleteModal = (reviewId) => {
+  const openDeleteModal = (reviewId, orderId) => {
     setSelectedReviewId(reviewId);
+    setSelectedOrderId(orderId);
     setIsDeleteModalOpen(true);
   };
 
@@ -24,7 +26,7 @@ const MyReviewList = ({ memberInfo }) => {
 
   // 삭제 확인 처리
   const handleDeleteConfirm = async () => {
-    await deleteReview(selectedReviewId);
+    // await deleteReview(selectedReviewId);
     setIsDeleteModalOpen(false);
     setIsDeleteCompleteModalOpen(true);
   };
@@ -40,19 +42,17 @@ const MyReviewList = ({ memberInfo }) => {
     getAllMyReview();
   }, []);
 
-
-
-  const myReviewList = myReviews.reviewList || [];
-
+  const myReviewList = myReviews.reviewResponseDtos || [];
+  
   return (
     <div className={styles.container}>
       {myReviewList.length === 0 ? (
-        <p className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</p>
+        <div className={styles.noReview}>{memberInfo.nickname} 님이 작성한 리뷰가 없습니다😥</div>
       ) : (
         <>
-          <h3>{memberInfo.nickname} 👏 님이 작성한 리뷰에요!</h3>
+          <h3 className={styles.myReviewListh3}>{memberInfo.nickname} 👏 님이 작성한 리뷰 {myReviewList.length}개</h3>
           {myReviewList.map(review => (
-            <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id)} />
+            <MyReviewItem key={review.id} review={review} onDelete={() => openDeleteModal(review.id, review.orderId)} />
           ))}
         </>
       )}
@@ -60,7 +60,9 @@ const MyReviewList = ({ memberInfo }) => {
         <DeleteReview 
           onClose={closeDeleteModal} 
           selectedReviewId={selectedReviewId} 
-          onConfirm={handleDeleteConfirm} 
+          onConfirm={handleDeleteConfirm}
+          selectedOrderId={selectedOrderId} 
+          memberEmail={memberInfo.email}
         />
       )}
       {isDeleteCompleteModalOpen && (

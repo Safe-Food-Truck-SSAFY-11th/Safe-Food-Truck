@@ -1,5 +1,5 @@
 .compSize {
-  height: 100vh;
+  height: calc(100vh - 69px);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -9,14 +9,15 @@
   overflow: hidden;
 }
 
-.compSize h3 {
+.compSize h2 {
+  margin-top: 3vh;
+  font-size: 1.8rem;
   padding: 0;
 }
 
 .menuContainer {
-  margin: 37px auto;
-  width: 80%;
-  height: 600px;
+  margin: 4%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;

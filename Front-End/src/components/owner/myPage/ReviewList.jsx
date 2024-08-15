@@ -8,7 +8,7 @@ function ReviewList() {
   const { getReviewList } = useOwnerReviewStore();
   const { truckInfo, fetchTruckInfo } = useTruckStore();
   const [reviews, setReviews] = useState([]);
-  
+
   useEffect(() => {
     const fetchTruckAndReviews = async () => {
       await fetchTruckInfo();
@@ -33,9 +33,15 @@ function ReviewList() {
         <h2>내 트럭 리뷰</h2>
       </div>
       <div className={styles.reviewList}>
-        {reviews.map(review => (
-          <ReviewItem key={review.id} review={review} />
-        ))}
+        {reviews.length !== 0 ? (
+          reviews.map(review => (
+            <ReviewItem key={review.id} review={review} />
+          ))
+        ) : (
+          <div className={styles.noneContainer}>
+            <p>아직 리뷰가 없어요😥</p>
+          </div>
+        )}
       </div>
     </>
   );

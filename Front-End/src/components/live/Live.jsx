@@ -6,7 +6,6 @@ import { useParams, useNavigate, useLocation } from "react-router-dom"; // useNa
 import axios from "axios";
 import styles from "./Live.module.css";
 import UserVideoComponent from "./UserVideoComponent";
-import truckImg from "assets/images/storeImg.png";
 import OpenClose from "components/owner/mainPage/OpenClose";
 import JiguemOrder from "components/owner/mainPage/JiguemOrder";
 import useLiveStore from "store/live/useLiveStore";
@@ -14,6 +13,10 @@ import useTruckStore from "store/users/owner/truckStore";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import NoticeModal from "./NoticeModal";
 import chatbot from "gemini/geminiChatBot";
+import ChatBox from "./ChatBox";
+import truck_img from "assets/images/truck-img.png";
+import { LuClipboardEdit } from "react-icons/lu";
+import { ImSpoonKnife } from "react-icons/im";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -27,17 +30,17 @@ const Live = () => {
     openNoticeModal,
     setIsLiveFailed,
     isLiveFailed,
-    members,
-    addMember,
-    deleteMember,
-    resetMembers,
+    fetchTruckInfo,
+    truckInfo,
+    storeSession,
+    setStoreSession,
   } = useLiveStore();
 
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
   const navigate = useNavigate(); // useNavigate 사용
-  const { state } = useLocation(); // useLocation 사용
-  const { token } = state || {}; // token을 state에서 받아옴
+  // const { state } = useLocation(); // useLocation 사용
+  // const { token, reload } = state || {}; // token을 state에서 받아옴
   const [mySessionId, setMySessionId] = useState(storeId);
   const [myUserName, setMyUserName] = useState(
     sessionStorage.getItem("nickname")
@@ -46,86 +49,172 @@ const Live = () => {
   const mainStreamManager = useRef(undefined);
   const [publisher, setPublisher] = useState(undefined);
   const [subscribers, setSubscribers] = useState([]);
-  const [isChat, setIsChat] = useState(role.indexOf("customer") !== -1);
+  const [isChat, setIsChat] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const { truckInfo } = useTruckStore();
-  const { selectedTruck } = useFoodTruckStore();
-  const trukName =
-    role.indexOf("owner") !== -1 ? truckInfo.name : selectedTruck.name;
+  // const { truckInfo } = useTruckStore();
+  // const { selectedTruck } = useFoodTruckStore();
+  const truckName = truckInfo?.name;
   const [notice, setNotice] = useState(storeNotice);
+
+  //트럭사진
+  const truckImg =
+    truckInfo?.storeImageDto?.savedUrl === "empty"
+      ? truck_img
+      : truckInfo?.storeImageDto?.savedUrl;
+
+  //방송 참여자 이메일 목록
+  const members = useRef(new Set());
+
+  // 방송 참여자 이메일 추가
+  const addMember = (email) => {
+    members.current.add(email);
+  };
+
+  // 방송 참여자 삭제
+  const deleteMember = (email) => {
+    members.current.delete(email);
+  };
+
+  // 방송 참여자 이메일 목록 비우기
+  const resetMembers = () => {
+    members.current.clear();
+  };
 
   const OV = useRef();
 
+  //처음 스크롤 맨위로 올리기
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
+
   //페이지 떠나려고 할 때 동작
   useEffect(() => {
-    window.addEventListener("beforeunload", onbeforeunload);
-    return () => {
-      window.removeEventListener("beforeunload", onbeforeunload);
+    const handleBeforeUnload = async (event) => {
+      // console.log("페이지 떠나는 이벤트", event);
+      // const confirmationMessage =
+      //   "이 페이지를 떠나시겠습니까? 방송이 종료됩니다.";
+      // event.returnValue = confirmationMessage; // 브라우저 호환성을 위해 설정
+      // return confirmationMessage;
+
+      console.log("페이지 떠남");
+
+      if (role.indexOf("customer") !== -1) {
+        // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+        leaveSession();
+      } else if (role.indexOf("owner") !== -1) {
+        // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
+        const res = window.confirm("방송을 종료하시겠습니까?");
+        if (res) {
+          await endLive(); // 방송 종료
+        } else {
+          event.preventDefault(); // 페이지 이탈을 막음
+        }
+      }
+
+      // const navigationType = performance.getEntriesByType("navigation")[0].type;
+
+      // if (navigationType === "reload") {
+      //   // 새로고침인 경우
+      //   console.log("새로고침 감지");
+
+      //   if (role.indexOf("customer") !== -1) {
+      //     // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+      //     await leaveSession();
+      //   }
+
+      //   return; // 아무 작업도 하지 않음
+      // } else {
+      //   console.log("새로고침 아님");
+      //   // 새로고침이 아닌 경우
+      //   if (role.indexOf("customer") !== -1) {
+      //     // // 손님이 창을 닫거나 다른 페이지로 이동할 때 세션 나가기
+      //     leaveSession();
+      //   } else if (role.indexOf("owner") !== -1) {
+      //     // 사장님이 창을 닫거나 다른 페이지로 이동할 때 방송 종료 확인
+      //     const res = window.confirm("방송을 종료하시겠습니까?");
+      //     if (res) {
+      //       await endLive(); // 방송 종료
+      //     } else {
+      //       event.preventDefault(); // 페이지 이탈을 막음
+      //     }
+      //   }
+      // }
     };
-  }, []);
 
-  //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
-  useEffect(() => {
-    if (role.indexOf("owner") !== -1) {
-      createSessionAndJoin(); // 퍼블리셔로 참여
-    } else if (role === "customer" && token) {
-      joinExistingSession(token); // 구독자로 참여
-    }
-  }, [role, token]);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  // 뒤로가기 동작 처리 -> onbeforeunload랑 합치기
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [role, session, navigate]);
+
+  // 뒤로가기 동작 처리
   useEffect(() => {
-    const handleGoBack = async () => {
+    const handlePopState = async (event) => {
+      console.log("뒤로가기");
       if (session) {
         if (role.indexOf("customer") !== -1) {
-          await leaveSession(); // 고객인 경우 방송 세션 종료
+          // 손님이 뒤로가기를 눌렀을 때 세션 나가기
+          await leaveSession();
         } else if (role.indexOf("owner") !== -1) {
+          // 사장님이 뒤로가기를 눌렀을 때 방송 종료 확인
           const res = window.confirm("방송을 종료하시겠습니까?");
           if (res) {
             await endLive(); // 방송 종료
-            navigate("/mainOwner"); // 사장님 메인페이지로 이동
+            navigate("/mainOwner");
           } else {
-            window.history.pushState(null, "", "");
+            window.history.pushState(null, "", window.location.href); // 뒤로가기를 취소하고 현재 페이지 유지
           }
         }
       }
     };
 
-    window.addEventListener("popstate", handleGoBack);
+    window.addEventListener("popstate", handlePopState);
 
-    // // 컴포넌트 언마운트 시 이벤트 리스너 제거
-    // return () => {
-    //   window.removeEventListener("popstate", handleGoBack);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [role, session, navigate]);
+
+  //처음 렌더링 할 때 손님, 사장님에 따라 세션 참가 로직 분기
+  useEffect(() => {
+    fetchTruckInfo(storeId); //트럭정보 로딩
+
+    // const getNewTokenAndJoin = async () => {
+    //   const newToken = await getToken();
+    //   console.log(newToken);
+    //   joinExistingSession(newToken); // 구독자로 참여
     // };
-  }, []);
 
-  //사장님 방송 종료 시 손님 페이지 이동 & 모달 켜기
+    if (role.indexOf("owner") !== -1) {
+      createSessionAndJoin(); // 퍼블리셔로 참여
+    } else if (role === "customer") {
+      joinExistingSession(); // 구독자로 참여
+    }
+  }, [role]);
+
+  //방송 종료 시 손님 페이지 이동 & 모달 켜기
   useEffect(() => {
     if (session) {
       session.on("sessionDisconnected", (event) => {
         console.log(event);
         if (event.reason === "forceDisconnectByServer") {
           if (role.indexOf("customer") !== -1) {
-            navigate(`/foodTruckDetail/${storeId}`); // 이동하면서, 모달 활성화
-            openModal();
+            navigate(`/foodTruckDetail/${storeId}`, { replace: true }); // 이동하면서, 뒤로가기 막음
+            openModal(); //모달 열기
           }
         }
       });
     }
   }, [session, navigate]);
 
-  //공지사항 가져오기
+  //트럭 정보, 공지사항 가져오기
   useEffect(() => {
     fetchNotice(storeId);
     setNotice(storeNotice);
     console.log(notice);
   }, [storeNotice]);
-
-  // 사용자가 페이지를 떠나려고 할 때 동작 (새로고침, 창 닫기)
-  const onbeforeunload = (event) => {
-    leaveSession();
-  };
 
   //세션 구독자 삭제
   const deleteSubscriber = (streamManager) => {
@@ -136,9 +225,11 @@ const Live = () => {
   //사장 - 새로 세션을 만들고 입장
   const createSessionAndJoin = async () => {
     OV.current = new OpenVidu();
+    OV.current.enableProdMode(); // 로그제거
     const newSession = OV.current.initSession();
 
     setSession(newSession);
+    setStoreSession(newSession);
 
     newSession.on("streamCreated", (event) => {
       const subscriber = newSession.subscribe(event.stream, undefined);
@@ -157,7 +248,7 @@ const Live = () => {
     });
 
     newSession.on("signal:my-chat", (event) => {
-      const message = event.data.split(",");
+      const message = event.data.split("|||");
       const from = message[0];
       const msg = message[1];
       setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
@@ -169,7 +260,7 @@ const Live = () => {
       console.log("Connection " + event.connection.connectionId + " created");
       console.log(JSON.parse(event.connection.data).email);
       addMember(JSON.parse(event.connection.data).email);
-      console.log(members);
+      console.log(members.current);
     });
 
     //커넥션 끊기는 경우
@@ -178,11 +269,12 @@ const Live = () => {
       console.log("Connection " + event.connection.connectionId + " desproyed");
       console.log(JSON.parse(event.connection.data).email);
       deleteMember(JSON.parse(event.connection.data).email);
-      console.log(members);
+      console.log(members.current);
     });
 
     try {
       const token = await getToken();
+      console.log(token);
       await newSession.connect(token, {
         clientData: myUserName,
         email: sessionStorage.getItem("email"),
@@ -212,11 +304,12 @@ const Live = () => {
   };
 
   //손님 - 존재하는 세션에 입장
-  const joinExistingSession = async (token) => {
+  const joinExistingSession = async () => {
     OV.current = new OpenVidu();
     const newSession = OV.current.initSession();
 
     setSession(newSession);
+    setStoreSession(newSession);
 
     newSession.on("streamCreated", (event) => {
       const subscriber = newSession.subscribe(event.stream, undefined);
@@ -249,13 +342,15 @@ const Live = () => {
     });
 
     newSession.on("signal:my-chat", (event) => {
-      const message = event.data.split(",");
+      const message = event.data.split("|||");
       const from = message[0];
       const msg = message[1];
       setMessages((prevMessages) => [...prevMessages, { from, message: msg }]);
     });
 
     try {
+      const token = await getToken();
+      console.log(token);
       await newSession.connect(token, {
         clientData: myUserName,
         email: sessionStorage.getItem("email"),
@@ -300,11 +395,11 @@ const Live = () => {
 
     //방송 참여자 초기화
     resetMembers();
-    console.log(members);
-    if (session) {
-      session.unpublish(publisher);
-    }
-    session.disconnect();
+    // console.log(members.current);
+    // if (session) {
+    //   session.unpublish(publisher);
+    // }
+    // session.disconnect();
 
     try {
       const response = await axios.post(
@@ -324,7 +419,11 @@ const Live = () => {
   };
 
   //채팅창 열고 닫기
-  const toggleChat = () => {
+  const toggleChat = (from) => {
+    if (from === "inputBox" && isChat) {
+      //채팅창 열려있는 상태에서 눌러도 반응X
+      return;
+    }
     setIsChat(!isChat);
   };
 
@@ -335,23 +434,25 @@ const Live = () => {
 
   const aiAply = async (modifiedMessage) => {
     var result = await chatbot(storeId, modifiedMessage);
-    try{
+    try {
       // 사장님이 보내는 채팅으로 등록
-      const nickname = sessionStorage.getItem("nickname");
-      session.signal({
-        data: `${ownerNickname},${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
-        to: [],
-        type: "my-chat",
-      }).then(() => {
-        // console.log("AI message successfully sent:", result);
-        setMessage(""); // 입력 필드 초기화
-      }).catch((error) => {
-        console.error("Error sending AI message:", error);
-      });
-    }catch(error){
+      session
+        .signal({
+          data: `${ownerNickname}|||${result}`, // 사장님의 닉네임과 Chatbot 결과를 전송
+          to: [],
+          type: "my-chat",
+        })
+        .then(() => {
+          // console.log("AI message successfully sent:", result);
+          setMessage(""); // 입력 필드 초기화
+        })
+        .catch((error) => {
+          console.error("Error sending AI message:", error);
+        });
+    } catch (error) {
       console.error("Error during AI application:", error);
     }
-  }
+  };
 
   //채팅 전송
   const sendMessage = (e) => {
@@ -359,15 +460,15 @@ const Live = () => {
     if (message.trim() !== "") {
       const nickname = sessionStorage.getItem("nickname");
       // /ai로 시작하면 chatBot 함수 실행
-      console.log("메세지 확인: ", message)
+      console.log("메세지 확인: ", message);
       if (message.startsWith("/ai")) {
         // 메시지에서 /ai를 제외한 부분으로 대체
-        const modifiedMessage = message.replace(/^\/ai\s*/, '');
+        const modifiedMessage = message.replace(/^\/ai\s*/, "");
         aiAply(modifiedMessage);
       }
       session
         .signal({
-          data: `${nickname},${message}`,
+          data: `${nickname}|||${message}`,
           to: [],
           type: "my-chat",
         })
@@ -422,7 +523,7 @@ const Live = () => {
           alert("방송 시작 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
           setIsLiveFailed(true);
           leaveSession();
-          // navigate("/mainOwner");
+          navigate("/mainOwner", { replace: true }); //뒤로가기 막기
         }
         return null;
       }
@@ -438,131 +539,107 @@ const Live = () => {
     <div className={styles.container}>
       {session !== undefined ? (
         <div className={styles.session}>
-          <div className={styles.sessionHeader}>
-            {role.indexOf("customer") !== -1 ? (
-              <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnDanger}`}
-                id="buttonLeaveSession"
-                onClick={leaveSession}
-              >
-                나가기
-              </button>
-            ) : null}
-
-            <button
-              className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
-              id="buttonChat"
-              onClick={toggleChat}
-            >
-              {isChat ? "💬채팅방 닫기" : "💬채팅방 열기"}
-            </button>
-
-            {role.indexOf("owner") !== -1 ? (
-              <button
-                className={`${styles.btn} ${styles.btnLarge} ${styles.btnInfo}`}
-                id="noticeRegist"
-                onClick={openNoticeModal}
-              >
-                공지사항 작성
-              </button>
-            ) : null}
-          </div>
           {mainStreamManager.current !== undefined ? (
             <div className={styles.mainVideo}>
               <UserVideoComponent streamManager={mainStreamManager.current} />
             </div>
           ) : null}
 
-          {isChat ? (
-            <div className={styles.chatContainer}>
-              <div className={styles.chatInfo}>
-                <p>
-                  <span className={styles.infoGreen}>{ownerNickname}</span>{" "}
-                  사장님이 운영하는
-                </p>
-                <p>
-                  <span className={styles.infoGreen}>{trukName}</span> 트럭의
-                  채팅방입니다
-                </p>
-              </div>
-              {notice === "" ? null : (
-                <div className={styles.noticeBox}>
-                  <div>
-                    <img
-                      className={styles.truckImg}
-                      src={truckImg}
-                      alt="트럭이미지"
-                    />
-                  </div>
-
-                  <div className={styles.noticeInfo}>
-                    <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
-                    <div className={styles.noticeContent}>{notice}</div>
-                  </div>
-                </div>
-              )}
-              <div className={styles.chatBox}>
-                <div className={styles.messageList}>
-                  {messages.map((msg, i) => (
-                    <div
-                      key={i}
-                      className={`${styles.message} ${
-                        msg.from === ownerNickname
-                          ? styles.messageOwner
-                          : styles.messageCustomer
-                      }`}
-                    >
-                      <div>
-                        <b
-                          className={`${
-                            msg.from === ownerNickname
-                              ? styles.messageFromOwner
-                              : styles.messageFromCustomer
-                          }`}
-                        >
-                          {msg.from}
-                        </b>
-                      </div>
-                      <div
-                        className={`${
-                          msg.from === ownerNickname
-                            ? ""
-                            : styles.messageFromCustomerText
-                        }`}
-                      >
-                        {msg.message}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.chatInputBox}>
-                <form onSubmit={sendMessage} className={styles.messageForm}>
-                  <input
-                    type="text"
-                    className={styles.messageInput}
-                    value={message}
-                    onChange={handleMessageChange}
-                    placeholder="채팅을 입력하세요"
-                  />
-                  <button type="submit" className={styles.sendButton}>
-                    전송
-                  </button>
-                </form>
-              </div>
+          <div
+            className={`${styles.chatContainer} ${
+              isChat
+                ? styles.chatContainerExpanded
+                : styles.chatContainerCollapsed
+            }`}
+          >
+            <div className={styles.buttons}>
+              {role.indexOf("owner") !== -1 ? (
+                <button
+                  className={styles.noticeBtn}
+                  id="noticeRegist"
+                  onClick={openNoticeModal}
+                >
+                  <LuClipboardEdit size="34" color="black" />{" "}
+                </button>
+              ) : null}
+              <button
+                className={styles.closeButton}
+                id="buttonChat"
+                onClick={toggleChat}
+              >
+                {isChat ? "×" : ""}
+              </button>
             </div>
-          ) : null}
+            {notice === "" ? null : (
+              <div className={styles.noticeBox}>
+                <div>
+                  <img
+                    className={styles.truckImg}
+                    src={truckImg}
+                    alt="트럭이미지"
+                  />
+                </div>
+
+                <div className={styles.noticeInfo}>
+                  <div className={styles.noticeTitle}>📌 사장님 공지사항</div>
+                  <div className={styles.noticeContent}>{notice}</div>
+                </div>
+              </div>
+            )}
+
+            <ChatBox
+              messages={messages}
+              ownerNickname={ownerNickname}
+              truckName={truckName}
+            />
+            <div
+              className={styles.chatInputBox}
+              onClick={() => {
+                toggleChat("inputBox");
+              }}
+            >
+              <form onSubmit={sendMessage} className={styles.messageForm}>
+                <input
+                  type="text"
+                  className={styles.messageInput}
+                  value={message}
+                  onChange={handleMessageChange}
+                  placeholder="채팅을 입력하세요"
+                  maxLength={200}
+                />
+                <button type="submit" className={styles.sendButton}>
+                  전송
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className={styles.sessionHeader}>
+            {role.indexOf("customer") !== -1 ? (
+              <button
+                className={styles.goDetailBtn}
+                id="buttonLeaveSession"
+                onClick={leaveSession}
+              >
+                <p className={styles.truckName}>{truckName}</p>
+                <p className={styles.joomoon}>
+                  <div>주문하러가기</div>
+                  <ImSpoonKnife />
+                </p>
+              </button>
+            ) : null}
+          </div>
 
           {role.indexOf("owner") !== -1 ? (
             <div className={styles.ownerItems}>
-              <OpenClose onLiveEndClick={endLive} />
+              <OpenClose onLiveEndClick={endLive} isLive={true} />
               <JiguemOrder />
             </div>
           ) : null}
         </div>
       ) : null}
 
-      {isNoticeOpen ? <NoticeModal /> : null}
+      {isNoticeOpen ? <NoticeModal members={members.current} /> : null}
     </div>
   );
 };

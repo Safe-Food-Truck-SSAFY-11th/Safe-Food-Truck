@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./FoodTruckSummary.module.css";
 import axios from "axios";
 import useLiveStore from "store/live/useLiveStore";
-import { useParams, useNavigate } from "react-router-dom";
-import NoLiveModal from "./NoLiveModal";
+import { useNavigate, useParams } from "react-router-dom";
 import useFoodTruckStore from "store/trucks/useFoodTruckStore";
 import customerStore from "store/users/customer/customerStore";
+import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
   const { isModalOpen, openModal } = useLiveStore();
   const navigate = useNavigate();
+  const { storeId } = useParams();
 
   const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
-  // 현재 방송 중인지 확인하는 함수
   const isLive = async (sessionId) => {
     try {
       const response = await axios.post(
@@ -25,14 +25,11 @@ function FoodTruckSummary({ truck }) {
       );
 
       if (response.status === 204) {
-        console.log(response);
-        // 모달 띄우기
         openModal();
       } else {
-        // 라이브 페이지로 이동
-        const token = response.data; // The token
-        navigate(`/live/${sessionId}`, { state: { token: token } }); // token을 함께 전달
-        return response.data; // The token
+        const token = response.data;
+        navigate(`/live/${sessionId}`);
+        return response.data;
       }
     } catch (error) {
       console.error("Error creating token:", error);
@@ -40,91 +37,88 @@ function FoodTruckSummary({ truck }) {
     }
   };
 
-  // 라이브 방송보기 버튼 클릭
   const handleLiveClick = () => {
-    console.log(truck.storeId);
     isLive(truck.storeId);
   };
 
-  // 찜하기 찜 삭제하기 함수 호출을 위한 스토어 사용
+  const [checkJJimTruck, setCheckJJimTruck] = useState(null);
+  const [favId, setFavId] = useState(null);
+  const { getJJimTruck } = customerStore();
   const { JJimTruck, unJJimTruck } = useFoodTruckStore();
 
-  // 찜 트럭을 가져오고 내가 찜한 트럭을 반환하는 스토어 사용
-  const { getJJimTruck, myJJimTruck } = customerStore();
-
-  // 찜 되어 있는 트럭인지 체크하기 위한 상태 관리
-  const [isJJimmed, setIsJJimmed] = useState(false);
-
-  // myJJimTruck에서 Params를 통해 가져온 storeId가 존재하는지 체크하고 존재한다면 찜 여부를 세팅해야 하기 때문에
-  // favoriteId를 관리할 상태
-  const [favoriteId, setFavoriteId] = useState(null);
-
-  // 찜한 트럭인지 확인하기 전까지 로딩중임을 표시할 상태 ㅜ
-  const [loading, setLoading] = useState(true);
-
-  // 찜 한 트럭인지 체크하기 위한 함수 -> 더 좋은 로직 있을거 같은데 일단 지금은 이게 한계,,,
-  const checkJJimTruck = useCallback(async () => {
-    await getJJimTruck();
-    // 내가 찜한 트럭이 있는지 먼저 조건문으로 확인 하고
-    if (myJJimTruck && myJJimTruck.memberFavoriteList) {
-      // 내가 찜한 트럭에 대한 정보 저장
-      const favoriteTruck = myJJimTruck.memberFavoriteList.find(
-        (favTruck) => favTruck.storeId === parseInt(truck.storeId, 10)
-      );
-
-      // 만약에 찜한 트럭이 맞다면?
-      if (favoriteTruck) {
-        // 찜 트럭이 있다고 체크 해주고
-        setIsJJimmed(true);
-
-        // 해당 찜 트럭의 favoriteId 저장
-        setFavoriteId(favoriteTruck.favoriteId);
-
-        // 아님 말고 ㅎ
-      } else {
-        setIsJJimmed(false);
-        setFavoriteId(null);
-      }
-    }
-    setLoading(false); // 로딩 완료
-  }, [getJJimTruck, myJJimTruck, truck.storeId]);
-
-  const handleJJimTruck = async () => {
+  const fetchJJimTruckStatus = async () => {
     try {
-      if (isJJimmed) {
-        await unJJimTruck(favoriteId);
-        alert(`${truck.name} 트럭이 찜 목록에서 제거되었습니다.`);
+      const response = await getJJimTruck(storeId);
+      const favoriteId = response.favoriteId;
+      setFavId(favoriteId);
+      console.log("Fetched favoriteId:", response);
+
+      if (favoriteId !== -1) {
+        setCheckJJimTruck(true);
       } else {
-        await JJimTruck(truck.storeId);
-        alert(`${truck.name} 트럭이 찜 목록에 추가되었습니다.`);
+        setCheckJJimTruck(false);
       }
-      checkJJimTruck(); // 상태를 갱신하여 버튼 텍스트를 업데이트합니다.
     } catch (error) {
-      console.error('찜 등록/삭제 실패', error);
-      alert('찜 등록/삭제에 실패했습니다.');
+      console.error("Error fetching favoriteId:", error);
+      setCheckJJimTruck(false);
     }
   };
 
   useEffect(() => {
-    checkJJimTruck();
-  }, [truck, checkJJimTruck]);
+    fetchJJimTruckStatus();
+  }, []);
 
-  if (loading) {
-    return <div>찜 여부 체크중이에요 ..... </div>;
-  }
-  
+  const handleJJimClick = async () => {
+    try {
+      if (checkJJimTruck) {
+        await unJJimTruck(favId);
+      } else {
+        await JJimTruck(storeId);
+      }
+      await fetchJJimTruckStatus();
+    } catch (error) {
+      console.error("Error handling JJim action:", error);
+    }
+  };
+
   return (
     <header className={styles.header}>
-      <h1>{truck.name}</h1>
-      <p>{truck.description}</p>
-      <p>★ {truck.averageStar / 2}</p>
-
-      <button className={isJJimmed ? styles.unJJimButton : styles.jjimButton} onClick={handleJJimTruck}>
-        {isJJimmed ? '찜 삭제' : '찜하기'}
-      </button>
-
-      <button onClick={handleLiveClick}>LIVE 방송보기</button>
-      {isModalOpen && <NoLiveModal />}
+      <div className={styles.container}>
+        <img
+        src={truck.storeImageDto?.savedUrl !== 'empty' && " " ? truck.storeImageDto.savedUrl : defaultImage }
+          alt={`${truck.name} 이미지`}
+          className={styles.truckImage}
+        />
+      <div className={styles.textContainer}>
+        <h1 className={styles.truckName}>
+          {truck.name} ⭐ {truck.averageStar / 2}
+        </h1>
+        <p className={styles.description}>{truck.description}</p>
+        <div className={styles.buttonContainer}>
+          {checkJJimTruck ? (
+          <button
+            onClick={handleJJimClick}
+            className={styles.jjimButtonInActive} // checkJJim이 true일 때 적용할 스타일 클래스
+          >
+            찜 삭제
+          </button>
+        ) : (
+          <button
+            onClick={handleJJimClick}
+            className={styles.jjimButtonActive} // checkJJim이 false일 때 적용할 스타일 클래스
+          >
+            찜 하기
+          </button>
+        )}
+          <button
+            className={styles.liveButton}
+            onClick={handleLiveClick}
+          >
+            LIVE
+          </button>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

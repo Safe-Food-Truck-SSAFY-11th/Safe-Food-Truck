@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import Modal from './CartAlertModal'; // 모달 컴포넌트 임포트
+import CartAlertModal from './CartAlertModal'; // 모달 컴포넌트 임포트
 import styles from './FoodTruckMenuDetail.module.css';
+import defaultImage from 'assets/images/foodImage/all.png'
+import Header from 'components/common/Header';
 
 function FoodTruckMenuDetail() {
   const location = useLocation();
@@ -14,13 +16,11 @@ function FoodTruckMenuDetail() {
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 관리
 
   const handleIncrease = () => {
-    setQuantity(quantity + 1);
+    setQuantity(prevQuantity => prevQuantity + 1);
   };
 
   const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : prevQuantity));
   };
 
   const handleAddToCart = () => {
@@ -31,24 +31,23 @@ function FoodTruckMenuDetail() {
     };
     
     let cart = Cookies.get('cart');
+    
+    // 쿠키가 존재하지 않으면 빈 배열로 초기화
+    if (!cart) {
+      cart = [];
+    } else {
+      cart = JSON.parse(cart);
+    }
   
-    cart = JSON.parse(cart);
-
     // 이미 장바구니에 물건이 담겨 있으면?
     if (cart.length !== 0) {
-
-      // 이미 존재하는 storeId를 장바구니의 0번째 인덱스에서 꺼내오고
       const existingStoreId = cart[0].storeId;
-  
-      // 만약 지금 담으려는 storeId와 이전에 담은 메뉴의 storeId가 다르다면 모달 띄워서 경고 함
-      if (existingStoreId !== storeId) {
+      
+      if (existingStoreId !== parseInt(storeId)) {
         setModalMessage('다른 푸드트럭의 메뉴는 한 번에 담을 수 없어요.');
-        setIsModalOpen(true); // 모달 열기
+        setIsModalOpen(true);
         return;
       }
-      
-    } else {
-      cart = [];
     }
   
     const existingItemIndex = cart.findIndex(cartItem => cartItem.menuId === item.menuId);
@@ -64,8 +63,13 @@ function FoodTruckMenuDetail() {
   
     Cookies.set('cart', JSON.stringify(cart), { expires: expirationDate });
   
+    // 장바구니에 물건이 추가되었음을 알리는 메시지 설정
+    setModalMessage('장바구니에 메뉴가 추가되었어요!');
+    setIsModalOpen(true);
+  
     console.log(cart);
   };
+  
 
   const handleBack = () => {
     navigate(-1);
@@ -79,14 +83,25 @@ function FoodTruckMenuDetail() {
     setIsModalOpen(false);
   };
 
+  const formattedPrice = new Intl.NumberFormat('ko-KR', {
+    style: 'currency',
+    currency: 'KRW',
+  }).format(item.price * quantity);
+
   return (
+    <>
+    <Header />
+    <div className={styles.scrollable}>
+    <div className={styles.container}>
     <div className={styles.menuDetail}>
       <h2 className={styles.title}>{item.name}</h2>
-      {item.menuImageDto ? (
-        <img src={item.menuImageDto.savedUrl} alt={item.name} className={styles.image} />
-      ) : (
-        <div className={styles.placeholder}>이미지 없음</div>
-      )}
+      <img 
+          src={(item.menuImageDto?.savedUrl === 'empty' || item.menuImageDto?.savedUrl.trim() === "") 
+            ? defaultImage 
+            : item.menuImageDto?.savedUrl} 
+          alt={item.name} 
+          className={styles.image} 
+        />
       <div className={styles.quantityControl}>
         <button onClick={handleDecrease} className={styles.button}>-</button>
         <span className={styles.quantity}>{quantity}</span>
@@ -95,7 +110,7 @@ function FoodTruckMenuDetail() {
       <p className={styles.descriptionTitle}>상세 설명이에요!</p>
       <p className={styles.description}>{item.description}</p>
       <button onClick={handleAddToCart} className={styles.addToCartButton}>
-        {item.price * quantity}원 장바구니에 담을게요!
+        {item.name} {quantity}개 장바구니에 담을게요!
       </button>
       <div className={styles.navigationButtons}>
         <button onClick={handleBack} className={styles.navButton}>뒤로가기</button>
@@ -103,8 +118,11 @@ function FoodTruckMenuDetail() {
       </div>
       
       {/* 모달 컴포넌트 추가 */}
-      <Modal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
+      <CartAlertModal isOpen={isModalOpen} onClose={closeModal} message={modalMessage} />
     </div>
+    </div>
+    </div>
+    </>
   );
 }
 

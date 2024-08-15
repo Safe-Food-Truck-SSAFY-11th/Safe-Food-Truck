@@ -144,7 +144,7 @@ const useTruckStore = create(
       fetchTruckInfo: async () => {
         try {
           const response = await axiosInstance.get(`stores`);
-          console.log("트럭 정보 가져오기 성공", response.data);
+          // console.log("트럭 정보 가져오기 성공", response.data);
 
           // 요청이 성공하면 truckInfo 상태를 업데이트
           set({ truckInfo: response.data });
@@ -199,6 +199,17 @@ const useTruckStore = create(
       // 방송상태
       isLive: false,
       toggleLive: () => set((state) => ({ isLive: !state.isLive })),
+
+      // 인허가번호 중복확인
+      valNumChecked: null, //인허가번호 확인 상태 (null, Possible, Duplicate)
+      checkValNumber: async (valNum) => {
+        try {
+          const response = await axiosInstance.get(`stores/duplication-safety-license-number/${valNum}`);
+          set({ valNumChecked: response.data });
+        } catch (error) {
+          console.error('사업자번호 중복 확인 오류: ', error);
+        }
+      },
     }),
     // persist
     {

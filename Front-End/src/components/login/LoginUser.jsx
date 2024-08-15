@@ -5,17 +5,21 @@ import logo from 'assets/images/sft-logo.png';
 import kakaoLogo from 'assets/images/icon_kakao.png';
 import googleLogo from 'assets/images/icon_google.png';
 import useUserStore from 'store/users/userStore';
+import FindId from './FindId';
+import FindPassword from './FindPassword';
 
 const LoginUser = () => {
-    const { isGuest, setGuest, setOwner, loginUser, fetchUser } = useUserStore();
+    const { isGuest, setGuest, setOwner, loginUser, fetchUser, getLoginedToken } = useUserStore();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isFindIdOpen, setIsFindIdOpen] = useState(false);
+    const [isFindPwdOpen, setIsFindPwdOpen] = useState(false);
 
     useEffect(() => {
         // 컴포넌트가 마운트될 때 isGuest를 false로 설정(사장님 먼저)
         setOwner();
-        const token = sessionStorage.getItem('token');
+        const token = getLoginedToken();
         // 토큰 보유 여부에 따른 리디렉션
         if (token) {
             fetchUser().then((user) => {
@@ -37,10 +41,13 @@ const LoginUser = () => {
     const handleLoginClick = async () => {
         try {
             const user = await loginUser(email, password);
-            if (user.role.indexOf('customer') != -1) {
+            if (isGuest && user.role.indexOf('customer') != -1) {
                 navigate('/mainCustomer');
-            } else if (user.role.indexOf('owner') != -1) {
+            } else if (!isGuest && user.role.indexOf('owner') != -1) {
                 navigate('/mainOwner');
+            } else {
+                alert('로그인 실패: 역할을 확인해주세요.');
+                sessionStorage.clear();
             }
         } catch (error) {
             console.error('로그인 실패:', error);
@@ -68,12 +75,12 @@ const LoginUser = () => {
 
     // 아이디 찾기
     const handleFindId = () => {
-        navigate('/findId');
+        setIsFindIdOpen(true);
     };
 
     // 비밀번호 찾기
     const handleFindPassword = () => {
-        navigate('/findPassword');
+        setIsFindPwdOpen(true);
     };
 
     return (
@@ -116,6 +123,8 @@ const LoginUser = () => {
                 </div>
             </div>
             <p className={styles.footerText}>safe-food-truck</p>
+            {isFindIdOpen && <FindId closeFunc={setIsFindIdOpen}/>}
+            {isFindPwdOpen && <FindPassword closeFunc={setIsFindPwdOpen}/>}
         </div>
     );
 };

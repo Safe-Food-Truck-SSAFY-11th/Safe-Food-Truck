@@ -1,0 +1,82 @@
+.reviewCard {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reviewContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+}
+
+.reviewImages {
+  width: 100%;
+  height: 100%;
+  padding: 1vh 9.5vw;
+}
+
+.reviewImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+.noImage {
+  width: 100%;
+  height: 100%;
+  padding: 1vh 9.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hrBox {
+  width: 100%;
+}
+
+.hrLine {
+  border: 0px;
+  border-top: 2px solid #FF4500;
+  padding-bottom: 3%;
+}
+
+.reviewText {
+  width: 100%;
+  padding: 0 1vw;
+}
+
+.reviewAuthor {
+  font-size: 1.25rem;
+}
+
+.reviewContentBox {
+  padding: 2% 0 0 1.5%;
+  word-break: break-word; /* 길게 이어지는 단어를 줄바꿈 처리 */
+  font-size: 0.9rem;
+}
+
+.deleteButton {
+  position: absolute;
+  right: 0px;
+  top:0px;
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  color: #FF6347;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  color: #FF4500;
+}
+
+.slick-prev, .slick-next {
+  z-index: 1;
+}

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import ReportReview from './ReportReview';
-import ReportComplete from './ReportComplete';
-import styles from './ReviewItem.module.css';
-import reportIcon from 'assets/images/reportIcon.png';
+import React, { useState } from "react";
+import ReportReview from "./ReportReview";
+import ReportComplete from "./ReportComplete";
+import styles from "./ReviewItem.module.css";
+import reportIcon from "assets/images/reportIcon.png";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function ReviewItem({ review, isReported }) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -25,16 +28,50 @@ function ReviewItem({ review, isReported }) {
     setIsCompleteModalOpen(false);
   };
 
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <div className={styles.reviewItem}>
-      <img src={review.image} alt="review" className={styles.reviewImage} />
-      <hr className={styles.separator} />
+      {review.reviewImageDtos &&
+      review.reviewImageDtos.length > 0 &&
+      review.reviewImageDtos[0].savedUrl !== "empty" ? (
+        review.reviewImageDtos.length === 1 ? (
+          <div>
+            <img
+              src={review.reviewImageDtos[0].savedUrl}
+              alt="review-single"
+              className={styles.reviewImage}
+            />
+          </div>
+        ) : (
+          <Slider {...sliderSettings} className={styles.reviewImageCarousel}>
+            {review.reviewImageDtos.map((image, index) => (
+              <div key={index}>
+                <img
+                  src={image.savedUrl}
+                  alt={`리뷰 사진 ${index + 1}`}
+                  className={styles.reviewImage}
+                />
+              </div>
+            ))}
+          </Slider>
+        )
+      ) : null}
+
       <div className={styles.reviewContent}>
         <div className={styles.reviewHeader}>
-          <h4>{review.nickname} 님 ★ {review.star / 2}</h4>
-          <span>{review.date}</span>
+          <h4>
+            {review.nickname} 님 ★ {review.star / 2}
+          </h4>
         </div>
         <p>{review.content}</p>
+        <hr />
         {review.replyResponseDto && (
           <div className={styles.replyContent}>
             <strong>사장님 답글 :</strong>
@@ -49,8 +86,15 @@ function ReviewItem({ review, isReported }) {
       >
         <img src={reportIcon} alt="report" className={styles.reportIcon} />
       </button>
-      {isReportModalOpen && <ReportReview onClose={handleCloseReportModal} onConfirm={handleConfirmReport} />}
-      {isCompleteModalOpen && <ReportComplete onClose={handleCloseCompleteModal} />}
+      {isReportModalOpen && (
+        <ReportReview
+          onClose={handleCloseReportModal}
+          onConfirm={handleConfirmReport}
+        />
+      )}
+      {isCompleteModalOpen && (
+        <ReportComplete onClose={handleCloseCompleteModal} />
+      )}
     </div>
   );
 }
