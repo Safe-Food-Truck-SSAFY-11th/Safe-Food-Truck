@@ -21,7 +21,6 @@ function ReviewList({ reviews }) {
     checkReports();
   }, [reviews]);
 
-
   if (reviews.length === 0) {
     return(
    <div className={styles.container}>
@@ -33,6 +32,7 @@ function ReviewList({ reviews }) {
   return (
    <div className={styles.container}>
     <div className={styles.reviewList}>
+      <h3 className={styles.reviewCount}>최근 리뷰 {reviews.length} 개</h3>
       {reviews.map((review) => (
         <ReviewItem
           key={review.id}

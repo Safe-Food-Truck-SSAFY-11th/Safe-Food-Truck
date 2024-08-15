@@ -6,7 +6,7 @@ function FoodTruckMenuList({ menus , storeId }) {
 
   // 부모 컴포넌트로 부터 전달받은 menus 객체 상태 체크 후 작업 시작
   const menuItems = Array.isArray(menus) ? menus : [];
-
+  
   // 잘 가져왔나 체크 
   // console.log(menuItems)
 
@@ -22,6 +22,7 @@ function FoodTruckMenuList({ menus , storeId }) {
   // menuItems에 들어있는 요소들을 반복문 돌면서 렌더링 함
   return (
     <div className={styles.menuList}>
+      <h3 className={styles.menuCount}>메뉴 {menus.length}개</h3>
       {menuItems.map((item) => (
         <FoodTruckMenuItem key={item.menuId} storeId={storeId} item={item} />
       ))}

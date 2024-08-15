@@ -32,7 +32,7 @@ const OrderPast = ({ memberInfo, pastOrders , myReviews}) => {
     <div className={styles.container}>
       {results.length > 0 ? (
         <>
-          <h3 className={styles.reviewHeader}>{memberInfo.nickname} 🖐 님의 구매 내역이에요!</h3>
+          <h3 className={styles.reviewHeader}>{memberInfo.nickname} 🖐 님의 구매 내역 {results.length}개</h3>
           {results?.map((order) => (
             <div key={order.orderId} className={styles.orderCard}>
               <div className={styles.orderContent}>
