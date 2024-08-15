@@ -241,6 +241,10 @@ const ManageTruck = () => {
           </button>
         </div>
       </form>
+      <div className={styles.deleteAccountArea}>
+        <p>점포를 삭제하시겠어요?</p>
+        <a className={styles.deleteAcnt} onClick={handleDeleteStore}>점포 삭제</a>
+      </div>
       {showWarning && <MakeLogo closeMakeLog={closeMakeLog} translateResult={translateResult} storeId={truckInfo.storeId}/>}
     </>
   );
