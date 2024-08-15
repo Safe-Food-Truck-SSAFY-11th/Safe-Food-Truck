@@ -51,6 +51,8 @@ const OrderNow = ({ memberInfo, joonbiOrders }) => {
       getOrderDetails(recentOrder.orderId);
     } else if (!recentOrder && completeOrder.length !== 0) {
       getOrderDetails(completeOrder.orderId);
+    } else {
+      return;
     }
   }, [recentOrder, getOrderDetails]);
 
