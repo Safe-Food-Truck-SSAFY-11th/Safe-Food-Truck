@@ -85,7 +85,7 @@ public class OpenviduServiceImpl implements OpenviduService {
     }
 
     @Override
-    public void closeSession(String sessionId, Map<String, Object> params) {
+    public void closeSession(String sessionId) {
         try {
             openvidu.fetch();
             Session session = openvidu.getActiveSession(sessionId);
