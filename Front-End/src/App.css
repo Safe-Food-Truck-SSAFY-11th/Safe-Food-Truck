@@ -23,4 +23,21 @@
   color: white;
   border-radius: 5px;
   z-index: 1000;
+  text-align: center;
+}
+
+.liveInfoContainer button {
+  margin-top: 5%;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  padding: 3%;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.liveTruckBtn {
+  color: #ffffff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
 }

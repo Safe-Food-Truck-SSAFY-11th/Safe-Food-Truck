@@ -50,12 +50,12 @@ function ReviewItem({ review }) {
     setReply(e.target.value);
   };
 
-  const handleReplySubmit = () => {
+  const handleReplySubmit = async () => {
     const replyData = {
       reviewId: review.id,
       content: reply
     };
-    submitReply(replyData);
+    await submitReply(replyData);
     setReply(''); // 입력 필드 비우기
     setShowReplyInput(false); // 입력 필드 숨기기
     window.location.reload(); // 입력 후 새로고침
