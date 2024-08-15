@@ -152,21 +152,15 @@ const CreateReview = () => {
         />
       </div>
 
-      <p>음식은 어떠셨나요?</p>
-      <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value)} />
-
-      <input
-        type="text"
-        value={memberInfo.memberInfo.nickname}
-        readOnly
-        placeholder={memberInfo.memberInfo.nickname}
-        className={styles.input}
-      />
+      <div className={styles.starRating}>
+        <p>음식은 어떠셨나요?</p>
+        <StarRating maxStars={5} onRatingChange={(value) => updateCurrentReview('rating', value)} />
+      </div>
 
       <textarea
         value={currentReview.content}
         onChange={(e) => updateCurrentReview('content', e.target.value)}
-        placeholder="리뷰 내용"
+        placeholder="리뷰를 입력하세요"
         className={styles.textarea}
         maxLength={100}
       />
@@ -179,7 +173,7 @@ const CreateReview = () => {
             onChange={handleCheckboxChange}
             value={currentReview.is_visible}
           />
-          사장님에게만 보이게
+          사장님에게만 보이기
         </label>
       </div>
       <div className={styles.buttonContainer}>

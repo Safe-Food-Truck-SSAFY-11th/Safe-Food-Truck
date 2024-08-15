@@ -4,7 +4,7 @@ import { useDrag } from 'react-use-gesture';
 import styles from './StarRating.module.css';
 
 const Star = ({ filled, half }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24">
+  <svg width="40" height="40" viewBox="0 0 24 24">
     <defs>
       <linearGradient id="half">
         <stop offset="50%" stopColor="gold" />
