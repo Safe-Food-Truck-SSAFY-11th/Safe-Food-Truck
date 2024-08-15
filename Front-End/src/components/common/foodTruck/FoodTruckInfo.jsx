@@ -18,6 +18,7 @@ function FoodTruckInfo({ truck, reviews, selectedTruckSchedule, isMeet }) {
 
   return (
     <div className={styles.container}>
+      <h3 className={styles.infoHeader}>{truck.name}</h3>
       <div className={styles.section}>
         <h3>푸드트럭 사진</h3>
         <hr/>

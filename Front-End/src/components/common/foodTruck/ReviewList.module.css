@@ -1,9 +1,7 @@
 .reviewList {
   display: flex;
   flex-direction: column;
-  padding: 10px;
   gap: 10px;
-  /* background-color: #FEC87F; */
   box-sizing: border-box;
   /* overflow-y: hidden; */
   width: 100%;
@@ -23,4 +21,11 @@
 .container {
   height: 100%;
   width: 100%;
+}
+
+.reviewCount {
+  background-color: white;
+  padding: 2.5%;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }

@@ -5,21 +5,19 @@
   background-color: white;
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   position: relative;
   margin-bottom: 20px;
 }
 
 .reviewImageCarousel {
   width: 100%;
-  /* max-width: 350px; 사진의 최대 너비를 350px로 설정 */
   margin-bottom: 10px;
 }
 
 .reviewImage {
   width: 350px; /* 사진의 너비를 350px로 고정 */
   height: 190px; /* 사진의 높이를 190px로 고정 */
-  /* object-fit: cover; 사진이 컨테이너를 가득 채우도록 설정 */
   border-radius: 5px;
   object-fit: contain;
 }
@@ -50,7 +48,7 @@
 .replyContent {
   margin-top: 10px;
   padding: 10px;
-  background-color: #f9f9f9;
+  background-color: white;
   border-radius: 4px;
 }
 
