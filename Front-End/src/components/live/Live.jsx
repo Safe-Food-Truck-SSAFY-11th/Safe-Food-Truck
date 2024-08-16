@@ -17,6 +17,7 @@ import ChatBox from "./ChatBox";
 import truck_img from "assets/images/truck-img.png";
 import { LuClipboardEdit } from "react-icons/lu";
 import { ImSpoonKnife } from "react-icons/im";
+import useuserStore from "store/users/userStore";
 
 const APPLICATION_SERVER_URL = "https://i11b102.p.ssafy.io/";
 
@@ -34,7 +35,10 @@ const Live = () => {
     truckInfo,
     storeSession,
     setStoreSession,
+    closeLive
   } = useLiveStore();
+
+  const {getLoginedRole} = useuserStore();
 
   const role = sessionStorage.getItem("role");
   const { storeId } = useParams();
@@ -84,9 +88,9 @@ const Live = () => {
   const OV = useRef();
 
   //처음 스크롤 맨위로 올리기
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  });
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // });
 
   //페이지 떠나려고 할 때 동작
   useEffect(() => {
@@ -306,6 +310,7 @@ const Live = () => {
   //손님 - 존재하는 세션에 입장
   const joinExistingSession = async () => {
     OV.current = new OpenVidu();
+    OV.current.enableProdMode(); // 로그제거
     const newSession = OV.current.initSession();
 
     setSession(newSession);
@@ -349,7 +354,7 @@ const Live = () => {
     });
 
     try {
-      const token = await getToken();
+      const token = await createToken(storeId);
       console.log(token);
       await newSession.connect(token, {
         clientData: myUserName,
@@ -402,13 +407,14 @@ const Live = () => {
     // session.disconnect();
 
     try {
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + "api/sessions/" + storeId + "/close",
-        {},
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      // const response = await axios.post(
+      //   APPLICATION_SERVER_URL + "api/sessions/" + storeId + "/close",
+      //   {},
+      //   {
+      //     headers: { "Content-Type": "application/json" },
+      //   }
+      // );
+      const response = await closeLive(storeId);
       console.log(response);
       console.log("방송종료");
       return response.data;
@@ -493,6 +499,7 @@ const Live = () => {
 
   //세션 생성
   const createSession = async (sessionId) => {
+    const role = getLoginedRole();
     const response = await axios.post(
       APPLICATION_SERVER_URL + "api/sessions",
       { customSessionId: sessionId },
