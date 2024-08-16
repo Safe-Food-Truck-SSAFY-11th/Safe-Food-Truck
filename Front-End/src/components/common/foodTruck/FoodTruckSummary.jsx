@@ -8,7 +8,7 @@ import customerStore from "store/users/customer/customerStore";
 import defaultImage from "assets/images/truck-img.png"; 
 
 function FoodTruckSummary({ truck }) {
-  const { isModalOpen, openModal } = useLiveStore();
+  const { isModalOpen, openModal, fetchIsLive } = useLiveStore();
   const navigate = useNavigate();
   const { storeId } = useParams();
 
@@ -16,20 +16,11 @@ function FoodTruckSummary({ truck }) {
 
   const isLive = async (sessionId) => {
     try {
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + "api/sessions/" + sessionId,
-        {},
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (response.status === 204) {
+      const isLiveFlag = await fetchIsLive(sessionId);
+      if (!isLiveFlag) {
         openModal();
       } else {
-        const token = response.data;
         navigate(`/live/${sessionId}`);
-        return response.data;
       }
     } catch (error) {
       console.error("Error creating token:", error);

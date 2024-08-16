@@ -43,12 +43,12 @@ import alertBell from "assets/audios/customer.mp3";
 import { useEventStore, useCustomerEventStore } from "store/eventStore";
 
 function App() {
-  // if (process.env.NODE_ENV === "production") {
-  //   console = window.console || {};
-  //   console.log = function no_console() {};
-  //   console.warn = function no_console() {};
-  //   console.error = function () {};
-  // }
+  if (process.env.NODE_ENV === "production") {
+    console = window.console || {};
+    console.log = function no_console() {};
+    console.warn = function no_console() {};
+    console.error = function () {};
+  }
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [liveNotice, setLiveNotice] = useState(false);
