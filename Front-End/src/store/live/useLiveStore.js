@@ -27,6 +27,27 @@ const useLiveStore = create(
           console.error("공지 로딩 중 오류 발생:", error);
         }
       },
+      fetchIsLive: async (sessionId) => {
+        const response = await axiosInstance.get(`/sessions/isLive/${sessionId}`);
+        const isLive = response.data;
+        return isLive;
+      },
+      makeLive: async (sessionId) => {
+        const response = await axiosInstance.post(`/sessions`, 
+          { customSessionId: sessionId },
+          { headers: { "Content-Type": "application/json" },
+        }
+      );
+        return response.data;
+      },
+      makeToken: async (sessionId) => {
+        const response = await axiosInstance.post(`/sessions/${sessionId}`);
+        return response;
+      },
+      closeLive: async (sessionId) => {
+        const response = await axiosInstance.post(`/sessions/${sessionId}/close`);
+        return response.data;
+      },
 
       // 공지 모달 컨트롤
       isNoticeOpen: false,
