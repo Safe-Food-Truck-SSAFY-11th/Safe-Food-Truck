@@ -9,9 +9,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 95%;
-  background-color: #EAFFC9;
+  width: 100%;
+  background-color: #eaffc9;
   border-radius: 10px;
+  padding: 2% 4% 4% 4%;
 }
 
 .noneContainer {

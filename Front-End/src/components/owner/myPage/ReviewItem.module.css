@@ -1,6 +1,6 @@
 /* ReviewItem.module.css */
 .reviewItem {
-  width: 90vw;
+  width: 100%;
   margin: 10px;
   display: flex;
   flex-direction: column;

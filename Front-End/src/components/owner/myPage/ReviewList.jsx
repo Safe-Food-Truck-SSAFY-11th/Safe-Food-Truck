@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import ReviewItem from './ReviewItem';
-import styles from './ReviewList.module.css';
-import useOwnerReviewStore from 'store/users/owner/ownerReviewStore';
+import { useState, useEffect } from "react";
+import ReviewItem from "./ReviewItem";
+import styles from "./ReviewList.module.css";
+import useOwnerReviewStore from "store/users/owner/ownerReviewStore";
 import useTruckStore from "store/users/owner/truckStore";
 
 function ReviewList() {
@@ -34,7 +34,7 @@ function ReviewList() {
       </div>
       <div className={styles.reviewList}>
         {reviews.length !== 0 ? (
-          reviews.map(review => (
+          reviews.map((review) => (
             <ReviewItem key={review.id} review={review} />
           ))
         ) : (
