@@ -20,7 +20,7 @@ function ReviewList() {
     const fetchReviews = async () => {
       if (truckInfo && truckInfo.storeId) {
         const reviewList = await getReviewList(truckInfo.storeId);
-        setReviews(reviewList);
+        setReviews(reviewList.reverse());
       }
     };
 
