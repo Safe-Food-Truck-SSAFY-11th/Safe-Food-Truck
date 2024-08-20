@@ -77,7 +77,7 @@ function FoodTruckDetail() {
   // FoodTruckMenuList , ReviewList 컴포넌트로 props로 전달 할 메뉴리스트와 리뷰리스트
   const menus = selectedTruckMenus?.menuResponseDtos || [];
 
-  const reviews = selectedTruckReviews?.reviewResponseDtos.reverse() || [];
+  const reviews = selectedTruckReviews?.reviewResponseDtos || [];
 
   // 안 불러와졌으면 로딩 상태 추가
   if (!selectedTruck) {
