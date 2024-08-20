@@ -40,12 +40,12 @@ const chatbot = async (storeId, questionContent) => {
   고객의 질문: "${questionContent}"
   
   이 정보를 기반으로 실시간 영업 방송을 시청중인 고객의 질문에 친절하게 한국말로 답변 해줘
-  만약 대답하기 어려운 질문이거나 알 수 없는 내용의 질문이라면 '사장님께 직접 물어봐야 할것 같아요!' 라고 답변해줘 그리고 답변에 마크다운 문법을 적용하지 말아줘. 답변이 길다면 가독성 좋게 작성해줘
+  만약 대답하기 어려운 질문이거나 알 수 없는 내용의 질문이라면 '사장님께 직접 물어봐야 할것 같아요!' 라고 답변해줘, 그리고 답변에 서식을 설정하지마. 가독성 좋게 문단을 나눠서 대답해줘
   `;
   // console.log(prompt);
   const result = await model.generateContent(prompt);
   const response = result.response;
-  const text = response.text();
+  const text = response.text().replace(/\*/g, "");
   // console.log(text);
   return text;
 }
