@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 20px;
   /* border-radius: 10px;
@@ -27,7 +27,7 @@
 }
 
 .reviewImages {
-  width: 30vw;
+  width: 27vw;
   margin-top: 25px;
   max-height: 80%;
   margin-bottom: 10px;
