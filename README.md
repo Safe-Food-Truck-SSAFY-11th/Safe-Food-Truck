@@ -4,12 +4,10 @@
 
 ---
 
-<aside>
 ```
 💡 손 안에서 확인하는 안전한 푸드트럭 서비스
 ```
 
-</aside>
 
 ### SSAFY 11기 공통 프로젝트
 
@@ -19,7 +17,7 @@
 
 ## 팀원 소개
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image.png)
+![image](https://github.com/user-attachments/assets/bec65517-51c7-4d45-a17d-8dbe609e2375)
 
 - 박창호 `팀장`, `Backend`
     - JPA, QueryDSL을 활용한 쿼리 작성 및 성능 최적화
@@ -74,36 +72,33 @@
 
 # 시스템 아키텍쳐
 
-![단락 텍스트.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%258B%25A8%25EB%259D%25BD_%25ED%2585%258D%25EC%258A%25A4%25ED%258A%25B8.png)
+![image](https://github.com/user-attachments/assets/ec101a5b-fb9c-4946-9442-b91ca5bce260)
 
 # 플로우 차트
 
 - 로그인
-    
-    ![제목 없는 디자인.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%25A0%259C%25EB%25AA%25A9_%25EC%2597%2586%25EB%258A%2594_%25EB%2594%2594%25EC%259E%2590%25EC%259D%25B8.png)
+![image](https://github.com/user-attachments/assets/03930f47-0d61-474d-9130-f3dd842a64eb)
     
 - 사장님(사업자)
-    
-    ![단락 텍스트 (1).png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%258B%25A8%25EB%259D%25BD_%25ED%2585%258D%25EC%258A%25A4%25ED%258A%25B8_(1).png)
+![image](https://github.com/user-attachments/assets/d1ceab0e-1862-4e3c-8f05-e6462842d355)
     
 - 손님(소비자)
-    
-    ![단락 텍스트 (2).png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%258B%25A8%25EB%259D%25BD_%25ED%2585%258D%25EC%258A%25A4%25ED%258A%25B8_(2).png)
+![image](https://github.com/user-attachments/assets/e9e203b3-e11e-41a7-9c84-1f290808ffe0)
     
 
 # 화면 설계서
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%201.png)
+![image](https://github.com/user-attachments/assets/2b3dbec1-ffd9-40d5-abff-3004cfe76085)
 
 # ERD
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%202.png)
+![image](https://github.com/user-attachments/assets/18ec2aa1-6c34-4628-95b4-ef579ee1f0ec)
 
 # API 명세서
 
 - [API 명세서 링크](https://www.notion.so/API-6d002e3b7e24495db93f66389fc317ad?pvs=21)
 
-![api명세서.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/api%25EB%25AA%2585%25EC%2584%25B8%25EC%2584%259C.gif)
+![api명세서](https://github.com/user-attachments/assets/054bfba6-94df-4308-8b8a-24c51cc5dcc3)
 
 # 주요 기능 및 서비스 화면
 
@@ -111,40 +106,40 @@
 
 - 유저의 역할(손님/사장님) 구분하여 로그인 유도
 
-![로그인화면.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%25A1%259C%25EA%25B7%25B8%25EC%259D%25B8%25ED%2599%2594%25EB%25A9%25B4.gif)
+![로그인화면](https://github.com/user-attachments/assets/59b62008-293b-4698-9b50-1fc916edf5af)
 
 - 아이디 및 비밀번호 찾기 제공
 
-![아이디 찾기.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2595%2584%25EC%259D%25B4%25EB%2594%2594_%25EC%25B0%25BE%25EA%25B8%25B0.gif)
+![아이디 찾기](https://github.com/user-attachments/assets/63966acf-205d-4b70-aa75-24ca343166d7)
 
-![비밀번호 찾기.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%25B9%2584%25EB%25B0%2580%25EB%25B2%2588%25ED%2598%25B8_%25EC%25B0%25BE%25EA%25B8%25B0.gif)
+![비밀번호 찾기](https://github.com/user-attachments/assets/139886c4-34d3-43cd-9f85-b3dd0aa3cc87)
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%203.png)
+![image](https://github.com/user-attachments/assets/a1f178a6-fe9c-4917-8fab-1cba2e99b063)
 
 ## 회원가입
 
 - 이메일, 비밀번호 유효성 검사
 - 이메일, 닉네임, 전화번호 중복확인
 
-![손님 회원가입.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2586%2590%25EB%258B%2598_%25ED%259A%258C%25EC%259B%2590%25EA%25B0%2580%25EC%259E%2585.gif)
+![손님 회원가입](https://github.com/user-attachments/assets/d39c0a09-15d5-42db-bf33-1a50d6107214)
 
 - (사장님) 사업자등록정보 진위확인 및 상태조회 API
 
-![사장 회원가입.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2582%25AC%25EC%259E%25A5_%25ED%259A%258C%25EC%259B%2590%25EA%25B0%2580%25EC%259E%2585.gif)
+![사장 회원가입](https://github.com/user-attachments/assets/9dccde18-3bcc-44fc-a140-ecbaa5435e1a)
 
 ## 점포등록
 
 - 푸드트럭지정현황조회 API
 
-![푸드트럭등록.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25ED%2591%25B8%25EB%2593%259C%25ED%258A%25B8%25EB%259F%25AD%25EB%2593%25B1%25EB%25A1%259D.gif)
+![푸드트럭등록](https://github.com/user-attachments/assets/36e2970e-500b-4b83-93c9-f6d8119f0d53)
 
 ## 소셜 로그인
 
 - 카카오 및 구글 소셜 로그인 제공
 
-![카카오 로그인.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%25B9%25B4%25EC%25B9%25B4%25EC%2598%25A4_%25EB%25A1%259C%25EA%25B7%25B8%25EC%259D%25B8.gif)
+![카카오 로그인](https://github.com/user-attachments/assets/704d7f79-45e7-4b69-be75-62a92399c034)
 
-![소셜로그인.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2586%258C%25EC%2585%259C%25EB%25A1%259C%25EA%25B7%25B8%25EC%259D%25B8.gif)
+![소셜로그인](https://github.com/user-attachments/assets/9adf5783-d54f-48f2-9fc9-c4895d85b359)
 
 ## 멤버십
 
@@ -162,19 +157,19 @@
 - 사용자의 현재 위치를 중심으로 지도 조회 및 목록 조회
 - 푸드트럭의 카테고리로 필터링하여 조회
 
-![방송리스트및접속.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%25B0%25A9%25EC%2586%25A1%25EB%25A6%25AC%25EC%258A%25A4%25ED%258A%25B8%25EB%25B0%258F%25EC%25A0%2591%25EC%2586%258D.gif)
+![방송리스트및접속](https://github.com/user-attachments/assets/5f791c8c-1f94-49b6-9feb-1fb71a2b3e2d)
 
-![위치확인및점포상세조회.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%259C%2584%25EC%25B9%2598%25ED%2599%2595%25EC%259D%25B8%25EB%25B0%258F%25EC%25A0%2590%25ED%258F%25AC%25EC%2583%2581%25EC%2584%25B8%25EC%25A1%25B0%25ED%259A%258C.gif)
+![위치확인및점포상세조회](https://github.com/user-attachments/assets/e52986fc-be5c-4eb0-b051-acb19520e737)
 
-![점포위치및목록지도보기.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%25A0%2590%25ED%258F%25AC%25EC%259C%2584%25EC%25B9%2598%25EB%25B0%258F%25EB%25AA%25A9%25EB%25A1%259D%25EC%25A7%2580%25EB%258F%2584%25EB%25B3%25B4%25EA%25B8%25B0.gif)
+![점포위치및목록지도보기](https://github.com/user-attachments/assets/b2a3ecff-59bf-4a23-a28f-6f85ac12968e)
 
 ## 주문 및 장바구니 기능 (손님)
 
-![장바구니및주문하기.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%259E%25A5%25EB%25B0%2594%25EA%25B5%25AC%25EB%258B%2588%25EB%25B0%258F%25EC%25A3%25BC%25EB%25AC%25B8%25ED%2595%2598%25EA%25B8%25B0.gif)
+![장바구니및주문하기](https://github.com/user-attachments/assets/64e1191b-c2d0-48e1-921d-e116a63fe39e)
 
 ## 주문 실시간 알림 기능 (손님)
 
-![주문 수락, 완료.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25E1%2584%258C%25E1%2585%25AE%25E1%2584%2586%25E1%2585%25AE%25E1%2586%25AB_%25E1%2584%2589%25E1%2585%25AE%25E1%2584%2585%25E1%2585%25A1%25E1%2586%25A8_%25E1%2584%258B%25E1%2585%25AA%25E1%2586%25AB%25E1%2584%2585%25E1%2585%25AD.gif)
+![주문 수락, 완료](https://github.com/user-attachments/assets/f9809dd3-a1c8-4304-8db9-d46268e70ccf)
 
 ## 메인화면 (사장님)
 
@@ -183,7 +178,7 @@
 
 ### 주문 확인
 
-![실시간 주문 접수.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25E1%2584%2589%25E1%2585%25B5%25E1%2586%25AF%25E1%2584%2589%25E1%2585%25B5%25E1%2584%2580%25E1%2585%25A1%25E1%2586%25AB_%25E1%2584%258C%25E1%2585%25AE%25E1%2584%2586%25E1%2585%25AE%25E1%2586%25AB_%25E1%2584%258C%25E1%2585%25A5%25E1%2586%25B8%25E1%2584%2589%25E1%2585%25AE.gif)
+![실시간 주문 접수](https://github.com/user-attachments/assets/c252289c-4884-4c6e-b05b-7bd1ff74a3e7)
 
 ## 리뷰 작성 기능 (손님)
 
@@ -191,41 +186,41 @@
 - 리뷰 사진, 별점, 리뷰 내용 작성 가능
 - 다중 파일 업로드 (AWS S3)
 
-![리뷰작성(손님).gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%25A6%25AC%25EB%25B7%25B0%25EC%259E%2591%25EC%2584%25B1(%25EC%2586%2590%25EB%258B%2598).gif)
+![리뷰작성(손님)](https://github.com/user-attachments/assets/5179d52e-c8ce-4317-8bad-3da25bfd919e)
 
 ## 푸드트럭 라이브 방송 기능 (사장님)
 
 - openVidu를 사용한 실시간 라이브 방송 및 채팅
 - 공지사항 기능
 
-![사장님방송시작.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2582%25AC%25EC%259E%25A5%25EB%258B%2598%25EB%25B0%25A9%25EC%2586%25A1%25EC%258B%259C%25EC%259E%2591.gif)
+![사장님방송시작](https://github.com/user-attachments/assets/fbea393d-344a-4df2-ae5c-ff0cae45b90b)
 
 ## 라이브 방송 알림 기능 (손님)
 
 - SSE 알림을 통해 찜한 푸드트럭 방송 시작 알림
 - 알림에 있는 버튼을 통해 라이브 방송 바로 시청 가능
 
-![방송시작 알림 및 링크 접속.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EB%25B0%25A9%25EC%2586%25A1%25EC%258B%259C%25EC%259E%2591_%25EC%2595%258C%25EB%25A6%25BC_%25EB%25B0%258F_%25EB%25A7%2581%25ED%2581%25AC_%25EC%25A0%2591%25EC%2586%258D.gif)
+![방송시작 알림 및 링크 접속](https://github.com/user-attachments/assets/007f65db-15ec-46bd-a739-7f3ee58229bb)
 
 ## 라이브 방송 AI 챗봇 “푸디”
 
 - gemini AI
 
-![AI챗봇푸디사용.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/AI%25EC%25B1%2597%25EB%25B4%2587%25ED%2591%25B8%25EB%2594%2594%25EC%2582%25AC%25EC%259A%25A9.gif)
+![AI챗봇푸디사용](https://github.com/user-attachments/assets/625dd246-3421-49a9-885d-4d7fed0a6cd4)
 
 ## 소비패턴 분석 (손님)
 
 - chart.js
 - 주간 소비 금액, 주문 횟수
 
-![소비패턴분석.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2586%258C%25EB%25B9%2584%25ED%258C%25A8%25ED%2584%25B4%25EB%25B6%2584%25EC%2584%259D.gif)
+![소비패턴분석](https://github.com/user-attachments/assets/f4496470-34b0-49f2-a255-88ea5c3b4cda)
 
 ## 수요조사 제출 (손님)
 
 - 손님이 지정한 위치를 기반으로 수요조사 정보 제출
 - 주 1회 횟수제한
 
-![수요조사.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2588%2598%25EC%259A%2594%25EC%25A1%25B0%25EC%2582%25AC.gif)
+![수요조사](https://github.com/user-attachments/assets/474257ab-c52a-41df-8ec4-3e631fcf6c7b)
 
 ## 점포 상세페이지
 
@@ -233,7 +228,7 @@
 - 점포 스케줄, 통계(리뷰, 찜 개수) 확인
 - 리뷰 확인, 신고 기능
 
-![점포상세조회.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%25A0%2590%25ED%258F%25AC%25EC%2583%2581%25EC%2584%25B8%25EC%25A1%25B0%25ED%259A%258C.gif)
+![점포상세조회](https://github.com/user-attachments/assets/45147b61-1d40-4b57-95e5-11dc8b5345ea)
 
 ## 마이페이지 (사장님)
 
@@ -241,53 +236,53 @@
 
 - gemini AI를 사용한 리뷰 답글 초안 작성
 
-![AI사장님답글초안.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/AI%25EC%2582%25AC%25EC%259E%25A5%25EB%258B%2598%25EB%258B%25B5%25EA%25B8%2580%25EC%25B4%2588%25EC%2595%2588.gif)
+![AI사장님답글초안](https://github.com/user-attachments/assets/d4efdd36-9368-46e0-83c5-ab2a16a8337f)
 
 ### 수요조사 확인 (사장님)
 
 - nivo chart 사용
 - 수요조사가 제출된 지역을 기반으로 조회 가능
 
-![수요조사 헤더부착.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2588%2598%25EC%259A%2594%25EC%25A1%25B0%25EC%2582%25AC_%25ED%2597%25A4%25EB%258D%2594%25EB%25B6%2580%25EC%25B0%25A9.gif)
+![수요조사 헤더부착](https://github.com/user-attachments/assets/f98d8db6-ea6b-42dd-abdd-3d85a462e408)
 
 ### AI 로고 생성 (사장님)
 
 - karlo
 
-![AI로고 생성.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/AI%25EB%25A1%259C%25EA%25B3%25A0_%25EC%2583%259D%25EC%2584%25B1.gif)
+![AI로고 생성](https://github.com/user-attachments/assets/f264a52c-04de-4a9a-aa04-cccc5eff48ac)
 
 ### 매출 분석 (사장님)
 
 - chart.js
 - 일간, 주간 매출 및 메뉴 판매량
 
-![사장님매출통계헤더부착.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%2582%25AC%25EC%259E%25A5%25EB%258B%2598%25EB%25A7%25A4%25EC%25B6%259C%25ED%2586%25B5%25EA%25B3%2584%25ED%2597%25A4%25EB%258D%2594%25EB%25B6%2580%25EC%25B0%25A9.gif)
+![사장님매출통계헤더부착](https://github.com/user-attachments/assets/3e5e30aa-47a5-4493-b6c1-c05ded69f80b)
 
 ### 스케줄 관리
 
 - 카카오 맵
 - 요일별 방문 장소 관리
 
-![스케줄관리.gif](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/%25EC%258A%25A4%25EC%25BC%2580%25EC%25A4%2584%25EA%25B4%2580%25EB%25A6%25AC.gif)
+![스케줄관리](https://github.com/user-attachments/assets/de57aeb8-9498-48c1-8ea7-566f76cb4343)
 
 # Jira 보고서
 
 ### 1주차
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%204.png)
+![image](https://github.com/user-attachments/assets/e5284053-de03-4bd2-b926-3f611ef05a8d)
 
 ### 2주차
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%205.png)
+![image](https://github.com/user-attachments/assets/89724a99-9714-4984-a5b8-b7516edfdac7)
 
 ### 3주차
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%206.png)
+![image](https://github.com/user-attachments/assets/093562d1-d728-4f81-a495-6822fc07e87d)
 
 ### 4주차
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%207.png)
+![image](https://github.com/user-attachments/assets/1dfda292-2f45-4fd6-bf45-2c974bc1d6d1)
 
 ### 5주차
 
-![image.png](README%20md%207ebbc7fad3354bb08f15c8de1d3d7d4c/image%208.png)
+![image (1)](https://github.com/user-attachments/assets/d6bbe575-a10a-4fa9-be6f-797dd8a2ce50)
