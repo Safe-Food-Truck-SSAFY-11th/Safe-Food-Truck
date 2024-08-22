@@ -13,8 +13,8 @@ const MyResponsiveBar = ({ data /* see data tab */ }) => {
       data={chartData}
       keys={["surveyCount"]}
       indexBy="storeType"
-      margin={{ top: 50, right: 50, bottom: 10, left: 70 }}
-      padding={0.3}
+      margin={{ top: 50, right: 30, bottom: 10, left: 73 }}
+      padding={0.2}
       layout="horizontal"
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
@@ -24,12 +24,13 @@ const MyResponsiveBar = ({ data /* see data tab */ }) => {
         from: "color",
         modifiers: [["darker", 1.6]],
       }}
+      enableGridY={false}
       axisTop={null}
       axisRight={null}
       axisBottom={null}
       axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
+        tickSize: 0,
+        tickPadding: 2,
         tickRotation: 0,
         legend: "",
         legendPosition: "middle",

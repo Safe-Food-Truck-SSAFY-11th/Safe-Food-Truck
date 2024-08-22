@@ -65,7 +65,7 @@ const Header = () => {
                 <IoIosArrowBack size="25" color="black" />
               </div>
             </div>
-            <div className={styles.centerSection}>세이푸트</div>
+            <div className={styles.centerSection}>세이푸트 손님</div>
             <div className={styles.rightSection}>
               <div className={styles.icon} onClick={handleLogout}>
                 <FiLogOut size="25" color="black" />
@@ -85,7 +85,7 @@ const Header = () => {
               </div>
             </div>
 
-            <div className={styles.centerSection}>세이푸트</div>
+            <div className={styles.centerSection}>세이푸트 사장님</div>
 
             <div className={styles.rightSection}>
               <div className={styles.icon} onClick={handleLogout}>

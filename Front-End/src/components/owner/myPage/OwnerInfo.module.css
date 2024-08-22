@@ -3,17 +3,16 @@
   padding: 4%;
   border-radius: 10px;
   width: 90%;
-  margin-top: 2vh;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .contentWrapper {
-  border: 2px solid #2AC311;
-  background-color: white; 
+  border: 2px solid #2ac311;
+  background-color: white;
   padding: 5% 5% 3% 5%;
   border-radius: 10px;
   width: 100%;
-  text-align: center; 
+  text-align: center;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -28,14 +27,14 @@
   gap: 1vh;
 }
 
-.ownerprofileImageBox{
+.ownerprofileImageBox {
   /* height: 100%; */
   /* width: 53%; */
   height: 100px;
   width: 100px;
   position: relative;
 }
-.ownerprofileImageBox2{
+.ownerprofileImageBox2 {
   width: 100%;
   height: 100%;
   border-radius: 50%;

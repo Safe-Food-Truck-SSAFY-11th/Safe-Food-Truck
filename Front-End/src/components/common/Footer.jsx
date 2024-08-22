@@ -143,7 +143,7 @@ const Footer = () => {
           className={styles.menuItem}
           onClick={(e) => {
             e.preventDefault();
-            handleIconClickOwner("home", "/mypageOwner");
+            handleIconClickOwner("mypage", "/mypageOwner");
           }}
         >
           <RxPerson
@@ -161,7 +161,7 @@ const Footer = () => {
           className={styles.menuItem}
           onClick={(e) => {
             e.preventDefault();
-            handleIconClickOwner("home", "/ownerReview");
+            handleIconClickOwner("review", "/ownerReview");
           }}
         >
           <TbMessage2Star
@@ -189,7 +189,7 @@ const Footer = () => {
                 to="/manageTruck"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleIconClickOwner("home", "/manageTruck");
+                  handleIconClickOwner("settings", "/manageTruck");
                 }}
               >
                 트럭정보수정
@@ -198,7 +198,7 @@ const Footer = () => {
                 to="/manageSchedule"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleIconClickOwner("home", "/manageSchedule");
+                  handleIconClickOwner("settings", "/manageSchedule");
                 }}
               >
                 스케줄관리
@@ -207,7 +207,7 @@ const Footer = () => {
                 to="/manageMenu"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleIconClickOwner("home", "/manageMenu");
+                  handleIconClickOwner("settings", "/manageMenu");
                 }}
               >
                 메뉴관리
