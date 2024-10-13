@@ -1,0 +1,11 @@
+.starRating {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  position: relative;
+}
+
+.starRating svg {
+  cursor: pointer;
+  transition: fill 0.2s ease;
+}

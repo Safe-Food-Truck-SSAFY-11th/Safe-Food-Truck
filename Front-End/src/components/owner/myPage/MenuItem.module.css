@@ -1,0 +1,50 @@
+.menuItem {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff; /* 메뉴 항목 배경색 */
+  border: 1px solid #ffffff; /* 경계선 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  padding: 4%;
+  margin: 10px 0; /* 항목 간 간격 */
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.menuImage {
+  width: 30%;
+  height: auto;
+  border-radius: 4px;
+  margin-right: 16px;
+}
+
+.menuDetails {
+  flex: 1; /* 남은 공간을 차지 */
+}
+
+.menuDetails p {
+  margin: 4px 0; /* 텍스트 간 간격 */
+}
+
+.menuButtons {
+  display: flex;
+  flex-direction: column; /* 버튼을 세로로 정렬 */
+}
+
+.editButton {
+  background-color: #d1e1b8; /* 수정 버튼 배경색 */
+  color: black; /* 텍스트 색상 */
+  border: none; /* 경계선 없음 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  padding: 8px; /* 내부 여백 */
+  cursor: pointer; /* 포인터 커서 */
+  margin-bottom: 8px; /* 버튼 간 간격 */
+}
+
+.deleteButton {
+  background-color: #ffa285; /* 삭제 버튼 배경색 */
+  color: black; /* 텍스트 색상 */
+  border: none; /* 경계선 없음 */
+  border-radius: 4px; /* 모서리 둥글게 */
+  padding: 8px; /* 내부 여백 */
+  cursor: pointer; /* 포인터 커서 */
+}

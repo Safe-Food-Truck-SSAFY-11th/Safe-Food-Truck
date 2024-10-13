@@ -1,0 +1,144 @@
+.makeLogoModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 모달이 다른 요소 위에 표시되도록 */
+}
+
+.modalContent {
+  background: white;
+  padding: 5vh 10vw;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalContent a {
+  text-align: right;
+}
+
+.title {
+  font-size: 1.2rem;
+}
+
+.formDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.optionDiv {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  text-align: left;
+  justify-content: space-evenly;
+}
+
+.option {
+  width: 40%;
+}
+
+.option input {
+  color: #9d4a4a;
+}
+
+.formDiv button {
+  margin-top: 5%;
+}
+
+.createBtn {
+  padding: 3%;
+  border: none;
+  border-radius: 10px;
+  background-color: violet;
+  color: white;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.confirmBtnGroup {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.confirmBtnGroup button {
+  padding: 3%;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.saveBtn {
+  background-color: #aff070;
+  color: black;
+}
+
+.reCreateBtn {
+  background-color: #fb9256;
+  color: black;
+}
+
+.aiImg {
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* 이미지가 div를 벗어나지 않도록 함 */
+}
+.aiImg img {
+  max-width: 100%; /* 이미지의 최대 너비를 부모 요소의 너비로 제한 */
+  max-height: 100%; /* 이미지의 최대 높이를 부모 요소의 높이로 제한 */
+  object-fit: contain; /* 이미지의 비율을 유지하면서 부모 요소에 맞추기 */
+}
+
+/* 로딩 오버레이 스타일 */
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9); /* 어두운 배경색 */
+  color: #ffffff; /* 흰색 텍스트 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-size: 1.2rem; /* 글자 크기 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* 로딩 애니메이션 스타일 */
+.loader {
+  border: 16px solid #f3f3f3; /* 회색 배경 */
+  border-top: 16px solid #3498db; /* 파란색 회전 */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px; /* 로딩 애니메이션과 텍스트 사이 간격 */
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingOverlay p {
+  color: white;
+  font-weight: normal;
+}

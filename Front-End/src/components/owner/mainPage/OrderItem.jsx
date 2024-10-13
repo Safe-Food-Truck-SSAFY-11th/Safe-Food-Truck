@@ -1,26 +1,52 @@
 import styles from './OrderItem.module.css';
+import useOrderStore from 'store/users/owner/orderStore';
 
-const OrderItem = ({ status, orderTime, menus, orderNumber, completeTime }) => {
+const OrderItem = ({ order, onClick }) => {
+    const { acceptOrder, rejectOrder, completeCooking } = useOrderStore();
+
+    let status;
+
+    // status 정의
+    if (order.status === 'pending') {
+        status = 'new';
+    } else if (order.status === 'accepted') {
+        if (order.cookingStatus === 'preparing') {
+            status = 'inProgress';
+        } else if (order.cookingStatus === 'completed') {
+            status = 'completed';
+        }
+    } else if (order.status === 'rejected') {
+        status = 'rejected';
+    }
+
+    const handleAcceptBtn = async (e) => {
+        e.stopPropagation(); 
+        await acceptOrder(order.orderId);
+    }
+
+    const handleRejectBtn = async (e) => {
+        e.stopPropagation(); 
+        await rejectOrder(order.orderId);
+    }
+
+    const handleCompleteCooking = async (e) => {
+        e.stopPropagation(); 
+        await completeCooking(order.orderId);
+    }
+
     const renderButtons = () => {
         switch (status) {
             case 'new':
                 return (
                     <div className={styles.buttons}>
-                        <button className={styles.acceptButton}>수락</button>
-                        <button className={styles.rejectButton}>거절</button>
+                        <button className={styles.acceptButton} onClick={handleAcceptBtn}>수락</button>
+                        <button className={styles.rejectButton} onClick={handleRejectBtn}>거절</button>
                     </div>
                 );
             case 'inProgress':
                 return (
                     <div className={styles.buttons}>
-                        <button className={styles.completeButton}>조리완료</button>
-                        <button className={styles.rejectButton} disabled>거절</button>
-                    </div>
-                );
-            case 'cooked':
-                return (
-                    <div className={styles.buttons}>
-                        <button className={styles.pickupButton}>픽업완료</button>
+                        <button className={styles.completeButton} onClick={handleCompleteCooking}>조리완료</button>
                         <button className={styles.rejectButton} disabled>거절</button>
                     </div>
                 );
@@ -32,24 +58,38 @@ const OrderItem = ({ status, orderTime, menus, orderNumber, completeTime }) => {
     };
 
     const renderMenus = () => {
-        if (menus.length > 1) {
-            return `${menus[0]} 외 ${menus.length - 1}개`;
+        if (order.orderMenuListResponseDto.orderMenuResponseDtos.length > 1) {
+            return (
+            <span>
+                <span className={styles.orderMenu}>
+                    {order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개
+                </span>
+                <span>
+                &nbsp;외&nbsp;{order.orderMenuListResponseDto.orderMenuResponseDtos.length - 1}개
+                </span>
+            </span>
+            )
+        } else {
+            return (
+                <span className={styles.orderMenu}>
+                    {order.orderMenuListResponseDto.orderMenuResponseDtos[0].menuName} {order.orderMenuListResponseDto.orderMenuResponseDtos[0].count}개
+                </span>
+            )
         }
-        return menus[0];
-    };
+    }
 
     return (
-        <div className={`${styles.orderItem} ${styles[status]}`}>
+        <div className={`${styles.orderItem} ${styles[status]}`} onClick={onClick}>
             <div className={styles.header}>
-                <span className={styles.statusText}>{status === 'new' ? '새로운 주문' : status === 'inProgress' ? '주문 진행 중' : status === 'cooked' ? '조리 완료' : '픽업 완료'}</span>
-                <span className={styles.orderTime}>주문한 시간 : {orderTime}</span>
+                <span className={styles.statusText}>{status === 'new' ? '새로운 주문' : status === 'inProgress' ? '주문 진행 중' : status === 'completed' ? '주문 완료' : '주문 거절'}</span>
+                <span className={styles.orderTime}>주문 시간 : <br/>{order.orderTime.replace('T', ' ')}</span>
             </div>
             <p className={styles.menus}>{renderMenus()}</p>
             <div className={styles.footer}>
                 <div>
-                    {orderNumber && <p className={styles.orderNumber}>주문번호 {orderNumber}</p>}
+                    {order.orderId && <p className={styles.orderNumber}>주문번호 {order.orderId}</p>}
                 </div>
-                {completeTime && <p className={styles.completeTime}>주문 완료 : {completeTime}</p>}
+                {order.completeTime && <p className={styles.completeTime}>주문 완료 : <br/>{order.completeTime.replace('T', ' ')}</p>}
                 {renderButtons()}
             </div>
         </div>

@@ -1,0 +1,79 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.surveyContainer {
+  background-color: #ffcc66;
+  width: 95vw;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: calc(98vh - 135px);
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.userName {
+  color: #db5000;
+}
+
+/* .surveyTitle {
+  margin-top: 10vw;
+} */
+
+.btnContainer {
+  margin: 5vw;
+}
+
+.btnArea {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.btnArea img {
+  transition: filter 0.2s ease;
+  width: 80px;
+  height: 80px;
+}
+
+.btnArea img.selected {
+  filter: brightness(0.7);
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 10px;
+  width: 80vw;
+  cursor: pointer;
+}
+
+.searchIcon {
+  margin-right: 5px;
+}
+
+.searchInput {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.submitBtn {
+  margin-top: 5vh;
+  width: 50vw;
+  height: 5vh;
+  background-color: #fb833e;
+  border-style: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}

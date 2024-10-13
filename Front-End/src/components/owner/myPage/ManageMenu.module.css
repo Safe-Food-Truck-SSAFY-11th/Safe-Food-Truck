@@ -1,0 +1,42 @@
+.compSize {
+  height: calc(100vh - 69px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.compSize h2 {
+  margin-top: 3vh;
+  font-size: 1.8rem;
+  padding: 0;
+}
+
+.menuContainer {
+  margin: 4%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #eaffc9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  /* margin: 20px; */
+  overflow-y: auto;
+}
+.menuContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.addMenuButton {
+  background-color: #fff;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
